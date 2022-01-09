@@ -8,7 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:soshi/services/database.dart';
 
 abstract class LocalDataService {
-  static bool isInitializing = false;
 
 // store all local data
   static SharedPreferences preferences;
@@ -17,8 +16,7 @@ abstract class LocalDataService {
   // ** must be run after user file is created in database
   static Future<void> initializeSharedPreferences(
       {String soshiUsername}) async {
-    isInitializing = true;
-
+    
     // initialize SharedPreferences instance
     preferences = await SharedPreferences.getInstance();
 
@@ -30,7 +28,9 @@ abstract class LocalDataService {
     DatabaseService databaseService =
         new DatabaseService(soshiUsernameIn: soshiUsername);
 
-    String bioFromDB = await databaseService.getBio(soshiUsername);
+    Map userData = await databaseService.getUserFile(soshiUsername);
+
+    String bioFromDB = await databaseService.getBio(userData);
     if (bioFromDB == null || bioFromDB == "") {
       await preferences.setString("Bio", "");
     } else {
@@ -39,14 +39,14 @@ abstract class LocalDataService {
 
     // store first and last name map (used to set both first and last name)
     Map<String, dynamic> fullName =
-        await databaseService.getFullNameMap(soshiUsername);
+        await databaseService.getFullNameMap(userData);
     // set first name
     await preferences.setString("First Name", fullName["First"]);
     // set last name
     await preferences.setString("Last Name", fullName["Last"]);
     // set username
     String username = await databaseService.getUsernameForPlatform(
-        othersoshiUsername: databaseService.soshiUsername, platform: "Soshi");
+        userData: userData, platform: "Soshi");
     await preferences.setString("Username", username);
 
     // set friends list
@@ -60,7 +60,7 @@ abstract class LocalDataService {
     try {
       // set profile picture URL
       await preferences.setString(
-          "Photo URL", await databaseService.getPhotoURL(soshiUsername));
+          "Photo URL", await databaseService.getPhotoURL(userData));
     } catch (e) {
       await preferences.setString("Photo URL", "null");
     }
@@ -70,14 +70,14 @@ abstract class LocalDataService {
     // to access Platform Usernames, we must use json.decode to convert to Map
 
     Map<String, dynamic> userProfileNames =
-        await databaseService.getUserProfileNames(soshiUsername);
+        await databaseService.getUserProfileNames(userData);
 
     await preferences.setString(
         "Platform Usernames", jsonEncode(userProfileNames));
 
     // set social media platform switch states
     await preferences.setString("Platform Switches",
-        jsonEncode(await databaseService.getUserSwitches(soshiUsername)));
+        jsonEncode(await databaseService.getUserSwitches(userData)));
 
     // set choose platforms list to match cloud copy
     List<dynamic> choosePlatformsDynamic =
@@ -96,7 +96,6 @@ abstract class LocalDataService {
       profilePlatforms.add(platform);
     }
     await preferences.setStringList("Profile Platforms", profilePlatforms);
-    isInitializing = false;
   }
 
   // clear all local data stored in SharedPreferences

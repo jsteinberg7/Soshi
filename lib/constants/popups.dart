@@ -39,15 +39,15 @@ class Popups {
           double width = MediaQuery.of(context).size.width;
           DatabaseService databaseService =
               new DatabaseService(soshiUsernameIn: soshiUsername);
+          Map userData = await databaseService.getUserFile(soshiUsername);
           String firstName =
-              await databaseService.getFirstDisplayName(soshiUsername);
-          String lastName =
-              await databaseService.getLastDisplayName(soshiUsername);
+              await databaseService.getFirstDisplayName(userData);
+          String lastName = await databaseService.getLastDisplayName(userData);
           String email = await databaseService.getUsernameForPlatform(
-              platform: "Email", othersoshiUsername: soshiUsername);
+              platform: "Email", userData: userData);
           String phoneNumber = await databaseService.getUsernameForPlatform(
-              platform: "Phone", othersoshiUsername: soshiUsername);
-          String photoUrl = await databaseService.getPhotoURL(soshiUsername);
+              platform: "Phone", userData: userData);
+          String photoUrl = await databaseService.getPhotoURL(userData);
 
           Uint8List profilePicBytes;
           try {
@@ -144,15 +144,16 @@ class Popups {
     // get list of all visible platforms
     DatabaseService databaseService =
         new DatabaseService(soshiUsernameIn: soshiUsername);
+    Map userData = await databaseService.getUserFile(soshiUsername);
     List<String> visiblePlatforms =
-        await databaseService.getEnabledPlatformsList(soshiUsername);
+        await databaseService.getEnabledPlatformsList(userData);
     // get list of profile usernames
     Map<String, dynamic> usernames =
-        await databaseService.getUserProfileNames(soshiUsername);
-    String fullName = await databaseService.getFullName(soshiUsername);
+        await databaseService.getUserProfileNames(userData);
+    String fullName = await databaseService.getFullName(userData);
     bool isFriendAdded = LocalDataService.isFriendAdded(soshiUsername);
-    String profilePhotoURL = await databaseService.getPhotoURL(soshiUsername);
-    String bio = await databaseService.getBio(soshiUsername);
+    String profilePhotoURL = await databaseService.getPhotoURL(userData);
+    String bio = await databaseService.getBio(userData);
     // increment variable for use with scrolling SM buttons (use instead of i)
     int index = 0;
     double height = MediaQuery.of(context).size.height;

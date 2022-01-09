@@ -102,9 +102,10 @@ class DatabaseService {
   // updates username for specified social media platform
   Future<void> updateUsernameForPlatform(
       {String platform, String username}) async {
+    // get user data
+    Map userData = await getUserFile(soshiUsername);
     // get current map of usernames
-    Map<String, dynamic> usernamesMap =
-        await getUserProfileNames(soshiUsername);
+    Map<String, dynamic> usernamesMap = getUserProfileNames(userData);
     // update local map to reflect change
     usernamesMap[platform] = username;
     // update database to reflect local map change
@@ -279,24 +280,13 @@ class DatabaseService {
   }
 
   // pass in soshiUsername, return map of user switches (platform visibility)
-  Future<Map<String, dynamic>> getUserSwitches(
-      String othersoshiUsername) async {
-    Map<String, dynamic> switchMap;
-    await usersCollection
-        .doc(othersoshiUsername)
-        .get()
-        .then((DocumentSnapshot ds) {
-      Map data = ds.data();
-      switchMap = data["Switches"];
-    });
-    return switchMap;
+  Map<String, dynamic> getUserSwitches(Map userData) {
+    return userData["Switches"];
   }
 
   // return list of enabled user switches
-  Future<List<String>> getEnabledPlatformsList(
-      String othersoshiUsername) async {
-    Map<String, dynamic> platformsMap =
-        await getUserSwitches(othersoshiUsername);
+  Future<List<String>> getEnabledPlatformsList(Map userData) async {
+    Map<String, dynamic> platformsMap = getUserSwitches(userData);
 
     List<String> enabledPlatformsList = [];
     // add all enabled platforms to platformsList
@@ -305,65 +295,38 @@ class DatabaseService {
         enabledPlatformsList.add(platform);
       }
     });
+
     return enabledPlatformsList;
   }
 
   // pass in soshiUsername, return (Map) of user profile names
-  Future<Map<String, dynamic>> getUserProfileNames(
-      String othersoshiUsername) async {
-    Map<String, dynamic> profileNamesMap;
-    await usersCollection
-        .doc(othersoshiUsername)
-        .get()
-        .then((DocumentSnapshot ds) {
-      Map data = ds.data();
-      profileNamesMap = data["Usernames"];
-    });
-    return profileNamesMap;
+  Map<String, dynamic> getUserProfileNames(Map userData) {
+    return userData["Usernames"];
   }
 
   // return username for specified platform
-  Future<String> getUsernameForPlatform(
-      {String othersoshiUsername, String platform}) async {
+  Future<String> getUsernameForPlatform({@required Map userData, @required String platform}) async {
     String username;
-    Map<String, dynamic> profileNamesMap =
-        await getUserProfileNames(othersoshiUsername);
+    Map<String, dynamic> profileNamesMap = getUserProfileNames(userData);
     username = profileNamesMap[platform];
     return username;
   }
 
   // pass in soshiUsername, return (Map) of full name of user
-  Future<Map<String, dynamic>> getFullNameMap(String othersoshiUsername) async {
-    Map<String, dynamic> fullNameMap;
-    await usersCollection
-        .doc(othersoshiUsername)
-        .get()
-        .then((DocumentSnapshot ds) {
-      Map data = ds.data();
-      fullNameMap = data["Name"];
-    });
-    return fullNameMap;
+  Map<String, dynamic> getFullNameMap(Map userData) {
+    return userData["Name"];
   }
 
   // pass in soshiUsername, return (String) full name of user
-  Future<String> getFullName(String othersoshiUsername) async {
-    Map<String, dynamic> fullNameMap;
-    String fullName;
-    fullNameMap = await getFullNameMap(othersoshiUsername);
+  Future<String> getFullName(Map userData) async {
+    Map fullNameMap = getFullNameMap(userData);
     // convert to String
-    fullName = fullNameMap["First"] + " " + fullNameMap["Last"];
+    String fullName = fullNameMap["First"] + " " + fullNameMap["Last"];
     return fullName;
   }
 
-  Future<String> getPhotoURL(othersoshiUsername) async {
-    dynamic data;
-    await usersCollection
-        .doc(othersoshiUsername)
-        .get()
-        .then((DocumentSnapshot ds) {
-      data = ds.data();
-    });
-    return data["Photo URL"];
+  Future<String> getPhotoURL(Map userData) async {
+    return userData["Photo URL"];
   }
 
   Future<List<dynamic>> getProfilePlatforms() async {
@@ -430,17 +393,18 @@ class DatabaseService {
   }
 
 //get first name of Display Name
-  Future<String> getFirstDisplayName(String soshiUsername) async {
+  Future<String> getFirstDisplayName(Map userData) async {
     String firstName;
-    Map<String, dynamic> fullNameMap = await getFullNameMap(soshiUsername);
+    Map<String, dynamic> fullNameMap = getFullNameMap(userData);
     firstName = fullNameMap["First"];
     return firstName;
   }
 
   Future<void> updateDisplayName(
       {String firstNameParam, String lastNameParam}) async {
+    Map userData = await getUserFile(soshiUsername);
     //get current map of display name
-    Map<String, dynamic> displayNameMap = await getFullNameMap(soshiUsername);
+    Map<String, dynamic> displayNameMap = getFullNameMap(userData);
     //update local map to reflect change
     displayNameMap["First"] = firstNameParam;
     displayNameMap["Last"] = lastNameParam;
@@ -450,9 +414,9 @@ class DatabaseService {
     await updateContactCard();
   }
 
-  Future<String> getLastDisplayName(String soshiUsername) async {
+  String getLastDisplayName(Map userData) {
     String lastName;
-    Map<String, dynamic> fullName = await getFullNameMap(soshiUsername);
+    Map<String, dynamic> fullName = getFullNameMap(userData);
     lastName = fullName["Last"];
 
     // await usersCollection.doc(soshiUsername).get().then(
@@ -539,13 +503,8 @@ class DatabaseService {
     await usersCollection.doc(soshiUsername).delete();
   }
 
-  Future<String> getBio(String soshiUser) async {
-    String localBio;
-    await usersCollection.doc(soshiUser).get().then((DocumentSnapshot ds) {
-      Map data = ds.data();
-      localBio = data["Bio"];
-    });
-    return localBio;
+  Future<String> getBio(Map userData) async {
+    return userData["Bio"];
   }
 
   Future<void> updateBio(String soshiUser, String newBio) async {
