@@ -41,7 +41,6 @@ void main() async {
   runApp(MyApp());
   bool firstLaunch = !LocalDataService.hasLaunched();
   if (firstLaunch) {
-    print('this is the first time the app runs');
     AuthService tempAuth = new AuthService();
     await tempAuth.signOut();
   }

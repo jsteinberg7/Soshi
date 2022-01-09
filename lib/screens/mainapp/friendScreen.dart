@@ -41,14 +41,19 @@ class _FriendScreenState extends State<FriendScreen> {
     // store list of friend soshiUsernames
     List<Friend> formattedFriendsList = [];
     List<String> friendsToRemove = [];
+    Map friendData;
     String fullName, username, photoURL; // store data of current friend in list
     String othersoshiUsername;
     for (int i = friendsListsoshiUsernames.length - 1; i >= 0; i--) {
+      friendData =
+          await databaseService.getUserFile(friendsListsoshiUsernames[i]);
       othersoshiUsername = friendsListsoshiUsernames[i];
-      if (await databaseService.isUsernameTaken(othersoshiUsername)) {
+      if (friendData != null) {
+        // ensure friend exists in database
         // if friend exists in database
-        fullName = await databaseService.getFullName(othersoshiUsername);
-        photoURL = await databaseService.getPhotoURL(othersoshiUsername);
+        fullName =
+            friendData['Name']['First'] + " " + friendData['Name']['Last'];
+        photoURL = friendData['Photo URL'];
         formattedFriendsList.add(new Friend(
             // instantiate new friend and add to list
             soshiUsername: othersoshiUsername,
@@ -83,11 +88,6 @@ class _FriendScreenState extends State<FriendScreen> {
                     refreshFriendScreen); // show friend popup when tile is pressed
           },
           leading: ProfilePic(radius: 30, url: friend.photoURL),
-
-          // CircleAvatar(
-          //   radius: 35.0,
-          //   backgroundImage: NetworkImage(friend.photoURL),
-          // ),
           title: Column(
             children: <Widget>[
               Text(friend.fullName,
@@ -392,304 +392,305 @@ class _FriendScreenState extends State<FriendScreen> {
   }
 }
 
-class AddedMeButton extends StatelessWidget {
-  double size;
-  String soshiUsername;
-  DatabaseService databaseService;
 
-  AddedMeButton({this.size = 30.0, this.soshiUsername, this.databaseService});
+// class AddedMeButton extends StatelessWidget {
+//   double size;
+//   String soshiUsername;
+//   DatabaseService databaseService;
 
-  Future<List<Friend>> generateAddedMeList(
-      DatabaseService databaseService) async {
-    List<dynamic> addedMeList;
-    try {
-      addedMeList = await databaseService.getAddedMeList(soshiUsername);
-    } catch (e) {
-      addedMeList = [];
-      print(e);
-    }
-    List<Friend> addedMeListFriend = [];
+//   AddedMeButton({this.size = 30.0, this.soshiUsername, this.databaseService});
 
-    for (String user in addedMeList) {
-      Map userData = await databaseService.getUserFile(user);
-      Friend friend = new Friend(
-          fullName: userData["Name"]["First"] + " " + userData["Name"]["Last"],
-          soshiUsername: userData["Usernames"]["Soshi"],
-          photoURL: userData["Photo URL"]);
-      addedMeListFriend.add(friend);
-    }
-    print(addedMeListFriend.toString());
-    return addedMeListFriend;
-  }
+//   Future<List<Friend>> generateAddedMeList(
+//       DatabaseService databaseService) async {
+//     List<dynamic> addedMeList;
+//     try {
+//       addedMeList = await databaseService.getAddedMeList(soshiUsername);
+//     } catch (e) {
+//       addedMeList = [];
+//       print(e);
+//     }
+//     List<Friend> addedMeListFriend = [];
 
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-          primary: Constants.buttonColorDark, shape: CircleBorder()),
-      onPressed: () {
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                  insetPadding: EdgeInsets.all(0.0),
-                  backgroundColor: Colors.grey[900],
-                  contentPadding:
-                      EdgeInsets.only(top: 5.0, left: 5.0, right: 5.0),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                  ),
-                  content: Container(
-                    height: 300,
-                    width: 200,
-                    child: FutureBuilder(
-                        future: generateAddedMeList(databaseService),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.done) {
-                            List<Friend> addedMeList = snapshot.data;
-                            Friend friend;
-                            return Container(
-                              height: 200,
-                              width: 150,
-                              child: addedMeList.isNotEmpty
-                                  ? ListView.builder(
-                                      shrinkWrap: true,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      // separatorBuilder: (BuildContext context, int i) {
-                                      // return Padding(padding: EdgeInsets.all(0.0));
-                                      // },
-                                      itemBuilder:
-                                          (BuildContext context, int i) {
-                                        friend = addedMeList[i];
-                                        return Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              10.0, 5, 10, 10),
-                                          child: ListTile(
-                                              onTap: () async {
-                                                Popups.showUserProfilePopup(
-                                                    context,
-                                                    soshiUsername:
-                                                        friend.soshiUsername,
-                                                    refreshScreen:
-                                                        () {}); // show friend popup when tile is pressed
-                                              },
-                                              leading: ProfilePic(
-                                                  radius: 30,
-                                                  url: friend.photoURL),
+//     for (String user in addedMeList) {
+//       Map userData = await databaseService.getUserFile(user);
+//       Friend friend = new Friend(
+//           fullName: userData["Name"]["First"] + " " + userData["Name"]["Last"],
+//           soshiUsername: userData["Usernames"]["Soshi"],
+//           photoURL: userData["Photo URL"]);
+//       addedMeListFriend.add(friend);
+//     }
+//     print(addedMeListFriend.toString());
+//     return addedMeListFriend;
+//   }
 
-                                              // CircleAvatar(
-                                              //   radius: 35.0,
-                                              //   backgroundImage: NetworkImage(friend.photoURL),
-                                              // ),
-                                              title: Column(
-                                                children: <Widget>[
-                                                  Text(friend.fullName,
-                                                      style: TextStyle(
-                                                          color:
-                                                              Colors.cyan[600],
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 20)),
-                                                  Text(
-                                                    "@" + friend.soshiUsername,
-                                                    style: TextStyle(
-                                                        color: Colors.grey[500],
-                                                        fontSize: 15,
-                                                        fontStyle:
-                                                            FontStyle.italic),
-                                                  ),
-                                                ],
-                                              ),
-                                              tileColor: Colors.grey[900],
-                                              selectedTileColor:
-                                                  Constants.buttonColorLight,
-                                              contentPadding:
-                                                  EdgeInsets.all(10),
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(15),
-                                                  side: BorderSide(
-                                                      width: 2,
-                                                      color: Colors.blueGrey)),
-                                              trailing: Row(
-                                                children: [
-                                                  IconButton(
-                                                      icon: Icon(
-                                                          Icons.check_circle),
-                                                      color: Colors.green),
-                                                  IconButton(
-                                                    icon: Icon(
-                                                      Icons.delete,
-                                                      size: 30,
-                                                      color: Colors.white,
-                                                    ),
-                                                    color: Colors.black,
-                                                    onPressed: () {
-                                                      showDialog(
-                                                          context: context,
-                                                          builder: (BuildContext
-                                                              context) {
-                                                            return AlertDialog(
-                                                              shape: RoundedRectangleBorder(
-                                                                  borderRadius:
-                                                                      BorderRadius.all(
-                                                                          Radius.circular(
-                                                                              40.0))),
-                                                              backgroundColor:
-                                                                  Colors.blueGrey[
-                                                                      900],
-                                                              title: Text(
-                                                                "Remove Friend",
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                            .cyan[
-                                                                        600],
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold),
-                                                              ),
-                                                              content: Text(
-                                                                ("Are you sure you want to decline " +
-                                                                    friend
-                                                                        .fullName +
-                                                                    " as a friend?"),
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        20,
-                                                                    color: Colors
-                                                                            .cyan[
-                                                                        700],
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold),
-                                                              ),
-                                                              actions: <Widget>[
-                                                                Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .spaceEvenly,
-                                                                  children: <
-                                                                      Widget>[
-                                                                    TextButton(
-                                                                      child:
-                                                                          Text(
-                                                                        'No',
-                                                                        style: TextStyle(
-                                                                            fontSize:
-                                                                                20),
-                                                                      ),
-                                                                      onPressed:
-                                                                          () {
-                                                                        Navigator.pop(
-                                                                            context);
-                                                                      },
-                                                                    ),
-                                                                    TextButton(
-                                                                      child:
-                                                                          Text(
-                                                                        'Yes',
-                                                                        style: TextStyle(
-                                                                            fontSize:
-                                                                                20,
-                                                                            color:
-                                                                                Colors.red),
-                                                                      ),
-                                                                      onPressed:
-                                                                          () {
-                                                                        // remove from added me list
-                                                                        databaseService
-                                                                            .removeFromAddedMeList(friend.soshiUsername);
-                                                                        Navigator.pop(
-                                                                            context);
-                                                                      },
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ],
-                                                            );
-                                                          });
-                                                    },
-                                                    // shape: RoundedRectangleBorder(
-                                                    //     borderRadius: BorderRadius.circular(60.0)),
+//   @override
+//   Widget build(BuildContext context) {
+//     return ElevatedButton(
+//       style: ElevatedButton.styleFrom(
+//           primary: Constants.buttonColorDark, shape: CircleBorder()),
+//       onPressed: () {
+//         showDialog(
+//             context: context,
+//             builder: (BuildContext context) {
+//               return AlertDialog(
+//                   insetPadding: EdgeInsets.all(0.0),
+//                   backgroundColor: Colors.grey[900],
+//                   contentPadding:
+//                       EdgeInsets.only(top: 5.0, left: 5.0, right: 5.0),
+//                   shape: RoundedRectangleBorder(
+//                     borderRadius: BorderRadius.circular(30.0),
+//                   ),
+//                   content: Container(
+//                     height: 300,
+//                     width: 200,
+//                     child: FutureBuilder(
+//                         future: generateAddedMeList(databaseService),
+//                         builder: (context, snapshot) {
+//                           if (snapshot.connectionState ==
+//                               ConnectionState.done) {
+//                             List<Friend> addedMeList = snapshot.data;
+//                             Friend friend;
+//                             return Container(
+//                               height: 200,
+//                               width: 150,
+//                               child: addedMeList.isNotEmpty
+//                                   ? ListView.builder(
+//                                       shrinkWrap: true,
+//                                       physics:
+//                                           const NeverScrollableScrollPhysics(),
+//                                       // separatorBuilder: (BuildContext context, int i) {
+//                                       // return Padding(padding: EdgeInsets.all(0.0));
+//                                       // },
+//                                       itemBuilder:
+//                                           (BuildContext context, int i) {
+//                                         friend = addedMeList[i];
+//                                         return Padding(
+//                                           padding: const EdgeInsets.fromLTRB(
+//                                               10.0, 5, 10, 10),
+//                                           child: ListTile(
+//                                               onTap: () async {
+//                                                 Popups.showUserProfilePopup(
+//                                                     context,
+//                                                     soshiUsername:
+//                                                         friend.soshiUsername,
+//                                                     refreshScreen:
+//                                                         () {}); // show friend popup when tile is pressed
+//                                               },
+//                                               leading: ProfilePic(
+//                                                   radius: 30,
+//                                                   url: friend.photoURL),
 
-                                                    //itemBuilder: (BuildContext context) {
-                                                    //return [
-                                                    // PopupMenuItem(
-                                                    //     child: IconButton(
-                                                    //         icon: Icon(Icons.delete),
-                                                    //         color: Colors.white,
-                                                    //         iconSize: 40,
-                                                    //         splashColor: Colors.cyan,
-                                                    //         // style: ElevatedButton.styleFrom(
-                                                    //         //     primary: Colors.cyan[800]),
-                                                    //         // Text(
-                                                    //         //   "Remove Friend",
-                                                    //         //   style: TextStyle(color: Colors.black),
-                                                    //         // ),
-                                                    //         onPressed: () async {
-                                                    //           Navigator.pop(context);
-                                                    //           await LocalDataService.removeFriend(
-                                                    //               friendsoshiUsername: friend.soshiUsername);
-                                                    //           databaseService.removeFriend(friendsoshiUsername: friend.soshiUsername);
-                                                    //           refreshFriendScreen();
-                                                    //         }))
-                                                    //   ];
-                                                    // }
-                                                  ),
-                                                ],
-                                              )),
-                                        );
-                                      },
-                                      itemCount: (addedMeList == null)
-                                          ? 1
-                                          : addedMeList.length,
-                                      padding:
-                                          EdgeInsets.fromLTRB(5.0, 0, 5.0, 5.0))
-                                  : Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          0, 20, 0, 15),
-                                      child: Center(
-                                        child: Column(
-                                          children: <Widget>[
-                                            Text(
-                                              "You're up to date! No one new has added you.",
-                                              style: TextStyle(
-                                                  color: Colors.cyan[300],
-                                                  fontSize: 20,
-                                                  fontStyle: FontStyle.italic,
-                                                  letterSpacing: 2),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: ElevatedButton(
-                                                child: Container(
-                                                  child: Row(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                  ),
-                                                ),
-                                                style:
-                                                    Constants.ButtonStyleDark,
-                                                onPressed: () async {},
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                            );
-                          } else {
-                            return Center(
-                                child: CircularProgressIndicator.adaptive());
-                          }
-                        }),
-                  ));
-            });
-      },
-      child: Icon(Icons.person_add, color: Colors.cyan[300], size: size),
-    );
-  }
-}
+//                                               // CircleAvatar(
+//                                               //   radius: 35.0,
+//                                               //   backgroundImage: NetworkImage(friend.photoURL),
+//                                               // ),
+//                                               title: Column(
+//                                                 children: <Widget>[
+//                                                   Text(friend.fullName,
+//                                                       style: TextStyle(
+//                                                           color:
+//                                                               Colors.cyan[600],
+//                                                           fontWeight:
+//                                                               FontWeight.bold,
+//                                                           fontSize: 20)),
+//                                                   Text(
+//                                                     "@" + friend.soshiUsername,
+//                                                     style: TextStyle(
+//                                                         color: Colors.grey[500],
+//                                                         fontSize: 15,
+//                                                         fontStyle:
+//                                                             FontStyle.italic),
+//                                                   ),
+//                                                 ],
+//                                               ),
+//                                               tileColor: Colors.grey[900],
+//                                               selectedTileColor:
+//                                                   Constants.buttonColorLight,
+//                                               contentPadding:
+//                                                   EdgeInsets.all(10),
+//                                               shape: RoundedRectangleBorder(
+//                                                   borderRadius:
+//                                                       BorderRadius.circular(15),
+//                                                   side: BorderSide(
+//                                                       width: 2,
+//                                                       color: Colors.blueGrey)),
+//                                               trailing: Row(
+//                                                 children: [
+//                                                   IconButton(
+//                                                       icon: Icon(
+//                                                           Icons.check_circle),
+//                                                       color: Colors.green),
+//                                                   IconButton(
+//                                                     icon: Icon(
+//                                                       Icons.delete,
+//                                                       size: 30,
+//                                                       color: Colors.white,
+//                                                     ),
+//                                                     color: Colors.black,
+//                                                     onPressed: () {
+//                                                       showDialog(
+//                                                           context: context,
+//                                                           builder: (BuildContext
+//                                                               context) {
+//                                                             return AlertDialog(
+//                                                               shape: RoundedRectangleBorder(
+//                                                                   borderRadius:
+//                                                                       BorderRadius.all(
+//                                                                           Radius.circular(
+//                                                                               40.0))),
+//                                                               backgroundColor:
+//                                                                   Colors.blueGrey[
+//                                                                       900],
+//                                                               title: Text(
+//                                                                 "Remove Friend",
+//                                                                 style: TextStyle(
+//                                                                     color: Colors
+//                                                                             .cyan[
+//                                                                         600],
+//                                                                     fontWeight:
+//                                                                         FontWeight
+//                                                                             .bold),
+//                                                               ),
+//                                                               content: Text(
+//                                                                 ("Are you sure you want to decline " +
+//                                                                     friend
+//                                                                         .fullName +
+//                                                                     " as a friend?"),
+//                                                                 style: TextStyle(
+//                                                                     fontSize:
+//                                                                         20,
+//                                                                     color: Colors
+//                                                                             .cyan[
+//                                                                         700],
+//                                                                     fontWeight:
+//                                                                         FontWeight
+//                                                                             .bold),
+//                                                               ),
+//                                                               actions: <Widget>[
+//                                                                 Row(
+//                                                                   mainAxisAlignment:
+//                                                                       MainAxisAlignment
+//                                                                           .spaceEvenly,
+//                                                                   children: <
+//                                                                       Widget>[
+//                                                                     TextButton(
+//                                                                       child:
+//                                                                           Text(
+//                                                                         'No',
+//                                                                         style: TextStyle(
+//                                                                             fontSize:
+//                                                                                 20),
+//                                                                       ),
+//                                                                       onPressed:
+//                                                                           () {
+//                                                                         Navigator.pop(
+//                                                                             context);
+//                                                                       },
+//                                                                     ),
+//                                                                     TextButton(
+//                                                                       child:
+//                                                                           Text(
+//                                                                         'Yes',
+//                                                                         style: TextStyle(
+//                                                                             fontSize:
+//                                                                                 20,
+//                                                                             color:
+//                                                                                 Colors.red),
+//                                                                       ),
+//                                                                       onPressed:
+//                                                                           () {
+//                                                                         // remove from added me list
+//                                                                         databaseService
+//                                                                             .removeFromAddedMeList(friend.soshiUsername);
+//                                                                         Navigator.pop(
+//                                                                             context);
+//                                                                       },
+//                                                                     ),
+//                                                                   ],
+//                                                                 ),
+//                                                               ],
+//                                                             );
+//                                                           });
+//                                                     },
+//                                                     // shape: RoundedRectangleBorder(
+//                                                     //     borderRadius: BorderRadius.circular(60.0)),
+
+//                                                     //itemBuilder: (BuildContext context) {
+//                                                     //return [
+//                                                     // PopupMenuItem(
+//                                                     //     child: IconButton(
+//                                                     //         icon: Icon(Icons.delete),
+//                                                     //         color: Colors.white,
+//                                                     //         iconSize: 40,
+//                                                     //         splashColor: Colors.cyan,
+//                                                     //         // style: ElevatedButton.styleFrom(
+//                                                     //         //     primary: Colors.cyan[800]),
+//                                                     //         // Text(
+//                                                     //         //   "Remove Friend",
+//                                                     //         //   style: TextStyle(color: Colors.black),
+//                                                     //         // ),
+//                                                     //         onPressed: () async {
+//                                                     //           Navigator.pop(context);
+//                                                     //           await LocalDataService.removeFriend(
+//                                                     //               friendsoshiUsername: friend.soshiUsername);
+//                                                     //           databaseService.removeFriend(friendsoshiUsername: friend.soshiUsername);
+//                                                     //           refreshFriendScreen();
+//                                                     //         }))
+//                                                     //   ];
+//                                                     // }
+//                                                   ),
+//                                                 ],
+//                                               )),
+//                                         );
+//                                       },
+//                                       itemCount: (addedMeList == null)
+//                                           ? 1
+//                                           : addedMeList.length,
+//                                       padding:
+//                                           EdgeInsets.fromLTRB(5.0, 0, 5.0, 5.0))
+//                                   : Padding(
+//                                       padding: const EdgeInsets.fromLTRB(
+//                                           0, 20, 0, 15),
+//                                       child: Center(
+//                                         child: Column(
+//                                           children: <Widget>[
+//                                             Text(
+//                                               "You're up to date! No one new has added you.",
+//                                               style: TextStyle(
+//                                                   color: Colors.cyan[300],
+//                                                   fontSize: 20,
+//                                                   fontStyle: FontStyle.italic,
+//                                                   letterSpacing: 2),
+//                                             ),
+//                                             Padding(
+//                                               padding:
+//                                                   const EdgeInsets.all(8.0),
+//                                               child: ElevatedButton(
+//                                                 child: Container(
+//                                                   child: Row(
+//                                                     mainAxisSize:
+//                                                         MainAxisSize.min,
+//                                                   ),
+//                                                 ),
+//                                                 style:
+//                                                     Constants.ButtonStyleDark,
+//                                                 onPressed: () async {},
+//                                               ),
+//                                             )
+//                                           ],
+//                                         ),
+//                                       ),
+//                                     ),
+//                             );
+//                           } else {
+//                             return Center(
+//                                 child: CircularProgressIndicator.adaptive());
+//                           }
+//                         }),
+//                   ));
+//             });
+//       },
+//       child: Icon(Icons.person_add, color: Colors.cyan[300], size: size),
+//     );
+//   }
+// }
