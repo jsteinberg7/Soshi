@@ -1,0 +1,5 @@
+version https://git-lfs.github.com/spec/v1
+oid sha256:d7298ced84d4de6614cbce17b6049e4e70462f67476edffb049937371c27864d
+size 319
+build/ios/Debug-iphonesimulator/FirebaseFirestore/FirebaseFirestore.framework/FirebaseFirestore filter=lfs diff=lfs merge=lfs -text
+build/ios/Release-iphoneos/Flutter.framework/Flutter filter=lfs diff=lfs merge=lfs -text

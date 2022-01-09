@@ -1,0 +1,80 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+
+abstract class Constants {
+  static TextStyle CustomCyan = new TextStyle(
+      color: Colors.cyan[300],
+      fontSize: 15,
+      letterSpacing: 2,
+      fontStyle: FontStyle.italic,
+      fontWeight: FontWeight.bold);
+
+  static ThemeData CustomTheme = new ThemeData(
+    primaryColor: Colors.grey[800],
+    accentColor: Colors.cyan[300],
+  );
+  static Color appBarColor = Colors.grey[800];
+
+  static Color backgroundColor = Colors.grey[800];
+
+  static Color buttonColorLight = Colors.grey[700];
+
+  static Color buttonColorDark = Colors.grey[850];
+
+  static ButtonStyle ButtonStyleDark = ElevatedButton.styleFrom(
+      primary: Constants.buttonColorDark,
+      shadowColor: Constants.buttonColorDark,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(15.0))));
+
+  static LinearGradient greyCyanGradient = new LinearGradient(
+      begin: Alignment.bottomLeft,
+      end: Alignment.topRight,
+      colors: [Colors.grey[800], Colors.cyan[300]]);
+
+  // static Gradient gradientForPlatform(String platform) {
+  //   List<Color> colors = [];
+  //   if (platform == "Snapchat") {
+  //     colors = [Colors.yellow[400], Colors.yellow[200]];
+  //   } else if (platform == "Instagram") {
+  //     colors = [
+  //       Color.fromARGB(255, 245, 133, 41),
+  //       Color.fromARGB(255, 254, 218, 119),
+  //       Color.fromARGB(255, 221, 42, 123),
+  //       Color.fromARGB(255, 129, 52, 175),
+  //       Color.fromARGB(255, 81, 91, 212)
+  //     ];
+  //   } else if (platform == "Facebook") {
+  //     colors = [Colors.blue[900], Colors.blue[900]];
+  //   } else if (platform == "Twitter") {
+  //     colors = [Colors.cyan[600], Colors.lightBlue];
+  //   } else {
+  //     colors = [Colors.grey[800], Colors.grey[900]];
+  //   }
+  //   return new LinearGradient(
+  //       colors: colors, begin: Alignment.topLeft, end: Alignment.bottomRight);
+  // }
+
+  // all platforms in original app
+  static List<String> originalPlatforms = [
+    "Phone",
+    "Instagram",
+    "Snapchat",
+    "Linkedin",
+    "Twitter",
+    "Facebook",
+    "Reddit",
+    "Tiktok",
+    "Discord",
+  ];
+
+  // list of all platforms added since initial launch (update when adding new platforms)
+  static List<String> addedPlatforms = ["Email", "Venmo", "Spotify", "Contact"];
+  /* When adding/injecting new platforms: 
+  1. Add to addedPlatforms
+  2. Add Logo and Writing Logo to assets
+  3. Add handler to URL service
+  4. Update createUserFile() in register.dart to include new platform (for accounts created in the future)
+  */
+
+}

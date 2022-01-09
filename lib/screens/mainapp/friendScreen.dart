@@ -1,0 +1,695 @@
+import 'dart:convert';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:soshi/constants/utilities.dart';
+import 'package:soshi/constants/widgets.dart';
+import 'package:soshi/constants/popups.dart';
+import 'package:soshi/screens/login/loading.dart';
+import 'package:soshi/services/database.dart';
+import 'package:soshi/constants/constants.dart';
+import 'package:soshi/services/localData.dart';
+import 'package:vibration/vibration.dart';
+
+/* Stores information for individual friend/connection */
+class Friend {
+  String soshiUsername, fullName, photoURL;
+
+  Friend({this.soshiUsername, this.fullName, this.photoURL});
+}
+
+/* This widget displays a list of the user's friends. */
+class FriendScreen extends StatefulWidget {
+  @override
+  _FriendScreenState createState() => _FriendScreenState();
+}
+
+class _FriendScreenState extends State<FriendScreen> {
+  /* refresh screen */
+  void refreshFriendScreen() {
+    setState(() {});
+    print('refreshed');
+  }
+
+  /* Generates a list of Friend(s) for the user by fetching data for each soshiUsername in their friends list */
+  Future<List<Friend>> generateFriendsList(
+      DatabaseService databaseService) async {
+    List<dynamic> friendsListsoshiUsernames;
+    friendsListsoshiUsernames = LocalDataService.getLocalFriendsList();
+    // store list of friend soshiUsernames
+    List<Friend> formattedFriendsList = [];
+    List<String> friendsToRemove = [];
+    String fullName, username, photoURL; // store data of current friend in list
+    String othersoshiUsername;
+    for (int i = friendsListsoshiUsernames.length - 1; i >= 0; i--) {
+      othersoshiUsername = friendsListsoshiUsernames[i];
+      if (await databaseService.isUsernameTaken(othersoshiUsername)) {
+        // if friend exists in database
+        fullName = await databaseService.getFullName(othersoshiUsername);
+        photoURL = await databaseService.getPhotoURL(othersoshiUsername);
+        formattedFriendsList.add(new Friend(
+            // instantiate new friend and add to list
+            soshiUsername: othersoshiUsername,
+            fullName: fullName,
+            photoURL: photoURL));
+      } else {
+        // if friend no longer exists, flag friend for removal
+        friendsToRemove.add(othersoshiUsername);
+      }
+    }
+    for (String othersoshiUsername in friendsToRemove) {
+      // remove friends that no longer exist
+      await LocalDataService.removeFriend(
+          friendsoshiUsername: othersoshiUsername);
+      await databaseService.removeFriend(
+          friendsoshiUsername: othersoshiUsername);
+    }
+
+    return formattedFriendsList;
+  }
+
+  /* Creates a single "friend tile" (an element of the ListView of Friends) */
+  Widget createFriendTile(
+      {BuildContext context, Friend friend, DatabaseService databaseService}) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(10.0, 5, 10, 10),
+      child: ListTile(
+          onTap: () async {
+            Popups.showUserProfilePopup(context,
+                soshiUsername: friend.soshiUsername,
+                refreshScreen:
+                    refreshFriendScreen); // show friend popup when tile is pressed
+          },
+          leading: ProfilePic(radius: 30, url: friend.photoURL),
+
+          // CircleAvatar(
+          //   radius: 35.0,
+          //   backgroundImage: NetworkImage(friend.photoURL),
+          // ),
+          title: Column(
+            children: <Widget>[
+              Text(friend.fullName,
+                  style: TextStyle(
+                      color: Colors.cyan[600],
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20)),
+              Text(
+                "@" + friend.soshiUsername,
+                style: TextStyle(
+                    color: Colors.grey[500],
+                    fontSize: 15,
+                    fontStyle: FontStyle.italic),
+              ),
+            ],
+          ),
+          tileColor: Colors.grey[900],
+          selectedTileColor: Constants.buttonColorLight,
+          contentPadding: EdgeInsets.all(10),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+              side: BorderSide(width: 2, color: Colors.blueGrey)),
+          trailing: IconButton(
+            icon: Icon(
+              Icons.more_vert_rounded,
+              size: 30,
+              color: Colors.white,
+            ),
+            color: Colors.black,
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(40.0))),
+                      backgroundColor: Colors.blueGrey[900],
+                      title: Text(
+                        "Remove Friend",
+                        style: TextStyle(
+                            color: Colors.cyan[600],
+                            fontWeight: FontWeight.bold),
+                      ),
+                      content: Text(
+                        ("Are you sure you want to remove " +
+                            friend.fullName +
+                            " as a friend?"),
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.cyan[700],
+                            fontWeight: FontWeight.bold),
+                      ),
+                      actions: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            TextButton(
+                              child: Text(
+                                'No',
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                            TextButton(
+                              child: Text(
+                                'Yes',
+                                style:
+                                    TextStyle(fontSize: 20, color: Colors.red),
+                              ),
+                              onPressed: () {
+                                LocalDataService.removeFriend(
+                                    friendsoshiUsername: friend.soshiUsername);
+                                databaseService.removeFriend(
+                                    friendsoshiUsername: friend.soshiUsername);
+                                refreshFriendScreen();
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    );
+                  });
+            },
+            // shape: RoundedRectangleBorder(
+            //     borderRadius: BorderRadius.circular(60.0)),
+
+            //itemBuilder: (BuildContext context) {
+            //return [
+            // PopupMenuItem(
+            //     child: IconButton(
+            //         icon: Icon(Icons.delete),
+            //         color: Colors.white,
+            //         iconSize: 40,
+            //         splashColor: Colors.cyan,
+            //         // style: ElevatedButton.styleFrom(
+            //         //     primary: Colors.cyan[800]),
+            //         // Text(
+            //         //   "Remove Friend",
+            //         //   style: TextStyle(color: Colors.black),
+            //         // ),
+            //         onPressed: () async {
+            //           Navigator.pop(context);
+            //           await LocalDataService.removeFriend(
+            //               friendsoshiUsername: friend.soshiUsername);
+            //           databaseService.removeFriend(friendsoshiUsername: friend.soshiUsername);
+            //           refreshFriendScreen();
+            //         }))
+            //   ];
+            // }
+          )),
+    );
+  }
+
+  List<Friend> friendsList;
+  @override
+  Widget build(BuildContext context) {
+    double height = Utilities.getHeight(context);
+    double width = Utilities.getWidth(context);
+    DatabaseService databaseService = new DatabaseService(
+        soshiUsernameIn: LocalDataService.getLocalUsernameForPlatform("Soshi"));
+    return FutureBuilder(
+        future: generateFriendsList(databaseService),
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            // check if request is still loading
+            return Center(child: CircularProgressIndicator.adaptive());
+          } else if (snapshot.connectionState == ConnectionState.none) {
+            // check if request is empty
+            return Text(
+              "No connection!",
+              style: TextStyle(
+                  color: Colors.cyan[300],
+                  fontSize: 20,
+                  fontStyle: FontStyle.italic,
+                  letterSpacing: 1.5),
+            );
+          }
+          // check if request is done
+          else if (snapshot.connectionState == ConnectionState.done) {
+            friendsList = snapshot.data;
+
+            return SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  primary: Constants.buttonColorDark,
+                                  shape: CircleBorder()),
+                              onPressed: () async {
+                                String QRScanResult =
+                                    await Utilities.scanQR(mounted);
+                                if (QRScanResult.length > 5) {
+                                  // vibrate when QR code is successfully scanned
+                                  Vibration.vibrate();
+                                  try {
+                                    Popups.showUserProfilePopup(context,
+                                        soshiUsername:
+                                            QRScanResult.split("/").last,
+                                        refreshScreen: refreshFriendScreen);
+                                  } catch (e) {
+                                    print(e);
+                                  }
+                                }
+                              },
+                              child: Icon(Icons.qr_code_scanner_sharp,
+                                  color: Colors.cyan[300], size: width / 25)),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                          child: Text(
+                            "Friends",
+                            //textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 30.0,
+                                fontWeight: FontWeight.bold,
+                                fontStyle: FontStyle.italic),
+                          ),
+                        ),
+                        Padding(
+                            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                            child: ShareButton(
+                              size: width / 20,
+                              soshiUsername:
+                                  LocalDataService.getLocalUsername(),
+                            )
+                            // AddedMeButton(
+                            //   size: width / 20,
+                            //   soshiUsername: LocalDataService.getLocalUsername(),
+                            //   databaseService: databaseService,
+                            // ),
+                            ),
+                      ]),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                    child: Divider(
+                      color: Colors.blueGrey,
+                      thickness: 1,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 5, 0, 15),
+                    child: Container(
+                      child: friendsList.isNotEmpty
+                          ? ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              // separatorBuilder: (BuildContext context, int i) {
+                              // return Padding(padding: EdgeInsets.all(0.0));
+                              // },
+                              itemBuilder: (BuildContext context, int i) {
+                                return createFriendTile(
+                                    context: context,
+                                    friend: friendsList[i],
+                                    databaseService: databaseService);
+                              },
+                              itemCount: (friendsList == null)
+                                  ? 1
+                                  : friendsList.length,
+                              padding: EdgeInsets.fromLTRB(5.0, 0, 5.0, 5.0))
+                          : Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 20, 0, 15),
+                              child: Center(
+                                child: Column(
+                                  children: <Widget>[
+                                    Text(
+                                      "You have no friends :(",
+                                      style: TextStyle(
+                                          color: Colors.cyan[300],
+                                          fontSize: 20,
+                                          fontStyle: FontStyle.italic,
+                                          letterSpacing: 2),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: ElevatedButton(
+                                        child: Container(
+                                          child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text(
+                                                  "Scan QR Code",
+                                                  style: TextStyle(
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.cyan[300],
+                                                    letterSpacing: 2.0,
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.all(5.0),
+                                                ),
+                                                Icon(
+                                                    Icons
+                                                        .qr_code_scanner_rounded,
+                                                    color: Colors.cyan)
+                                              ]),
+                                        ),
+                                        style: Constants.ButtonStyleDark,
+                                        onPressed: () async {
+                                          String QRScanResult =
+                                              await Utilities.scanQR(mounted);
+                                          if (QRScanResult.length > 5) {
+                                            // vibrate when QR code is successfully scanned
+                                            Vibration.vibrate();
+                                            try {
+                                              Popups.showUserProfilePopup(
+                                                  context,
+                                                  soshiUsername:
+                                                      QRScanResult.split("/")
+                                                          .last,
+                                                  refreshScreen:
+                                                      refreshFriendScreen);
+                                            } catch (e) {
+                                              print(e);
+                                            }
+                                          }
+                                        },
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+          return Text("null"); // ensure screen is not null
+        });
+  }
+}
+
+class AddedMeButton extends StatelessWidget {
+  double size;
+  String soshiUsername;
+  DatabaseService databaseService;
+
+  AddedMeButton({this.size = 30.0, this.soshiUsername, this.databaseService});
+
+  Future<List<Friend>> generateAddedMeList(
+      DatabaseService databaseService) async {
+    List<dynamic> addedMeList;
+    try {
+      addedMeList = await databaseService.getAddedMeList(soshiUsername);
+    } catch (e) {
+      addedMeList = [];
+      print(e);
+    }
+    List<Friend> addedMeListFriend = [];
+
+    for (String user in addedMeList) {
+      Map userData = await databaseService.getUserFile(user);
+      Friend friend = new Friend(
+          fullName: userData["Name"]["First"] + " " + userData["Name"]["Last"],
+          soshiUsername: userData["Usernames"]["Soshi"],
+          photoURL: userData["Photo URL"]);
+      addedMeListFriend.add(friend);
+    }
+    print(addedMeListFriend.toString());
+    return addedMeListFriend;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+          primary: Constants.buttonColorDark, shape: CircleBorder()),
+      onPressed: () {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                  insetPadding: EdgeInsets.all(0.0),
+                  backgroundColor: Colors.grey[900],
+                  contentPadding:
+                      EdgeInsets.only(top: 5.0, left: 5.0, right: 5.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                  content: Container(
+                    height: 300,
+                    width: 200,
+                    child: FutureBuilder(
+                        future: generateAddedMeList(databaseService),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.done) {
+                            List<Friend> addedMeList = snapshot.data;
+                            Friend friend;
+                            return Container(
+                              height: 200,
+                              width: 150,
+                              child: addedMeList.isNotEmpty
+                                  ? ListView.builder(
+                                      shrinkWrap: true,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      // separatorBuilder: (BuildContext context, int i) {
+                                      // return Padding(padding: EdgeInsets.all(0.0));
+                                      // },
+                                      itemBuilder:
+                                          (BuildContext context, int i) {
+                                        friend = addedMeList[i];
+                                        return Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              10.0, 5, 10, 10),
+                                          child: ListTile(
+                                              onTap: () async {
+                                                Popups.showUserProfilePopup(
+                                                    context,
+                                                    soshiUsername:
+                                                        friend.soshiUsername,
+                                                    refreshScreen:
+                                                        () {}); // show friend popup when tile is pressed
+                                              },
+                                              leading: ProfilePic(
+                                                  radius: 30,
+                                                  url: friend.photoURL),
+
+                                              // CircleAvatar(
+                                              //   radius: 35.0,
+                                              //   backgroundImage: NetworkImage(friend.photoURL),
+                                              // ),
+                                              title: Column(
+                                                children: <Widget>[
+                                                  Text(friend.fullName,
+                                                      style: TextStyle(
+                                                          color:
+                                                              Colors.cyan[600],
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 20)),
+                                                  Text(
+                                                    "@" + friend.soshiUsername,
+                                                    style: TextStyle(
+                                                        color: Colors.grey[500],
+                                                        fontSize: 15,
+                                                        fontStyle:
+                                                            FontStyle.italic),
+                                                  ),
+                                                ],
+                                              ),
+                                              tileColor: Colors.grey[900],
+                                              selectedTileColor:
+                                                  Constants.buttonColorLight,
+                                              contentPadding:
+                                                  EdgeInsets.all(10),
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(15),
+                                                  side: BorderSide(
+                                                      width: 2,
+                                                      color: Colors.blueGrey)),
+                                              trailing: Row(
+                                                children: [
+                                                  IconButton(
+                                                      icon: Icon(
+                                                          Icons.check_circle),
+                                                      color: Colors.green),
+                                                  IconButton(
+                                                    icon: Icon(
+                                                      Icons.delete,
+                                                      size: 30,
+                                                      color: Colors.white,
+                                                    ),
+                                                    color: Colors.black,
+                                                    onPressed: () {
+                                                      showDialog(
+                                                          context: context,
+                                                          builder: (BuildContext
+                                                              context) {
+                                                            return AlertDialog(
+                                                              shape: RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius.all(
+                                                                          Radius.circular(
+                                                                              40.0))),
+                                                              backgroundColor:
+                                                                  Colors.blueGrey[
+                                                                      900],
+                                                              title: Text(
+                                                                "Remove Friend",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                            .cyan[
+                                                                        600],
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              ),
+                                                              content: Text(
+                                                                ("Are you sure you want to decline " +
+                                                                    friend
+                                                                        .fullName +
+                                                                    " as a friend?"),
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        20,
+                                                                    color: Colors
+                                                                            .cyan[
+                                                                        700],
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              ),
+                                                              actions: <Widget>[
+                                                                Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .spaceEvenly,
+                                                                  children: <
+                                                                      Widget>[
+                                                                    TextButton(
+                                                                      child:
+                                                                          Text(
+                                                                        'No',
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                                20),
+                                                                      ),
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.pop(
+                                                                            context);
+                                                                      },
+                                                                    ),
+                                                                    TextButton(
+                                                                      child:
+                                                                          Text(
+                                                                        'Yes',
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                                20,
+                                                                            color:
+                                                                                Colors.red),
+                                                                      ),
+                                                                      onPressed:
+                                                                          () {
+                                                                        // remove from added me list
+                                                                        databaseService
+                                                                            .removeFromAddedMeList(friend.soshiUsername);
+                                                                        Navigator.pop(
+                                                                            context);
+                                                                      },
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ],
+                                                            );
+                                                          });
+                                                    },
+                                                    // shape: RoundedRectangleBorder(
+                                                    //     borderRadius: BorderRadius.circular(60.0)),
+
+                                                    //itemBuilder: (BuildContext context) {
+                                                    //return [
+                                                    // PopupMenuItem(
+                                                    //     child: IconButton(
+                                                    //         icon: Icon(Icons.delete),
+                                                    //         color: Colors.white,
+                                                    //         iconSize: 40,
+                                                    //         splashColor: Colors.cyan,
+                                                    //         // style: ElevatedButton.styleFrom(
+                                                    //         //     primary: Colors.cyan[800]),
+                                                    //         // Text(
+                                                    //         //   "Remove Friend",
+                                                    //         //   style: TextStyle(color: Colors.black),
+                                                    //         // ),
+                                                    //         onPressed: () async {
+                                                    //           Navigator.pop(context);
+                                                    //           await LocalDataService.removeFriend(
+                                                    //               friendsoshiUsername: friend.soshiUsername);
+                                                    //           databaseService.removeFriend(friendsoshiUsername: friend.soshiUsername);
+                                                    //           refreshFriendScreen();
+                                                    //         }))
+                                                    //   ];
+                                                    // }
+                                                  ),
+                                                ],
+                                              )),
+                                        );
+                                      },
+                                      itemCount: (addedMeList == null)
+                                          ? 1
+                                          : addedMeList.length,
+                                      padding:
+                                          EdgeInsets.fromLTRB(5.0, 0, 5.0, 5.0))
+                                  : Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0, 20, 0, 15),
+                                      child: Center(
+                                        child: Column(
+                                          children: <Widget>[
+                                            Text(
+                                              "You're up to date! No one new has added you.",
+                                              style: TextStyle(
+                                                  color: Colors.cyan[300],
+                                                  fontSize: 20,
+                                                  fontStyle: FontStyle.italic,
+                                                  letterSpacing: 2),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: ElevatedButton(
+                                                child: Container(
+                                                  child: Row(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                  ),
+                                                ),
+                                                style:
+                                                    Constants.ButtonStyleDark,
+                                                onPressed: () async {},
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                            );
+                          } else {
+                            return Center(
+                                child: CircularProgressIndicator.adaptive());
+                          }
+                        }),
+                  ));
+            });
+      },
+      child: Icon(Icons.person_add, color: Colors.cyan[300], size: size),
+    );
+  }
+}
