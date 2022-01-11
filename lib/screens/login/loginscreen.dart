@@ -352,8 +352,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           _buildPasswordTF(),
                           _buildForgotPasswordBtn(),
                           _buildLoginBtn(),
-                          _buildSignInWithText(), // Keep this commented for future use
-                          _buildSocialBtnRow(context),
+                          //_buildSignInWithText(), // Keep this commented for future use
+                          //_buildSocialBtnRow(context),
                           _buildSignupBtn(),
                         ],
                       ),

@@ -347,20 +347,36 @@ class _RegisterScreenState extends State<RegisterScreen> {
             setState(() {
               loading = true;
             });
-            dynamic user = await _authService.registerWithEmailAndPassword(
-                email: _emailController.text.trim(),
-                username: _usernameController.text
-                    .replaceAll(" ", "")
-                    .trim()
-                    .toLowerCase(),
-                password: _passwordController.text.trim(),
-                first: _firstNameController.text.trim(),
-                last: _lastNameController.text.trim(),
-                contextIn: context);
-            if (user == null) {
-              setState(() {
-                loading = false;
-              });
+
+            if (_usernameController.text.contains(" ")) {
+              String userNameEdited =
+                  _usernameController.text.replaceAll(" ", "_");
+              dynamic user = await _authService.registerWithEmailAndPassword(
+                  email: _emailController.text.trim(),
+                  username: userNameEdited.trim().toLowerCase(),
+                  password: _passwordController.text.trim(),
+                  first: _firstNameController.text.trim(),
+                  last: _lastNameController.text.trim(),
+                  contextIn: context);
+              if (user == null) {
+                setState(() {
+                  loading = false;
+                });
+              }
+            } else {
+              dynamic user = await _authService.registerWithEmailAndPassword(
+                  email: _emailController.text.trim(),
+                  username:
+                      _usernameController.text.toLowerCase().toLowerCase(),
+                  password: _passwordController.text.trim(),
+                  first: _firstNameController.text.trim(),
+                  last: _lastNameController.text.trim(),
+                  contextIn: context);
+              if (user == null) {
+                setState(() {
+                  loading = false;
+                });
+              }
             }
           }
         },
