@@ -350,7 +350,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
             if (_usernameController.text.contains(" ")) {
               String userNameEdited =
-                  _usernameController.text.replaceAll(" ", "_");
+                  _usernameController.text.replaceAll(" ", "");
               dynamic user = await _authService.registerWithEmailAndPassword(
                   email: _emailController.text.trim(),
                   username: userNameEdited.trim().toLowerCase(),

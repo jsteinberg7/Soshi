@@ -341,7 +341,7 @@ class _FriendScreenState extends State<FriendScreen> {
                                   : friendsList.length,
                               padding: EdgeInsets.fromLTRB(5.0, 0, 5.0, 0.0))
                           : Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 20, 0, 15),
+                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
                               child: Center(
                                 child: Column(
                                   children: <Widget>[
