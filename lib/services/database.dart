@@ -305,7 +305,8 @@ class DatabaseService {
   }
 
   // return username for specified platform
-  Future<String> getUsernameForPlatform({@required Map userData, @required String platform}) async {
+  Future<String> getUsernameForPlatform(
+      {@required Map userData, @required String platform}) async {
     String username;
     Map<String, dynamic> profileNamesMap = getUserProfileNames(userData);
     username = profileNamesMap[platform];

@@ -3,8 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
+import 'package:soshi/constants/popups.dart';
+import 'package:soshi/constants/utilities.dart';
 import 'package:soshi/services/database.dart';
 import 'package:soshi/services/localData.dart';
+import 'package:vibration/vibration.dart';
 
 import 'constants.dart';
 
@@ -242,7 +245,7 @@ class _ReturnNumConnectionsState extends State<ReturnNumConnections> {
   @override
   Widget build(BuildContext context) {
     if (connectionsCount.toString() == "1") {
-      return Text("1 Connection",
+      return Text("1 friend",
           style: TextStyle(
             color: Colors.cyan[300],
             letterSpacing: 2.0,
@@ -250,7 +253,7 @@ class _ReturnNumConnectionsState extends State<ReturnNumConnections> {
             fontWeight: FontWeight.bold,
           ));
     }
-    return Text(connectionsCount.toString() + " Connections",
+    return Text(connectionsCount.toString() + " friends",
         style: TextStyle(
           color: Colors.cyan[300],
           letterSpacing: 2.0,

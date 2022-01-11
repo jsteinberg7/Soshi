@@ -149,7 +149,7 @@ class Popups {
         await databaseService.getEnabledPlatformsList(userData);
     // get list of profile usernames
     Map<String, dynamic> usernames =
-        await databaseService.getUserProfileNames(userData);
+        databaseService.getUserProfileNames(userData);
     String fullName = await databaseService.getFullName(userData);
     bool isFriendAdded = LocalDataService.isFriendAdded(soshiUsername);
     String profilePhotoURL = await databaseService.getPhotoURL(userData);
@@ -180,7 +180,7 @@ class Popups {
                     ),
                     padding: EdgeInsets.only(top: width / 5.75),
                     margin: EdgeInsets.only(top: width / 5.75),
-                    height: height / 1.4,
+                    height: height / 1.65,
                     width: width / 1.1,
                     child: Column(children: [
                       Column(children: [
@@ -346,19 +346,19 @@ class Popups {
                                         )
                                       ]),
                           )),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: FloatingActionButton(
-                                backgroundColor: Colors.cyan[400],
-                                onPressed: () => Navigator.pop(context),
-                                child: Icon(FlutterIcons.check_circle_faw,
-                                    size: width / 10)),
-                          ),
-                        ],
-                      )
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.end,
+                      //   children: [
+                      //     Padding(
+                      //       padding: const EdgeInsets.all(8.0),
+                      //       child: FloatingActionButton(
+                      //           backgroundColor: Colors.cyan[400],
+                      //           onPressed: () => Navigator.pop(context),
+                      //           child: Icon(FlutterIcons.check_circle_faw,
+                      //               size: width / 10)),
+                      //     ),
+                      //   ],
+                      // )
                     ]),
                   ),
                   Positioned(

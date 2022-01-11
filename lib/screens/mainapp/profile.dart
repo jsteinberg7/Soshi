@@ -4,6 +4,7 @@ import 'package:contacts_service/contacts_service.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:soshi/constants/constants.dart';
@@ -86,8 +87,8 @@ class _SMCardState extends State<SMCard> {
       }
     });
 
-    // double height = Utilities.getHeight(context);
-    // double width = Utilities.getWidth(context);
+    double height = Utilities.getHeight(context);
+    //double width = Utilities.getWidth(context);
     // text controller for username box
 
     return Stack(
@@ -257,58 +258,9 @@ class _SMCardState extends State<SMCard> {
                     ),
                   ),
                 ),
-                PopupMenuButton(
-                    icon: Icon(
-                      Icons.more_vert_rounded,
-                      size: 30,
-                      color: Colors.grey[200],
-                    ),
-                    color: Colors.grey[900],
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(60.0)),
-                    itemBuilder: (BuildContext context) {
-                      return [
-                        PopupMenuItem(
-                          child: TextButton(
-                            child: Text(
-                              "Remove $platformName",
-                              style: TextStyle(
-                                  color: Colors.cyan,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            onPressed: () async {
-                              if (!LocalDataService.getLocalChoosePlatforms()
-                                  .contains(platformName)) {
-                                Navigator.pop(context);
-
-                                await LocalDataService
-                                    .removePlatformsFromProfile(platformName);
-                                LocalDataService.addToChoosePlatforms(
-                                    platformName);
-
-                                LocalDataService.updateSwitchForPlatform(
-                                    platform: platformName, state: false);
-                                databaseService.updatePlatformSwitch(
-                                    platform: platformName, state: false);
-                                databaseService
-                                    .removePlatformFromProfile(platformName);
-                                databaseService
-                                    .addToChoosePlatforms(platformName);
-                                print(
-                                    LocalDataService.getLocalProfilePlatforms()
-                                        .toString());
-                                widget.refreshScreen();
-                              } else {
-                                Navigator.pop(context);
-                                await LocalDataService
-                                    .removePlatformsFromProfile(platformName);
-                                widget.refreshScreen();
-                              }
-                            },
-                          ),
-                        )
-                      ];
-                    })
+                Padding(
+                  padding: EdgeInsets.only(right: 35),
+                )
               ],
             ),
           )),
@@ -337,6 +289,65 @@ class _SMCardState extends State<SMCard> {
                   color: Colors.black26),
             ),
             visible: !isSwitched),
+        Padding(
+          padding: EdgeInsets.only(top: height / 40),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              PopupMenuButton(
+                  icon: Icon(
+                    Icons.more_vert_rounded,
+                    size: 30,
+                    color: Colors.grey[200],
+                  ),
+                  color: Colors.grey[900],
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(60.0)),
+                  itemBuilder: (BuildContext context) {
+                    return [
+                      PopupMenuItem(
+                        child: TextButton(
+                          child: Text(
+                            "Remove $platformName",
+                            style: TextStyle(
+                                color: Colors.cyan,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          onPressed: () async {
+                            if (!LocalDataService.getLocalChoosePlatforms()
+                                .contains(platformName)) {
+                              Navigator.pop(context);
+
+                              await LocalDataService.removePlatformsFromProfile(
+                                  platformName);
+                              LocalDataService.addToChoosePlatforms(
+                                  platformName);
+
+                              LocalDataService.updateSwitchForPlatform(
+                                  platform: platformName, state: false);
+                              databaseService.updatePlatformSwitch(
+                                  platform: platformName, state: false);
+                              databaseService
+                                  .removePlatformFromProfile(platformName);
+                              databaseService
+                                  .addToChoosePlatforms(platformName);
+                              print(LocalDataService.getLocalProfilePlatforms()
+                                  .toString());
+                              widget.refreshScreen();
+                            } else {
+                              Navigator.pop(context);
+                              await LocalDataService.removePlatformsFromProfile(
+                                  platformName);
+                              widget.refreshScreen();
+                            }
+                          },
+                        ),
+                      )
+                    ];
+                  }),
+            ],
+          ),
+        )
       ],
     );
   }
@@ -363,24 +374,40 @@ class ProfileState extends State<Profile> {
     super.initState();
     soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
     profilePlatforms = LocalDataService.getLocalProfilePlatforms();
-    personalBioTextController = new TextEditingController();
+
+    //TextEditingController psBioControl = new TextEditingController();
+    //ersonalBioTextController.text = LocalDataService.getBio();
     bioFocusNode = new FocusNode();
     bioFocusNode.addListener(() {
       if (!bioFocusNode.hasFocus) {
+        //This whole block is NOT being exeuted when lost focus
         LocalDataService.updateBio(personalBioTextController.text);
+        print(LocalDataService.getBio().toString());
         DatabaseService tempDB = new DatabaseService();
         tempDB.updateBio(LocalDataService.getLocalUsernameForPlatform("Soshi"),
             personalBioTextController.text);
+        print("123456789" + LocalDataService.getBio());
       }
     });
   }
 
+  // @override
+  // void setFocus() {
+  //   FocusScope.of(context).requestFocus(bioFocusNode);
+  // }
+
+  // @override
+  // void dispose() {
+  //   bioFocusNode.dispose();
+  // }
+
   @override
   Widget build(BuildContext context) {
-    personalBioTextController.text = LocalDataService.getBio();
-
     double height = Utilities.getHeight(context);
     double width = Utilities.getWidth(context);
+    TextEditingController personalBioTextController =
+        new TextEditingController();
+    personalBioTextController.text = LocalDataService.getBio();
 
     return SingleChildScrollView(
       child: Container(
@@ -395,14 +422,27 @@ class ProfileState extends State<Profile> {
                       children: [
                         Container(
                           child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) {
-                                return Scaffold(
-                                    body: ProfileSettings(
-                                        soshiUsername: soshiUsername,
-                                        refreshProfile: refreshScreen));
-                              }));
+                            onTap: () async {
+                              DatabaseService dbService = new DatabaseService();
+                              //dbService.chooseAndCropImage();
+
+                              // update profile picture on tap
+                              // open up image picker
+                              final ImagePicker imagePicker = ImagePicker();
+                              final PickedFile pickedImage =
+                                  await imagePicker.getImage(
+                                      source: ImageSource.gallery,
+                                      imageQuality: 20);
+                              await dbService.cropAndUploadImage(pickedImage);
+                              refreshScreen();
+
+                              // Navigator.push(context,
+                              //     MaterialPageRoute(builder: (context) {
+                              //   return Scaffold(
+                              //       body: ProfileSettings(
+                              //           soshiUsername: soshiUsername,
+                              //           refreshProfile: refreshScreen));
+                              // }));
                             },
                             child: Stack(
                               children: [
@@ -427,6 +467,10 @@ class ProfileState extends State<Profile> {
                               ],
                             ),
                           ),
+                          // child: ProfilePic(
+                          //     radius: 55,
+                          //     url:
+                          //         LocalDataService.getLocalProfilePictureURL()),
                           decoration: new BoxDecoration(
                             shape: BoxShape.circle,
                             border: new Border.all(
@@ -456,7 +500,7 @@ class ProfileState extends State<Profile> {
                                     //fontWeight: FontWeight.bold,
                                     //letterSpacing: 1,
                                   )),
-                              //SizedBox(width: 5.0),
+                              SizedBox(width: 4.0),
                               Icon(Icons.person_rounded,
                                   color: Colors.cyan[300], size: 20.0),
                             ],
@@ -470,6 +514,7 @@ class ProfileState extends State<Profile> {
                         height: 160,
                         child: Container(
                           child: TextField(
+                              //focusNode: bioFocusNode,
                               maxLength: 80,
                               maxLengthEnforcement:
                                   MaxLengthEnforcement.enforced,
@@ -478,7 +523,41 @@ class ProfileState extends State<Profile> {
                               maxLines: 6,
                               autocorrect: true,
                               controller: personalBioTextController,
-                              focusNode: bioFocusNode,
+
+                              //focusNode: bioFocusNode,
+                              // onTap: () {
+                              // if (LocalDataService.getBio() == "") {
+                              //   DatabaseService tempDB =
+                              //       new DatabaseService();
+                              //   tempDB.updateBio(
+                              //       LocalDataService
+                              //           .getLocalUsernameForPlatform("Soshi"),
+                              //       "");
+                              // }
+                              //},
+                              onSubmitted: (String bio) {
+                                DatabaseService tempDB = new DatabaseService();
+
+                                LocalDataService.updateBio(bio);
+                                tempDB.updateBio(
+                                    LocalDataService
+                                        .getLocalUsernameForPlatform("Soshi"),
+                                    bio);
+                                //update in database
+                                //update in sharedPref
+
+                                // ProfanityFilter profanityFilter =
+                                //     new ProfanityFilter();
+                                // if (!prof1234nityFilter.hasProfanity(bio)) {
+                                //   //upload to database
+                                //   //update sharedPreferences
+                                // } else {
+                                //   List<String> profanityWords =
+                                //       profanityFilter.getAllProfanity(bio);
+                                //   //alert dialog accusing user of using profanity
+                                //   // also print the list of word(s) being detected as profanity
+                                // }
+                              },
                               style: TextStyle(
                                   height: 1.2,
                                   fontWeight: FontWeight.bold,

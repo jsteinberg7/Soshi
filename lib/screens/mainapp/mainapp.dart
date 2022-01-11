@@ -42,24 +42,36 @@ class _MainAppState extends State<MainApp> {
                     URL.launchURL("sms:" + "5713351885");
                   },
                   style: ElevatedButton.styleFrom(
-                      primary: Constants.appBarColor,
+                      primary: Colors.grey[850],
                       shadowColor: Constants.appBarColor,
                       shape: RoundedRectangleBorder(
                           borderRadius:
                               BorderRadius.all(Radius.circular(10.0)))),
                   child: Row(
                     children: [
-                      Text("Send Feedback!",
-                          style: TextStyle(
-                              color: Colors.cyan[300],
-                              fontSize: 8,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1)),
-                      Icon(
-                        Icons.feedback,
-                        color: Colors.cyan[300],
-                        size: 10,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("Send",
+                              style: TextStyle(
+                                  color: Colors.cyan[300],
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 1)),
+                          Text("feedback!",
+                              style: TextStyle(
+                                  color: Colors.cyan[300],
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 1)),
+                        ],
                       ),
+                      // Icon(
+                      //   Icons.feedback,
+                      //   color: Colors.cyan[300],
+                      //   size: 10,
+                      // ),
                     ],
                   ),
 
