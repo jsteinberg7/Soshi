@@ -15,6 +15,7 @@ import 'package:soshi/services/contacts.dart';
 import 'package:soshi/services/database.dart';
 import 'package:soshi/services/localData.dart';
 import 'package:soshi/services/url.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'chooseSocials.dart';
 import 'profileSettings.dart';
 import 'package:http/http.dart' as http;
@@ -60,7 +61,7 @@ class _SMCardState extends State<SMCard> {
       hintText = "Username";
     }
     databaseService = new DatabaseService(
-        soshiUsernameIn: soshiUsername); // store ref to databaseService
+        currSoshiUsernameIn: soshiUsername); // store ref to databaseService
     isSwitched = LocalDataService.getLocalStateForPlatform(platformName) ??
         false; // track state of platform switch
     usernameController.text =
@@ -214,17 +215,26 @@ class _SMCardState extends State<SMCard> {
                             ],
                             avatar: profilePicBytes);
                         await askPermissions(context);
-                        ContactsService.addContact(contact)
-                            .then((dynamic success) {
-                          Popups.showContactAddedPopup(
-                              context, width, firstName, lastName);
-                        });
+                        ContactsService.openContactForm();
+                        // ContactsService.addContact(contact)
+                        //     .then((dynamic success) {
+                        //   Popups.showContactAddedPopup(
+                        //       context, width, firstName, lastName);
+                        // });
                       } else {
-                        URL.launchURL(URL.getPlatformURL(
-                            platform: platformName,
-                            username:
-                                LocalDataService.getLocalUsernameForPlatform(
-                                    platformName)));
+                        await launch(
+                            URL.getPlatformURL(
+                                platform: platformName,
+                                username: LocalDataService
+                                    .getLocalUsernameForPlatform(platformName)),
+                            universalLinksOnly: true,
+                            forceWebView: false);
+                        // URL.launchURL(URL.getPlatformURL(
+                        //     platform: platformName,
+                        //     username:
+                        //         LocalDataService.getLocalUsernameForPlatform(
+                        //             platformName)));
+
                       }
                     },
                     iconSize: 60.0,

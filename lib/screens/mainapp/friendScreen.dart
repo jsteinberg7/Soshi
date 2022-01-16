@@ -29,7 +29,9 @@ class FriendScreen extends StatefulWidget {
 class _FriendScreenState extends State<FriendScreen> {
   /* refresh screen */
   void refreshFriendScreen() {
+    //implement loading icon
     setState(() {});
+
     print('refreshed');
   }
 
@@ -69,7 +71,7 @@ class _FriendScreenState extends State<FriendScreen> {
       await LocalDataService.removeFriend(
           friendsoshiUsername: othersoshiUsername);
       await databaseService.removeFriend(
-          friendsoshiUsername: othersoshiUsername);
+          friendSoshiUsername: othersoshiUsername);
     }
 
     return formattedFriendsList;
@@ -82,8 +84,8 @@ class _FriendScreenState extends State<FriendScreen> {
       padding: const EdgeInsets.fromLTRB(10.0, 5, 10, 10),
       child: ListTile(
           onTap: () async {
-            Popups.showUserProfilePopup(context,
-                soshiUsername: friend.soshiUsername,
+            Popups.showUserProfilePopupNew(context,
+                friendSoshiUsername: friend.soshiUsername,
                 refreshScreen:
                     refreshFriendScreen); // show friend popup when tile is pressed
           },
@@ -164,7 +166,7 @@ class _FriendScreenState extends State<FriendScreen> {
                                 LocalDataService.removeFriend(
                                     friendsoshiUsername: friend.soshiUsername);
                                 databaseService.removeFriend(
-                                    friendsoshiUsername: friend.soshiUsername);
+                                    friendSoshiUsername: friend.soshiUsername);
                                 refreshFriendScreen();
                                 Navigator.pop(context);
                               },
@@ -208,10 +210,12 @@ class _FriendScreenState extends State<FriendScreen> {
   List<Friend> friendsList;
   @override
   Widget build(BuildContext context) {
+    //implement loading icon
     double height = Utilities.getHeight(context);
     double width = Utilities.getWidth(context);
     DatabaseService databaseService = new DatabaseService(
-        soshiUsernameIn: LocalDataService.getLocalUsernameForPlatform("Soshi"));
+        currSoshiUsernameIn:
+            LocalDataService.getLocalUsernameForPlatform("Soshi"));
     return FutureBuilder(
         future: generateFriendsList(databaseService),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -232,87 +236,89 @@ class _FriendScreenState extends State<FriendScreen> {
           // check if request is done
           else if (snapshot.connectionState == ConnectionState.done) {
             friendsList = snapshot.data;
-
             return SingleChildScrollView(
               child: Column(
                 children: <Widget>[
                   SizedBox(height: 10),
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: <
-                      Widget>[
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-                      child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              primary: Constants.buttonColorDark,
-                              shape: CircleBorder()),
-                          onPressed: () async {
-                            String QRScanResult =
-                                await Utilities.scanQR(mounted);
-                            if (QRScanResult.length > 5) {
-                              // vibrate when QR code is successfully scanned
-                              Vibration.vibrate();
-                              try {
-                                Popups.showUserProfilePopup(context,
-                                    soshiUsername: QRScanResult.split("/").last,
-                                    refreshScreen: refreshFriendScreen);
-                              } catch (e) {
-                                print(e);
-                              }
-                            }
-                          },
-                          child: Icon(Icons.qr_code_scanner_sharp,
-                              color: Colors.cyan[300], size: width / 25)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                      child: Column(
-                        children: [
-                          Row(
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  primary: Constants.buttonColorDark,
+                                  shape: CircleBorder()),
+                              onPressed: () async {
+                                String QRScanResult =
+                                    await Utilities.scanQR(mounted);
+                                if (QRScanResult.length > 5) {
+                                  // vibrate when QR code is successfully scanned
+                                  Vibration.vibrate();
+                                  try {
+                                    Popups.showUserProfilePopupNew(context,
+                                        friendSoshiUsername:
+                                            QRScanResult.split("/").last,
+                                        refreshScreen: refreshFriendScreen);
+                                  } catch (e) {
+                                    print(e);
+                                  }
+                                }
+                              },
+                              child: Icon(Icons.qr_code_scanner_sharp,
+                                  color: Colors.cyan[300], size: width / 25)),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                          child: Column(
                             children: [
-                              Icon(
-                                Icons.emoji_people, // or Icons.poeple_round
-                                color: Colors.cyan,
-                                size: 30,
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.emoji_people, // or Icons.poeple_round
+                                    color: Colors.cyan,
+                                    size: 30,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 5),
+                                    child: Text(
+                                      "Friends",
+                                      //textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 30.0,
+                                          fontWeight: FontWeight.bold,
+                                          fontStyle: FontStyle.italic),
+                                    ),
+                                  ),
+                                ],
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(left: 5),
+                                padding: const EdgeInsets.only(top: 3),
                                 child: Text(
-                                  "Friends",
-                                  //textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 30.0,
-                                      fontWeight: FontWeight.bold,
-                                      fontStyle: FontStyle.italic),
+                                  "Total: " +
+                                      LocalDataService.getFriendsListCount()
+                                          .toString(),
+                                  style: TextStyle(color: Colors.cyan[300]),
                                 ),
-                              ),
+                              )
                             ],
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 3),
-                            child: Text(
-                              "Total: " +
-                                  LocalDataService.getLocalFriendsListCount()
-                                      .toString(),
-                              style: TextStyle(color: Colors.cyan[300]),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    Padding(
-                        padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                        child: ShareButton(
-                          size: width / 20,
-                          soshiUsername: LocalDataService.getLocalUsername(),
-                        )
-                        // AddedMeButton(
-                        //   size: width / 20,
-                        //   soshiUsername: LocalDataService.getLocalUsername(),
-                        //   databaseService: databaseService,
-                        // ),
                         ),
-                  ]),
+                        Padding(
+                            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                            child: ShareButton(
+                              size: width / 20,
+                              soshiUsername:
+                                  LocalDataService.getLocalUsername(),
+                            )
+                            // AddedMeButton(
+                            //   size: width / 20,
+                            //   soshiUsername: LocalDataService.getLocalUsername(),
+                            //   databaseService: databaseService,
+                            // ),
+                            ),
+                      ]),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                     child: Divider(
@@ -388,8 +394,9 @@ class _FriendScreenState extends State<FriendScreen> {
                           // vibrate when QR code is successfully scanned
                           Vibration.vibrate();
                           try {
-                            Popups.showUserProfilePopup(context,
-                                soshiUsername: QRScanResult.split("/").last,
+                            Popups.showUserProfilePopupNew(context,
+                                friendSoshiUsername:
+                                    QRScanResult.split("/").last,
                                 refreshScreen: refreshFriendScreen);
                           } catch (e) {
                             print(e);

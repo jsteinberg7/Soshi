@@ -60,7 +60,7 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
     String soshiUsername =
         LocalDataService.getLocalUsernameForPlatform("Soshi");
     DatabaseService dbService =
-        new DatabaseService(soshiUsernameIn: soshiUsername);
+        new DatabaseService(currSoshiUsernameIn: soshiUsername);
     firstNameController.text = firstName;
     lastNameController.text = lastName;
 
@@ -241,7 +241,7 @@ class ReturnNumConnections extends StatefulWidget {
 }
 
 class _ReturnNumConnectionsState extends State<ReturnNumConnections> {
-  int connectionsCount = LocalDataService.getLocalFriendsListCount();
+  int connectionsCount = LocalDataService.getFriendsListCount();
   @override
   Widget build(BuildContext context) {
     if (connectionsCount.toString() == "1") {

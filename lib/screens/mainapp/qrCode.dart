@@ -48,7 +48,7 @@ class _QRScreenState extends State<QRScreen> {
     String soshiUsername =
         LocalDataService.getLocalUsernameForPlatform("Soshi");
     DatabaseService databaseService =
-        new DatabaseService(soshiUsernameIn: soshiUsername);
+        new DatabaseService(currSoshiUsernameIn: soshiUsername);
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     return SingleChildScrollView(
@@ -194,8 +194,8 @@ class _QRScreenState extends State<QRScreen> {
                   // vibrate when QR code is successfully scanned
                   Vibration.vibrate();
                   try {
-                    Popups.showUserProfilePopup(context,
-                        soshiUsername: QRScanResult.split("/").last);
+                    Popups.showUserProfilePopupNew(context,
+                        friendSoshiUsername: QRScanResult.split("/").last);
                     Analytics.logSuccessfulQRScan(QRScanResult);
                   } catch (e) {
                     Analytics.logFailedQRScan(QRScanResult);

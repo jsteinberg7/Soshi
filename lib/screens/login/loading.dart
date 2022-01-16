@@ -15,3 +15,37 @@ class LoadingScreen extends StatelessWidget {
     );
   }
 }
+
+// class LoadingIconToBeUsed extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext contxt) {
+//     return SpinKitFoldingCube(size: 50);
+//   }
+// }
+
+class DialogBuilder {
+  DialogBuilder(this.context);
+
+  final BuildContext context;
+
+  void showLoadingIndicator([String text]) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return SpinKitChasingDots(color: Colors.cyan, size: 80);
+      },
+    );
+  }
+
+  void hideOpenDialog() {
+    Navigator.of(context).pop();
+  }
+}
+
+// class LoadingIndicator extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return SpinKitCubeGrid(color: Colors.white, size: 50);
+//   }
+// }

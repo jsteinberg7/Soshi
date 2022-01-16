@@ -43,7 +43,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
     super.initState();
     soshiUsername = widget.soshiUsername;
     refreshProfileScreen = widget.refreshProfileScreen;
-    databaseService = new DatabaseService(soshiUsernameIn: soshiUsername);
+    databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
   }
 
   @override
@@ -324,7 +324,7 @@ class DeleteProfileButton extends StatelessWidget {
                                   LocalDataService.getLocalUsername();
                               DatabaseService databaseService =
                                   new DatabaseService(
-                                      soshiUsernameIn: soshiUsername);
+                                      currSoshiUsernameIn: soshiUsername);
                               await databaseService.deleteProfileData();
 
                               // wipe profile data in firestore

@@ -14,7 +14,7 @@ abstract class LocalDataService {
   // adds initial preferences upon login
   // ** must be run after user file is created in database
   static Future<void> initializeSharedPreferences(
-      {String soshiUsername}) async {
+      {String currSoshiUsername}) async {
     // initialize SharedPreferences instance
     preferences = await SharedPreferences.getInstance();
 
@@ -24,9 +24,9 @@ abstract class LocalDataService {
 
     // initialize DatabaseService to fetch updated values
     DatabaseService databaseService =
-        new DatabaseService(soshiUsernameIn: soshiUsername);
+        new DatabaseService(currSoshiUsernameIn: currSoshiUsername);
 
-    Map userData = await databaseService.getUserFile(soshiUsername);
+    Map userData = await databaseService.getUserFile(currSoshiUsername);
 
     String bioFromDB = await databaseService.getBio(userData);
     if (bioFromDB == null || bioFromDB == "") {
@@ -48,7 +48,8 @@ abstract class LocalDataService {
     await preferences.setString("Username", username);
 
     // set friends list
-    List<dynamic> friendsListDynamic = await databaseService.getFriends();
+    List<dynamic> friendsListDynamic =
+        await databaseService.getFriends(currSoshiUsername);
     List<String> friendsListString = [];
     for (dynamic friend in friendsListDynamic) {
       friendsListString.add(friend.toString());
@@ -123,7 +124,7 @@ abstract class LocalDataService {
     return preferences.getStringList("Friends List");
   }
 
-  static int getLocalFriendsListCount() {
+  static int getFriendsListCount() {
     List friendsList = getLocalFriendsList();
     int lengthOfFriendsList = friendsList.length;
     return lengthOfFriendsList;

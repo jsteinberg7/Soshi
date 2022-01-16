@@ -29,7 +29,7 @@ class AuthService {
       String soshiUsername =
           await DatabaseService().getSoshiUsernameForLogin(email: emailIn);
       await LocalDataService.initializeSharedPreferences(
-          soshiUsername: soshiUsername); // sync all local data with cloud
+          currSoshiUsername: soshiUsername); // sync all local data with cloud
       UserCredential loginResult = await _auth.signInWithEmailAndPassword(
           email: emailIn,
           password: passwordIn); // signs user in, initiates login
@@ -95,10 +95,8 @@ class AuthService {
 
     // Trigger the authentication flow
 
-    
-      final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
 
-      
     // Obtain the auth details from the request
     final GoogleSignInAuthentication googleAuth =
         await googleUser.authentication;
@@ -123,7 +121,7 @@ class AuthService {
 
       // use username to create user file
       DatabaseService databaseService =
-          new DatabaseService(soshiUsernameIn: soshiUsername);
+          new DatabaseService(currSoshiUsernameIn: soshiUsername);
       await databaseService.createUserFile(
           username: soshiUsername.toLowerCase().trim(),
           email: googleUser.email,
@@ -139,7 +137,7 @@ class AuthService {
 
     // initialize shared preferences
     await LocalDataService.initializeSharedPreferences(
-        soshiUsername: soshiUsername);
+        currSoshiUsername: soshiUsername);
 
     // LocalDataService.initializeSharedPreferences(soshiUsername: googleUser.displayName);
     // Once signed in, return the UserCredential
@@ -156,7 +154,7 @@ class AuthService {
       BuildContext contextIn}) async {
     try {
       DatabaseService databaseService =
-          DatabaseService(soshiUsernameIn: username);
+          DatabaseService(currSoshiUsernameIn: username);
       if (await databaseService.isUsernameTaken(username)) {
         throw new ErrorDescription("Username is already in use.");
       }
@@ -164,7 +162,7 @@ class AuthService {
           username: username, email: email, first: first, last: last);
       print("file created");
       await LocalDataService.initializeSharedPreferences(
-          soshiUsername: username);
+          currSoshiUsername: username);
       print("shared prefs initialized");
       UserCredential registerResult = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);

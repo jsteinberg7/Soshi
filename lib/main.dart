@@ -37,10 +37,10 @@ void main() async {
   LocalDataService.preferences = await SharedPreferences.getInstance();
   Analytics.logAppOpen();
   runApp(MyApp());
-  bool firstLaunch = !LocalDataService.hasLaunched();
-  if (firstLaunch) {
-    print("First launch");
-    AuthService tempAuth = new AuthService();
-    await tempAuth.signOut();
-  }
+  // bool firstLaunch = !LocalDataService.hasLaunched();
+  // if (firstLaunch) {
+  //   print("First launch");
+  //   AuthService tempAuth = new AuthService();
+  //   await tempAuth.signOut();
+  // }
 }
