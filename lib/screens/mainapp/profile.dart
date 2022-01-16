@@ -66,6 +66,11 @@ class _SMCardState extends State<SMCard> {
         false; // track state of platform switch
     usernameController.text =
         LocalDataService.getLocalUsernameForPlatform(platformName) ?? null;
+
+    if (platformName == "Contact") {
+      usernameController.text = "Contact Card";
+    }
+
     focusNode = new FocusNode();
     focusNode.addListener(() {
       if (!focusNode.hasFocus) {
@@ -215,26 +220,17 @@ class _SMCardState extends State<SMCard> {
                             ],
                             avatar: profilePicBytes);
                         await askPermissions(context);
-                        ContactsService.openContactForm();
-                        // ContactsService.addContact(contact)
-                        //     .then((dynamic success) {
-                        //   Popups.showContactAddedPopup(
-                        //       context, width, firstName, lastName);
-                        // });
+                        ContactsService.addContact(contact)
+                            .then((dynamic success) {
+                          Popups.showContactAddedPopup(
+                              context, width, firstName, lastName);
+                        });
                       } else {
-                        await launch(
-                            URL.getPlatformURL(
-                                platform: platformName,
-                                username: LocalDataService
-                                    .getLocalUsernameForPlatform(platformName)),
-                            universalLinksOnly: true,
-                            forceWebView: false);
-                        // URL.launchURL(URL.getPlatformURL(
-                        //     platform: platformName,
-                        //     username:
-                        //         LocalDataService.getLocalUsernameForPlatform(
-                        //             platformName)));
-
+                        URL.launchURL(URL.getPlatformURL(
+                            platform: platformName,
+                            username:
+                                LocalDataService.getLocalUsernameForPlatform(
+                                    platformName)));
                       }
                     },
                     iconSize: 60.0,
@@ -243,6 +239,7 @@ class _SMCardState extends State<SMCard> {
                 SizedBox(width: 5),
                 Expanded(
                   child: TextField(
+                    readOnly: widget.platformName == "Contact" ? true : false,
                     controller: usernameController,
                     focusNode: focusNode,
                     decoration: InputDecoration(
@@ -400,16 +397,6 @@ class ProfileState extends State<Profile> {
       }
     });
   }
-
-  // @override
-  // void setFocus() {
-  //   FocusScope.of(context).requestFocus(bioFocusNode);
-  // }
-
-  // @override
-  // void dispose() {
-  //   bioFocusNode.dispose();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -879,6 +866,8 @@ class ProfileState extends State<Profile> {
                             physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
                             itemBuilder: (BuildContext context, int index) {
+                              print(
+                                  "creating listView: index: $index soshiUsername: $soshiUsername SMPlatform: $profilePlatforms[index]");
                               return Padding(
                                 padding:
                                     const EdgeInsets.fromLTRB(0, 10, 0, 10),

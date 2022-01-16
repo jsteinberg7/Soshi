@@ -164,6 +164,7 @@ class DatabaseService {
   }
 
   Future<void> updateContactCard() async {
+    // {?} Putting the soshi username into the contact card
     // create new VCard
     VCard vCard = new VCard(
         soshiUsernameIn: currSoshiUsername,
@@ -176,6 +177,7 @@ class DatabaseService {
     // set link in database to point toward storage
     LocalDataService.updateUsernameForPlatform(
         platform: "Contact", username: vcfLink);
+
     updateUsernameForPlatform(platform: "Contact", username: vcfLink);
   }
 

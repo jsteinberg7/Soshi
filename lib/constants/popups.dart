@@ -43,6 +43,7 @@ class Popups {
           DatabaseService databaseService =
               new DatabaseService(currSoshiUsernameIn: soshiUsername);
           Map userData = await databaseService.getUserFile(soshiUsername);
+
           String firstName =
               await databaseService.getFirstDisplayName(userData);
           String lastName = await databaseService.getLastDisplayName(userData);
@@ -53,6 +54,7 @@ class Popups {
           String photoUrl = await databaseService.getPhotoURL(userData);
 
           Uint8List profilePicBytes;
+
           try {
             // try to load profile pic from url
             await http.get(Uri.parse(photoUrl)).then((http.Response response) {
