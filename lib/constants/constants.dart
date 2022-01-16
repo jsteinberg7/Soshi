@@ -27,6 +27,13 @@ abstract class Constants {
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(15.0))));
 
+  static ButtonStyle ButtonStyleClear = ElevatedButton.styleFrom(
+      primary: Colors.transparent,
+      shadowColor: Constants.buttonColorDark,
+      side: BorderSide(color: Colors.cyanAccent),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(15.0))));
+
   static LinearGradient greyCyanGradient = new LinearGradient(
       begin: Alignment.bottomLeft,
       end: Alignment.topRight,

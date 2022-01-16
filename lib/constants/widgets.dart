@@ -71,7 +71,7 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
     String soshiUsername =
         LocalDataService.getLocalUsernameForPlatform("Soshi");
     DatabaseService dbService =
-        new DatabaseService(soshiUsernameIn: soshiUsername);
+        new DatabaseService(currSoshiUsernameIn: soshiUsername);
     firstNameController.text = firstName;
     lastNameController.text = lastName;
 
@@ -252,7 +252,7 @@ class ReturnNumConnections extends StatefulWidget {
 }
 
 class _ReturnNumConnectionsState extends State<ReturnNumConnections> {
-  int connectionsCount = LocalDataService.getLocalFriendsListCount();
+  int connectionsCount = LocalDataService.getFriendsListCount();
   @override
   Widget build(BuildContext context) {
     if (connectionsCount.toString() == "1") {
@@ -296,8 +296,8 @@ class ShareButton extends StatelessWidget {
   }
 }
 
-class SpinKitThreeInOut extends StatefulWidget {
-  const SpinKitThreeInOut({
+class CustomThreeInOut extends StatefulWidget {
+  const CustomThreeInOut({
     Key key,
     this.color,
     this.size = 50.0,
@@ -319,10 +319,10 @@ class SpinKitThreeInOut extends StatefulWidget {
   final AnimationController controller;
 
   @override
-  _SpinKitThreeInOutState createState() => _SpinKitThreeInOutState();
+  _CustomThreeInOutState createState() => _CustomThreeInOutState();
 }
 
-class _SpinKitThreeInOutState extends State<SpinKitThreeInOut>
+class _CustomThreeInOutState extends State<CustomThreeInOut>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
 

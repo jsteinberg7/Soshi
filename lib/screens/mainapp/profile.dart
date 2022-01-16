@@ -15,6 +15,7 @@ import 'package:soshi/services/contacts.dart';
 import 'package:soshi/services/database.dart';
 import 'package:soshi/services/localData.dart';
 import 'package:soshi/services/url.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'chooseSocials.dart';
 import 'profileSettings.dart';
 import 'package:http/http.dart' as http;
@@ -60,11 +61,16 @@ class _SMCardState extends State<SMCard> {
       hintText = "Username";
     }
     databaseService = new DatabaseService(
-        soshiUsernameIn: soshiUsername); // store ref to databaseService
+        currSoshiUsernameIn: soshiUsername); // store ref to databaseService
     isSwitched = LocalDataService.getLocalStateForPlatform(platformName) ??
         false; // track state of platform switch
     usernameController.text =
         LocalDataService.getLocalUsernameForPlatform(platformName) ?? null;
+
+    if (platformName == "Contact") {
+      usernameController.text = "Contact Card";
+    }
+
     focusNode = new FocusNode();
     focusNode.addListener(() {
       if (!focusNode.hasFocus) {
@@ -233,6 +239,7 @@ class _SMCardState extends State<SMCard> {
                 SizedBox(width: 5),
                 Expanded(
                   child: TextField(
+                    readOnly: widget.platformName == "Contact" ? true : false,
                     controller: usernameController,
                     focusNode: focusNode,
                     decoration: InputDecoration(
@@ -385,16 +392,6 @@ class ProfileState extends State<Profile> {
       }
     });
   }
-
-  // @override
-  // void setFocus() {
-  //   FocusScope.of(context).requestFocus(bioFocusNode);
-  // }
-
-  // @override
-  // void dispose() {
-  //   bioFocusNode.dispose();
-  // }
 
   @override
   Widget build(BuildContext context) {

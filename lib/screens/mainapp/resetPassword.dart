@@ -88,8 +88,8 @@ class _ResetPassword extends State<ResetPassword> {
                       elevation: 20,
                       color: Colors.grey[500],
                       padding: EdgeInsets.all(10),
-                      onPressed: () {
-                        auth.sendPasswordResetEmail(
+                      onPressed: () async {
+                        await auth.sendPasswordResetEmail(
                             email: resetPasswordEmailController.text.trim());
                         Navigator.of(context).pop();
 

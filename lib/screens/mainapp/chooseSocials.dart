@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:soshi/screens/login/loading.dart';
 import 'package:soshi/screens/mainapp/qrCode.dart';
 import 'package:soshi/services/contacts.dart';
 import 'package:soshi/services/database.dart';
@@ -23,7 +24,7 @@ class ChooseSocialsCard extends StatefulWidget {
 
 class _ChooseSocialsCardState extends State<ChooseSocialsCard> {
   DatabaseService databaseService;
-  String soshiUsername, platformName;
+  String currSoshiUsername, platformName;
   var isSwitched = false;
 
   //var value = false;
@@ -31,9 +32,10 @@ class _ChooseSocialsCardState extends State<ChooseSocialsCard> {
   @override
   void initState() {
     super.initState();
-    soshiUsername = widget.soshiUsername;
+    currSoshiUsername = widget.soshiUsername;
     platformName = widget.platformName;
-    databaseService = new DatabaseService(soshiUsernameIn: soshiUsername);
+    databaseService =
+        new DatabaseService(currSoshiUsernameIn: currSoshiUsername);
     isSwitched = Queue.choosePlatformsQueue.contains(platformName);
   }
 
@@ -134,7 +136,7 @@ class _ChooseSocialsState extends State<ChooseSocials> {
   Widget build(BuildContext context) {
     String soshiUsername =
         LocalDataService.getLocalUsernameForPlatform("Soshi");
-    databaseService = new DatabaseService(soshiUsernameIn: soshiUsername);
+    databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
     // List<String> choosePlatformsQueue = [];
     List<String> choosePlatforms = LocalDataService.getLocalChoosePlatforms();
     return Scaffold(
@@ -158,6 +160,12 @@ class _ChooseSocialsState extends State<ChooseSocials> {
           //color: Colors.grey[500],
           elevation: 20,
           onPressed: () async {
+            if (Queue.choosePlatformsQueue.contains("Contact") ||
+                Queue.choosePlatformsQueue.contains("Email")) {
+              //DialogBuilder(context).showLoadingIndicator(); //fix context
+            }
+            //DialogBuilder(context).hideOpenDialog();
+
             // if platform has username, turn switch on
             for (String platform in Queue.choosePlatformsQueue) {
               String username =
@@ -170,6 +178,7 @@ class _ChooseSocialsState extends State<ChooseSocials> {
                     platform: platform, state: true);
               }
             }
+
             await LocalDataService.addPlatformsToProfile(
                 Queue.choosePlatformsQueue);
             // check if contact card is being added
@@ -178,6 +187,14 @@ class _ChooseSocialsState extends State<ChooseSocials> {
             }
             refreshProfile();
             Navigator.of(context).pop();
+
+            // if (Queue.choosePlatformsQueue.contains("Contact") ||
+            //     Queue.choosePlatformsQueue.contains("Email")) {
+            //   DialogBuilder(context).hideOpenDialog(); //fix context
+            // } else {
+            //   Navigator.of(context).pop();
+            // }
+
             LocalDataService.removeFromChoosePlatforms(
                 Queue.choosePlatformsQueue);
             databaseService.addPlatformsToProfile(Queue.choosePlatformsQueue);

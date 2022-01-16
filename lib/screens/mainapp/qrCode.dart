@@ -48,7 +48,7 @@ class _QRScreenState extends State<QRScreen> {
     String soshiUsername =
         LocalDataService.getLocalUsernameForPlatform("Soshi");
     DatabaseService databaseService =
-        new DatabaseService(soshiUsernameIn: soshiUsername);
+        new DatabaseService(currSoshiUsernameIn: soshiUsername);
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     return SingleChildScrollView(
@@ -98,35 +98,45 @@ class _QRScreenState extends State<QRScreen> {
                                   SizedBox(width: width / 5),
                                   GestureDetector(
                                     onTap: () {
-                                      Popups.showUserProfilePopup(context,
-                                          soshiUsername: soshiUsername,
+                                      Popups.showUserProfilePopupNew(context,
+                                          friendSoshiUsername: soshiUsername,
                                           refreshScreen: () {});
                                     },
                                     child: Container(
                                       decoration: BoxDecoration(
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black26,
+                                              blurRadius: 2.0,
+                                              spreadRadius: 0.0,
+                                              offset: Offset(2.0,
+                                                  2.0), // shadow direction: bottom right
+                                            )
+                                          ],
+                                          color: Colors.black12,
                                           border: Border.all(
                                               color: Colors.grey[700],
                                               width: width / 500),
                                           borderRadius: BorderRadius.all(
-                                              Radius.circular(width / 100))),
-                                      child: Container(
-                                        padding: EdgeInsets.all(width / 100),
-                                        decoration: BoxDecoration(
-                                            color: Colors.black38),
+                                              Radius.circular(width / 10))),
+                                      child: Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            10.0, 5.0, 10.0, 5.0),
                                         child: Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.end,
                                           children: [
-                                            Icon(Icons.preview,
-                                                color: Colors.white),
+                                            Icon(Icons.preview_rounded,
+                                                color: Colors.grey[300],
+                                                size: width / 20),
                                             SizedBox(width: width / 100),
-                                            Text("Preview!",
+                                            Text("Preview",
                                                 style: TextStyle(
                                                     fontSize:
                                                         Utilities.getHeight(
                                                                 context) /
-                                                            50,
-                                                    color: Colors.white,
+                                                            55,
+                                                    color: Colors.grey[200],
                                                     fontStyle:
                                                         FontStyle.italic)),
                                           ],
@@ -244,8 +254,8 @@ class _QRScreenState extends State<QRScreen> {
                   // vibrate when QR code is successfully scanned
                   Vibration.vibrate();
                   try {
-                    Popups.showUserProfilePopup(context,
-                        soshiUsername: QRScanResult.split("/").last);
+                    Popups.showUserProfilePopupNew(context,
+                        friendSoshiUsername: QRScanResult.split("/").last);
                     Analytics.logSuccessfulQRScan(QRScanResult);
                   } catch (e) {
                     Analytics.logFailedQRScan(QRScanResult);
