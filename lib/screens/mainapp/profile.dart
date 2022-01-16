@@ -4,6 +4,7 @@ import 'package:contacts_service/contacts_service.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:soshi/constants/constants.dart';
@@ -86,8 +87,8 @@ class _SMCardState extends State<SMCard> {
       }
     });
 
-    // double height = Utilities.getHeight(context);
-    // double width = Utilities.getWidth(context);
+    double height = Utilities.getHeight(context);
+    //double width = Utilities.getWidth(context);
     // text controller for username box
 
     return Stack(
@@ -257,58 +258,9 @@ class _SMCardState extends State<SMCard> {
                     ),
                   ),
                 ),
-                PopupMenuButton(
-                    icon: Icon(
-                      Icons.more_vert_rounded,
-                      size: 30,
-                      color: Colors.grey[200],
-                    ),
-                    color: Colors.grey[900],
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(60.0)),
-                    itemBuilder: (BuildContext context) {
-                      return [
-                        PopupMenuItem(
-                          child: TextButton(
-                            child: Text(
-                              "Remove $platformName",
-                              style: TextStyle(
-                                  color: Colors.cyan,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            onPressed: () async {
-                              if (!LocalDataService.getLocalChoosePlatforms()
-                                  .contains(platformName)) {
-                                Navigator.pop(context);
-
-                                await LocalDataService
-                                    .removePlatformsFromProfile(platformName);
-                                LocalDataService.addToChoosePlatforms(
-                                    platformName);
-
-                                LocalDataService.updateSwitchForPlatform(
-                                    platform: platformName, state: false);
-                                databaseService.updatePlatformSwitch(
-                                    platform: platformName, state: false);
-                                databaseService
-                                    .removePlatformFromProfile(platformName);
-                                databaseService
-                                    .addToChoosePlatforms(platformName);
-                                print(
-                                    LocalDataService.getLocalProfilePlatforms()
-                                        .toString());
-                                widget.refreshScreen();
-                              } else {
-                                Navigator.pop(context);
-                                await LocalDataService
-                                    .removePlatformsFromProfile(platformName);
-                                widget.refreshScreen();
-                              }
-                            },
-                          ),
-                        )
-                      ];
-                    })
+                Padding(
+                  padding: EdgeInsets.only(right: 35),
+                )
               ],
             ),
           )),
@@ -337,6 +289,65 @@ class _SMCardState extends State<SMCard> {
                   color: Colors.black26),
             ),
             visible: !isSwitched),
+        Padding(
+          padding: EdgeInsets.only(top: height / 40),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              PopupMenuButton(
+                  icon: Icon(
+                    Icons.more_vert_rounded,
+                    size: 30,
+                    color: Colors.grey[200],
+                  ),
+                  color: Colors.grey[900],
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(60.0)),
+                  itemBuilder: (BuildContext context) {
+                    return [
+                      PopupMenuItem(
+                        child: TextButton(
+                          child: Text(
+                            "Remove $platformName",
+                            style: TextStyle(
+                                color: Colors.cyan,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          onPressed: () async {
+                            if (!LocalDataService.getLocalChoosePlatforms()
+                                .contains(platformName)) {
+                              Navigator.pop(context);
+
+                              await LocalDataService.removePlatformsFromProfile(
+                                  platformName);
+                              LocalDataService.addToChoosePlatforms(
+                                  platformName);
+
+                              LocalDataService.updateSwitchForPlatform(
+                                  platform: platformName, state: false);
+                              databaseService.updatePlatformSwitch(
+                                  platform: platformName, state: false);
+                              databaseService
+                                  .removePlatformFromProfile(platformName);
+                              databaseService
+                                  .addToChoosePlatforms(platformName);
+                              print(LocalDataService.getLocalProfilePlatforms()
+                                  .toString());
+                              widget.refreshScreen();
+                            } else {
+                              Navigator.pop(context);
+                              await LocalDataService.removePlatformsFromProfile(
+                                  platformName);
+                              widget.refreshScreen();
+                            }
+                          },
+                        ),
+                      )
+                    ];
+                  }),
+            ],
+          ),
+        )
       ],
     );
   }
@@ -363,24 +374,35 @@ class ProfileState extends State<Profile> {
     super.initState();
     soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
     profilePlatforms = LocalDataService.getLocalProfilePlatforms();
-    personalBioTextController = new TextEditingController();
     bioFocusNode = new FocusNode();
     bioFocusNode.addListener(() {
       if (!bioFocusNode.hasFocus) {
         LocalDataService.updateBio(personalBioTextController.text);
-        DatabaseService tempDB = new DatabaseService();
-        tempDB.updateBio(LocalDataService.getLocalUsernameForPlatform("Soshi"),
-            personalBioTextController.text);
+        print(LocalDataService.getBio().toString());
+        DatabaseService databaseService = new DatabaseService();
+        databaseService.updateBio(
+            soshiUsername, personalBioTextController.text);
       }
     });
   }
 
+  // @override
+  // void setFocus() {
+  //   FocusScope.of(context).requestFocus(bioFocusNode);
+  // }
+
+  // @override
+  // void dispose() {
+  //   bioFocusNode.dispose();
+  // }
+
   @override
   Widget build(BuildContext context) {
-    personalBioTextController.text = LocalDataService.getBio();
-
     double height = Utilities.getHeight(context);
     double width = Utilities.getWidth(context);
+    TextEditingController personalBioTextController =
+        new TextEditingController();
+    personalBioTextController.text = LocalDataService.getBio();
 
     return SingleChildScrollView(
       child: Container(
@@ -395,14 +417,27 @@ class ProfileState extends State<Profile> {
                       children: [
                         Container(
                           child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) {
-                                return Scaffold(
-                                    body: ProfileSettings(
-                                        soshiUsername: soshiUsername,
-                                        refreshProfile: refreshScreen));
-                              }));
+                            onTap: () async {
+                              DatabaseService dbService = new DatabaseService();
+                              //dbService.chooseAndCropImage();
+
+                              // update profile picture on tap
+                              // open up image picker
+                              final ImagePicker imagePicker = ImagePicker();
+                              final PickedFile pickedImage =
+                                  await imagePicker.getImage(
+                                      source: ImageSource.gallery,
+                                      imageQuality: 20);
+                              await dbService.cropAndUploadImage(pickedImage);
+                              refreshScreen();
+
+                              // Navigator.push(context,
+                              //     MaterialPageRoute(builder: (context) {
+                              //   return Scaffold(
+                              //       body: ProfileSettings(
+                              //           soshiUsername: soshiUsername,
+                              //           refreshProfile: refreshScreen));
+                              // }));
                             },
                             child: Stack(
                               children: [
@@ -427,6 +462,10 @@ class ProfileState extends State<Profile> {
                               ],
                             ),
                           ),
+                          // child: ProfilePic(
+                          //     radius: 55,
+                          //     url:
+                          //         LocalDataService.getLocalProfilePictureURL()),
                           decoration: new BoxDecoration(
                             shape: BoxShape.circle,
                             border: new Border.all(
@@ -456,7 +495,7 @@ class ProfileState extends State<Profile> {
                                     //fontWeight: FontWeight.bold,
                                     //letterSpacing: 1,
                                   )),
-                              //SizedBox(width: 5.0),
+                              SizedBox(width: 4.0),
                               Icon(Icons.person_rounded,
                                   color: Colors.cyan[300], size: 20.0),
                             ],
@@ -470,6 +509,7 @@ class ProfileState extends State<Profile> {
                         height: 160,
                         child: Container(
                           child: TextField(
+                              focusNode: bioFocusNode,
                               maxLength: 80,
                               maxLengthEnforcement:
                                   MaxLengthEnforcement.enforced,
@@ -478,7 +518,27 @@ class ProfileState extends State<Profile> {
                               maxLines: 6,
                               autocorrect: true,
                               controller: personalBioTextController,
-                              focusNode: bioFocusNode,
+
+                              //focusNode: bioFocusNode,
+                              // onTap: () {
+                              // if (LocalDataService.getBio() == "") {
+                              //   DatabaseService tempDB =
+                              //       new DatabaseService();
+                              //   tempDB.updateBio(
+                              //       LocalDataService
+                              //           .getLocalUsernameForPlatform("Soshi"),
+                              //       "");
+                              // }
+                              //},
+                              onSubmitted: (String bio) {
+                                DatabaseService tempDB = new DatabaseService();
+
+                                LocalDataService.updateBio(bio);
+                                tempDB.updateBio(
+                                    LocalDataService
+                                        .getLocalUsernameForPlatform("Soshi"),
+                                    bio);
+                              },
                               style: TextStyle(
                                   height: 1.2,
                                   fontWeight: FontWeight.bold,
@@ -544,196 +604,7 @@ class ProfileState extends State<Profile> {
                             primary: Colors.blueGrey[500],
                             shape: CircleBorder()),
                         onPressed: () {
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(40.0))),
-                                  backgroundColor: Colors.blueGrey[900],
-                                  title: Text(
-                                    "Linking Social Media",
-                                    style: TextStyle(
-                                      decoration: TextDecoration.underline,
-                                      color: Colors.cyan[600],
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  content: Container(
-                                    height: height / 2.85,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          "For sharing TIKTOK, LINKEDIN, or FACEBOOK:",
-                                          style: TextStyle(
-                                            fontSize: 15,
-                                            color: Colors.cyan[700],
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 10.0),
-                                          child: Row(
-                                            children: <Widget>[
-                                              Text(
-                                                "Tiktok: ",
-                                                textAlign: TextAlign.left,
-                                                style: TextStyle(
-                                                    color: Colors.cyan[700],
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 20),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 5),
-                                                child: ElevatedButton(
-                                                    style: ElevatedButton.styleFrom(
-                                                        primary:
-                                                            Colors.blueGrey,
-                                                        shadowColor: Constants
-                                                            .buttonColorDark,
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius.all(
-                                                                    Radius.circular(
-                                                                        15.0)))),
-                                                    onPressed: () {
-                                                      URL.launchURL(
-                                                          "https://support.tiktok.com/en/using-tiktok/exploring-videos/sharing");
-                                                    },
-                                                    child: Text("Press me!")),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 10.0),
-                                          child: Row(
-                                            children: <Widget>[
-                                              Text(
-                                                "LinkedIn: ",
-                                                textAlign: TextAlign.left,
-                                                style: TextStyle(
-                                                    color: Colors.cyan[700],
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 20),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 5),
-                                                child: ElevatedButton(
-                                                    style: ElevatedButton.styleFrom(
-                                                        primary:
-                                                            Colors.blueGrey,
-                                                        shadowColor: Constants
-                                                            .buttonColorDark,
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius.all(
-                                                                    Radius.circular(
-                                                                        15.0)))),
-                                                    onPressed: () {
-                                                      URL.launchURL(
-                                                          "https://www.linkedin.com/help/linkedin/answer/49315/find-your-linkedin-public-profile-url?lang=en");
-                                                    },
-                                                    child: Text("Press me!")),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 10.0),
-                                          child: Row(
-                                            children: <Widget>[
-                                              Text(
-                                                "Facebook: ",
-                                                textAlign: TextAlign.left,
-                                                style: TextStyle(
-                                                    color: Colors.cyan[700],
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 20),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 5),
-                                                child: ElevatedButton(
-                                                    style: ElevatedButton.styleFrom(
-                                                        primary:
-                                                            Colors.blueGrey,
-                                                        shadowColor: Constants
-                                                            .buttonColorDark,
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius.all(
-                                                                    Radius.circular(
-                                                                        15.0)))),
-                                                    onPressed: () {
-                                                      URL.launchURL(
-                                                          "https://knowledgebase.constantcontact.com/tutorials/KnowledgeBase/6069-find-the-url-for-a-facebook-profile-or-business-page?lang=en_US");
-                                                    },
-                                                    child: Text("Press me!")),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: <Widget>[
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 8.0),
-                                              child: Text(
-                                                "+ For phone, just enter your #",
-                                                textAlign: TextAlign.left,
-                                                style: TextStyle(
-                                                  fontSize: 15,
-                                                  color: Colors.cyan[700],
-                                                  //fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 12.0),
-                                              child: Text(
-                                                "+ For all the other platforms just enter your username :)",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  fontSize: 15,
-                                                  color: Colors.cyan[700],
-                                                  //fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ], //
-                                    ),
-                                  ),
-                                  actions: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: TextButton(
-                                        child: Text('Ok',
-                                            style: TextStyle(
-                                              fontSize: 25,
-                                              fontWeight: FontWeight.bold,
-                                            )),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              });
+                          Popups.showPlatformHelpPopup(context, height);
                         },
                       ),
                       // SizedBox(

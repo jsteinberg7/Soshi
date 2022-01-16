@@ -239,60 +239,83 @@ class _FriendScreenState extends State<FriendScreen> {
             return SingleChildScrollView(
               child: Column(
                 children: <Widget>[
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-                          child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  primary: Constants.buttonColorDark,
-                                  shape: CircleBorder()),
-                              onPressed: () async {
-                                String QRScanResult =
-                                    await Utilities.scanQR(mounted);
-                                if (QRScanResult.length > 5) {
-                                  // vibrate when QR code is successfully scanned
-                                  Vibration.vibrate();
-                                  try {
-                                    Popups.showUserProfilePopup(context,
-                                        soshiUsername:
-                                            QRScanResult.split("/").last,
-                                        refreshScreen: refreshFriendScreen);
-                                  } catch (e) {
-                                    print(e);
-                                  }
-                                }
-                              },
-                              child: Icon(Icons.qr_code_scanner_sharp,
-                                  color: Colors.cyan[300], size: width / 25)),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                          child: Text(
-                            "Friends",
-                            //textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 30.0,
-                                fontWeight: FontWeight.bold,
-                                fontStyle: FontStyle.italic),
+                  SizedBox(height: 10),
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: <
+                      Widget>[
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              primary: Constants.buttonColorDark,
+                              shape: CircleBorder()),
+                          onPressed: () async {
+                            String QRScanResult =
+                                await Utilities.scanQR(mounted);
+                            if (QRScanResult.length > 5) {
+                              // vibrate when QR code is successfully scanned
+                              Vibration.vibrate();
+                              try {
+                                Popups.showUserProfilePopup(context,
+                                    soshiUsername: QRScanResult.split("/").last,
+                                    refreshScreen: refreshFriendScreen);
+                              } catch (e) {
+                                print(e);
+                              }
+                            }
+                          },
+                          child: Icon(Icons.qr_code_scanner_sharp,
+                              color: Colors.cyan[300], size: width / 25)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.emoji_people, // or Icons.poeple_round
+                                color: Colors.cyan,
+                                size: 30,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 5),
+                                child: Text(
+                                  "Friends",
+                                  //textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 30.0,
+                                      fontWeight: FontWeight.bold,
+                                      fontStyle: FontStyle.italic),
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                        Padding(
-                            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                            child: ShareButton(
-                              size: width / 20,
-                              soshiUsername:
-                                  LocalDataService.getLocalUsername(),
-                            )
-                            // AddedMeButton(
-                            //   size: width / 20,
-                            //   soshiUsername: LocalDataService.getLocalUsername(),
-                            //   databaseService: databaseService,
-                            // ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 3),
+                            child: Text(
+                              "Total: " +
+                                  LocalDataService.getLocalFriendsListCount()
+                                      .toString(),
+                              style: TextStyle(color: Colors.cyan[300]),
                             ),
-                      ]),
+                          )
+                        ],
+                      ),
+                    ),
+                    Padding(
+                        padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        child: ShareButton(
+                          size: width / 20,
+                          soshiUsername: LocalDataService.getLocalUsername(),
+                        )
+                        // AddedMeButton(
+                        //   size: width / 20,
+                        //   soshiUsername: LocalDataService.getLocalUsername(),
+                        //   databaseService: databaseService,
+                        // ),
+                        ),
+                  ]),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                     child: Divider(
@@ -301,7 +324,7 @@ class _FriendScreenState extends State<FriendScreen> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 5, 0, 15),
+                    padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
                     child: Container(
                       child: friendsList.isNotEmpty
                           ? ListView.builder(
@@ -319,9 +342,9 @@ class _FriendScreenState extends State<FriendScreen> {
                               itemCount: (friendsList == null)
                                   ? 1
                                   : friendsList.length,
-                              padding: EdgeInsets.fromLTRB(5.0, 0, 5.0, 5.0))
+                              padding: EdgeInsets.fromLTRB(5.0, 0, 5.0, 0.0))
                           : Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 20, 0, 15),
+                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
                               child: Center(
                                 child: Column(
                                   children: <Widget>[
@@ -333,59 +356,51 @@ class _FriendScreenState extends State<FriendScreen> {
                                           fontStyle: FontStyle.italic,
                                           letterSpacing: 2),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: ElevatedButton(
-                                        child: Container(
-                                          child: Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Text(
-                                                  "Scan QR Code",
-                                                  style: TextStyle(
-                                                    fontSize: 15,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.cyan[300],
-                                                    letterSpacing: 2.0,
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding: EdgeInsets.all(5.0),
-                                                ),
-                                                Icon(
-                                                    Icons
-                                                        .qr_code_scanner_rounded,
-                                                    color: Colors.cyan)
-                                              ]),
-                                        ),
-                                        style: Constants.ButtonStyleDark,
-                                        onPressed: () async {
-                                          String QRScanResult =
-                                              await Utilities.scanQR(mounted);
-                                          if (QRScanResult.length > 5) {
-                                            // vibrate when QR code is successfully scanned
-                                            Vibration.vibrate();
-                                            try {
-                                              Popups.showUserProfilePopup(
-                                                  context,
-                                                  soshiUsername:
-                                                      QRScanResult.split("/")
-                                                          .last,
-                                                  refreshScreen:
-                                                      refreshFriendScreen);
-                                            } catch (e) {
-                                              print(e);
-                                            }
-                                          }
-                                        },
-                                      ),
-                                    )
                                   ],
                                 ),
                               ),
                             ),
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 5, 0, 20),
+                    child: ElevatedButton(
+                      child: Container(
+                        margin: EdgeInsets.all(8),
+                        child: Row(mainAxisSize: MainAxisSize.min, children: [
+                          Text(
+                            "Add new friends!",
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.cyan[300],
+                              letterSpacing: 2.0,
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(5.0),
+                          ),
+                          Icon(Icons.qr_code_scanner_rounded,
+                              color: Colors.cyan)
+                        ]),
+                      ),
+                      style: Constants.ButtonStyleDark,
+                      onPressed: () async {
+                        String QRScanResult = await Utilities.scanQR(mounted);
+                        if (QRScanResult.length > 5) {
+                          // vibrate when QR code is successfully scanned
+                          Vibration.vibrate();
+                          try {
+                            Popups.showUserProfilePopup(context,
+                                soshiUsername: QRScanResult.split("/").last,
+                                refreshScreen: refreshFriendScreen);
+                          } catch (e) {
+                            print(e);
+                          }
+                        }
+                      },
+                    ),
+                  )
                 ],
               ),
             );

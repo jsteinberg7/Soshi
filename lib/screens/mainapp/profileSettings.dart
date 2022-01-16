@@ -147,7 +147,6 @@ class ProfileSettingsState extends State<ProfileSettings> {
                       ),
                     ),
                   ),
-
                   Divider(height: 40, color: Colors.blueGrey),
                   Row(
                     children: <Widget>[
@@ -175,7 +174,6 @@ class ProfileSettingsState extends State<ProfileSettings> {
                     ],
                   ),
                   SizedBox(height: 10),
-
                   Text(
                     LocalDataService.getLocalUsernameForPlatform("Soshi"),
                     //"Soshi username",
@@ -186,7 +184,6 @@ class ProfileSettingsState extends State<ProfileSettings> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-
                   SizedBox(height: 20),
                   Text(
                     'Password',
@@ -244,14 +241,6 @@ class ProfileSettingsState extends State<ProfileSettings> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  Icon(
-                    Icons.emoji_people, // or Icons.poeple_round
-                    color: Colors.grey,
-                    size: 25,
-                  ),
-                  SizedBox(height: 10),
-                  //Row with add button on the right of it
-                  ReturnNumConnections(),
                 ],
               )),
         ),
@@ -268,7 +257,7 @@ class DeleteProfileButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(10.0),
       child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             primary: Colors.black,

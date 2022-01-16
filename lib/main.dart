@@ -10,8 +10,6 @@ import 'services/auth.dart';
 import 'package:soshi/screens/wrapper.dart';
 import 'package:flutter/services.dart';
 
-
-
 class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();

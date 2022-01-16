@@ -8,7 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:soshi/services/database.dart';
 
 abstract class LocalDataService {
-
 // store all local data
   static SharedPreferences preferences;
 
@@ -16,7 +15,6 @@ abstract class LocalDataService {
   // ** must be run after user file is created in database
   static Future<void> initializeSharedPreferences(
       {String soshiUsername}) async {
-    
     // initialize SharedPreferences instance
     preferences = await SharedPreferences.getInstance();
 
@@ -288,6 +286,4 @@ abstract class LocalDataService {
   static Future<void> updateBio(String newBio) async {
     await preferences.setString("Bio", newBio);
   }
-
-  
 }

@@ -84,36 +84,59 @@ class _QRScreenState extends State<QRScreen> {
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                      child: Column(children: [
-                        Text(
-                          LocalDataService.getLocalFirstName() +
-                              " " +
-                              LocalDataService.getLocalLastName(),
-                          style: TextStyle(
-                            color: Colors.cyan[300],
-                            letterSpacing: 2,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                    Column(children: [
+                      GestureDetector(
+                        onTap: () {
+                          Popups.showUserProfilePopup(context,
+                              soshiUsername: soshiUsername,
+                              refreshScreen: () {});
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: Colors.grey[200], width: width / 500),
+                              borderRadius: BorderRadius.all(
+                                  Radius.circular(width / 100))),
+                          child: Row(
+                            children: [
+                              Icon(Icons.preview, color: Colors.white),
+                              SizedBox(width: width / 100),
+                              Text("Preview!",
+                                  style: TextStyle(
+                                      fontSize:
+                                          Utilities.getHeight(context) / 50,
+                                      color: Colors.white,
+                                      fontStyle: FontStyle.italic)),
+                            ],
                           ),
                         ),
-                        SizedBox(
-                          height: Utilities.getHeight(context) / 100,
+                      ),
+                      Text(
+                        LocalDataService.getLocalFirstName() +
+                            " " +
+                            LocalDataService.getLocalLastName(),
+                        style: TextStyle(
+                          color: Colors.cyan[300],
+                          letterSpacing: 2,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
-                        Text(
-                          "@" +
-                              LocalDataService.getLocalUsernameForPlatform(
-                                  "Soshi"),
-                          style: TextStyle(
-                              color: Colors.grey[500],
-                              letterSpacing: 2,
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              fontStyle: FontStyle.italic),
-                        ),
-                      ]),
-                    ),
+                      ),
+                      SizedBox(
+                        height: Utilities.getHeight(context) / 100,
+                      ),
+                      Text(
+                        "@" +
+                            LocalDataService.getLocalUsernameForPlatform(
+                                "Soshi"),
+                        style: TextStyle(
+                            color: Colors.grey[500],
+                            letterSpacing: 2,
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.italic),
+                      ),
+                    ]),
                   ]),
             ),
           ),
