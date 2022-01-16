@@ -80,10 +80,12 @@ abstract class LocalDataService {
     // set choose platforms list to match cloud copy
     List<dynamic> choosePlatformsDynamic =
         await databaseService.getChoosePlatforms();
+
     List<String> choosePlatforms = [];
     for (dynamic platform in choosePlatformsDynamic) {
       choosePlatforms.add(platform.toString());
     }
+    
     await preferences.setStringList("Choose Platforms", choosePlatforms);
 
     // set profile platforms list to match cloud copy

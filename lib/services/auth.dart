@@ -160,6 +160,8 @@ class AuthService {
       if (await databaseService.isUsernameTaken(username)) {
         throw new ErrorDescription("Username is already in use.");
       }
+
+      
       await databaseService.createUserFile(
           username: username, email: email, first: first, last: last);
       print("file created");

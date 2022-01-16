@@ -52,12 +52,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
       appBar: AppBar(
         title: Text(
           "Edit Profile",
-          style: TextStyle(
-              color: Colors.cyan[200],
-              fontSize: 25,
-              letterSpacing: 2,
-              fontWeight: FontWeight.bold,
-              fontStyle: FontStyle.italic),
+          style: TextStyle(color: Colors.cyan[200], fontSize: 25, letterSpacing: 2, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
         ),
         backgroundColor: Colors.grey[850],
         centerTitle: true,
@@ -66,18 +61,16 @@ class ProfileSettingsState extends State<ProfileSettings> {
       resizeToAvoidBottomInset: false,
 
       backgroundColor: Colors.grey[900],
-      floatingActionButton: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            SizedBox(
-              width: 5,
-            ),
-            DeleteProfileButton(),
-            SizedBox(
-              width: 0,
-            ),
-            SignOutButton(),
-          ]),
+      floatingActionButton: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <Widget>[
+        SizedBox(
+          width: 5,
+        ),
+        DeleteProfileButton(),
+        SizedBox(
+          width: 0,
+        ),
+        SignOutButton(),
+      ]),
 
       body: SingleChildScrollView(
         child: SafeArea(
@@ -105,8 +98,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                       // update profile picture on tap
                       // open up image picker
                       final ImagePicker imagePicker = ImagePicker();
-                      final PickedFile pickedImage = await imagePicker.getImage(
-                          source: ImageSource.gallery, imageQuality: 20);
+                      final PickedFile pickedImage = await imagePicker.getImage(source: ImageSource.gallery, imageQuality: 20);
                       await dbService.cropAndUploadImage(pickedImage);
                       refreshProfileSettings(); // force refresh
                       refreshProfileScreen();
@@ -207,8 +199,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                           color: Colors.grey[850],
                           splashColor: Colors.cyan,
                           onPressed: () {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) {
                               return ResetPassword();
                             }));
                           },
@@ -274,9 +265,7 @@ class DeleteProfileButton extends StatelessWidget {
                   color: Colors.cyan,
                 ),
               ),
-              Text("Delete Account",
-                  style: TextStyle(
-                      color: Colors.cyan[300], fontWeight: FontWeight.bold)),
+              Text("Delete Account", style: TextStyle(color: Colors.cyan[300], fontWeight: FontWeight.bold)),
             ],
           ),
           onPressed: () async {
@@ -284,8 +273,7 @@ class DeleteProfileButton extends StatelessWidget {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(40.0))),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40.0))),
                     backgroundColor: Colors.blueGrey[900],
                     title: Text(
                       "Delete Account",
@@ -296,10 +284,7 @@ class DeleteProfileButton extends StatelessWidget {
                     ),
                     content: Text(
                       ("Are you sure you want to delete your profile? This cannot be undone."),
-                      style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.cyan[700],
-                          fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 20, color: Colors.cyan[700], fontWeight: FontWeight.bold),
                     ),
                     actions: <Widget>[
                       Row(
@@ -320,20 +305,15 @@ class DeleteProfileButton extends StatelessWidget {
                               style: TextStyle(fontSize: 20, color: Colors.red),
                             ),
                             onPressed: () async {
-                              String soshiUsername =
-                                  LocalDataService.getLocalUsername();
-                              DatabaseService databaseService =
-                                  new DatabaseService(
-                                      soshiUsernameIn: soshiUsername);
+                              String soshiUsername = LocalDataService.getLocalUsername();
+                              DatabaseService databaseService = new DatabaseService(soshiUsernameIn: soshiUsername);
                               await databaseService.deleteProfileData();
 
                               // wipe profile data in firestore
                               AuthService authService = new AuthService();
                               Navigator.of(context).pop();
-                              await authService
-                                  .deleteProfile(); // delete user account from firebase
-                              LocalDataService
-                                  .wipeSharedPreferences(); // clear local user data
+                              await authService.deleteProfile(); // delete user account from firebase
+                              LocalDataService.wipeSharedPreferences(); // clear local user data
                             },
                           ),
                         ],
@@ -365,9 +345,7 @@ class SignOutButton extends StatelessWidget {
               color: Colors.cyan,
             ),
           ),
-          Text("Sign out",
-              style: TextStyle(
-                  color: Colors.cyan[300], fontWeight: FontWeight.bold)),
+          Text("Sign out", style: TextStyle(color: Colors.cyan[300], fontWeight: FontWeight.bold)),
         ],
       ),
 
@@ -383,8 +361,7 @@ class SignOutButton extends StatelessWidget {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(40.0))),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40.0))),
                 backgroundColor: Colors.blueGrey[900],
                 title: Text(
                   "Sign Out",
@@ -395,10 +372,7 @@ class SignOutButton extends StatelessWidget {
                 ),
                 content: Text(
                   ("Are you sure you want to sign out?"),
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.cyan[700],
-                      fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 20, color: Colors.cyan[700], fontWeight: FontWeight.bold),
                 ),
                 actions: <Widget>[
                   Row(

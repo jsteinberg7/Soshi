@@ -21,12 +21,7 @@ Custom popup dialogs
 */
 class Popups {
   // Create a clickable social media icon
-  static Widget createSMButton(
-      {String soshiUsername,
-      String platform,
-      String username,
-      double size = 70.0,
-      BuildContext context}) {
+  static Widget createSMButton({String soshiUsername, String platform, String username, double size = 70.0, BuildContext context}) {
     return IconButton(
       splashColor: Colors.cyan[300],
       splashRadius: 55.0,
@@ -37,19 +32,18 @@ class Popups {
         Analytics.logAccessPlatform(platform);
         if (platform == "Contact") {
           double width = MediaQuery.of(context).size.width;
-          DatabaseService databaseService =
-              new DatabaseService(soshiUsernameIn: soshiUsername);
+          DatabaseService databaseService = new DatabaseService(soshiUsernameIn: soshiUsername);
+
           Map userData = await databaseService.getUserFile(soshiUsername);
-          String firstName =
-              await databaseService.getFirstDisplayName(userData);
+
+          String firstName = await databaseService.getFirstDisplayName(userData);
           String lastName = await databaseService.getLastDisplayName(userData);
-          String email = await databaseService.getUsernameForPlatform(
-              platform: "Email", userData: userData);
-          String phoneNumber = await databaseService.getUsernameForPlatform(
-              platform: "Phone", userData: userData);
+          String email = await databaseService.getUsernameForPlatform(platform: "Email", userData: userData);
+          String phoneNumber = await databaseService.getUsernameForPlatform(platform: "Phone", userData: userData);
           String photoUrl = await databaseService.getPhotoURL(userData);
 
           Uint8List profilePicBytes;
+
           try {
             // try to load profile pic from url
             await http.get(Uri.parse(photoUrl)).then((http.Response response) {
@@ -57,8 +51,7 @@ class Popups {
             });
           } catch (e) {
             // if url is invalid, use default profile pic
-            ByteData data = await rootBundle
-                .load("assets/images/SoshiLogos/soshi_icon.png");
+            ByteData data = await rootBundle.load("assets/images/SoshiLogos/soshi_icon.png");
             profilePicBytes = data.buffer.asUint8List();
           }
           Contact contact = new Contact(
@@ -76,16 +69,14 @@ class Popups {
             showContactAddedPopup(context, width, firstName, lastName);
           });
         } else {
-          URL.launchURL(
-              URL.getPlatformURL(platform: platform, username: username));
+          URL.launchURL(URL.getPlatformURL(platform: platform, username: username));
         }
       },
       iconSize: size,
     );
   }
 
-  static Future<dynamic> showContactAddedPopup(
-      BuildContext context, double width, String firstName, String lastName) {
+  static Future<dynamic> showContactAddedPopup(BuildContext context, double width, String firstName, String lastName) {
     return showModalBottomSheet(
         context: context,
         builder: (context) {
@@ -102,9 +93,7 @@ class Popups {
                   Positioned(
                     top: width / 2 - width / 5,
                     left: width / 2 - width / 5,
-                    child: Icon(Icons.check_circle,
-                        color: Colors.green,
-                        size: MediaQuery.of(context).size.width / 5),
+                    child: Icon(Icons.check_circle, color: Colors.green, size: MediaQuery.of(context).size.width / 5),
                   ),
                 ]),
                 ListTile(
@@ -139,17 +128,13 @@ class Popups {
   }
 
   // display popup with user profile and social media links
-  static void showUserProfilePopup(BuildContext context,
-      {String soshiUsername, Function refreshScreen}) async {
+  static void showUserProfilePopup(BuildContext context, {String soshiUsername, Function refreshScreen}) async {
     // get list of all visible platforms
-    DatabaseService databaseService =
-        new DatabaseService(soshiUsernameIn: soshiUsername);
+    DatabaseService databaseService = new DatabaseService(soshiUsernameIn: soshiUsername);
     Map userData = await databaseService.getUserFile(soshiUsername);
-    List<String> visiblePlatforms =
-        await databaseService.getEnabledPlatformsList(userData);
+    List<String> visiblePlatforms = await databaseService.getEnabledPlatformsList(userData);
     // get list of profile usernames
-    Map<String, dynamic> usernames =
-        databaseService.getUserProfileNames(userData);
+    Map<String, dynamic> usernames = databaseService.getUserProfileNames(userData);
     String fullName = await databaseService.getFullName(userData);
     bool isFriendAdded = LocalDataService.isFriendAdded(soshiUsername);
     String profilePhotoURL = await databaseService.getPhotoURL(userData);
@@ -170,8 +155,7 @@ class Popups {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30.0),
               ),
-              content: StatefulBuilder(
-                  builder: (BuildContext context, StateSetter setState) {
+              content: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
                 return Stack(children: [
                   Container(
                     decoration: BoxDecoration(
@@ -188,29 +172,20 @@ class Popups {
                           children: [
                             Text(
                               fullName,
-                              style: TextStyle(
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.grey[200]),
+                              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.grey[200]),
                             ),
                             Text(
                               "@" + usernames["Soshi"],
-                              style: TextStyle(
-                                  fontSize: 15.0,
-                                  color: Colors.grey[500],
-                                  fontStyle: FontStyle.italic),
+                              style: TextStyle(fontSize: 15.0, color: Colors.grey[500], fontStyle: FontStyle.italic),
                             ),
                           ],
                         ),
                       ]),
                       Padding(
-                        padding:
-                            const EdgeInsets.fromLTRB(10.0, 15.0, 15.0, 10.0),
+                        padding: const EdgeInsets.fromLTRB(10.0, 15.0, 15.0, 10.0),
                         child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5.0),
-                              border: Border.all(
-                                  color: Colors.grey[700], width: 1.0)),
+                          decoration:
+                              BoxDecoration(borderRadius: BorderRadius.circular(5.0), border: Border.all(color: Colors.grey[700], width: 1.0)),
                           height: height / 20,
                           width: width / 1.1,
                           child: Center(
@@ -228,51 +203,38 @@ class Popups {
                         padding: EdgeInsets.only(top: 10.0),
                         child: (visiblePlatforms.length > 0)
                             ? ListView.separated(
-                                separatorBuilder:
-                                    (BuildContext context, int i) {
+                                separatorBuilder: (BuildContext context, int i) {
                                   return Padding(padding: EdgeInsets.all(10.0));
                                 },
                                 scrollDirection: Axis.vertical,
                                 itemBuilder: (BuildContext context, int i) {
-                                  return Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        createSMButton(
-                                            soshiUsername: soshiUsername,
-                                            platform: visiblePlatforms[index],
-                                            username: usernames[
-                                                visiblePlatforms[index++]],
-                                            size: width / 5,
-                                            context: context),
-                                        (index >= visiblePlatforms.length)
-                                            ? Text("")
-                                            : Padding(
-                                                padding:
-                                                    const EdgeInsets.fromLTRB(
-                                                        5.0, 0.0, 5.0, 0.0),
-                                                child: createSMButton(
-                                                    soshiUsername:
-                                                        soshiUsername,
-                                                    platform:
-                                                        visiblePlatforms[index],
-                                                    username: usernames[
-                                                        visiblePlatforms[
-                                                            index++]],
-                                                    size: width / 5,
-                                                    context: context),
-                                              ),
-                                        (index >= visiblePlatforms.length)
-                                            ? Text("")
-                                            : createSMButton(
+                                  return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                                    createSMButton(
+                                        soshiUsername: soshiUsername,
+                                        platform: visiblePlatforms[index],
+                                        username: usernames[visiblePlatforms[index++]],
+                                        size: width / 5,
+                                        context: context),
+                                    (index >= visiblePlatforms.length)
+                                        ? Text("")
+                                        : Padding(
+                                            padding: const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
+                                            child: createSMButton(
                                                 soshiUsername: soshiUsername,
-                                                platform:
-                                                    visiblePlatforms[index],
-                                                username: usernames[
-                                                    visiblePlatforms[index++]],
+                                                platform: visiblePlatforms[index],
+                                                username: usernames[visiblePlatforms[index++]],
                                                 size: width / 5,
                                                 context: context),
-                                      ]);
+                                          ),
+                                    (index >= visiblePlatforms.length)
+                                        ? Text("")
+                                        : createSMButton(
+                                            soshiUsername: soshiUsername,
+                                            platform: visiblePlatforms[index],
+                                            username: usernames[visiblePlatforms[index++]],
+                                            size: width / 5,
+                                            context: context),
+                                  ]);
                                 },
                                 itemCount: (visiblePlatforms.length / 3).ceil(),
                               )
@@ -297,17 +259,12 @@ class Popups {
                                 isFriendAdded = true;
                               });
                               // add friend, update button, refresh screen
-                              await LocalDataService.addFriend(
-                                  friendsoshiUsername: soshiUsername);
-                              databaseService.addFriend(
-                                  friendsoshiUsername: soshiUsername);
+                              await LocalDataService.addFriend(friendsoshiUsername: soshiUsername);
+                              databaseService.addFriend(friendsoshiUsername: soshiUsername);
                               refreshScreen();
                             }
                           },
-                          style: ElevatedButton.styleFrom(
-                              primary: isFriendAdded
-                                  ? Colors.white
-                                  : Color(0xFF181818)),
+                          style: ElevatedButton.styleFrom(primary: isFriendAdded ? Colors.white : Color(0xFF181818)),
                           child: Container(
                             width: 150.0,
                             child: Row(
@@ -316,14 +273,9 @@ class Popups {
                                     ? [
                                         Text(
                                           "Connected",
-                                          style: TextStyle(
-                                              fontSize: 20.0,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black),
+                                          style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.black),
                                         ),
-                                        Padding(
-                                            padding:
-                                                EdgeInsets.only(left: 5.0)),
+                                        Padding(padding: EdgeInsets.only(left: 5.0)),
                                         Icon(
                                           Icons.verified_user,
                                           color: Colors.green,
@@ -332,14 +284,9 @@ class Popups {
                                     : [
                                         Text(
                                           "Connect",
-                                          style: TextStyle(
-                                              fontSize: 20.0,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.cyan[300]),
+                                          style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.cyan[300]),
                                         ),
-                                        Padding(
-                                            padding:
-                                                EdgeInsets.only(left: 5.0)),
+                                        Padding(padding: EdgeInsets.only(left: 5.0)),
                                         Icon(
                                           Icons.add_circle,
                                           color: Colors.cyan[300],
@@ -361,24 +308,18 @@ class Popups {
                       // )
                     ]),
                   ),
-                  Positioned(
-                      left: width / 2 - width / 3,
-                      right: width / 2 - width / 3,
-                      child:
-                          ProfilePic(url: profilePhotoURL, radius: width / 6)),
+                  Positioned(left: width / 2 - width / 3, right: width / 2 - width / 3, child: ProfilePic(url: profilePhotoURL, radius: width / 6)),
                 ]);
               }));
         });
   }
 
-  static Future<dynamic> showPlatformHelpPopup(
-      BuildContext context, double height) async {
+  static Future<dynamic> showPlatformHelpPopup(BuildContext context, double height) async {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(40.0))),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40.0))),
             backgroundColor: Colors.blueGrey[900],
             title: Text(
               "Linking Social Media",
@@ -408,10 +349,7 @@ class Popups {
                         Text(
                           "Tiktok: ",
                           textAlign: TextAlign.left,
-                          style: TextStyle(
-                              color: Colors.cyan[700],
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20),
+                          style: TextStyle(color: Colors.cyan[700], fontWeight: FontWeight.bold, fontSize: 20),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 5),
@@ -419,12 +357,9 @@ class Popups {
                               style: ElevatedButton.styleFrom(
                                   primary: Colors.blueGrey,
                                   shadowColor: Constants.buttonColorDark,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(15.0)))),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0)))),
                               onPressed: () {
-                                URL.launchURL(
-                                    "https://support.tiktok.com/en/using-tiktok/exploring-videos/sharing");
+                                URL.launchURL("https://support.tiktok.com/en/using-tiktok/exploring-videos/sharing");
                               },
                               child: Text("Press me!")),
                         )
@@ -438,10 +373,7 @@ class Popups {
                         Text(
                           "LinkedIn: ",
                           textAlign: TextAlign.left,
-                          style: TextStyle(
-                              color: Colors.cyan[700],
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20),
+                          style: TextStyle(color: Colors.cyan[700], fontWeight: FontWeight.bold, fontSize: 20),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 5),
@@ -449,12 +381,9 @@ class Popups {
                               style: ElevatedButton.styleFrom(
                                   primary: Colors.blueGrey,
                                   shadowColor: Constants.buttonColorDark,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(15.0)))),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0)))),
                               onPressed: () {
-                                URL.launchURL(
-                                    "https://www.linkedin.com/help/linkedin/answer/49315/find-your-linkedin-public-profile-url?lang=en");
+                                URL.launchURL("https://www.linkedin.com/help/linkedin/answer/49315/find-your-linkedin-public-profile-url?lang=en");
                               },
                               child: Text("Press me!")),
                         )
@@ -468,10 +397,7 @@ class Popups {
                         Text(
                           "Facebook: ",
                           textAlign: TextAlign.left,
-                          style: TextStyle(
-                              color: Colors.cyan[700],
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20),
+                          style: TextStyle(color: Colors.cyan[700], fontWeight: FontWeight.bold, fontSize: 20),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 5),
@@ -479,9 +405,7 @@ class Popups {
                               style: ElevatedButton.styleFrom(
                                   primary: Colors.blueGrey,
                                   shadowColor: Constants.buttonColorDark,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(15.0)))),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0)))),
                               onPressed: () {
                                 URL.launchURL(
                                     "https://knowledgebase.constantcontact.com/tutorials/KnowledgeBase/6069-find-the-url-for-a-facebook-profile-or-business-page?lang=en_US");
