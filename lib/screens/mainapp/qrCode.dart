@@ -67,6 +67,7 @@ class _QRScreenState extends State<QRScreen> {
               child: Flex(
                   direction: Axis.horizontal,
                   mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(10.0),
@@ -84,59 +85,85 @@ class _QRScreenState extends State<QRScreen> {
                         ),
                       ),
                     ),
-                    Column(children: [
-                      GestureDetector(
-                        onTap: () {
-                          Popups.showUserProfilePopup(context,
-                              soshiUsername: soshiUsername,
-                              refreshScreen: () {});
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: Colors.grey[200], width: width / 500),
-                              borderRadius: BorderRadius.all(
-                                  Radius.circular(width / 100))),
-                          child: Row(
-                            children: [
-                              Icon(Icons.preview, color: Colors.white),
-                              SizedBox(width: width / 100),
-                              Text("Preview!",
-                                  style: TextStyle(
-                                      fontSize:
-                                          Utilities.getHeight(context) / 50,
-                                      color: Colors.white,
-                                      fontStyle: FontStyle.italic)),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Text(
-                        LocalDataService.getLocalFirstName() +
-                            " " +
-                            LocalDataService.getLocalLastName(),
-                        style: TextStyle(
-                          color: Colors.cyan[300],
-                          letterSpacing: 2,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(
-                        height: Utilities.getHeight(context) / 100,
-                      ),
-                      Text(
-                        "@" +
-                            LocalDataService.getLocalUsernameForPlatform(
-                                "Soshi"),
-                        style: TextStyle(
-                            color: Colors.grey[500],
-                            letterSpacing: 2,
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            fontStyle: FontStyle.italic),
-                      ),
-                    ]),
+                    Expanded(
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  SizedBox(width: width / 5),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Popups.showUserProfilePopup(context,
+                                          soshiUsername: soshiUsername,
+                                          refreshScreen: () {});
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: Colors.grey[700],
+                                              width: width / 500),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(width / 100))),
+                                      child: Container(
+                                        padding: EdgeInsets.all(width / 100),
+                                        decoration: BoxDecoration(
+                                            color: Colors.black38),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            Icon(Icons.preview,
+                                                color: Colors.white),
+                                            SizedBox(width: width / 100),
+                                            Text("Preview!",
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        Utilities.getHeight(
+                                                                context) /
+                                                            50,
+                                                    color: Colors.white,
+                                                    fontStyle:
+                                                        FontStyle.italic)),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Text(
+                              LocalDataService.getLocalFirstName() +
+                                  " " +
+                                  LocalDataService.getLocalLastName(),
+                              style: TextStyle(
+                                color: Colors.cyan[300],
+                                letterSpacing: 2,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(
+                              height: Utilities.getHeight(context) / 100,
+                            ),
+                            Text(
+                              "@" +
+                                  LocalDataService.getLocalUsernameForPlatform(
+                                      "Soshi"),
+                              style: TextStyle(
+                                  color: Colors.grey[500],
+                                  letterSpacing: 2,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  fontStyle: FontStyle.italic),
+                            ),
+                          ]),
+                    ),
                   ]),
             ),
           ),

@@ -336,7 +336,7 @@ class Popups {
                       ]),
                     ),
                     Positioned(
-                        left: (width / 2) - ((width - (width / 1.1) / 2)),
+                        left: (width / 3.5),
                         // right: width / 2 - width / 3,
                         child: ProfilePic(
                             url: profilePhotoURL, radius: width / 6)),
