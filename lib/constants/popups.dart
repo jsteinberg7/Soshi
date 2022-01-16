@@ -42,7 +42,7 @@ class Popups {
           Map userData = await databaseService.getUserFile(soshiUsername);
           String firstName =
               await databaseService.getFirstDisplayName(userData);
-          String lastName = await databaseService.getLastDisplayName(userData);
+          String lastName = databaseService.getLastDisplayName(userData);
           String email = await databaseService.getUsernameForPlatform(
               platform: "Email", userData: userData);
           String phoneNumber = await databaseService.getUsernameForPlatform(

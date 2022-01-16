@@ -305,7 +305,8 @@ class DatabaseService {
   }
 
   // return username for specified platform
-  Future<String> getUsernameForPlatform({@required Map userData, @required String platform}) async {
+  Future<String> getUsernameForPlatform(
+      {@required Map userData, @required String platform}) async {
     String username;
     Map<String, dynamic> profileNamesMap = getUserProfileNames(userData);
     username = profileNamesMap[platform];
@@ -318,14 +319,14 @@ class DatabaseService {
   }
 
   // pass in soshiUsername, return (String) full name of user
-  Future<String> getFullName(Map userData) async {
+  String getFullName(Map userData) {
     Map fullNameMap = getFullNameMap(userData);
     // convert to String
     String fullName = fullNameMap["First"] + " " + fullNameMap["Last"];
     return fullName;
   }
 
-  Future<String> getPhotoURL(Map userData) async {
+  String getPhotoURL(Map userData) {
     return userData["Photo URL"];
   }
 

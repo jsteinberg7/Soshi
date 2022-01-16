@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+
 import 'package:soshi/constants/utilities.dart';
 import 'package:soshi/constants/widgets.dart';
 import 'package:soshi/constants/popups.dart';
@@ -12,6 +13,7 @@ import 'package:soshi/services/database.dart';
 import 'package:soshi/constants/constants.dart';
 import 'package:soshi/services/localData.dart';
 import 'package:vibration/vibration.dart';
+import 'package:soshi/constants/widgets.dart';
 
 /* Stores information for individual friend/connection */
 class Friend {
@@ -51,9 +53,8 @@ class _FriendScreenState extends State<FriendScreen> {
       if (friendData != null) {
         // ensure friend exists in database
         // if friend exists in database
-        fullName =
-            friendData['Name']['First'] + " " + friendData['Name']['Last'];
-        photoURL = friendData['Photo URL'];
+        fullName = databaseService.getFullName(friendData);
+        photoURL = databaseService.getPhotoURL(friendData);
         formattedFriendsList.add(new Friend(
             // instantiate new friend and add to list
             soshiUsername: othersoshiUsername,
@@ -217,7 +218,9 @@ class _FriendScreenState extends State<FriendScreen> {
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             // check if request is still loading
-            return Center(child: CircularProgressIndicator.adaptive());
+            return Center(
+                child: SpinKitThreeInOut(
+                    color: Constants.buttonColorLight, size: 50.0));
           } else if (snapshot.connectionState == ConnectionState.none) {
             // check if request is empty
             return Text(
