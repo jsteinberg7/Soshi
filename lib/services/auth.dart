@@ -34,12 +34,10 @@ class AuthService {
           email: emailIn,
           password: passwordIn); // signs user in, initiates login
       User user = loginResult.user;
-      Analytics.setUserAttributes(
-          userId: user.uid, email: user.email, username: soshiUsername);
+      Analytics.setUserAttributes(userId: user.uid);
       Analytics.logSignIn('email');
       return user;
     } catch (e) {
-      throw (e);
       showDialog(
         context: contextIn,
         builder: (BuildContext context) {

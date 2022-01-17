@@ -9,10 +9,10 @@ abstract class Analytics {
   static Future<void> setUserAttributes(
       {String userId, String username, String email}) async {
     await instance.setUserId(id: userId);
-    await instance.setUserProperty(name: 'username', value: username);
-    await instance.setUserProperty(name: 'email', value: email);
-    await instance.setUserProperty(
-        name: 'geo_ip', value: SeeipClient().getGeoIP().toString());
+    // await instance.setUserProperty(name: 'username', value: username);
+    // await instance.setUserProperty(name: 'email', value: email);
+    // await instance.setUserProperty(
+    //     name: 'geo_ip', value: SeeipClient().getGeoIP().toString());
   }
 
   static logAppOpen() async {
@@ -27,7 +27,7 @@ abstract class Analytics {
     await instance.logSignUp(signUpMethod: method);
   }
 
-  static logSignOut() async {}
+  // static logSignOut() async {}
 
   static Future<void> logQRScan(String qrResult) async {
     await instance.logEvent(name: 'qr_scan', parameters: {
@@ -60,11 +60,10 @@ abstract class Analytics {
     await instance.logEvent(name: "copied_link_to_clipboard");
   }
 
-  static Future<void> logUpdateUsernameForPlatform(
-      String username, String platform) async {
+  static Future<void> logUpdateUsernameForPlatform(String platform) async {
     await instance.logEvent(
         name: "update_username_for_platform",
-        parameters: {"username": username, "platform": platform});
+        parameters: {"platform": platform});
   }
 
   static Future<void> logAccessPlatform(String platform) async {

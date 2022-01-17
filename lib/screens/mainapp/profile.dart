@@ -11,6 +11,7 @@ import 'package:soshi/constants/constants.dart';
 import 'package:soshi/constants/popups.dart';
 import 'package:soshi/constants/utilities.dart';
 import 'package:soshi/constants/widgets.dart';
+import 'package:soshi/services/analytics.dart';
 import 'package:soshi/services/contacts.dart';
 import 'package:soshi/services/database.dart';
 import 'package:soshi/services/localData.dart';
@@ -85,6 +86,7 @@ class _SMCardState extends State<SMCard> {
             databaseService.updatePlatformSwitch(
                 platform: platformName, state: true);
           }
+          Analytics.logUpdateUsernameForPlatform(platformName);
         }
         LocalDataService.updateUsernameForPlatform(
             platform: platformName, username: usernameController.text);
