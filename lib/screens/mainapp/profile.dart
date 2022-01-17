@@ -459,17 +459,6 @@ class ProfileState extends State<Profile> {
                               ],
                             ),
                           ),
-                          // child: ProfilePic(
-                          //     radius: 55,
-                          //     url:
-                          //         LocalDataService.getLocalProfilePictureURL()),
-                          decoration: new BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: new Border.all(
-                              color: Colors.cyanAccent,
-                              width: 1.5,
-                            ),
-                          ),
                         ),
                         ElevatedButton(
                           onPressed: () {

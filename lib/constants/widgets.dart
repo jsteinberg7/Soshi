@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
+import 'package:soshi/constants/utilities.dart';
 import 'package:soshi/services/database.dart';
 import 'package:soshi/services/localData.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -22,15 +23,24 @@ class ProfilePic extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CircularProfileAvatar(
-      url,
-      placeHolder: (b, c) {
-        return Image.asset('assets/images/SoshiLogos/soshi_icon.png');
-      },
-      borderColor: Colors.transparent,
-      borderWidth: 3,
-      elevation: 5,
-      radius: radius,
+    return Container(
+      decoration: new BoxDecoration(
+        shape: BoxShape.circle,
+        border: new Border.all(
+          color: Colors.cyanAccent,
+          width: radius / 30,
+        ),
+      ),
+      child: CircularProfileAvatar(
+        url,
+        placeHolder: (b, c) {
+          return Image.asset('assets/images/SoshiLogos/soshi_icon.png');
+        },
+        borderColor: Colors.black,
+        borderWidth: radius / 20,
+        elevation: 5,
+        radius: radius,
+      ),
     );
 
     // String url = LocalDataService.getLocalProfilePictureURL();

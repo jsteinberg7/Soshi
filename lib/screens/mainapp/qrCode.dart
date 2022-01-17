@@ -76,13 +76,6 @@ class _QRScreenState extends State<QRScreen> {
                           url: LocalDataService.getLocalProfilePictureURL(),
                           radius: 50.0,
                         ),
-                        decoration: new BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: new Border.all(
-                            color: Colors.cyanAccent,
-                            width: 2.0,
-                          ),
-                        ),
                       ),
                     ),
                     Expanded(
