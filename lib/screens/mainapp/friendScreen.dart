@@ -92,7 +92,7 @@ class _FriendScreenState extends State<FriendScreen> {
                 refreshScreen:
                     refreshFriendScreen); // show friend popup when tile is pressed
           },
-          leading: ProfilePic(radius: width / 13, url: friend.photoURL),
+          leading: ProfilePic(radius: width / 14, url: friend.photoURL),
           title: Column(
             children: <Widget>[
               Text(friend.fullName,

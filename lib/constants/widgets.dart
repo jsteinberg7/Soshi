@@ -102,7 +102,7 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
                 dbService.updateDisplayName(
                     firstNameParam: firstNameController.text,
                     lastNameParam: lastName);
-                //firstNameController.text = text;
+                firstNameController.text = text;
               } else {
                 showDialog(
                     context: context,
@@ -184,7 +184,7 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
                 dbService.updateDisplayName(
                     firstNameParam: firstName,
                     lastNameParam: lastNameController.text);
-                //lastNameController.text = text;
+                lastNameController.text = text;
               } else {
                 showDialog(
                     context: context,

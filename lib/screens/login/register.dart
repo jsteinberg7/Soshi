@@ -315,16 +315,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Widget _buildRegisterBtn() {
+    bool isAllValid = false;
     return Container(
       padding: EdgeInsets.fromLTRB(0, 30, 0, 25),
       width: double.infinity,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
+            side: BorderSide(color: Colors.cyan[400], width: 2),
+            primary: isAllValid ? Colors.cyanAccent : Colors.cyanAccent,
             elevation: 20,
             padding: const EdgeInsets.all(15.0),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30.0),
             )),
+
         //elevation: 20.0,
         child: Text(
           'REGISTER',
@@ -337,6 +341,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
             fontFamily: 'OpenSans',
           ),
         ),
+        // onFocusChange: (value) {
+        //   if (firstNameKeyRegister.currentState.validate() &&
+        //       lastNameKeyRegister.currentState.validate() &&
+        //       usernameKeyRegister.currentState.validate() &&
+        //       emailKeyRegister.currentState.validate() &&
+        //       passwordKeyRegister.currentState.validate()) {
+        //     isAllValid = true;
+        //   }
+        // },
 
         onPressed: () async {
           if (firstNameKeyRegister.currentState.validate() &&
@@ -366,8 +379,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             } else {
               dynamic user = await _authService.registerWithEmailAndPassword(
                   email: _emailController.text.trim(),
-                  username:
-                      _usernameController.text.toLowerCase().toLowerCase(),
+                  username: _usernameController.text.trim().toLowerCase(),
                   password: _passwordController.text.trim(),
                   first: _firstNameController.text.trim(),
                   last: _lastNameController.text.trim(),
@@ -455,28 +467,67 @@ class _RegisterScreenState extends State<RegisterScreen> {
   // }
 
   Widget _buildLoginBtn() {
-    return GestureDetector(
-      onTap: () {
-        widget.toggleIsRegistering(false);
-      },
-      child: RichText(
-        text: TextSpan(
-          children: [
-            TextSpan(
-                text: 'Already have an account? ',
-                style: TextStyle(
-                    color: Colors.cyan[300], fontWeight: FontWeight.bold)),
-            TextSpan(
-                text: ' Sign in',
-                style: TextStyle(
-                    color: Colors.cyan[300],
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20)),
-          ],
-        ),
-      ),
-    );
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Text('Already have an acoount?',
+              style: TextStyle(
+                  color: Colors.cyan[300],
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15)),
+          Icon(
+            Icons.arrow_forward_sharp,
+            size: 20,
+            color: Colors.cyan[200],
+          ),
+          ElevatedButton(
+            onPressed: () {
+              widget.toggleIsRegistering(false);
+              // Navigator.push(context, MaterialPageRoute(builder: (context) {
+              //   return Scaffold(body: RegisterScreen());
+              // }));
+            },
+            child: Text(
+              "Login!",
+              style: TextStyle(
+                  fontSize: 15,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold),
+            ),
+            style: ElevatedButton.styleFrom(
+              elevation: 20,
+              side: BorderSide(color: Colors.cyan[400]),
+              primary: Colors.cyanAccent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+            ),
+          ),
+        ]);
   }
+
+  //   return GestureDetector(
+  //     onTap: () {
+  //       widget.toggleIsRegistering(false);
+  //     },
+  //     child: RichText(
+  //       text: TextSpan(
+  //         children: [
+  //           TextSpan(
+  //               text: 'Already have an account? ',
+  //               style: TextStyle(
+  //                   color: Colors.cyan[300], fontWeight: FontWeight.bold)),
+  //           TextSpan(
+  //               text: ' Sign in',
+  //               style: TextStyle(
+  //                   color: Colors.cyan[300],
+  //                   fontWeight: FontWeight.bold,
+  //                   fontSize: 20)),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {

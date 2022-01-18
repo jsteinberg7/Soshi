@@ -574,17 +574,10 @@ class Popups {
                                           Text(
                                             "Friend Added",
                                             style: TextStyle(
-                                                fontSize: 20.0,
+                                                fontSize: 17.0,
                                                 fontWeight: FontWeight.bold,
                                                 color: Colors.black),
                                           ),
-                                          Padding(
-                                              padding:
-                                                  EdgeInsets.only(left: 5.0)),
-                                          Icon(
-                                            Icons.check_circle_outline,
-                                            color: Colors.green,
-                                          )
                                         ]
                                       : [
                                           Text(

@@ -179,6 +179,8 @@ class _LoginScreenState extends State<LoginScreen> {
         },
 
         style: ElevatedButton.styleFrom(
+          primary: Colors.cyanAccent,
+          side: BorderSide(color: Colors.cyan[400], width: 2),
           elevation: 20,
           padding: const EdgeInsets.all(15.0),
           shape: RoundedRectangleBorder(
@@ -286,27 +288,55 @@ class _LoginScreenState extends State<LoginScreen> {
 
 /* This widget creates a button that redirects the user to the sign up screen */
   Widget _buildSignupBtn() {
-    return GestureDetector(
-      onTap: () {
-        widget.changeIsRegisteringState(true);
-      },
-      child: RichText(
-        text: TextSpan(
-          children: [
-            TextSpan(
-                text: 'Don\'t have an Account? ',
-                style: TextStyle(
-                    color: Colors.cyan[600], fontWeight: FontWeight.bold)),
-            TextSpan(
-                text: ' Register!',
-                style: TextStyle(
-                    color: Colors.cyan[600],
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20)),
-          ],
-        ),
-      ),
-    );
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Text('Don\'t have an Account?',
+              style: TextStyle(
+                  color: Colors.cyan[300], fontWeight: FontWeight.bold)),
+          Icon(
+            Icons.arrow_forward_sharp,
+            size: 20,
+            color: Colors.cyan[200],
+          ),
+          ElevatedButton(
+            onPressed: () {
+              widget.changeIsRegisteringState(true);
+              // Navigator.push(context, MaterialPageRoute(builder: (context) {
+              //   return Scaffold(body: RegisterScreen());
+              // }));
+            },
+            child: Text(
+              "Register!",
+              style: TextStyle(
+                  fontSize: 15,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold),
+            ),
+            style: ElevatedButton.styleFrom(
+              elevation: 20,
+              side: BorderSide(color: Colors.cyan[400]),
+              primary: Colors.cyanAccent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+            ),
+          ),
+        ]);
+    // return GestureDetector(
+    //   onTap: () {
+    //     widget.changeIsRegisteringState(true);
+    //   },
+    //   child: Row(
+    //       children: [
+    //         Text(
+    //             text: 'Don\'t have an Account? ',
+    //             style: TextStyle(
+    //                 color: Colors.cyan[600], fontWeight: FontWeight.bold)),
+
+    //       ],
+    //     ),
+    //   ),
   }
 
 /* This is the build of the screen, basically using all the previous widgets to create our full fleshed log in screen */
