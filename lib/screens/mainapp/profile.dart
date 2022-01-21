@@ -208,8 +208,12 @@ class _SMCardState extends State<SMCard> {
                   ),
                 ),
                 SizedBox(width: 5),
-                Text("@", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20)),
-                SizedBox(width: 5),
+                ['Email', 'Phone', 'Contact'].contains(platformName)
+                    ? Container()
+                    : Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                        child: Text("@", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20)),
+                      ),
                 Expanded(
                   child: TextField(
                     inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'@'))],
