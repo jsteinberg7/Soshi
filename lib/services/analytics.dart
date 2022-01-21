@@ -27,23 +27,22 @@ abstract class Analytics {
     await instance.logSignUp(signUpMethod: method);
   }
 
-  // static logSignOut() async {}
+  static logSignOut() async {
+    await instance.logEvent(name: 'sign_out');
+  }
 
-  static Future<void> logQRScan(String qrResult) async {
+  static logDeleteProfile() async {
+    await instance.logEvent(name: 'delete_account');
+  }
+
+  // log qr scan with result, success, and source (where the scanner was opened from)
+  static Future<void> logQRScan(
+      String qrResult, bool success, String source) async {
     await instance.logEvent(name: 'qr_scan', parameters: {
       'qr_result': qrResult,
+      'success': success,
+      'source': source
     });
-  }
-
-  static Future<void> logSuccessfulQRScan(String qrResult) async {
-    await instance.logEvent(
-        name: "successful_qr_scan",
-        parameters: {"scanned_username": qrResult.split("/").last});
-  }
-
-  static Future<void> logFailedQRScan(String qrResult) async {
-    await instance
-        .logEvent(name: "failed_qr_scan", parameters: {"qr_result": qrResult});
   }
 
   static Future<void> logAddFriend(String friendUsername) async {

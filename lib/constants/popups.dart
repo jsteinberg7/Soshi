@@ -551,6 +551,7 @@ class Popups {
                                     friendsoshiUsername: friendSoshiUsername);
                                 databaseService.addFriend(
                                     friendSoshiUsername: friendSoshiUsername);
+                                Analytics.logAddFriend(friendSoshiUsername);
                                 refreshScreen();
                               }
                             },

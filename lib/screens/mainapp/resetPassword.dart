@@ -51,7 +51,7 @@ class _ResetPassword extends State<ResetPassword> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(30, 30, 30, 30),
                 child: Text(
-                  "To reset password, please enter your email",
+                  "To reset your password, please enter the email associated with your Soshi account.",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 15,
@@ -89,33 +89,101 @@ class _ResetPassword extends State<ResetPassword> {
                       color: Colors.grey[500],
                       padding: EdgeInsets.all(10),
                       onPressed: () async {
-                        await auth.sendPasswordResetEmail(
-                            email: resetPasswordEmailController.text.trim());
-                        Navigator.of(context).pop();
+                        String email = resetPasswordEmailController.text.trim();
+                        try {
+                          await auth.sendPasswordResetEmail(email: email);
 
-                        // if (resetPasswordEmailController.text ==
-                        //     Provider.of<User>(context, listen: true).email) {
-                        //   return Scaffold(
-                        //     body: Text("good"),
-                        //   );
-                        //   //carry on
-                        // } else {
-                        //   return Scaffold(body: Text("bad"));
-                        //   //error message
-                        // }
-                        // if email controller equals the users' account email, proceed to confirmation email -> proceed to actually send email
-                        // if email controller does not equal users's account email, show text that it's wrong
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(40.0))),
+                                  backgroundColor: Colors.blueGrey[900],
+                                  title: Text(
+                                    "Email Successfully Sent",
+                                    style: TextStyle(
+                                      color: Colors.cyan[600],
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  content: Text(
+                                    ("A password reset email has been sent to $email."),
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.cyan[700],
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  actions: <Widget>[
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: <Widget>[
+                                        TextButton(
+                                          child: Text(
+                                            'Dismiss',
+                                            style: TextStyle(fontSize: 20),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        TextButton(
+                                          child: Text(
+                                            'Open Email App',
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                color: Colors.red),
+                                          ),
+                                          onPressed: () async {
+                                            // open email app
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                );
+                              });
+                        } catch (e) {
+                          Navigator.of(context).pop();
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(40.0))),
+                                  backgroundColor: Colors.blueGrey[900],
+                                  title: Text(
+                                    "Email Could Not Be Sent",
+                                    style: TextStyle(
+                                      color: Colors.cyan[600],
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  content: Text(
+                                    ("Please enter a valid email and try again."),
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.cyan[700],
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: Text(
+                                        'Dismiss',
+                                        style: TextStyle(fontSize: 20),
+                                      ),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                  ],
+                                );
+                              });
+                        }
                       },
-                      //   // var userController ==
-                      //   //     locator.get<currentPassword>();
-                      //   //var userController =
-
-                      //   //checkCurrentPasswordValid = checkCurrentPassword();
-
-                      //   if (_formKey.currentState.validate()) {
-                      //     Navigator.pop(context);
-                      //   }
-                      // },
                       splashColor: Colors.cyan[700],
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30.0)),

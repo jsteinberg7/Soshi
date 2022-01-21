@@ -72,7 +72,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
             SizedBox(
               width: 5,
             ),
-            DeleteProfileButton(),
+            // DeleteProfileButton(),
             SizedBox(
               width: 0,
             ),
@@ -341,7 +341,8 @@ class DeleteProfileButton extends StatelessWidget {
                     ],
                   );
                 });
-          }),
+          }
+          ),
     );
   }
 }

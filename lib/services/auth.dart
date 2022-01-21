@@ -210,6 +210,7 @@ class AuthService {
     // wipe local data
     LocalDataService.wipeSharedPreferences();
     LocalDataService.updateFirstLaunch(true);
+    Analytics.logSignOut();
     return await _auth.signOut();
   }
 

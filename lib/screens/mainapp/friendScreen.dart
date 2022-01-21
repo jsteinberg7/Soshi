@@ -264,9 +264,9 @@ class _FriendScreenState extends State<FriendScreen> {
                                     Popups.showUserProfilePopupNew(context,
                                         friendSoshiUsername:
                                             QRScanResult.split("/").last);
-                                    Analytics.logSuccessfulQRScan(QRScanResult);
+                                    Analytics.logQRScan(QRScanResult, true, "friendScreen.dart corner icon");
                                   } catch (e) {
-                                    Analytics.logFailedQRScan(QRScanResult);
+                                    Analytics.logQRScan(QRScanResult, false, "friendScreen.dart corner icon");
                                     print(e);
                                   }
                                 }
@@ -403,9 +403,11 @@ class _FriendScreenState extends State<FriendScreen> {
                               Popups.showUserProfilePopupNew(context,
                                   friendSoshiUsername:
                                       QRScanResult.split("/").last);
-                              Analytics.logSuccessfulQRScan(QRScanResult);
+                              Analytics.logQRScan(QRScanResult, true,
+                                  "friendScreen.dart Add new friends");
                             } catch (e) {
-                              Analytics.logFailedQRScan(QRScanResult);
+                              Analytics.logQRScan(QRScanResult, false,
+                                  "friendScreen.dart Add new friends");
                               print(e);
                             }
                           }
