@@ -208,8 +208,11 @@ class _SMCardState extends State<SMCard> {
                   ),
                 ),
                 SizedBox(width: 5),
+                Text("@", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20)),
+                SizedBox(width: 5),
                 Expanded(
                   child: TextField(
+                    inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'@'))],
                     readOnly: widget.platformName == "Contact" ? true : false,
                     controller: usernameController,
                     focusNode: focusNode,
