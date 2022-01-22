@@ -530,7 +530,7 @@ class DatabaseService {
     await usersCollection.doc(currSoshiUsername).delete();
   }
 
-  Future<String> getBio(Map userData) async {
+  String getBio(Map userData) {
     return userData["Bio"];
   }
 

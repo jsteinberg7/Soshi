@@ -394,15 +394,15 @@ class Popups {
     // get list of profile usernames
     Map<String, dynamic> usernames =
         databaseService.getUserProfileNames(userData);
-    String fullName = await databaseService.getFullName(userData);
+    String fullName = databaseService.getFullName(userData);
     bool isFriendAdded = LocalDataService.isFriendAdded(friendSoshiUsername);
-    String profilePhotoURL = await databaseService.getPhotoURL(userData);
-    String bio = await databaseService.getBio(userData);
+    String profilePhotoURL = databaseService.getPhotoURL(userData);
+    String bio = databaseService.getBio(userData);
 
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
-    int numfriends = await databaseService.getFriendsCount(friendSoshiUsername);
+    int numfriends = userData["Friends"].length;
     String numFriendsString = numfriends.toString();
     // increment variable for use with scrolling SM buttons (use instead of i)
 
