@@ -225,8 +225,7 @@ class _FriendScreenState extends State<FriendScreen> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             // check if request is still loading
             return Center(
-                child: CustomThreeInOut(
-                    color: Constants.buttonColorLight, size: 50.0));
+                child: CustomThreeInOut(color: Colors.white, size: 50.0));
           } else if (snapshot.connectionState == ConnectionState.none) {
             // check if request is empty
             return Text(
@@ -264,9 +263,11 @@ class _FriendScreenState extends State<FriendScreen> {
                                     Popups.showUserProfilePopupNew(context,
                                         friendSoshiUsername:
                                             QRScanResult.split("/").last);
-                                    Analytics.logSuccessfulQRScan(QRScanResult);
+                                    Analytics.logQRScan(QRScanResult, true,
+                                        "friendScreen.dart corner icon");
                                   } catch (e) {
-                                    Analytics.logFailedQRScan(QRScanResult);
+                                    Analytics.logQRScan(QRScanResult, false,
+                                        "friendScreen.dart corner icon");
                                     print(e);
                                   }
                                 }
@@ -403,9 +404,11 @@ class _FriendScreenState extends State<FriendScreen> {
                               Popups.showUserProfilePopupNew(context,
                                   friendSoshiUsername:
                                       QRScanResult.split("/").last);
-                              Analytics.logSuccessfulQRScan(QRScanResult);
+                              Analytics.logQRScan(QRScanResult, true,
+                                  "friendScreen.dart Add new friends");
                             } catch (e) {
-                              Analytics.logFailedQRScan(QRScanResult);
+                              Analytics.logQRScan(QRScanResult, false,
+                                  "friendScreen.dart Add new friends");
                               print(e);
                             }
                           }

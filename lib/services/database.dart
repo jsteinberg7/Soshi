@@ -54,11 +54,11 @@ class DatabaseService {
         "Linkedin": null,
         "Twitter": null,
         "Facebook": null,
-        "Reddit": null,
+        // "Reddit": null,
         "Tiktok": null,
         "Discord": null,
         "Email": email,
-        "Venmo": null,
+        // "Venmo": null,
         "Spotify": null,
         "Contact": null,
       },
@@ -69,16 +69,16 @@ class DatabaseService {
         "Linkedin": false,
         "Twitter": false,
         "Facebook": false,
-        "Reddit": false,
+        // "Reddit": false,
         "Tiktok": false,
         "Discord": false,
         "Email": false,
-        "Venmo": false,
+        // "Venmo": false,
         "Spotify": false,
       },
       "Photo URL": "null",
       "Choose Platforms": <String>[
-        // "Email",
+        "Email",
         "Instagram",
         "Snapchat",
         // "Venmo",
@@ -88,7 +88,7 @@ class DatabaseService {
         "Spotify",
         "Facebook",
         "Discord",
-        "Reddit",
+        // "Reddit",
       ],
       "Profile Platforms": <String>["Phone"],
     });
@@ -198,9 +198,11 @@ class DatabaseService {
       friendsList.add(friendSoshiUsername);
     }
 
-    return await usersCollection
+    await usersCollection
         .doc(currSoshiUsername)
         .update({"Friends": friendsList});
+
+    // usersCollection.doc(friendSoshiUsername).update({"Added Me": addedMeList})
   }
 
   // remove friend from current user's friend list
@@ -528,7 +530,7 @@ class DatabaseService {
     await usersCollection.doc(currSoshiUsername).delete();
   }
 
-  Future<String> getBio(Map userData) async {
+  String getBio(Map userData) {
     return userData["Bio"];
   }
 

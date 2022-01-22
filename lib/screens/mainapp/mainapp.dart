@@ -22,7 +22,9 @@ class _MainAppState extends State<MainApp> {
     FriendScreen()
   ]; // list of screens (change through indexing)
 
-  int currScreen = 1; // initialize screen index to home screen
+  int currScreen = 1;
+
+  PageController pageController = new PageController(initialPage: 1);
 
   @override
   Widget build(BuildContext context) {
@@ -35,50 +37,50 @@ class _MainAppState extends State<MainApp> {
           child: AppBar(
             leadingWidth: 100,
             actions: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                child: ElevatedButton(
-                  onPressed: () {
-                    URL.launchURL("sms:" + "5713351885");
-                  },
-                  style: ElevatedButton.styleFrom(
-                      primary: Colors.grey[850],
-                      shadowColor: Constants.appBarColor,
-                      shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(10.0)))),
-                  child: Row(
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("Send",
-                              style: TextStyle(
-                                  color: Colors.cyan[300],
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1)),
-                          Text("feedback!",
-                              style: TextStyle(
-                                  color: Colors.cyan[300],
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1)),
-                        ],
-                      ),
-                      // Icon(
-                      //   Icons.feedback,
-                      //   color: Colors.cyan[300],
-                      //   size: 10,
-                      // ),
-                    ],
-                  ),
+              // Padding(
+              //   padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+              //   child: ElevatedButton(
+              //     onPressed: () {
+              //       URL.launchURL("sms:" + "5713351885");
+              //     },
+              //     style: ElevatedButton.styleFrom(
+              //         primary: Colors.grey[850],
+              //         shadowColor: Constants.appBarColor,
+              //         shape: RoundedRectangleBorder(
+              //             borderRadius:
+              //                 BorderRadius.all(Radius.circular(10.0)))),
+              //     child: Row(
+              //       children: [
+              //         Column(
+              //           crossAxisAlignment: CrossAxisAlignment.center,
+              //           mainAxisAlignment: MainAxisAlignment.center,
+              //           children: [
+              //             Text("Send",
+              //                 style: TextStyle(
+              //                     color: Colors.cyan[300],
+              //                     fontSize: 10,
+              //                     fontWeight: FontWeight.bold,
+              //                     letterSpacing: 1)),
+              //             Text("feedback!",
+              //                 style: TextStyle(
+              //                     color: Colors.cyan[300],
+              //                     fontSize: 10,
+              //                     fontWeight: FontWeight.bold,
+              //                     letterSpacing: 1)),
+              //           ],
+              //         ),
+              //         // Icon(
+              //         //   Icons.feedback,
+              //         //   color: Colors.cyan[300],
+              //         //   size: 10,
+              //         // ),
+              //       ],
+              //     ),
 
-                  // Icon(Icons.person_rounded,
-                  //     color: Colors.cyan[300], size: 10.0),
-                ),
-              ),
+              //     // Icon(Icons.person_rounded,
+              //     //     color: Colors.cyan[300], size: 10.0),
+              //   ),
+              // ),
             ],
             elevation: 40,
             title: Image.asset(
@@ -90,34 +92,46 @@ class _MainAppState extends State<MainApp> {
           ),
         ),
         backgroundColor: Constants.backgroundColor,
-        body: screens[currScreen],
-        bottomNavigationBar: CustomNavigationBar(
-          iconSize: 25.0,
-          selectedColor: Colors.cyan[300],
-          strokeColor: Colors.cyan[800],
-          unSelectedColor: Colors.grey[500],
-          backgroundColor: Colors.grey[900],
-          items: [
-            CustomNavigationBarItem(
-              icon: Icon(AntDesign.qrcode),
-            ),
-            CustomNavigationBarItem(
-              icon: Icon(
-                AntDesign.home,
-              ),
-            ),
-            CustomNavigationBarItem(
-              icon: Icon(
-                AntDesign.contacts,
-              ),
-            ),
-          ],
-          currentIndex: currScreen,
-          onTap: (index) {
+        body: PageView(
+          children: screens,
+          controller: pageController,
+          onPageChanged: (index) {
             setState(() {
               currScreen = index;
             });
           },
+        ),
+        bottomNavigationBar: SizedBox(
+          height: Utilities.getHeight(context) / 15,
+          child: CustomNavigationBar(
+            iconSize: Utilities.getHeight(context) / 25,
+            selectedColor: Colors.cyan[300],
+            strokeColor: Colors.cyan[800],
+            unSelectedColor: Colors.grey[500],
+            backgroundColor: Colors.grey[900],
+            items: [
+              CustomNavigationBarItem(
+                icon: Icon(AntDesign.qrcode),
+              ),
+              CustomNavigationBarItem(
+                icon: Icon(
+                  AntDesign.home,
+                ),
+              ),
+              CustomNavigationBarItem(
+                icon: Icon(
+                  AntDesign.contacts,
+                ),
+              ),
+            ],
+            currentIndex: currScreen,
+            onTap: (index) {
+              setState(() {
+                pageController.jumpToPage(index);
+                currScreen = index;
+              });
+            },
+          ),
         ),
       ),
     );

@@ -38,6 +38,7 @@ class AuthService {
       Analytics.logSignIn('email');
       return user;
     } catch (e) {
+      print("Login Error: " + e.toString());
       showDialog(
         context: contextIn,
         builder: (BuildContext context) {
@@ -46,7 +47,7 @@ class AuthService {
                 borderRadius: BorderRadius.all(Radius.circular(40.0))),
             backgroundColor: Colors.blueGrey[900],
             title: Text(
-              "Invalid Credentials.",
+              "Invalid Credentials. \n",
               style: TextStyle(
                   color: Colors.cyan[600], fontWeight: FontWeight.bold),
             ),
@@ -210,6 +211,7 @@ class AuthService {
     // wipe local data
     LocalDataService.wipeSharedPreferences();
     LocalDataService.updateFirstLaunch(true);
+    Analytics.logSignOut();
     return await _auth.signOut();
   }
 

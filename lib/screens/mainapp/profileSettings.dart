@@ -230,14 +230,14 @@ class ProfileSettingsState extends State<ProfileSettings> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 40),
                   Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         SizedBox(
                           width: 5,
                         ),
-                        DeleteProfileButton(),
+                        // DeleteProfileButton(),
                         SizedBox(
                           width: 0,
                         ),
@@ -349,7 +349,7 @@ class SignOutButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        primary: Colors.black,
+        primary: Colors.grey[850],
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),

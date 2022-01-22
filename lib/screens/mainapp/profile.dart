@@ -244,7 +244,8 @@ class _SMCardState extends State<SMCard> {
                   ),
                 ),
                 SizedBox(width: 5),
-                ['Email', 'Phone', 'Contact'].contains(platformName)
+                ['Email', 'Phone', 'Contact', 'Linkedin', 'Tiktok', 'Facebook']
+                        .contains(platformName)
                     ? Container()
                     : Padding(
                         padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),

@@ -249,9 +249,9 @@ class _QRScreenState extends State<QRScreen> {
                   try {
                     Popups.showUserProfilePopupNew(context,
                         friendSoshiUsername: QRScanResult.split("/").last);
-                    Analytics.logSuccessfulQRScan(QRScanResult);
+                    Analytics.logQRScan(QRScanResult, true, "qrCode.dart");
                   } catch (e) {
-                    Analytics.logFailedQRScan(QRScanResult);
+                    Analytics.logQRScan(QRScanResult, false, "qrCode.dart");
                     print(e);
                   }
                 }

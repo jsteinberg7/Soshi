@@ -13,7 +13,7 @@ abstract class Constants {
     primaryColor: Colors.grey[800],
     accentColor: Colors.cyan[300],
   );
-  static Color appBarColor = Colors.grey[800];
+  static Color appBarColor = Colors.grey[850];
 
   static Color backgroundColor = Colors.grey[800];
 
@@ -76,12 +76,17 @@ abstract class Constants {
   ];
 
   // list of all platforms added since initial launch (update when adding new platforms)
-  static List<String> addedPlatforms = ["Email", "Venmo", "Spotify", "Contact"];
-  /* When adding/injecting new platforms: 
-  1. Add to addedPlatforms
-  2. Add Logo and Writing Logo to assets
-  3. Add handler to URL service
-  4. Update createUserFile() in register.dart to include new platform (for accounts created in the future)
+  static List<String> addedPlatforms = [
+    "Email",
+    // "Venmo",
+    "Spotify", "Contact"
+  ];
+  /* Instructions for injecting/adding new platforms: 
+    1. Add to addedPlatforms (above)
+    2. Add Logo and Writing Logo to assets
+    3. Add handler to URL service
+    4. Update createUserFile() in register.dart to include new platform (for accounts created in the future)
+    5. Repeat steps 2 (Logo only) and 3 for web
   */
 
 }

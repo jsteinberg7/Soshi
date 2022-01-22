@@ -17,7 +17,10 @@ abstract class URL {
   // note: some platforms use a system not invloving usernames
   // (Linkedin, Facebook, Tiktok use a numbering system)
   static String getPlatformURL({String platform, String username}) {
-    username = username.trim();
+    username = username.trim(); // remove whitespaces
+    if (username[0] == '@') {
+      username = username.replaceFirst('@', '');
+    }
     if (platform == "Instagram") {
       return "https://www.instagram.com/" + username + "/?hl=en";
     } else if (platform == "Snapchat") {
