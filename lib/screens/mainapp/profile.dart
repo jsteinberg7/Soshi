@@ -119,7 +119,7 @@ class _SMCardState extends State<SMCard> {
           //Colors.grey[850],
           child: Container(
               child: Padding(
-            padding: const EdgeInsets.fromLTRB(5, 0, 0, 5),
+            padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
             child: Row(
               children: <Widget>[
                 Switch(
@@ -176,71 +176,74 @@ class _SMCardState extends State<SMCard> {
                             });
                       }
                     }),
-                Material(
-                  color: Colors.transparent,
-                  shadowColor: Colors.black54,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                  child: IconButton(
-                    splashColor: Colors.cyan[300],
-                    splashRadius: Utilities.getWidth(context) / 11,
-                    icon: Image.asset(
-                      'assets/images/SMLogos/' + platformName + 'Logo.png',
+                Center(
+                  child: Material(
+                    color: Colors.transparent,
+                    shadowColor: Colors.black54,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0),
                     ),
-                    onPressed: () async {
-                      if (platformName == "Contact") {
-                        double width = Utilities.getWidth(context);
-                        String firstName = LocalDataService.getLocalFirstName();
-                        String lastName = LocalDataService.getLocalLastName();
-                        String photoUrl =
-                            LocalDataService.getLocalProfilePictureURL();
-                        Uint8List profilePicBytes;
-                        try {
-                          // try to load profile pic from url
-                          await http
-                              .get(Uri.parse(photoUrl))
-                              .then((http.Response response) {
-                            profilePicBytes = response.bodyBytes;
-                          });
-                        } catch (e) {
-                          // if url is invalid, use default profile pic
-                          ByteData data = await rootBundle
-                              .load("assets/images/SoshiLogos/soshi_icon.png");
-                          profilePicBytes = data.buffer.asUint8List();
-                        }
-                        Contact contact = new Contact(
-                            givenName: firstName,
-                            familyName: lastName,
-                            emails: [
-                              Item(
-                                label: "Email",
-                                value: LocalDataService
-                                    .getLocalUsernameForPlatform("Email"),
-                              ),
-                            ],
-                            phones: [
-                              Item(
-                                  label: "Cell",
+                    child: IconButton(
+                      splashColor: Colors.cyan[300],
+                      splashRadius: Utilities.getWidth(context) / 11,
+                      icon: Image.asset(
+                        'assets/images/SMLogos/' + platformName + 'Logo.png',
+                      ),
+                      onPressed: () async {
+                        if (platformName == "Contact") {
+                          double width = Utilities.getWidth(context);
+                          String firstName =
+                              LocalDataService.getLocalFirstName();
+                          String lastName = LocalDataService.getLocalLastName();
+                          String photoUrl =
+                              LocalDataService.getLocalProfilePictureURL();
+                          Uint8List profilePicBytes;
+                          try {
+                            // try to load profile pic from url
+                            await http
+                                .get(Uri.parse(photoUrl))
+                                .then((http.Response response) {
+                              profilePicBytes = response.bodyBytes;
+                            });
+                          } catch (e) {
+                            // if url is invalid, use default profile pic
+                            ByteData data = await rootBundle.load(
+                                "assets/images/SoshiLogos/soshi_icon.png");
+                            profilePicBytes = data.buffer.asUint8List();
+                          }
+                          Contact contact = new Contact(
+                              givenName: firstName,
+                              familyName: lastName,
+                              emails: [
+                                Item(
+                                  label: "Email",
                                   value: LocalDataService
-                                      .getLocalUsernameForPlatform("Phone")),
-                            ],
-                            avatar: profilePicBytes);
-                        await askPermissions(context);
-                        ContactsService.addContact(contact)
-                            .then((dynamic success) {
-                          Popups.showContactAddedPopup(
-                              context, width, firstName, lastName);
-                        });
-                      } else {
-                        URL.launchURL(URL.getPlatformURL(
-                            platform: platformName,
-                            username:
-                                LocalDataService.getLocalUsernameForPlatform(
-                                    platformName)));
-                      }
-                    },
-                    iconSize: 60.0,
+                                      .getLocalUsernameForPlatform("Email"),
+                                ),
+                              ],
+                              phones: [
+                                Item(
+                                    label: "Cell",
+                                    value: LocalDataService
+                                        .getLocalUsernameForPlatform("Phone")),
+                              ],
+                              avatar: profilePicBytes);
+                          await askPermissions(context);
+                          ContactsService.addContact(contact)
+                              .then((dynamic success) {
+                            Popups.showContactAddedPopup(
+                                context, width, firstName, lastName);
+                          });
+                        } else {
+                          URL.launchURL(URL.getPlatformURL(
+                              platform: platformName,
+                              username:
+                                  LocalDataService.getLocalUsernameForPlatform(
+                                      platformName)));
+                        }
+                      },
+                      iconSize: 60.0,
+                    ),
                   ),
                 ),
                 SizedBox(width: 5),

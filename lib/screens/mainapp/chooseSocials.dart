@@ -160,10 +160,8 @@ class _ChooseSocialsState extends State<ChooseSocials> {
           //color: Colors.grey[500],
           elevation: 20,
           onPressed: () async {
-            // if (Queue.choosePlatformsQueue.contains("Contact") ||
-            //     Queue.choosePlatformsQueue.contains("Email")) {
-            //   //DialogBuilder(context).showLoadingIndicator(); //fix context
-            // }
+            // Navigator.pop(context);
+            DialogBuilder(context).showLoadingIndicator();
             //DialogBuilder(context).hideOpenDialog();
 
             // if platform has username, turn switch on
@@ -185,9 +183,9 @@ class _ChooseSocialsState extends State<ChooseSocials> {
             if (Queue.choosePlatformsQueue.contains("Contact")) {
               await databaseService.updateContactCard();
             }
+            // Navigator.pop(context);
+            // Navigator.pop(context);
             refreshProfile();
-            Navigator.of(context).pop();
-
             LocalDataService.removeFromChoosePlatforms(
                 Queue.choosePlatformsQueue);
             databaseService.addPlatformsToProfile(Queue.choosePlatformsQueue);
