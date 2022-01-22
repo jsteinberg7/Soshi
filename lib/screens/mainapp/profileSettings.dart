@@ -66,18 +66,8 @@ class ProfileSettingsState extends State<ProfileSettings> {
       resizeToAvoidBottomInset: false,
 
       backgroundColor: Colors.grey[900],
-      floatingActionButton: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            SizedBox(
-              width: 5,
-            ),
-            // DeleteProfileButton(),
-            SizedBox(
-              width: 0,
-            ),
-            SignOutButton(),
-          ]),
+
+      // floatingActionButton:
 
       body: SingleChildScrollView(
         child: SafeArea(
@@ -240,15 +230,23 @@ class ProfileSettingsState extends State<ProfileSettings> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 40),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(
+                          width: 5,
+                        ),
+                        // DeleteProfileButton(),
+                        SizedBox(
+                          width: 0,
+                        ),
+                        SignOutButton(),
+                      ]),
                 ],
               )),
         ),
       ),
-      // bottomNavigationBar: BottomNavigationBar(items: [
-      //   BottomNavigationBarItem(icon: Icon(Icons.ac_unit), label: "hello"),
-      //   BottomNavigationBarItem(icon: Icon(Icons.ac_unit), label: 'Hello 2')
-      // ]),
     );
   }
 }
@@ -341,8 +339,7 @@ class DeleteProfileButton extends StatelessWidget {
                     ],
                   );
                 });
-          }
-          ),
+          }),
     );
   }
 }
@@ -352,7 +349,7 @@ class SignOutButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        primary: Colors.black,
+        primary: Colors.grey[850],
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
@@ -372,11 +369,6 @@ class SignOutButton extends StatelessWidget {
         ],
       ),
 
-      //splashColor: Colors.grey[800],
-      // label: Text(
-      //   "Sign out",
-      //   style: TextStyle(color: Colors.cyan[300], fontWeight: FontWeight.bold),
-      // ),
       onPressed: () {
         AuthService authService = new AuthService();
 

@@ -13,7 +13,7 @@ import 'package:soshi/services/database.dart';
 import 'package:soshi/services/localData.dart';
 import 'package:http/http.dart' as http;
 import 'package:soshi/services/url.dart';
-import 'package:circular_profile_avatar/circular_profile_avatar.dart';
+// import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'constants.dart';
 //import 'package:google_fonts/google_fonts.dart';
 
@@ -575,17 +575,10 @@ class Popups {
                                           Text(
                                             "Friend Added",
                                             style: TextStyle(
-                                                fontSize: 20.0,
+                                                fontSize: 17.0,
                                                 fontWeight: FontWeight.bold,
                                                 color: Colors.black),
                                           ),
-                                          Padding(
-                                              padding:
-                                                  EdgeInsets.only(left: 5.0)),
-                                          Icon(
-                                            Icons.check_circle_outline,
-                                            color: Colors.green,
-                                          )
                                         ]
                                       : [
                                           Text(
