@@ -411,9 +411,10 @@ class SignOutButton extends StatelessWidget {
                           'Yes',
                           style: TextStyle(fontSize: 20, color: Colors.red),
                         ),
-                        onPressed: () {
-                          authService.signOut();
-                          Navigator.pop(context);
+                        onPressed: () async {
+                          await authService.signOut();
+                          Navigator.pop(context); // close popup
+                          Navigator.pop(context); // pop to login screen
                         },
                       ),
                     ],
