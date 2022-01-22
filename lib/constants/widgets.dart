@@ -436,11 +436,8 @@ class _CustomThreeInOutState extends State<CustomThreeInOut>
   Widget _itemBuilder(int index) => widget.itemBuilder != null
       ? widget.itemBuilder(context, index)
       : DecoratedBox(
-          decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage(
-                      "assets/images/SoshiLogos/soshi_icon_marble.png")),
-              shape: BoxShape.circle));
+          decoration:
+              BoxDecoration(color: widget.color, shape: BoxShape.circle));
 }
 
 ///CircularProfileAvatar allows developers to implement circular profile avatar with border,

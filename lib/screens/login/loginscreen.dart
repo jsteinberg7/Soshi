@@ -145,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
         },
         child: Text('Forgot Password?',
             style: TextStyle(
-                color: Colors.cyan[600], fontWeight: FontWeight.bold)),
+                color: Colors.grey[500], fontWeight: FontWeight.bold)),
       ),
     );
   }
