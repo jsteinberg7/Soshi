@@ -102,9 +102,9 @@ class _MainAppState extends State<MainApp> {
           },
         ),
         bottomNavigationBar: SizedBox(
-          height: Utilities.getHeight(context) / 15,
+          height: Utilities.getHeight(context) / 12.5,
           child: CustomNavigationBar(
-            iconSize: Utilities.getHeight(context) / 25,
+            iconSize: Utilities.getHeight(context) / 28,
             selectedColor: Colors.cyan[300],
             strokeColor: Colors.cyan[800],
             unSelectedColor: Colors.grey[500],

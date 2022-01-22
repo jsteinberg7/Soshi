@@ -93,10 +93,9 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
         if (firstNameController.text.length > 0 &&
             firstNameController.text.length <= 12) {
           LocalDataService.updateFirstName(firstNameController.text);
-
           dbService.updateDisplayName(
-            firstNameParam: firstNameController.text,
-          );
+              firstNameParam: firstNameController.text,
+              lastNameParam: lastName);
           print(LocalDataService.getLocalFirstName());
         } else {
           displayNameErrorPopUp("First", context);
@@ -109,8 +108,9 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
         if (lastNameController.text.length > 0 &&
             lastNameController.text.length <= 12) {
           LocalDataService.updateFirstName(lastNameController.text);
-
-          dbService.updateDisplayName(lastNameParam: lastNameController.text);
+          dbService.updateDisplayName(
+              firstNameParam: firstName,
+              lastNameParam: lastNameController.text);
         } else {
           displayNameErrorPopUp("Last", context);
         }
