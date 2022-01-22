@@ -49,6 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
               key:
                   emailKey, // This is the emailKey that is used to validate that the user is entering a valid email
               child: TextFormField(
+                textInputAction: TextInputAction.next,
                 autofillHints: [AutofillHints.email],
                 validator: FieldValidator.email(
                     message:
