@@ -588,7 +588,7 @@ class ProfileState extends State<Profile> {
                                   maxLengthEnforcement:
                                       MaxLengthEnforcement.enforced,
                                   keyboardType: TextInputType.multiline,
-                                  textInputAction: TextInputAction.done,
+                                  textInputAction: TextInputAction.newline,
                                   maxLines: 6,
                                   autocorrect: true,
                                   controller: personalBioTextController,
