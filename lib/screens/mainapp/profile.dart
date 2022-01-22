@@ -259,36 +259,44 @@ class _SMCardState extends State<SMCard> {
                                 fontSize: 20)),
                       ),
                 Expanded(
-                  child: TextField(
-                    inputFormatters: [
-                      FilteringTextInputFormatter.deny(RegExp(r'@'))
-                    ],
-                    readOnly: widget.platformName == "Contact" ? true : false,
-                    controller: usernameController,
-                    focusNode: focusNode,
-                    decoration: InputDecoration(
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey[800]),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.cyan),
-                      ), //border: Inp
-                      hintText: hintText,
-                      hintStyle: TextStyle(
-                        fontSize: 15,
-                        //fontWeight: FontWeight.bold,
-                        color: Colors.grey[600],
-                        letterSpacing: 1.0,
-                      ),
+                    child: TextField(
+                  autofillHints: ['Phone'].contains(platformName)
+                      ? [AutofillHints.telephoneNumber]
+                      : null,
+                  keyboardType: ["Phone"].contains(platformName)
+                      ? TextInputType.numberWithOptions(
+                          signed: true, decimal: true)
+                      : (["Email"].contains(platformName)
+                          ? TextInputType.emailAddress
+                          : null),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.deny(RegExp(r'@'))
+                  ],
+                  readOnly: widget.platformName == "Contact" ? true : false,
+                  controller: usernameController,
+                  focusNode: focusNode,
+                  decoration: InputDecoration(
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey[800]),
                     ),
-                    style: TextStyle(
-                      fontSize: 18,
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.cyan),
+                    ), //border: Inp
+                    hintText: hintText,
+                    hintStyle: TextStyle(
+                      fontSize: 15,
                       //fontWeight: FontWeight.bold,
-                      color: Colors.grey[50],
+                      color: Colors.grey[600],
                       letterSpacing: 1.0,
                     ),
                   ),
-                ),
+                  style: TextStyle(
+                    fontSize: 18,
+                    //fontWeight: FontWeight.bold,
+                    color: Colors.grey[50],
+                    letterSpacing: 1.0,
+                  ),
+                )),
                 Padding(
                   padding: EdgeInsets.only(right: 35),
                 )
