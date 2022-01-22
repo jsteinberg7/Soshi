@@ -365,7 +365,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               String userNameEdited =
                   _usernameController.text.replaceAll(" ", "");
               dynamic user = await _authService.registerWithEmailAndPassword(
-                  email: _emailController.text.trim(),
+                  email: _emailController.text.trim().toLowerCase(),
                   username: userNameEdited.trim().toLowerCase(),
                   password: _passwordController.text.trim(),
                   first: _firstNameController.text.trim(),
@@ -378,7 +378,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               }
             } else {
               dynamic user = await _authService.registerWithEmailAndPassword(
-                  email: _emailController.text.trim(),
+                  email: _emailController.text.trim().toLowerCase(),
                   username: _usernameController.text.trim().toLowerCase(),
                   password: _passwordController.text.trim(),
                   first: _firstNameController.text.trim(),

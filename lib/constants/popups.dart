@@ -984,3 +984,36 @@ class Popups {
         });
   }
 }
+
+void displayNameErrorPopUp(String firstOrLast, BuildContext context) {
+  showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(40.0))),
+          backgroundColor: Colors.blueGrey[900],
+          title: Text(
+            "Error",
+            style:
+                TextStyle(color: Colors.cyan[600], fontWeight: FontWeight.bold),
+          ),
+          content: Text(
+            ("$firstOrLast name must be between 1 and 12 characters"),
+            style:
+                TextStyle(color: Colors.cyan[700], fontWeight: FontWeight.bold),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text(
+                'Ok',
+                style: TextStyle(fontSize: 20),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      });
+}

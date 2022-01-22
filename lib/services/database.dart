@@ -44,7 +44,7 @@ class DatabaseService {
     String phoneNumber = await SmsAutoFill().hint;
     return await usersCollection.doc(currSoshiUsername).set(<String, dynamic>{
       "Name": {"First": first, "Last": last},
-      "Friends": <String>[],
+      "Friends": <String>["soshi"],
       "Bio": "",
       "Usernames": <String, String>{
         "Soshi": username,
