@@ -184,7 +184,7 @@ class _ChooseSocialsState extends State<ChooseSocials> {
             }
             dialogBuilder.hideOpenDialog(); // disable loading indicator
             refreshProfile();
-            Navigator.pop(context); // return to profile screen
+            Navigator.maybePop(context); // return to profile screen
             LocalDataService.removeFromChoosePlatforms(
                 Queue.choosePlatformsQueue);
             databaseService.addPlatformsToProfile(Queue.choosePlatformsQueue);

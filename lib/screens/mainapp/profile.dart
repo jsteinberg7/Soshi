@@ -485,7 +485,7 @@ class ProfileState extends State<Profile> {
     personalBioTextController.text = LocalDataService.getBio();
 
     return KeyboardVisibilityBuilder(
-      builder: (context, isKeyboardVisisble) {
+      builder: (context, isKeyboardVisible) {
         print("rebuilding b/c keyboard changes....");
         return SingleChildScrollView(
           child: Container(

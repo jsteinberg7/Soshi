@@ -28,110 +28,107 @@ class _MainAppState extends State<MainApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: Size(
-              Utilities.getWidth(context), Utilities.getHeight(context) / 16),
-          child: AppBar(
-            leadingWidth: 100,
-            actions: [
-              // Padding(
-              //   padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-              //   child: ElevatedButton(
-              //     onPressed: () {
-              //       URL.launchURL("sms:" + "5713351885");
-              //     },
-              //     style: ElevatedButton.styleFrom(
-              //         primary: Colors.grey[850],
-              //         shadowColor: Constants.appBarColor,
-              //         shape: RoundedRectangleBorder(
-              //             borderRadius:
-              //                 BorderRadius.all(Radius.circular(10.0)))),
-              //     child: Row(
-              //       children: [
-              //         Column(
-              //           crossAxisAlignment: CrossAxisAlignment.center,
-              //           mainAxisAlignment: MainAxisAlignment.center,
-              //           children: [
-              //             Text("Send",
-              //                 style: TextStyle(
-              //                     color: Colors.cyan[300],
-              //                     fontSize: 10,
-              //                     fontWeight: FontWeight.bold,
-              //                     letterSpacing: 1)),
-              //             Text("feedback!",
-              //                 style: TextStyle(
-              //                     color: Colors.cyan[300],
-              //                     fontSize: 10,
-              //                     fontWeight: FontWeight.bold,
-              //                     letterSpacing: 1)),
-              //           ],
-              //         ),
-              //         // Icon(
-              //         //   Icons.feedback,
-              //         //   color: Colors.cyan[300],
-              //         //   size: 10,
-              //         // ),
-              //       ],
-              //     ),
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size(
+            Utilities.getWidth(context), Utilities.getHeight(context) / 16),
+        child: AppBar(
+          leadingWidth: 100,
+          actions: [
+            // Padding(
+            //   padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+            //   child: ElevatedButton(
+            //     onPressed: () {
+            //       URL.launchURL("sms:" + "5713351885");
+            //     },
+            //     style: ElevatedButton.styleFrom(
+            //         primary: Colors.grey[850],
+            //         shadowColor: Constants.appBarColor,
+            //         shape: RoundedRectangleBorder(
+            //             borderRadius:
+            //                 BorderRadius.all(Radius.circular(10.0)))),
+            //     child: Row(
+            //       children: [
+            //         Column(
+            //           crossAxisAlignment: CrossAxisAlignment.center,
+            //           mainAxisAlignment: MainAxisAlignment.center,
+            //           children: [
+            //             Text("Send",
+            //                 style: TextStyle(
+            //                     color: Colors.cyan[300],
+            //                     fontSize: 10,
+            //                     fontWeight: FontWeight.bold,
+            //                     letterSpacing: 1)),
+            //             Text("feedback!",
+            //                 style: TextStyle(
+            //                     color: Colors.cyan[300],
+            //                     fontSize: 10,
+            //                     fontWeight: FontWeight.bold,
+            //                     letterSpacing: 1)),
+            //           ],
+            //         ),
+            //         // Icon(
+            //         //   Icons.feedback,
+            //         //   color: Colors.cyan[300],
+            //         //   size: 10,
+            //         // ),
+            //       ],
+            //     ),
 
-              //     // Icon(Icons.person_rounded,
-              //     //     color: Colors.cyan[300], size: 10.0),
-              //   ),
-              // ),
-            ],
-            elevation: 40,
-            title: Image.asset(
-              "assets/images/SoshiLogos/soshi_logo.png",
-              height: Utilities.getHeight(context) / 22,
-            ),
-            backgroundColor: Constants.appBarColor,
-            centerTitle: true,
+            //     // Icon(Icons.person_rounded,
+            //     //     color: Colors.cyan[300], size: 10.0),
+            //   ),
+            // ),
+          ],
+          elevation: 40,
+          title: Image.asset(
+            "assets/images/SoshiLogos/soshi_logo.png",
+            height: Utilities.getHeight(context) / 22,
           ),
+          backgroundColor: Constants.appBarColor,
+          centerTitle: true,
         ),
-        backgroundColor: Constants.backgroundColor,
-        body: PageView(
-          children: screens,
-          controller: pageController,
-          onPageChanged: (index) {
+      ),
+      backgroundColor: Constants.backgroundColor,
+      body: PageView(
+        children: screens,
+        controller: pageController,
+        onPageChanged: (index) {
+          setState(() {
+            currScreen = index;
+          });
+        },
+      ),
+      bottomNavigationBar: SizedBox(
+        height: Utilities.getHeight(context) / 15,
+        child: CustomNavigationBar(
+          iconSize: Utilities.getHeight(context) / 25,
+          selectedColor: Colors.cyan[300],
+          strokeColor: Colors.cyan[800],
+          unSelectedColor: Colors.grey[500],
+          backgroundColor: Colors.grey[900],
+          items: [
+            CustomNavigationBarItem(
+              icon: Icon(AntDesign.qrcode),
+            ),
+            CustomNavigationBarItem(
+              icon: Icon(
+                AntDesign.home,
+              ),
+            ),
+            CustomNavigationBarItem(
+              icon: Icon(
+                AntDesign.contacts,
+              ),
+            ),
+          ],
+          currentIndex: currScreen,
+          onTap: (index) {
             setState(() {
+              pageController.jumpToPage(index);
               currScreen = index;
             });
           },
-        ),
-        bottomNavigationBar: SizedBox(
-          height: Utilities.getHeight(context) / 15,
-          child: CustomNavigationBar(
-            iconSize: Utilities.getHeight(context) / 25,
-            selectedColor: Colors.cyan[300],
-            strokeColor: Colors.cyan[800],
-            unSelectedColor: Colors.grey[500],
-            backgroundColor: Colors.grey[900],
-            items: [
-              CustomNavigationBarItem(
-                icon: Icon(AntDesign.qrcode),
-              ),
-              CustomNavigationBarItem(
-                icon: Icon(
-                  AntDesign.home,
-                ),
-              ),
-              CustomNavigationBarItem(
-                icon: Icon(
-                  AntDesign.contacts,
-                ),
-              ),
-            ],
-            currentIndex: currScreen,
-            onTap: (index) {
-              setState(() {
-                pageController.jumpToPage(index);
-                currScreen = index;
-              });
-            },
-          ),
         ),
       ),
     );
