@@ -51,7 +51,7 @@ class Popups {
               platform: "Email", userData: userData);
           String phoneNumber = await databaseService.getUsernameForPlatform(
               platform: "Phone", userData: userData);
-          String photoUrl = await databaseService.getPhotoURL(userData);
+          String photoUrl = databaseService.getPhotoURL(userData);
 
           Uint8List profilePicBytes;
 
