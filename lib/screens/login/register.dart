@@ -60,6 +60,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           Form(
             key: emailKeyRegister,
             child: TextFormField(
+              textInputAction: TextInputAction.next,
               validator: FieldValidator.email(message: "Invalid Email format"),
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
@@ -161,6 +162,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
           Form(
             key: firstNameKeyRegister,
             child: TextFormField(
+              textInputAction: TextInputAction.next,
+              textCapitalization: TextCapitalization.sentences,
               validator: FieldValidator.password(
                   minLength: 1,
                   maxLength: 10,
@@ -213,6 +216,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
           Form(
             key: lastNameKeyRegister,
             child: TextFormField(
+              textInputAction: TextInputAction.next,
+              textCapitalization: TextCapitalization.sentences,
               validator: FieldValidator.password(
                   minLength: 1,
                   maxLength: 15,
@@ -263,6 +268,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: Form(
             key: passwordKeyRegister,
             child: TextFormField(
+              textInputAction: TextInputAction.done,
               validator: FieldValidator.password(
                   minLength: 8, errorMessage: "Minimum of 8 characters"
                   // shouldContainNumber: true,
