@@ -129,17 +129,17 @@ class _ResetPassword extends State<ResetPassword> {
                                             Navigator.pop(context);
                                           },
                                         ),
-                                        TextButton(
-                                          child: Text(
-                                            'Open Email App',
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                color: Colors.red),
-                                          ),
-                                          onPressed: () async {
-                                            // open email app
-                                          },
-                                        ),
+                                        // TextButton(
+                                        //   child: Text(
+                                        //     'Open Email App',
+                                        //     style: TextStyle(
+                                        //         fontSize: 20,
+                                        //         color: Colors.red),
+                                        //   ),
+                                        //   onPressed: () async {
+                                        //     // open email app
+                                        //   },
+                                        // ),
                                       ],
                                     ),
                                   ],

@@ -61,11 +61,13 @@ class _SMCardState extends State<SMCard> {
         if (usernameController.text.length > 3) {
           // turn on switch if username is not empty (say, at least 3 chars)
 
-          // if (!isSwitched) {
-          //   LocalDataService.updateSwitchForPlatform(platform: platformName, state: true);
-          //   databaseService.updatePlatformSwitch(platform: platformName, state: true);
-          // }
-
+          if (!isSwitched) {
+            setState(() {
+              isSwitched = true;
+            });
+            LocalDataService.updateSwitchForPlatform(platform: platformName, state: true);
+            databaseService.updatePlatformSwitch(platform: platformName, state: true);
+          }
           Analytics.logUpdateUsernameForPlatform(platformName);
         }
         LocalDataService.updateUsernameForPlatform(platform: platformName, username: usernameController.text);
@@ -88,32 +90,30 @@ class _SMCardState extends State<SMCard> {
     databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername); // store ref to databaseService
     isSwitched = LocalDataService.getLocalStateForPlatform(platformName) ?? false; // track state of platform switch
     usernameController.text = LocalDataService.getLocalUsernameForPlatform(platformName) ?? null;
-    usernameController.selection = TextSelection.fromPosition(TextPosition(offset: usernameController.text.length));
 
     if (platformName == "Contact") {
       usernameController.text = "Contact Card";
     }
+
+    // FocusScope.of(context).unfocus();
 
     // focusNode = new FocusNode();
     // focusNode.addListener(() {
     //   if (!focusNode.hasFocus) {
     //     if (usernameController.text.length > 3) {
     //       // turn on switch if username is not empty (say, at least 3 chars)
+
     //       if (!isSwitched) {
     //         setState(() {
     //           isSwitched = true;
     //         });
-    //         LocalDataService.updateSwitchForPlatform(
-    //             platform: platformName, state: true);
-    //         databaseService.updatePlatformSwitch(
-    //             platform: platformName, state: true);
+    //         LocalDataService.updateSwitchForPlatform(platform: platformName, state: true);
+    //         databaseService.updatePlatformSwitch(platform: platformName, state: true);
     //       }
     //       Analytics.logUpdateUsernameForPlatform(platformName);
     //     }
-    //     LocalDataService.updateUsernameForPlatform(
-    //         platform: platformName, username: usernameController.text);
-    //     databaseService.updateUsernameForPlatform(
-    //         platform: platformName, username: usernameController.text);
+    //     LocalDataService.updateUsernameForPlatform(platform: platformName, username: usernameController.text);
+    //     databaseService.updateUsernameForPlatform(platform: platformName, username: usernameController.text);
     //   }
     // });
 
@@ -251,7 +251,7 @@ class _SMCardState extends State<SMCard> {
                   inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'@'))],
                   readOnly: widget.platformName == "Contact" ? true : false,
                   controller: usernameController,
-                  focusNode: focusNode,
+                  // focusNode: focusNode,
                   decoration: InputDecoration(
                     enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.grey[800]),
@@ -369,7 +369,7 @@ class ProfileState extends State<Profile> {
 
   String soshiUsername;
   List profilePlatforms;
-  FocusNode bioFocusNode;
+  // FocusNode bioFocusNode;
   TextEditingController personalBioTextController = TextEditingController(text: "");
 
   @override
@@ -377,15 +377,32 @@ class ProfileState extends State<Profile> {
     super.initState();
     soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
     profilePlatforms = LocalDataService.getLocalProfilePlatforms();
-
     // bioFocusNode = new FocusNode();
     // bioFocusNode.addListener(() {
     //   if (!bioFocusNode.hasFocus) {
     //     LocalDataService.updateBio(personalBioTextController.text);
     //     print(LocalDataService.getBio().toString());
     //     DatabaseService databaseService = new DatabaseService();
-    //     databaseService.updateBio(
-    //         soshiUsername, personalBioTextController.text);
+    //     databaseService.updateBio(soshiUsername, personalBioTextController.text);
+    //   }
+    // });
+
+    // var keyboardVisibilityController = KeyboardVisibilityController();
+    // print('Keyboard visibility direct query: ${keyboardVisibilityController.isVisible}');
+    // keyboardVisibilityController.onChange.listen((bool visible) {
+    //   print('Keyboard visibility update. Is visible: $visible');
+
+    //   if (visible == false) {
+    //     DatabaseService tempDB = new DatabaseService();
+    //     String latestBio = personalBioTextController.text;
+    //     print("[CLOUD +] Pushing latest Bio to cloud");
+    //     LocalDataService.updateBio(latestBio);
+    //     tempDB.updateBio(LocalDataService.getLocalUsernameForPlatform("Soshi"), latestBio);
+
+    //     FocusScope.of(context).unfocus();
+
+    //     // focusNode = new FocusNode();
+
     //   }
     // });
   }
@@ -398,7 +415,7 @@ class ProfileState extends State<Profile> {
     personalBioTextController.text = LocalDataService.getBio();
 
     return KeyboardVisibilityBuilder(
-      builder: (context, isKeyboardVisible) {
+      builder: (context, isKeyboardVisisble) {
         print("rebuilding b/c keyboard changes....");
         return SingleChildScrollView(
           child: Container(
@@ -466,11 +483,16 @@ class ProfileState extends State<Profile> {
                     ),
                     SizedBox(width: 10),
                     Expanded(
-                      child: SizedBox(height: 160, child: Container(child: BioTextField())),
+                      child: SizedBox(
+                        height: 160,
+                        child: BioTextField(),
+                      ),
                     )
                   ]),
                   SizedBox(height: 5),
                   Row(
+                    //mainAxisAlignment: MainAxisAlignment.start,
+                    //crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[],
                   ),
                   Divider(
@@ -635,7 +657,6 @@ class _BioTextFieldState extends State<BioTextField> {
         String latestBio = personalBioTextController.text;
         print("[CLOUD +] Pushing latest Bio to cloud");
 
-        
         LocalDataService.updateBio(latestBio);
         tempDB.updateBio(LocalDataService.getLocalUsernameForPlatform("Soshi"), latestBio);
 
@@ -645,12 +666,8 @@ class _BioTextFieldState extends State<BioTextField> {
     });
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
-
-    
     return Container(
       child: TextField(
           // focusNode: FocusNode(),
