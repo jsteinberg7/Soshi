@@ -88,34 +88,33 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
     DatabaseService dbService =
         new DatabaseService(currSoshiUsernameIn: soshiUsername);
 
-    firstNameFN.addListener(() {
-      if (!firstNameFN.hasFocus) {
-        if (firstNameController.text.length > 0 &&
-            firstNameController.text.length <= 12) {
-          LocalDataService.updateFirstName(firstNameController.text);
-          dbService.updateDisplayName(
-              firstNameParam: firstNameController.text,
-              lastNameParam: lastName);
-          print(LocalDataService.getLocalFirstName());
-        } else {
-          displayNameErrorPopUp("First", context);
-        }
-      }
-    });
+    // firstNameFN.addListener(() {
+    //   if (!firstNameFN.hasFocus) {
+    //     if (firstNameController.text.length > 0 &&
+    //         firstNameController.text.length <= 12) {
+    //       LocalDataService.updateFirstName(firstNameController.text);
+    //       dbService.updateDisplayName(
+    //           firstNameParam: firstNameController.text,
+    //           lastNameParam: lastNameController.text);
+    //     } else {
+    //       displayNameErrorPopUp("First", context);
+    //     }
+    //   }
+    // });
 
-    lastNameFN.addListener(() {
-      if (!lastNameFN.hasFocus) {
-        if (lastNameController.text.length > 0 &&
-            lastNameController.text.length <= 12) {
-          LocalDataService.updateFirstName(lastNameController.text);
-          dbService.updateDisplayName(
-              firstNameParam: firstName,
-              lastNameParam: lastNameController.text);
-        } else {
-          displayNameErrorPopUp("Last", context);
-        }
-      }
-    });
+    // lastNameFN.addListener(() {
+    //   if (!lastNameFN.hasFocus) {
+    //     if (lastNameController.text.length > 0 &&
+    //         lastNameController.text.length <= 12) {
+    //       LocalDataService.updateLastName(lastNameController.text);
+    //       dbService.updateDisplayName(
+    //           firstNameParam: firstNameController.text,
+    //           lastNameParam: lastNameController.text);
+    //     } else {
+    //       displayNameErrorPopUp("Last", context);
+    //     }
+    //   }
+    // });
 
     //firstNameController.text = firstName;
     //lastNameController.text = lastName;
@@ -134,10 +133,12 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
             onSubmitted: (String inputText) {
               if (inputText.length > 0 && inputText.length <= 12) {
                 LocalDataService.updateFirstName(firstNameController.text);
+                LocalDataService.updateLastName(lastNameController.text);
 
                 dbService.updateDisplayName(
-                  firstNameParam: firstNameController.text,
-                );
+                    firstNameParam: firstNameController.text,
+                    lastNameParam: lastNameController.text);
+                print(firstName + lastName);
               } else {
                 displayNameErrorPopUp("First", context);
               }
@@ -184,8 +185,12 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
             onSubmitted: (String text) {
               if (text.length > 0 && text.length <= 12) {
                 LocalDataService.updateLastName(lastNameController.text);
+                LocalDataService.updateFirstName(firstNameController.text);
+
                 dbService.updateDisplayName(
+                    firstNameParam: firstNameController.text,
                     lastNameParam: lastNameController.text);
+                print(firstName + lastName);
               } else {
                 displayNameErrorPopUp("Last", context);
               }
