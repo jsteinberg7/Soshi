@@ -333,57 +333,93 @@ class _SMCardState extends State<SMCard> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              PopupMenuButton(
-                  icon: Icon(
-                    Icons.more_vert_rounded,
-                    size: 30,
-                    color: Colors.grey[200],
-                  ),
-                  color: Colors.grey[900],
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(60.0)),
-                  itemBuilder: (BuildContext context) {
-                    return [
-                      PopupMenuItem(
-                        child: TextButton(
-                          child: Text(
-                            "Remove $platformName",
+              IconButton(
+                icon: Icon(
+                  Icons.more_vert_rounded,
+                  size: 30,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(40.0))),
+                          backgroundColor: Colors.blueGrey[900],
+                          title: Text(
+                            "Remove Platform",
                             style: TextStyle(
-                                color: Colors.cyan,
+                                color: Colors.cyan[600],
                                 fontWeight: FontWeight.bold),
                           ),
-                          onPressed: () async {
-                            if (!LocalDataService.getLocalChoosePlatforms()
-                                .contains(platformName)) {
-                              Navigator.pop(context);
+                          content: Text(
+                            ("Are you sure you want to remove " +
+                                platformName +
+                                " from your profile?"),
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.cyan[700],
+                                fontWeight: FontWeight.bold),
+                          ),
+                          actions: <Widget>[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                TextButton(
+                                  child: Text(
+                                    'No',
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                TextButton(
+                                  child: Text(
+                                    'Yes',
+                                    style: TextStyle(
+                                        fontSize: 20, color: Colors.red),
+                                  ),
+                                  onPressed: () async {
+                                    if (!LocalDataService
+                                            .getLocalChoosePlatforms()
+                                        .contains(platformName)) {
+                                      Navigator.pop(context);
 
-                              await LocalDataService.removePlatformsFromProfile(
-                                  platformName);
-                              LocalDataService.addToChoosePlatforms(
-                                  platformName);
+                                      await LocalDataService
+                                          .removePlatformsFromProfile(
+                                              platformName);
+                                      LocalDataService.addToChoosePlatforms(
+                                          platformName);
 
-                              LocalDataService.updateSwitchForPlatform(
-                                  platform: platformName, state: false);
-                              databaseService.updatePlatformSwitch(
-                                  platform: platformName, state: false);
-                              databaseService
-                                  .removePlatformFromProfile(platformName);
-                              databaseService
-                                  .addToChoosePlatforms(platformName);
-                              print(LocalDataService.getLocalProfilePlatforms()
-                                  .toString());
-                              widget.refreshScreen();
-                            } else {
-                              Navigator.pop(context);
-                              await LocalDataService.removePlatformsFromProfile(
-                                  platformName);
-                              widget.refreshScreen();
-                            }
-                          },
-                        ),
-                      )
-                    ];
-                  }),
+                                      LocalDataService.updateSwitchForPlatform(
+                                          platform: platformName, state: false);
+                                      databaseService.removePlatformFromProfile(
+                                          platformName);
+                                      databaseService
+                                          .addToChoosePlatforms(platformName);
+                                      print(LocalDataService
+                                              .getLocalProfilePlatforms()
+                                          .toString());
+                                      widget.refreshScreen();
+                                    } else {
+                                      Navigator.pop(context);
+                                      await LocalDataService
+                                          .removePlatformsFromProfile(
+                                              platformName);
+                                      widget.refreshScreen();
+                                    }
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
+                        );
+                      });
+                },
+              )
             ],
           ),
         )
