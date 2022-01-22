@@ -160,9 +160,8 @@ class _ChooseSocialsState extends State<ChooseSocials> {
           //color: Colors.grey[500],
           elevation: 20,
           onPressed: () async {
-            // Navigator.pop(context);
-            DialogBuilder(context).showLoadingIndicator();
-            //DialogBuilder(context).hideOpenDialog();
+            DialogBuilder dialogBuilder = new DialogBuilder(context);
+            dialogBuilder.showLoadingIndicator();
 
             // if platform has username, turn switch on
             for (String platform in Queue.choosePlatformsQueue) {
@@ -183,9 +182,9 @@ class _ChooseSocialsState extends State<ChooseSocials> {
             if (Queue.choosePlatformsQueue.contains("Contact")) {
               await databaseService.updateContactCard();
             }
-            // Navigator.pop(context);
-            // Navigator.pop(context);
+            dialogBuilder.hideOpenDialog(); // disable loading indicator
             refreshProfile();
+            Navigator.pop(context); // return to profile screen
             LocalDataService.removeFromChoosePlatforms(
                 Queue.choosePlatformsQueue);
             databaseService.addPlatformsToProfile(Queue.choosePlatformsQueue);

@@ -785,9 +785,8 @@ class ProfileState extends State<Profile> {
                                 }
                               }
                             }
-                            Navigator.push(context,
+                            await Navigator.push(context,
                                 MaterialPageRoute(builder: (context) {
-                              // HORRIBLE STYLE, REDO THIS
                               return Scaffold(
                                   body: ChooseSocials(
                                 refreshFunction: refreshScreen,

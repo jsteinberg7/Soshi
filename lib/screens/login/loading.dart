@@ -27,20 +27,21 @@ class LoadingScreen extends StatelessWidget {
 class DialogBuilder {
   DialogBuilder(this.context);
 
-  final BuildContext context;
+  BuildContext context;
 
   void showLoadingIndicator([String text]) {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (BuildContext context) {
+      builder: (BuildContext c) {
+        this.context = c;
         return SpinKitChasingDots(color: Colors.cyan, size: 80);
       },
     );
   }
 
   void hideOpenDialog() {
-    Navigator.of(context).pop();
+    Navigator.pop(context);
   }
 }
 
