@@ -48,36 +48,35 @@ class _SMCardState extends State<SMCard> {
   bool isSwitched;
   TextEditingController usernameController = new TextEditingController();
   FocusNode focusNode;
+
   @override
   void initState() {
     super.initState();
 
-    var keyboardVisibilityController = KeyboardVisibilityController();
+    // var keyboardVisibilityController = KeyboardVisibilityController();
 
-    keyboardVisibilityController.onChange.listen((bool visible) {
-      print("inside SM card update.... $visible");
+    // keyboardVisibilityController.onChange.listen((bool visible) {
+    //   print("inside SM card update.... $visible");
 
-      if (visible == false) {
-        if (usernameController.text.length > 3) {
-          // turn on switch if username is not empty (say, at least 3 chars)
-          if (!isSwitched) {
-            setState(() {
-              isSwitched = true;
-            });
-            LocalDataService.updateSwitchForPlatform(
-                platform: platformName, state: true);
-            databaseService.updatePlatformSwitch(
-                platform: platformName, state: true);
-          }
-        }
-        LocalDataService.updateUsernameForPlatform(
-            platform: platformName, username: usernameController.text);
-        Analytics.logUpdateUsernameForPlatform(platformName);
-        print("updating $platformName username");
-        databaseService.updateUsernameForPlatform(
-            platform: platformName, username: usernameController.text);
-      }
-    });
+    //   if (visible == false) {
+    //     // when keyboard is closed!
+    //     if (usernameController.text.length > 3) {
+    //       // Making local change to make platform true now
+
+    //       LocalDataService.updateSwitchForPlatform(platform: platformName, state: true);
+    //       databaseService.updatePlatformSwitch(platform: platformName, state: true);
+    //       Analytics.logUpdateUsernameForPlatform(platformName);
+    //     }
+
+    //     //Update local and cloud for updateUsernamePlatform
+
+    //     print("[sm CARD cloud database update] !");
+    //     LocalDataService.updateUsernameForPlatform(platform: platformName, username: usernameController.text);
+    //     databaseService.updateUsernameForPlatform(platform: platformName, username: usernameController.text);
+
+    //     FocusScope.of(context).unfocus();
+    //   }
+    // });
   }
 
   @override
@@ -93,6 +92,7 @@ class _SMCardState extends State<SMCard> {
     } else {
       hintText = "Username";
     }
+
     databaseService = new DatabaseService(
         currSoshiUsernameIn: soshiUsername); // store ref to databaseService
     isSwitched = LocalDataService.getLocalStateForPlatform(platformName) ??
@@ -106,25 +106,29 @@ class _SMCardState extends State<SMCard> {
 
     // FocusScope.of(context).unfocus();
 
-    // focusNode = new FocusNode();
-    // focusNode.addListener(() {
-    //   if (!focusNode.hasFocus) {
-    //     if (usernameController.text.length > 3) {
-    //       // turn on switch if username is not empty (say, at least 3 chars)
+    focusNode = new FocusNode();
+    focusNode.addListener(() {
+      if (!focusNode.hasFocus) {
+        if (usernameController.text.length > 3) {
+          // turn on switch if username is not empty (say, at least 3 chars)
 
-    //       if (!isSwitched) {
-    //         setState(() {
-    //           isSwitched = true;
-    //         });
-    //         LocalDataService.updateSwitchForPlatform(platform: platformName, state: true);
-    //         databaseService.updatePlatformSwitch(platform: platformName, state: true);
-    //       }
-    //       Analytics.logUpdateUsernameForPlatform(platformName);
-    //     }
-    //     LocalDataService.updateUsernameForPlatform(platform: platformName, username: usernameController.text);
-    //     databaseService.updateUsernameForPlatform(platform: platformName, username: usernameController.text);
-    //   }
-    // });
+          if (!isSwitched) {
+            setState(() {
+              isSwitched = true;
+            });
+            LocalDataService.updateSwitchForPlatform(
+                platform: platformName, state: true);
+            databaseService.updatePlatformSwitch(
+                platform: platformName, state: true);
+          }
+          Analytics.logUpdateUsernameForPlatform(platformName);
+        }
+        LocalDataService.updateUsernameForPlatform(
+            platform: platformName, username: usernameController.text);
+        databaseService.updateUsernameForPlatform(
+            platform: platformName, username: usernameController.text);
+      }
+    });
 
     double height = Utilities.getHeight(context);
     //double width = Utilities.getWidth(context);
@@ -300,7 +304,7 @@ class _SMCardState extends State<SMCard> {
                   ],
                   readOnly: widget.platformName == "Contact" ? true : false,
                   controller: usernameController,
-                  // focusNode: focusNode,
+                  focusNode: focusNode,
                   decoration: InputDecoration(
                     enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.grey[800]),
@@ -471,8 +475,8 @@ class ProfileState extends State<Profile> {
   String soshiUsername;
   List profilePlatforms;
   // FocusNode bioFocusNode;
-  TextEditingController personalBioTextController =
-      TextEditingController(text: "");
+  TextEditingController profileBioController =
+      TextEditingController(text: LocalDataService.getBio().toString());
 
   @override
   void initState() {
@@ -490,6 +494,28 @@ class ProfileState extends State<Profile> {
     // });
 
     // var keyboardVisibilityController = KeyboardVisibilityController();
+
+    // keyboardVisibilityController.onChange.listen((bool visible) {
+    //   if (visible == false) {
+    //     print("inside one and only profile keyboard updater!");
+
+    //     // Literally take all userData from local storage and push that to cloud
+
+    //     // UPDATING BIO -----------------------
+    //     DatabaseService tempDB = new DatabaseService();
+    //     String latestBio = profileBioController.text;
+    //     LocalDataService.updateBio(latestBio).then((value) {
+    //       DatabaseService tempDB = new DatabaseService();
+    //       tempDB.updateBio(LocalDataService.getLocalUsernameForPlatform("Soshi"), latestBio);
+    //       // UPDATING BIO -----------------------
+
+    //       // UPDATING ALL PLATFORMS --------------
+
+    //       // LocalDataService.updateUsernameForPlatform()
+    //     });
+    //   }
+    // });
+
     // print('Keyboard visibility direct query: ${keyboardVisibilityController.isVisible}');
     // keyboardVisibilityController.onChange.listen((bool visible) {
     //   print('Keyboard visibility update. Is visible: $visible');
@@ -514,11 +540,20 @@ class ProfileState extends State<Profile> {
     double height = Utilities.getHeight(context);
     double width = Utilities.getWidth(context);
 
-    personalBioTextController.text = LocalDataService.getBio();
+    profileBioController.text = LocalDataService.getBio();
 
     return KeyboardVisibilityBuilder(
       builder: (context, isKeyboardVisisble) {
         print("rebuilding b/c keyboard changes....");
+        String platform;
+        print("LocalData information:");
+        for (platform in LocalDataService.getLocalProfilePlatforms()) {
+          print(platform +
+              ": " +
+              LocalDataService.getLocalUsernameForPlatform(platform)
+                  .toString());
+        }
+
         return SingleChildScrollView(
           child: Container(
             child: Padding(
@@ -590,8 +625,6 @@ class ProfileState extends State<Profile> {
                                   Text("Edit Profile",
                                       style: TextStyle(
                                         color: Colors.cyan[300],
-                                        //fontWeight: FontWeight.bold,
-                                        //letterSpacing: 1,
                                       )),
                                   SizedBox(width: 4.0),
                                   Icon(Icons.person_rounded,
@@ -605,7 +638,9 @@ class ProfileState extends State<Profile> {
                         Expanded(
                           child: SizedBox(
                             height: 160,
-                            child: BioTextField(),
+                            child: BioTextField(
+                                importController: profileBioController,
+                                soshiUsername: soshiUsername),
                           ),
                         )
                       ]),
@@ -783,18 +818,34 @@ class ProfileState extends State<Profile> {
 }
 
 class BioTextField extends StatefulWidget {
-  // Map userProfile;
-  // BioTextField({this.userProfile});
+  TextEditingController importController;
+  String soshiUsername;
+
+  BioTextField({this.importController, this.soshiUsername});
 
   @override
   State<BioTextField> createState() => _BioTextFieldState();
 }
 
 class _BioTextFieldState extends State<BioTextField> {
-  TextEditingController personalBioTextController =
-      TextEditingController(text: LocalDataService.getBio());
+  FocusNode bioFocusNode;
 
   @override
+  void initState() {
+    super.initState();
+
+    bioFocusNode = new FocusNode();
+    bioFocusNode.addListener(() {
+      if (!bioFocusNode.hasFocus) {
+        LocalDataService.updateBio(widget.importController.text);
+        print(LocalDataService.getBio().toString());
+        DatabaseService databaseService = new DatabaseService();
+        databaseService.updateBio(
+            widget.soshiUsername, widget.importController.text);
+      }
+    });
+  }
+
   // void initState() {
   //   super.initState();
   //   var keyboardVisibilityController = KeyboardVisibilityController();
@@ -823,20 +874,22 @@ class _BioTextFieldState extends State<BioTextField> {
   Widget build(BuildContext context) {
     return Container(
       child: TextField(
-          // focusNode: FocusNode(),
+          focusNode: bioFocusNode,
           maxLength: 80,
           maxLengthEnforcement: MaxLengthEnforcement.enforced,
-          //keyboardType: TextInputType.multiline,
+          // keyboardType: TextInputType.multiline,
           textInputAction: TextInputAction.done,
           maxLines: 6,
           autocorrect: true,
-          controller: personalBioTextController,
+          controller: widget.importController,
           onSubmitted: (String bio) {
             DatabaseService tempDB = new DatabaseService();
-
             LocalDataService.updateBio(bio);
             tempDB.updateBio(
                 LocalDataService.getLocalUsernameForPlatform("Soshi"), bio);
+
+            // bioFocusNode.unfocus();
+            FocusScope.of(context).unfocus();
           },
           style: TextStyle(
               height: 1.2,
