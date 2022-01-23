@@ -519,6 +519,15 @@ class ProfileState extends State<Profile> {
     return KeyboardVisibilityBuilder(
       builder: (context, isKeyboardVisisble) {
         print("rebuilding b/c keyboard changes....");
+        String platform;
+        print("LocalData information:");
+        for (platform in LocalDataService.getLocalProfilePlatforms()) {
+          print(platform +
+              ": " +
+              LocalDataService.getLocalUsernameForPlatform(platform)
+                  .toString());
+        }
+
         return SingleChildScrollView(
           child: Container(
             child: Padding(
@@ -837,6 +846,8 @@ class _BioTextFieldState extends State<BioTextField> {
             LocalDataService.updateBio(bio);
             tempDB.updateBio(
                 LocalDataService.getLocalUsernameForPlatform("Soshi"), bio);
+
+            print(LocalDataService.getBio());
           },
           style: TextStyle(
               height: 1.2,
