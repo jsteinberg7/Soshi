@@ -16,11 +16,7 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
-  List<Widget> screens = [
-    QRScreen(),
-    Profile(),
-    FriendScreen()
-  ]; // list of screens (change through indexing)
+  List<Widget> screens = [QRScreen(), Profile(), FriendScreen()]; // list of screens (change through indexing)
 
   int currScreen = 1;
 
@@ -30,8 +26,7 @@ class _MainAppState extends State<MainApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size(
-            Utilities.getWidth(context), Utilities.getHeight(context) / 16),
+        preferredSize: Size(Utilities.getWidth(context), Utilities.getHeight(context) / 16),
         child: AppBar(
           leadingWidth: 100,
           actions: [
