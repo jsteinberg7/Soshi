@@ -60,7 +60,6 @@ class _SMCardState extends State<SMCard> {
       if (visible == false) {
         if (usernameController.text.length > 3) {
           // turn on switch if username is not empty (say, at least 3 chars)
-
           if (!isSwitched) {
             setState(() {
               isSwitched = true;
@@ -70,10 +69,11 @@ class _SMCardState extends State<SMCard> {
             databaseService.updatePlatformSwitch(
                 platform: platformName, state: true);
           }
-          Analytics.logUpdateUsernameForPlatform(platformName);
         }
         LocalDataService.updateUsernameForPlatform(
             platform: platformName, username: usernameController.text);
+        Analytics.logUpdateUsernameForPlatform(platformName);
+        print("updating $platformName username");
         databaseService.updateUsernameForPlatform(
             platform: platformName, username: usernameController.text);
       }

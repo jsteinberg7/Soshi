@@ -95,6 +95,7 @@ class Popups {
           //   Popups.showContactAddedPopup(context, width, firstName, lastName);
           // });
         } else {
+          print("Launching $username");
           URL.launchURL(
               URL.getPlatformURL(platform: platform, username: username));
         }
