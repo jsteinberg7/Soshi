@@ -18,8 +18,6 @@ abstract class LocalDataService {
     // initialize SharedPreferences instance
     preferences = await SharedPreferences.getInstance();
 
-    await preferences.setBool("hasLaunched", true); // user has launched app
-
     await preferences.setBool("firstSwitchTap", true);
 
     // initialize DatabaseService to fetch updated values
