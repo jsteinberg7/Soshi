@@ -86,9 +86,22 @@ class _QRScreenState extends State<QRScreen> {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  SizedBox(width: width / 5),
+                                  Text(
+                                    "@" +
+                                        LocalDataService
+                                            .getLocalUsernameForPlatform(
+                                                "Soshi"),
+                                    style: TextStyle(
+                                        color: Colors.grey[500],
+                                        letterSpacing: 2,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                        fontStyle: FontStyle.italic),
+                                  ),
+                                  //SizedBox(width: width / 40),
                                   GestureDetector(
                                     onTap: () {
                                       Popups.showUserProfilePopupNew(context,
@@ -140,30 +153,25 @@ class _QRScreenState extends State<QRScreen> {
                                 ],
                               ),
                             ),
-                            Text(
-                              LocalDataService.getLocalFirstName() +
-                                  " " +
-                                  LocalDataService.getLocalLastName(),
-                              style: TextStyle(
-                                color: Colors.cyan[300],
-                                letterSpacing: 2,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
+                            //SizedBox(height: height / 150),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 10, 10, 0),
+                              child: Container(
+                                child: Text(
+                                  LocalDataService.getLocalFirstName() +
+                                      " " +
+                                      LocalDataService.getLocalLastName(),
+                                  style: TextStyle(
+                                    color: Colors.cyan[300],
+                                    letterSpacing: 2,
+                                    fontSize: width / 17,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
                             ),
                             SizedBox(
                               height: Utilities.getHeight(context) / 100,
-                            ),
-                            Text(
-                              "@" +
-                                  LocalDataService.getLocalUsernameForPlatform(
-                                      "Soshi"),
-                              style: TextStyle(
-                                  color: Colors.grey[500],
-                                  letterSpacing: 2,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                  fontStyle: FontStyle.italic),
                             ),
                           ]),
                     ),
