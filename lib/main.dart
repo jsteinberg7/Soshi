@@ -10,6 +10,37 @@ import 'services/auth.dart';
 import 'package:soshi/screens/wrapper.dart';
 import 'package:flutter/services.dart';
 
+class RestartWidget extends StatefulWidget {
+  RestartWidget({this.child});
+
+  final Widget child;
+
+  static void restartApp(BuildContext context) {
+    context.findAncestorStateOfType<_RestartWidgetState>().restartApp();
+  }
+
+  @override
+  _RestartWidgetState createState() => _RestartWidgetState();
+}
+
+class _RestartWidgetState extends State<RestartWidget> {
+  Key key = UniqueKey();
+
+  void restartApp() {
+    setState(() {
+      key = UniqueKey();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return KeyedSubtree(
+      key: key,
+      child: widget.child,
+    );
+  }
+}
+
 class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
@@ -38,16 +69,23 @@ void main() async {
   bool firstLaunch = (!LocalDataService.hasLaunched() ||
       LocalDataService.hasLaunched() ==
           null); // firstLaunched true if hasLaunched is false (first time running app)
+  // print(firstLaunch);
   /*
     1. Check if first time running app
     2. If so, check if LocalData has data to see if user is logged in
     */
-  if (firstLaunch && LocalDataService.getLocalUsername() == "null") {
+  if (firstLaunch &&
+      (LocalDataService.getLocalUsername() == "null" ||
+          LocalDataService.getLocalUsername() == null)) {
+    // print("first launch");
     AuthService tempAuth = new AuthService();
     await tempAuth.signOut(); // sign user out
+    // print("signed out");
+    //RestartWidget.restartApp(context);
   }
   Analytics.logAppOpen();
-  runApp(MyApp()); // run app
+
+  runApp(MyApp()); // run app,
 
   await LocalDataService.preferences
       .setBool("hasLaunched", true); // user has launched app

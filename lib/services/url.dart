@@ -43,9 +43,13 @@ abstract class URL {
       return "https://www.reddit.com/user/" + username + "/";
     } else if (platform == "Tiktok") {
       String tiktokLink;
-      username.contains("https://")
-          ? tiktokLink = username
-          : tiktokLink = "https://" + username;
+      if (platform.contains("tiktok.com")) {
+        username.contains("https://")
+            ? tiktokLink = username
+            : tiktokLink = "https://" + username;
+      } else {
+        tiktokLink = "https://www.tiktok.com/@" + username;
+      }
       return tiktokLink;
     } else if (platform == "Discord") {
       return "https://discordapp.com/users/" + username + "/";

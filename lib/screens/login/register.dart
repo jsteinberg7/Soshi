@@ -111,9 +111,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
             key: usernameKeyRegister,
             child: TextFormField(
               validator: FieldValidator.password(
-                  minLength: 3,
+                  minLength: 2,
                   maxLength: 15,
-                  errorMessage: "3-15 characters allowed"),
+                  errorMessage: "2-15 characters allowed"),
               controller: _usernameController,
               //keyboardType: TextInputType.emailAddress,
               style: TextStyle(

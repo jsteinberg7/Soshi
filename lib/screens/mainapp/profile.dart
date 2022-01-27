@@ -85,9 +85,7 @@ class _SMCardState extends State<SMCard> {
     platformName = widget.platformName;
     if (platformName == "Phone") {
       hintText = "Phone Number";
-    } else if (platformName == "Linkedin" ||
-        platformName == "Facebook" ||
-        platformName == "Tiktok") {
+    } else if (platformName == "Linkedin" || platformName == "Facebook") {
       hintText = "Link to Profile";
     } else {
       hintText = "Username";
@@ -148,191 +146,196 @@ class _SMCardState extends State<SMCard> {
 
           //Colors.grey[850],
           child: Container(
+              height: height / 12,
               child: Padding(
-            padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-            child: Row(
-              children: <Widget>[
-                Switch(
-                    activeThumbImage:
-                        AssetImage('assets/images/SoshiLogos/soshi_icon.png'),
-                    inactiveThumbImage: AssetImage(
-                        'assets/images/SoshiLogos/soshi_icon_marble.png'),
-                    value: isSwitched,
-                    activeColor: Colors.cyan[500],
-                    onChanged: (bool value) {
-                      setState(() {
-                        isSwitched = value;
-                      });
-                      LocalDataService.updateSwitchForPlatform(
-                          platform: platformName, state: value);
-                      databaseService.updatePlatformSwitch(
-                          platform: platformName, state: value);
-
-                      if (LocalDataService.getFirstSwitchTap()) {
-                        LocalDataService.updateFirstSwitchTap(false);
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(40.0))),
-                                backgroundColor: Colors.blueGrey[900],
-                                title: Text(
-                                  "Platform Switches",
-                                  style: TextStyle(
-                                      color: Colors.cyan[600],
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                content: Text(
-                                  ("These switches control what platform(s) you are sharing. "),
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.cyan[700],
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                actions: <Widget>[
-                                  TextButton(
-                                    child: Text(
-                                      'Ok',
-                                      style: TextStyle(fontSize: 20),
-                                    ),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                ],
-                              );
-                            });
-                      }
-                    }),
-                Center(
-                  child: Material(
-                    color: Colors.transparent,
-                    shadowColor: Colors.black54,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    child: IconButton(
-                      splashColor: Colors.cyan[300],
-                      splashRadius: Utilities.getWidth(context) / 11,
-                      icon: Image.asset(
-                        'assets/images/SMLogos/' + platformName + 'Logo.png',
-                      ),
-                      onPressed: () async {
-                        if (platformName == "Contact") {
-                          double width = Utilities.getWidth(context);
-                          String firstName =
-                              LocalDataService.getLocalFirstName();
-                          String lastName = LocalDataService.getLocalLastName();
-                          String photoUrl =
-                              LocalDataService.getLocalProfilePictureURL();
-                          Uint8List profilePicBytes;
-                          try {
-                            // try to load profile pic from url
-                            await http
-                                .get(Uri.parse(photoUrl))
-                                .then((http.Response response) {
-                              profilePicBytes = response.bodyBytes;
-                            });
-                          } catch (e) {
-                            // if url is invalid, use default profile pic
-                            ByteData data = await rootBundle.load(
-                                "assets/images/SoshiLogos/soshi_icon.png");
-                            profilePicBytes = data.buffer.asUint8List();
-                          }
-                          Contact contact = new Contact(
-                              givenName: firstName,
-                              familyName: lastName,
-                              emails: [
-                                Item(
-                                  label: "Email",
-                                  value: LocalDataService
-                                      .getLocalUsernameForPlatform("Email"),
-                                ),
-                              ],
-                              phones: [
-                                Item(
-                                    label: "Cell",
-                                    value: LocalDataService
-                                        .getLocalUsernameForPlatform("Phone")),
-                              ],
-                              avatar: profilePicBytes);
-                          await askPermissions(context);
-                          ContactsService.addContact(contact)
-                              .then((dynamic success) {
-                            Popups.showContactAddedPopup(
-                                context, width, firstName, lastName);
+                padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                child: Row(
+                  children: <Widget>[
+                    Switch(
+                        activeThumbImage: AssetImage(
+                            'assets/images/SoshiLogos/soshi_icon.png'),
+                        inactiveThumbImage: AssetImage(
+                            'assets/images/SoshiLogos/soshi_icon_marble.png'),
+                        value: isSwitched,
+                        activeColor: Colors.cyan[500],
+                        onChanged: (bool value) {
+                          setState(() {
+                            isSwitched = value;
                           });
-                        } else {
-                          URL.launchURL(URL.getPlatformURL(
-                              platform: platformName,
-                              username:
-                                  LocalDataService.getLocalUsernameForPlatform(
-                                      platformName)));
-                        }
-                      },
-                      iconSize: 60.0,
-                    ),
-                  ),
-                ),
-                SizedBox(width: 5),
-                ['Email', 'Phone', 'Contact', 'Linkedin', 'Tiktok', 'Facebook']
-                        .contains(platformName)
-                    ? Container()
-                    : Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
-                        child: Text("@",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20)),
+                          LocalDataService.updateSwitchForPlatform(
+                              platform: platformName, state: value);
+                          databaseService.updatePlatformSwitch(
+                              platform: platformName, state: value);
+
+                          if (LocalDataService.getFirstSwitchTap()) {
+                            LocalDataService.updateFirstSwitchTap(false);
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(40.0))),
+                                    backgroundColor: Colors.blueGrey[900],
+                                    title: Text(
+                                      "Platform Switches",
+                                      style: TextStyle(
+                                          color: Colors.cyan[600],
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    content: Text(
+                                      ("These switches control what platform(s) you are sharing. "),
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.cyan[700],
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: Text(
+                                          'Ok',
+                                          style: TextStyle(fontSize: 20),
+                                        ),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                });
+                          }
+                        }),
+                    Center(
+                      child: Material(
+                        color: Colors.transparent,
+                        shadowColor: Colors.black54,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                        child: IconButton(
+                          splashColor: Colors.cyan[300],
+                          splashRadius: Utilities.getWidth(context) / 11,
+                          icon: Image.asset(
+                            'assets/images/SMLogos/' +
+                                platformName +
+                                'Logo.png',
+                          ),
+                          onPressed: () async {
+                            if (platformName == "Contact") {
+                              double width = Utilities.getWidth(context);
+                              String firstName =
+                                  LocalDataService.getLocalFirstName();
+                              String lastName =
+                                  LocalDataService.getLocalLastName();
+                              String photoUrl =
+                                  LocalDataService.getLocalProfilePictureURL();
+                              Uint8List profilePicBytes;
+                              try {
+                                // try to load profile pic from url
+                                await http
+                                    .get(Uri.parse(photoUrl))
+                                    .then((http.Response response) {
+                                  profilePicBytes = response.bodyBytes;
+                                });
+                              } catch (e) {
+                                // if url is invalid, use default profile pic
+                                ByteData data = await rootBundle.load(
+                                    "assets/images/SoshiLogos/soshi_icon.png");
+                                profilePicBytes = data.buffer.asUint8List();
+                              }
+                              Contact contact = new Contact(
+                                  givenName: firstName,
+                                  familyName: lastName,
+                                  emails: [
+                                    Item(
+                                      label: "Email",
+                                      value: LocalDataService
+                                          .getLocalUsernameForPlatform("Email"),
+                                    ),
+                                  ],
+                                  phones: [
+                                    Item(
+                                        label: "Cell",
+                                        value: LocalDataService
+                                            .getLocalUsernameForPlatform(
+                                                "Phone")),
+                                  ],
+                                  avatar: profilePicBytes);
+                              await askPermissions(context);
+                              ContactsService.addContact(contact)
+                                  .then((dynamic success) {
+                                Popups.showContactAddedPopup(
+                                    context, width, firstName, lastName);
+                              });
+                            } else {
+                              URL.launchURL(URL.getPlatformURL(
+                                  platform: platformName,
+                                  username: LocalDataService
+                                      .getLocalUsernameForPlatform(
+                                          platformName)));
+                            }
+                          },
+                          iconSize: 60.0,
+                        ),
                       ),
-                Expanded(
-                    child: TextField(
-                  autofillHints: ['Phone'].contains(platformName)
-                      ? [AutofillHints.telephoneNumber]
-                      : null,
-                  keyboardType: ["Phone"].contains(platformName)
-                      ? TextInputType.numberWithOptions(
-                          signed: true, decimal: true)
-                      : (["Email"].contains(platformName)
-                          ? TextInputType.emailAddress
-                          : null),
-                  inputFormatters: [
-                    FilteringTextInputFormatter.deny(RegExp(r'@'))
+                    ),
+                    SizedBox(width: 5),
+                    ['Email', 'Phone', 'Contact', 'Linkedin', 'Facebook']
+                            .contains(platformName)
+                        ? Container()
+                        : Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                            child: Text("@",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20)),
+                          ),
+                    Expanded(
+                        child: TextField(
+                      autofillHints: ['Phone'].contains(platformName)
+                          ? [AutofillHints.telephoneNumber]
+                          : null,
+                      keyboardType: ["Phone"].contains(platformName)
+                          ? TextInputType.numberWithOptions(
+                              signed: true, decimal: true)
+                          : (["Email"].contains(platformName)
+                              ? TextInputType.emailAddress
+                              : null),
+                      inputFormatters: platformName == "Email"
+                          ? []
+                          : [FilteringTextInputFormatter.deny(RegExp(r'@'))],
+                      readOnly: widget.platformName == "Contact" ? true : false,
+                      controller: usernameController,
+                      focusNode: focusNode,
+                      decoration: InputDecoration(
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey[800]),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.cyan),
+                        ), //border: Inp
+                        hintText: hintText,
+                        hintStyle: TextStyle(
+                          fontSize: 15,
+                          //fontWeight: FontWeight.bold,
+                          color: Colors.grey[600],
+                          letterSpacing: 1.0,
+                        ),
+                      ),
+                      style: TextStyle(
+                        fontSize: 18,
+                        //fontWeight: FontWeight.bold,
+                        color: Colors.grey[50],
+                        letterSpacing: 1.0,
+                      ),
+                    )),
+                    Padding(
+                      padding: EdgeInsets.only(right: 35),
+                    )
                   ],
-                  readOnly: widget.platformName == "Contact" ? true : false,
-                  controller: usernameController,
-                  focusNode: focusNode,
-                  decoration: InputDecoration(
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey[800]),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.cyan),
-                    ), //border: Inp
-                    hintText: hintText,
-                    hintStyle: TextStyle(
-                      fontSize: 15,
-                      //fontWeight: FontWeight.bold,
-                      color: Colors.grey[600],
-                      letterSpacing: 1.0,
-                    ),
-                  ),
-                  style: TextStyle(
-                    fontSize: 18,
-                    //fontWeight: FontWeight.bold,
-                    color: Colors.grey[50],
-                    letterSpacing: 1.0,
-                  ),
-                )),
-                Padding(
-                  padding: EdgeInsets.only(right: 35),
-                )
-              ],
-            ),
-          )),
+                ),
+              )),
         ),
         Visibility(
             child: GestureDetector(
@@ -350,7 +353,7 @@ class _SMCardState extends State<SMCard> {
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   child: Container(
-                    height: Utilities.getHeight(context) / 10,
+                    height: Utilities.getHeight(context) / 12,
                     child: Row(
                       children: [Expanded(child: Text(""))],
                     ),
@@ -475,8 +478,10 @@ class ProfileState extends State<Profile> {
   String soshiUsername;
   List profilePlatforms;
   // FocusNode bioFocusNode;
-  TextEditingController profileBioController =
-      TextEditingController(text: LocalDataService.getBio().toString());
+  TextEditingController profileBioController = TextEditingController(
+      text: LocalDataService.getBio() == null
+          ? ""
+          : LocalDataService.getBio().toString());
 
   @override
   void initState() {
