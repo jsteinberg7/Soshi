@@ -42,7 +42,7 @@ void main() async {
     1. Check if first time running app
     2. If so, check if LocalData has data to see if user is logged in
     */
-  if (firstLaunch && LocalDataService.getLocalUsername() == null) {
+  if (firstLaunch && LocalDataService.getLocalUsername() == "null") {
     AuthService tempAuth = new AuthService();
     await tempAuth.signOut(); // sign user out
   }
