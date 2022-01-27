@@ -84,7 +84,7 @@ abstract class LocalDataService {
     for (dynamic platform in choosePlatformsDynamic) {
       choosePlatforms.add(platform.toString());
     }
-    
+
     await preferences.setStringList("Choose Platforms", choosePlatforms);
 
     // set profile platforms list to match cloud copy
@@ -109,7 +109,11 @@ abstract class LocalDataService {
   ** note: local getters can only be used for the current user (not for friends)
   */
   static getLocalUsername() {
-    return preferences.getString("Username") ?? "null";
+    try {
+      return preferences.getString("Username");
+    } catch (e) {
+      return "null";
+    }
   }
 
   static String getLocalFirstName() {

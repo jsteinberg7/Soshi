@@ -30,6 +30,7 @@ class _MainAppState extends State<MainApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
+        //Create "Beta" icon on left
         preferredSize: Size(
             Utilities.getWidth(context), Utilities.getHeight(context) / 16),
         child: AppBar(
@@ -101,7 +102,7 @@ class _MainAppState extends State<MainApp> {
       bottomNavigationBar: SizedBox(
         height: Utilities.getHeight(context) / 12.5,
         child: CustomNavigationBar(
-          iconSize: Utilities.getHeight(context) / 30,
+          iconSize: Utilities.getHeight(context) / 35,
           selectedColor: Colors.cyan[300],
           strokeColor: Colors.cyan[800],
           unSelectedColor: Colors.grey[500],

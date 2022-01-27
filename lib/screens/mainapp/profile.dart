@@ -85,9 +85,7 @@ class _SMCardState extends State<SMCard> {
     platformName = widget.platformName;
     if (platformName == "Phone") {
       hintText = "Phone Number";
-    } else if (platformName == "Linkedin" ||
-        platformName == "Facebook" ||
-        platformName == "Tiktok") {
+    } else if (platformName == "Linkedin" || platformName == "Facebook") {
       hintText = "Link to Profile";
     } else {
       hintText = "Username";
@@ -277,7 +275,7 @@ class _SMCardState extends State<SMCard> {
                   ),
                 ),
                 SizedBox(width: 5),
-                ['Email', 'Phone', 'Contact', 'Linkedin', 'Tiktok', 'Facebook']
+                ['Email', 'Phone', 'Contact', 'Linkedin', 'Facebook']
                         .contains(platformName)
                     ? Container()
                     : Padding(
@@ -475,8 +473,10 @@ class ProfileState extends State<Profile> {
   String soshiUsername;
   List profilePlatforms;
   // FocusNode bioFocusNode;
-  TextEditingController profileBioController =
-      TextEditingController(text: LocalDataService.getBio().toString());
+  TextEditingController profileBioController = TextEditingController(
+      text: LocalDataService.getBio() == null
+          ? ""
+          : LocalDataService.getBio().toString());
 
   @override
   void initState() {
