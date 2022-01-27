@@ -297,9 +297,9 @@ class _SMCardState extends State<SMCard> {
                       : (["Email"].contains(platformName)
                           ? TextInputType.emailAddress
                           : null),
-                  inputFormatters: [
-                    FilteringTextInputFormatter.deny(RegExp(r'@'))
-                  ],
+                  inputFormatters: platformName == "Email"
+                      ? []
+                      : [FilteringTextInputFormatter.deny(RegExp(r'@'))],
                   readOnly: widget.platformName == "Contact" ? true : false,
                   controller: usernameController,
                   focusNode: focusNode,
