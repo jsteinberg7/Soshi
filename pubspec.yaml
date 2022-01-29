@@ -59,6 +59,9 @@ dependencies:
 
   # keyboard_visibility: any
   flutter_keyboard_visibility: ^5.0.2
+  device_display_brightness: ^0.0.6
+  introduction_screen: ^2.1.0
+  lottie: ^1.2.1
   
 dev_dependencies:
   flutter_test:

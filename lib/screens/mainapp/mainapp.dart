@@ -16,11 +16,7 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
-  List<Widget> screens = [
-    QRScreen(),
-    Profile(),
-    FriendScreen()
-  ]; // list of screens (change through indexing)
+  List<Widget> screens = [QRScreen(), Profile(), FriendScreen()]; // list of screens (change through indexing)
 
   int currScreen = 1;
 
@@ -31,8 +27,7 @@ class _MainAppState extends State<MainApp> {
     return Scaffold(
       appBar: PreferredSize(
         //Create "Beta" icon on left
-        preferredSize: Size(
-            Utilities.getWidth(context), Utilities.getHeight(context) / 16),
+        preferredSize: Size(Utilities.getWidth(context), Utilities.getHeight(context) / 16),
         child: AppBar(
           leadingWidth: 100,
           actions: [
@@ -45,26 +40,15 @@ class _MainAppState extends State<MainApp> {
                 style: ElevatedButton.styleFrom(
                     primary: Colors.grey[850],
                     shadowColor: Constants.appBarColor,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)))),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0)))),
                 child: Row(
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("Send",
-                            style: TextStyle(
-                                color: Colors.cyan[300],
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1)),
-                        Text("feedback!",
-                            style: TextStyle(
-                                color: Colors.cyan[300],
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1)),
+                        Text("Send", style: TextStyle(color: Colors.cyan[300], fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1)),
+                        Text("feedback!", style: TextStyle(color: Colors.cyan[300], fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1)),
                       ],
                     ),
                     // Icon(
@@ -90,6 +74,9 @@ class _MainAppState extends State<MainApp> {
         ),
       ),
       backgroundColor: Constants.backgroundColor,
+      // backgroundColor: Colors.white,
+
+      // {Changed color}
       body: PageView(
         children: screens,
         controller: pageController,

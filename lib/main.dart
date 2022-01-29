@@ -50,11 +50,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return StreamProvider<User>.value(
-        value: AuthService().user,
-        child: MaterialApp(
-            debugShowCheckedModeBanner: false,
-            theme: Constants.CustomTheme,
-            home: Wrapper()));
+        value: AuthService().user, child: MaterialApp(debugShowCheckedModeBanner: false, theme: Constants.CustomTheme, home: Wrapper()));
   }
 }
 
@@ -66,17 +62,15 @@ void main() async {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   // initialize SharedPreferences if user is logged in
   LocalDataService.preferences = await SharedPreferences.getInstance();
+
   bool firstLaunch = (!LocalDataService.hasLaunched() ||
-      LocalDataService.hasLaunched() ==
-          null); // firstLaunched true if hasLaunched is false (first time running app)
+      LocalDataService.hasLaunched() == null); // firstLaunched true if hasLaunched is false (first time running app)
   // print(firstLaunch);
   /*
     1. Check if first time running app
     2. If so, check if LocalData has data to see if user is logged in
     */
-  if (firstLaunch &&
-      (LocalDataService.getLocalUsername() == "null" ||
-          LocalDataService.getLocalUsername() == null)) {
+  if (firstLaunch && (LocalDataService.getLocalUsername() == "null" || LocalDataService.getLocalUsername() == null)) {
     // print("first launch");
     AuthService tempAuth = new AuthService();
     await tempAuth.signOut(); // sign user out
@@ -87,6 +81,5 @@ void main() async {
 
   runApp(MyApp()); // run app,
 
-  await LocalDataService.preferences
-      .setBool("hasLaunched", true); // user has launched app
+  await LocalDataService.preferences.setBool("hasLaunched", true); // user has launched app
 }

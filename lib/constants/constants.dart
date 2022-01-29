@@ -2,17 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 abstract class Constants {
-  static TextStyle CustomCyan = new TextStyle(
-      color: Colors.cyan[300],
-      fontSize: 15,
-      letterSpacing: 2,
-      fontStyle: FontStyle.italic,
-      fontWeight: FontWeight.bold);
+  static TextStyle CustomCyan =
+      new TextStyle(color: Colors.cyan[300], fontSize: 15, letterSpacing: 2, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold);
 
-  static ThemeData CustomTheme = new ThemeData(
-    primaryColor: Colors.grey[800],
-    accentColor: Colors.cyan[300],
-  );
+  static ThemeData CustomTheme = new ThemeData(primaryColor: Colors.grey[800], accentColor: Colors.cyan[300]);
   static Color appBarColor = Colors.grey[850];
 
   static Color backgroundColor = Colors.grey[800];
@@ -24,20 +17,16 @@ abstract class Constants {
   static ButtonStyle ButtonStyleDark = ElevatedButton.styleFrom(
       primary: Constants.buttonColorDark,
       shadowColor: Constants.buttonColorDark,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(15.0))));
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))));
 
   static ButtonStyle ButtonStyleClear = ElevatedButton.styleFrom(
       primary: Colors.transparent,
       shadowColor: Constants.buttonColorDark,
       side: BorderSide(color: Colors.cyanAccent),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(15.0))));
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))));
 
-  static LinearGradient greyCyanGradient = new LinearGradient(
-      begin: Alignment.bottomLeft,
-      end: Alignment.topRight,
-      colors: [Colors.grey[800], Colors.cyan[300]]);
+  static LinearGradient greyCyanGradient =
+      new LinearGradient(begin: Alignment.bottomLeft, end: Alignment.topRight, colors: [Colors.grey[800], Colors.cyan[300]]);
 
   // static Gradient gradientForPlatform(String platform) {
   //   List<Color> colors = [];

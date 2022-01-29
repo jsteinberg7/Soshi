@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:soshi/screens/login/onboarding.dart';
 import 'package:soshi/services/localData.dart';
 import 'login/authenticate.dart';
 import 'mainapp/mainapp.dart';
@@ -25,7 +26,8 @@ class _WrapperState extends State<Wrapper> {
       //     context); // precache profile picture
       return MainApp();
     } else {
-      return Authenticate();
+      // return Authenticate();
+      return Onboarding();
     }
   }
 }

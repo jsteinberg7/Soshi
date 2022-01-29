@@ -22,7 +22,9 @@ class _AuthenticateState extends State<Authenticate> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        // backgroundColor: Colors.white,
         appBar: AppBar(
+          
           // This is creating the app bar with the Soshi Logo and text
           elevation: 40,
           title: Image.asset(
@@ -32,8 +34,6 @@ class _AuthenticateState extends State<Authenticate> {
           backgroundColor: Constants.appBarColor,
           centerTitle: true,
         ),
-        body: isRegistering
-            ? RegisterScreen(toggleScreen: toggleIsRegistering)
-            : LoginScreen(toggleScreen: toggleIsRegistering));
+        body: isRegistering ? RegisterScreen(toggleScreen: toggleIsRegistering) : LoginScreen(toggleScreen: toggleIsRegistering));
   }
 }
