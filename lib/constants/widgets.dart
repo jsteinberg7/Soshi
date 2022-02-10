@@ -574,7 +574,9 @@ class _CircularProfileAvatarState extends State<CircularProfileAvatar> {
     return widget.cacheImage
         ? ClipRRect(
             borderRadius: BorderRadius.circular(widget.radius),
-            child: ((widget.imageUrl != null) && widget.imageUrl != "null")
+            child: ((widget.imageUrl != null) &&
+                    widget.imageUrl != "null" &&
+                    widget.imageUrl != null)
                 ? CachedNetworkImage(
                     fit: widget.imageFit,
                     imageUrl: widget.imageUrl,
