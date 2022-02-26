@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "976498646691",
+    "project_id": "soshi-bc9ec",
+    "storage_bucket": "soshi-bc9ec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:976498646691:android:db15ed851e26bbe7092916",
+        "android_client_info": {
+          "package_name": "com.swoledevs.soshi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "976498646691-9tcal5mpusorepdj4jlsr715kqb0if6q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.swoledevs.soshi",
+            "certificate_hash": "c1f1ddf6c3dec75d55b0275823e8408658823e29"
+          }
+        },
+        {
+          "client_id": "976498646691-o5muina40lmred03rhn0geaaetqepe7v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdLfiBnfE2SD0scrmKDRU-MGq51oNBslU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "976498646691-o5muina40lmred03rhn0geaaetqepe7v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
