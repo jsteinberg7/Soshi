@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:contacts_service/contacts_service.dart';
-import 'package:device_display_brightness/device_display_brightness.dart';
+// import 'package:device_display_brightness/device_display_brightness.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -412,7 +412,9 @@ class ProfileState extends State<Profile> {
 
     // double startingBrightness = LocalDataService.getInitialScreenBrightness();
     // DeviceDisplayBrightness.setBrightness(startingBrightness);
-    DeviceDisplayBrightness.resetBrightness();
+
+
+    // DeviceDisplayBrightness.resetBrightness();
 
     soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
     profilePlatforms = LocalDataService.getLocalProfilePlatforms();

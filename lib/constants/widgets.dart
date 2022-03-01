@@ -269,7 +269,7 @@ class ShareButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
           primary: Constants.buttonColorDark, shape: CircleBorder()),
       onPressed: () {
-        Share.share("https://soshi.app/#/user/" + soshiUsername,
+        Share.share("https://soshi.app/" + soshiUsername,
             subject: LocalDataService.getLocalFirstName() +
                 " " +
                 LocalDataService.getLocalLastName() +

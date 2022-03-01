@@ -32,7 +32,8 @@ class QRScreen extends StatefulWidget {
 }
 
 class _QRScreenState extends State<QRScreen> {
-  CollectionReference usersCollection = FirebaseFirestore.instance.collection("users");
+  CollectionReference usersCollection =
+      FirebaseFirestore.instance.collection("users");
 
   void refresh() {
     setState(() {});
@@ -46,8 +47,10 @@ class _QRScreenState extends State<QRScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
-    DatabaseService databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
+    String soshiUsername =
+        LocalDataService.getLocalUsernameForPlatform("Soshi");
+    DatabaseService databaseService =
+        new DatabaseService(currSoshiUsernameIn: soshiUsername);
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     return SingleChildScrollView(
@@ -59,7 +62,9 @@ class _QRScreenState extends State<QRScreen> {
             width: Utilities.getWidth(context) / 1.05,
             child: Card(
               elevation: 2.0,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0), side: BorderSide(color: Colors.cyanAccent, width: .3)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  side: BorderSide(color: Colors.cyanAccent, width: .3)),
               color: Constants.buttonColorDark,
               child: Flex(
                   direction: Axis.horizontal,
@@ -76,76 +81,101 @@ class _QRScreenState extends State<QRScreen> {
                       ),
                     ),
                     Expanded(
-                      child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.center, children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "@" + LocalDataService.getLocalUsernameForPlatform("Soshi"),
-                                style: TextStyle(
-                                    color: Colors.grey[500],
-                                    letterSpacing: 2,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FontStyle.italic),
-                              ),
-                              //SizedBox(width: width / 40),
-                              GestureDetector(
-                                onTap: () {
-                                  Popups.showUserProfilePopupNew(context, friendSoshiUsername: soshiUsername, refreshScreen: () {});
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black26,
-                                          blurRadius: 2.0,
-                                          spreadRadius: 0.0,
-                                          offset: Offset(2.0, 2.0), // shadow direction: bottom right
-                                        )
-                                      ],
-                                      color: Colors.black12,
-                                      border: Border.all(color: Colors.grey[700], width: width / 500),
-                                      borderRadius: BorderRadius.all(Radius.circular(width / 10))),
-                                  child: Padding(
-                                    padding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Icon(Icons.preview_rounded, color: Colors.grey[300], size: width / 20),
-                                        SizedBox(width: width / 100),
-                                        Text("Preview",
-                                            style: TextStyle(
-                                                fontSize: Utilities.getHeight(context) / 55, color: Colors.grey[200], fontStyle: FontStyle.italic)),
-                                      ],
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "@" +
+                                        LocalDataService
+                                            .getLocalUsernameForPlatform(
+                                                "Soshi"),
+                                    style: TextStyle(
+                                        color: Colors.grey[500],
+                                        letterSpacing: 2,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                        fontStyle: FontStyle.italic),
+                                  ),
+                                  //SizedBox(width: width / 40),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Popups.showUserProfilePopupNew(context,
+                                          friendSoshiUsername: soshiUsername,
+                                          refreshScreen: () {});
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black26,
+                                              blurRadius: 2.0,
+                                              spreadRadius: 0.0,
+                                              offset: Offset(2.0,
+                                                  2.0), // shadow direction: bottom right
+                                            )
+                                          ],
+                                          color: Colors.black12,
+                                          border: Border.all(
+                                              color: Colors.grey[700],
+                                              width: width / 500),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(width / 10))),
+                                      child: Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            10.0, 5.0, 10.0, 5.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            Icon(Icons.preview_rounded,
+                                                color: Colors.grey[300],
+                                                size: width / 20),
+                                            SizedBox(width: width / 100),
+                                            Text("Preview",
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        Utilities.getHeight(
+                                                                context) /
+                                                            55,
+                                                    color: Colors.grey[200],
+                                                    fontStyle:
+                                                        FontStyle.italic)),
+                                          ],
+                                        ),
+                                      ),
                                     ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            //SizedBox(height: height / 150),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 10, 10, 0),
+                              child: Container(
+                                child: Text(
+                                  LocalDataService.getLocalFirstName() +
+                                      " " +
+                                      LocalDataService.getLocalLastName(),
+                                  style: TextStyle(
+                                    color: Colors.cyan[300],
+                                    letterSpacing: 2,
+                                    fontSize: width / 17,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
-                        //SizedBox(height: height / 150),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 10, 10, 0),
-                          child: Container(
-                            child: Text(
-                              LocalDataService.getLocalFirstName() + " " + LocalDataService.getLocalLastName(),
-                              style: TextStyle(
-                                color: Colors.cyan[300],
-                                letterSpacing: 2,
-                                fontSize: width / 17,
-                                fontWeight: FontWeight.bold,
-                              ),
                             ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: Utilities.getHeight(context) / 100,
-                        ),
-                      ]),
+                            SizedBox(
+                              height: Utilities.getHeight(context) / 100,
+                            ),
+                          ]),
                     ),
                   ]),
             ),
@@ -160,13 +190,21 @@ class _QRScreenState extends State<QRScreen> {
             padding: EdgeInsets.fromLTRB(30, 20, 30, 0),
             child: Container(
               decoration: BoxDecoration(
-                  boxShadow: [BoxShadow(color: Colors.grey[900], blurRadius: 2.0, spreadRadius: 0.0, offset: Offset(2.0, 2.0))],
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.grey[900],
+                        blurRadius: 2.0,
+                        spreadRadius: 0.0,
+                        offset: Offset(2.0, 2.0))
+                  ],
                   color: Colors.cyan[50],
                   borderRadius: BorderRadius.all(Radius.circular(10.0))),
               child: GestureDetector(
                 onTap: () {
                   Clipboard.setData(ClipboardData(
-                    text: "https://soshi.app/#/user/" + LocalDataService.getLocalUsernameForPlatform("Soshi").toString(),
+                    text: "https://soshi.app/" +
+                        LocalDataService.getLocalUsernameForPlatform("Soshi")
+                            .toString(),
                   ));
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content: const Text(
@@ -177,7 +215,9 @@ class _QRScreenState extends State<QRScreen> {
                   Analytics.logCopyLinkToClipboard();
                 },
                 child: QrImage(
-                  data: "https://soshi.app/#/user/" + LocalDataService.getLocalUsernameForPlatform("Soshi").toString(),
+                  data: "https://soshi.app/" +
+                      LocalDataService.getLocalUsernameForPlatform("Soshi")
+                          .toString(),
                   size: width / 1.3,
                   padding: EdgeInsets.all(20.0),
                   foregroundColor: Colors.black,
@@ -186,7 +226,10 @@ class _QRScreenState extends State<QRScreen> {
             ),
           ),
           Padding(
-              padding: const EdgeInsets.fromLTRB(100, 10, 90, 10), child: ShareButton(size: 25, soshiUsername: LocalDataService.getLocalUsername())),
+              padding: const EdgeInsets.fromLTRB(100, 10, 90, 10),
+              child: ShareButton(
+                  size: 25,
+                  soshiUsername: LocalDataService.getLocalUsername())),
           Padding(
             padding: const EdgeInsets.fromLTRB(70, 0, 70, 0),
             child: ElevatedButton(
@@ -214,7 +257,8 @@ class _QRScreenState extends State<QRScreen> {
                   // vibrate when QR code is successfully scanned
                   Vibration.vibrate();
                   try {
-                    Popups.showUserProfilePopupNew(context, friendSoshiUsername: QRScanResult.split("/").last);
+                    Popups.showUserProfilePopupNew(context,
+                        friendSoshiUsername: QRScanResult.split("/").last);
                     Analytics.logQRScan(QRScanResult, true, "qrCode.dart");
                   } catch (e) {
                     Analytics.logQRScan(QRScanResult, false, "qrCode.dart");

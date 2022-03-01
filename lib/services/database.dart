@@ -477,7 +477,7 @@ class DatabaseService {
 
   Future<void> cropAndUploadImage(PickedFile passedInImage) async {
     if (passedInImage != null) {
-      File croppedImage = (await ImageCropper.cropImage(
+      File croppedImage = (await ImageCropper().cropImage(
           cropStyle: CropStyle.circle,
           sourcePath: passedInImage.path,
           aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
