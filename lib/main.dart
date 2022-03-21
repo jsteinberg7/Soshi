@@ -50,10 +50,15 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return StreamProvider<User>.value(
-        value: AuthService().user, child: MaterialApp(debugShowCheckedModeBanner: false, theme: Constants.CustomTheme, home: Wrapper()));
+        value: AuthService().user,
+        child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: Constants.CustomTheme,
+            home: Wrapper(firstLaunch)));
   }
 }
 
+bool firstLaunch;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // initialize Firebase
@@ -63,23 +68,31 @@ void main() async {
   // initialize SharedPreferences if user is logged in
   LocalDataService.preferences = await SharedPreferences.getInstance();
 
-  bool firstLaunch = (!LocalDataService.hasLaunched() ||
-      LocalDataService.hasLaunched() == null); // firstLaunched true if hasLaunched is false (first time running app)
+  firstLaunch = (!LocalDataService.hasLaunched() ||
+      LocalDataService.hasLaunched() ==
+          null); // firstLaunched true if hasLaunched is false (first time running app)
   // print(firstLaunch);
   /*
     1. Check if first time running app
     2. If so, check if LocalData has data to see if user is logged in
     */
-  if (firstLaunch && (LocalDataService.getLocalUsername() == "null" || LocalDataService.getLocalUsername() == null)) {
+  if (firstLaunch &&
+      (LocalDataService.getLocalUsername() == "null" ||
+          LocalDataService.getLocalUsername() == null)) {
     // print("first launch");
     AuthService tempAuth = new AuthService();
     await tempAuth.signOut(); // sign user out
     // print("signed out");
     //RestartWidget.restartApp(context);
-  }
+  // } 
+  // else if (DatabaseService())  // check if "Contact" link has been corrupted by focus node bug (fix if necessary)
   Analytics.logAppOpen();
 
   runApp(MyApp()); // run app,
 
-  await LocalDataService.preferences.setBool("hasLaunched", true); // user has launched app
+  await LocalDataService.preferences
+      .setBool("hasLaunched", true); // user has launched app
+
+  
+}
 }

@@ -396,6 +396,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 });
               }
             }
+            // (added in update to fix infinite loading)
+            Navigator.pop(context);
           }
         },
       ),
@@ -476,7 +478,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          Text('Already have an acoount?',
+          Text('Already have an account?',
               style: TextStyle(
                   color: Colors.cyan[300],
                   fontWeight: FontWeight.bold,

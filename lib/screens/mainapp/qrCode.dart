@@ -189,38 +189,63 @@ class _QRScreenState extends State<QRScreen> {
           Padding(
             padding: EdgeInsets.fromLTRB(30, 20, 30, 0),
             child: Container(
+              alignment: Alignment.center,
+              height: width / 1.3,
+              width: width / 1.3,
               decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.grey[900],
-                        blurRadius: 2.0,
-                        spreadRadius: 0.0,
-                        offset: Offset(2.0, 2.0))
+                borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.cyan[400],
+
+                    Colors.cyan[500],
+                    Colors.cyan[900],
+
+                    // Colors.white,
                   ],
-                  color: Colors.cyan[50],
-                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
-              child: GestureDetector(
-                onTap: () {
-                  Clipboard.setData(ClipboardData(
-                    text: "https://soshi.app/" +
+                  tileMode: TileMode.mirror,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.grey[900],
+                      blurRadius: 3.0,
+                      spreadRadius: 0.0,
+                      offset: Offset(3.0, 3.0))
+                ],
+              ),
+              child: Container(
+                alignment: Alignment.center,
+                height: width / 1.5,
+                width: width / 1.5,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                child: GestureDetector(
+                  onTap: () {
+                    Clipboard.setData(ClipboardData(
+                      text: "https://soshi.app/" +
+                          LocalDataService.getLocalUsernameForPlatform("Soshi")
+                              .toString(),
+                    ));
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: const Text(
+                        'Copied link to clipboard :)',
+                        textAlign: TextAlign.center,
+                      ),
+                    ));
+                    Analytics.logCopyLinkToClipboard();
+                  },
+                  child: QrImage(
+                    dataModuleStyle: QrDataModuleStyle(
+                      dataModuleShape: QrDataModuleShape.circle,
+                    ),
+                    data: "https://soshi.app/" +
                         LocalDataService.getLocalUsernameForPlatform("Soshi")
                             .toString(),
-                  ));
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: const Text(
-                      'Copied link to clipboard :)',
-                      textAlign: TextAlign.center,
-                    ),
-                  ));
-                  Analytics.logCopyLinkToClipboard();
-                },
-                child: QrImage(
-                  data: "https://soshi.app/" +
-                      LocalDataService.getLocalUsernameForPlatform("Soshi")
-                          .toString(),
-                  size: width / 1.3,
-                  padding: EdgeInsets.all(20.0),
-                  foregroundColor: Colors.black,
+                    size: width / 1.35,
+                    padding: EdgeInsets.all(20.0),
+                    foregroundColor: Colors.black,
+                  ),
                 ),
               ),
             ),
@@ -230,43 +255,40 @@ class _QRScreenState extends State<QRScreen> {
               child: ShareButton(
                   size: 25,
                   soshiUsername: LocalDataService.getLocalUsername())),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(70, 0, 70, 0),
-            child: ElevatedButton(
-              child: Container(
-                child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  Text(
-                    "Scan QR Code",
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.cyan[300],
-                      letterSpacing: 2.0,
-                    ),
+          ElevatedButton(
+            child: Container(
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                Text(
+                  "Scan QR Code",
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.cyan[300],
+                    letterSpacing: 2.0,
                   ),
-                  Padding(
-                    padding: EdgeInsets.all(5.0),
-                  ),
-                  Icon(Icons.qr_code_scanner_rounded, color: Colors.cyan)
-                ]),
-              ),
-              style: Constants.ButtonStyleDark,
-              onPressed: () async {
-                String QRScanResult = await Utilities.scanQR(mounted);
-                if (QRScanResult.length > 5) {
-                  // vibrate when QR code is successfully scanned
-                  Vibration.vibrate();
-                  try {
-                    Popups.showUserProfilePopupNew(context,
-                        friendSoshiUsername: QRScanResult.split("/").last);
-                    Analytics.logQRScan(QRScanResult, true, "qrCode.dart");
-                  } catch (e) {
-                    Analytics.logQRScan(QRScanResult, false, "qrCode.dart");
-                    print(e);
-                  }
-                }
-              },
+                ),
+                Padding(
+                  padding: EdgeInsets.all(5.0),
+                ),
+                Icon(Icons.qr_code_scanner_rounded, color: Colors.cyan)
+              ]),
             ),
+            style: Constants.ButtonStyleDark,
+            onPressed: () async {
+              String QRScanResult = await Utilities.scanQR(mounted);
+              if (QRScanResult.length > 5) {
+                // vibrate when QR code is successfully scanned
+                Vibration.vibrate();
+                try {
+                  Popups.showUserProfilePopupNew(context,
+                      friendSoshiUsername: QRScanResult.split("/").last);
+                  Analytics.logQRScan(QRScanResult, true, "qrCode.dart");
+                } catch (e) {
+                  Analytics.logQRScan(QRScanResult, false, "qrCode.dart");
+                  print(e);
+                }
+              }
+            },
           ),
         ]),
       )),

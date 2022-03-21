@@ -169,6 +169,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 emailIn: _emailController.text,
                 passwordIn: _passwordController.text,
                 contextIn: context);
+            // added in update
+            Navigator.pop(context);
 
             // acknowledge login attempt
             if (loginResult == null) {

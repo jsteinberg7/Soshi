@@ -6,7 +6,7 @@ import 'dart:convert';
 */
 import 'package:device_display_brightness/device_display_brightness.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:soshi/services/database.dart';
+import 'database.dart';
 
 abstract class LocalDataService {
 // store all local data
