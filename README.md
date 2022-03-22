@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-# strippedsoshi
-=======
 # soshi
->>>>>>> cfde3c68205567692dbe63373ca9b702b6b33ac8
 
 A new Flutter project.
 
