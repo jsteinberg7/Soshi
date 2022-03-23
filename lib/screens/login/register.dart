@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -396,8 +397,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 });
               }
             }
-            // (added in update to fix infinite loading)
-            Navigator.pop(context);
+            // added in update to avoid infinite loading
+            if (Platform.isAndroid) {
+              Navigator.pop(context);
+            }
           }
         },
       ),

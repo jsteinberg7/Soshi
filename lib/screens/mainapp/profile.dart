@@ -120,7 +120,8 @@ class _SMCardState extends State<SMCard> {
             databaseService.updatePlatformSwitch(
                 platform: platformName, state: true);
           }
-          if (platformName != "Contact") { // prevent contact from being overwritten through textfield
+          if (platformName != "Contact") {
+            // prevent contact from being overwritten through textfield
             LocalDataService.updateUsernameForPlatform(
                 platform: platformName, username: usernameController.text);
             databaseService.updateUsernameForPlatform(
@@ -145,7 +146,7 @@ class _SMCardState extends State<SMCard> {
                   : BorderSide.none),
           elevation: 10,
 
-          color: Colors.grey[850],
+          // color: Colors.grey[850],
 
           //Colors.grey[850],
           child: Container(
@@ -179,7 +180,7 @@ class _SMCardState extends State<SMCard> {
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(40.0))),
-                                    backgroundColor: Colors.blueGrey[900],
+                                    // backgroundColor: Colors.blueGrey[900],
                                     title: Text(
                                       "Platform Switches",
                                       style: TextStyle(
@@ -290,7 +291,7 @@ class _SMCardState extends State<SMCard> {
                             padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
                             child: Text("@",
                                 style: TextStyle(
-                                    color: Colors.white,
+                                    // color: Colors.white,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 20)),
                           ),
@@ -313,8 +314,8 @@ class _SMCardState extends State<SMCard> {
                       focusNode: focusNode,
                       decoration: InputDecoration(
                         enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey[800]),
-                        ),
+                            // borderSide: BorderSide(color: Colors.grey[800]),
+                            ),
                         focusedBorder: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.cyan),
                         ), //border: Inp
@@ -322,14 +323,14 @@ class _SMCardState extends State<SMCard> {
                         hintStyle: TextStyle(
                           fontSize: 15,
                           //fontWeight: FontWeight.bold,
-                          color: Colors.grey[600],
+                          // color: Colors.grey[600],
                           letterSpacing: 1.0,
                         ),
                       ),
                       style: TextStyle(
                         fontSize: 18,
                         //fontWeight: FontWeight.bold,
-                        color: Colors.grey[50],
+                        // color: Colors.grey[50],
                         letterSpacing: 1.0,
                       ),
                     )),
@@ -352,16 +353,17 @@ class _SMCardState extends State<SMCard> {
                     platform: platformName, state: true);
               },
               child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Container(
+                  height: Utilities.getHeight(context) / 12,
+                  child: Row(
+                    children: [Expanded(child: Text(""))],
                   ),
-                  child: Container(
-                    height: Utilities.getHeight(context) / 12,
-                    child: Row(
-                      children: [Expanded(child: Text(""))],
-                    ),
-                  ),
-                  color: Colors.black26),
+                ),
+                // color: Colors.black26
+              ),
             ),
             visible: !isSwitched),
         Padding(
@@ -373,7 +375,7 @@ class _SMCardState extends State<SMCard> {
                 icon: Icon(
                   Icons.more_vert_rounded,
                   size: 30,
-                  color: Colors.white,
+                  // color: Colors.white,
                 ),
                 onPressed: () {
                   showDialog(
@@ -383,21 +385,22 @@ class _SMCardState extends State<SMCard> {
                           shape: RoundedRectangleBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(40.0))),
-                          backgroundColor: Colors.blueGrey[900],
+                          // backgroundColor: Colors.blueGrey[900],
                           title: Text(
                             "Remove Platform",
                             style: TextStyle(
-                                color: Colors.cyan[600],
+                                // color: Colors.cyan[600],
                                 fontWeight: FontWeight.bold),
                           ),
                           content: Text(
                             ("Are you sure you want to remove " +
                                 platformName +
                                 " from your profile?"),
+                            textAlign: TextAlign.center,
                             style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.cyan[700],
-                                fontWeight: FontWeight.bold),
+                              fontSize: 20,
+                              // color: Colors.cyan[700],
+                            ),
                           ),
                           actions: <Widget>[
                             Row(
@@ -405,8 +408,10 @@ class _SMCardState extends State<SMCard> {
                               children: <Widget>[
                                 TextButton(
                                   child: Text(
-                                    'No',
-                                    style: TextStyle(fontSize: 20),
+                                    'Cancel',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                    ),
                                   ),
                                   onPressed: () {
                                     Navigator.pop(context);
@@ -414,7 +419,7 @@ class _SMCardState extends State<SMCard> {
                                 ),
                                 TextButton(
                                   child: Text(
-                                    'Yes',
+                                    'Remove',
                                     style: TextStyle(
                                         fontSize: 20, color: Colors.red),
                                   ),
@@ -609,12 +614,13 @@ class ProfileState extends State<Profile> {
                                         child: Container(
                                           padding: EdgeInsets.all(width / 100),
                                           decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: Colors.grey[850]),
+                                            shape: BoxShape.circle,
+                                            // color: Colors.grey[850]
+                                          ),
                                           child: Icon(
                                             Icons.edit,
                                             size: 20,
-                                            color: Colors.cyan,
+                                            // color: Colors.cyan,
                                           ),
                                         ))
                                   ],
@@ -631,18 +637,19 @@ class ProfileState extends State<Profile> {
                                           refreshProfile: refreshScreen));
                                 }));
                               },
-                              style: Constants.ButtonStyleDark,
+                              // style: Constants.ButtonStyleDark,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
                                   Text("Edit Profile",
                                       style: TextStyle(
-                                        color: Colors.cyan[300],
-                                      )),
+                                          // color: Colors.cyan[300],
+                                          )),
                                   SizedBox(width: 4.0),
                                   Icon(Icons.person_rounded,
-                                      color: Colors.cyan[300], size: 20.0),
+                                      // color: Colors.cyan[300],
+                                      size: 20.0),
                                 ],
                               ),
                             ),
@@ -665,8 +672,8 @@ class ProfileState extends State<Profile> {
                         children: <Widget>[],
                       ),
                       Divider(
-                        color: Colors.cyan[300],
-                      ),
+                          // color: Colors.cyan[300],
+                          ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
@@ -681,11 +688,11 @@ class ProfileState extends State<Profile> {
                             child: Icon(
                               Icons.help,
                               size: 30,
-                              color: Colors.grey[900],
+                              // color: Colors.grey[900],
                             ),
                             style: ElevatedButton.styleFrom(
                                 fixedSize: Size(35, 35),
-                                primary: Colors.blueGrey[500],
+                                // primary: Colors.blueGrey[500],
                                 shape: CircleBorder()),
                             onPressed: () {
                               Popups.showPlatformHelpPopup(context, height);
@@ -801,7 +808,7 @@ class ProfileState extends State<Profile> {
                               ));
                             }));
                           },
-                          style: Constants.ButtonStyleDark,
+                          // style: Constants.ButtonStyleDark,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
@@ -909,7 +916,7 @@ class _BioTextFieldState extends State<BioTextField> {
               height: 1.2,
               fontWeight: FontWeight.bold,
               fontSize: 15,
-              color: Colors.white,
+              // color: Colors.white,
               letterSpacing: 1.5),
           decoration: InputDecoration(
             floatingLabelBehavior: FloatingLabelBehavior.always,

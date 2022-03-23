@@ -266,8 +266,7 @@ class ShareButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-          primary: Constants.buttonColorDark, shape: CircleBorder()),
+      style: ElevatedButton.styleFrom(shape: CircleBorder()),
       onPressed: () {
         Share.share("https://soshi.app/" + soshiUsername,
             subject: LocalDataService.getLocalFirstName() +
@@ -275,7 +274,7 @@ class ShareButton extends StatelessWidget {
                 LocalDataService.getLocalLastName() +
                 "'s Soshi Contact Card");
       },
-      child: Icon(Icons.share, color: Colors.cyan[300], size: size),
+      child: Icon(Icons.share, size: size),
     );
   }
 }

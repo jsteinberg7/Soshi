@@ -16,7 +16,11 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
-  List<Widget> screens = [QRScreen(), Profile(), FriendScreen()]; // list of screens (change through indexing)
+  List<Widget> screens = [
+    QRScreen(),
+    Profile(),
+    FriendScreen()
+  ]; // list of screens (change through indexing)
 
   int currScreen = 1;
 
@@ -27,7 +31,8 @@ class _MainAppState extends State<MainApp> {
     return Scaffold(
       appBar: PreferredSize(
         //Create "Beta" icon on left
-        preferredSize: Size(Utilities.getWidth(context), Utilities.getHeight(context) / 16),
+        preferredSize: Size(
+            Utilities.getWidth(context), Utilities.getHeight(context) / 16),
         child: AppBar(
           leadingWidth: 100,
           actions: [
@@ -38,17 +43,26 @@ class _MainAppState extends State<MainApp> {
                   URL.launchURL("sms:" + "5713351885");
                 },
                 style: ElevatedButton.styleFrom(
-                    primary: Colors.grey[850],
-                    shadowColor: Constants.appBarColor,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0)))),
+                    primary: Theme.of(context).primaryColor,
+                    shadowColor: Colors.grey[900],
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(15.0)))),
                 child: Row(
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("Send", style: TextStyle(color: Colors.cyan[300], fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1)),
-                        Text("feedback!", style: TextStyle(color: Colors.cyan[300], fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1)),
+                        Text("Send",
+                            style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1)),
+                        Text("feedback!",
+                            style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1)),
                       ],
                     ),
                     // Icon(
@@ -69,11 +83,11 @@ class _MainAppState extends State<MainApp> {
             "assets/images/SoshiLogos/soshi_logo.png",
             height: Utilities.getHeight(context) / 22,
           ),
-          backgroundColor: Constants.appBarColor,
+          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
           centerTitle: true,
         ),
       ),
-      backgroundColor: Constants.backgroundColor,
+      backgroundColor: Theme.of(context).backgroundColor,
       // backgroundColor: Colors.white,
 
       // {Changed color}

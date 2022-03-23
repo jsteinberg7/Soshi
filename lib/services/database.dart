@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +39,8 @@ class DatabaseService {
   */
   Future<void> createUserFile(
       {String username, String email, String first, String last}) async {
+    var links = FirebaseDynamicLinks.instance; // register dynamic link
+    // links.buildShortLink(DynamicLinkParameters(link: link, uriPrefix: uriPrefix));
     await emailToUsernameCollection
         .doc(email)
         .set(<String, dynamic>{"soshiUsername": username});

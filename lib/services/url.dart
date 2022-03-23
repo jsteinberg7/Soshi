@@ -1,6 +1,5 @@
 import 'package:url_launcher/url_launcher.dart';
 
-
 // Basic wrapper for url services (all methods are static)
 abstract class URL {
   // open browser to specified url target

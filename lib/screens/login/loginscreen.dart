@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart'; // Importing packages and certain files
 import 'package:flutter/services.dart';
@@ -169,8 +171,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 emailIn: _emailController.text,
                 passwordIn: _passwordController.text,
                 contextIn: context);
-            // added in update
-            Navigator.pop(context);
+            // added in update to avoid infinite loading
+            if (Platform.isAndroid) {
+              Navigator.pop(context);
+            }
 
             // acknowledge login attempt
             if (loginResult == null) {
