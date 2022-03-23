@@ -26,16 +26,16 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    if (widget.linkData == null) {
-      print("Deep link params: null");
-      return;
-    }
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(
-        "Deep link params " + widget.linkData.utmParameters.toString(),
-        textAlign: TextAlign.center,
-      ),
-    ));
+    // if (widget.linkData == null) {
+    //   print("Deep link params: null");
+    //   return;
+    // }
+    // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    //   content: Text(
+    //     "Deep link params " + widget.linkData.utmParameters.toString(),
+    //     textAlign: TextAlign.center,
+    //   ),
+    // ));
   }
 
   @override
@@ -47,7 +47,7 @@ class _MyAppState extends State<MyApp> {
             themeMode: ThemeMode.system,
             theme: ThemeData(
                 brightness: Brightness.light,
-                backgroundColor: Color.fromARGB(255, 230, 230, 230),
+                backgroundColor: Color.fromARGB(255, 238, 238, 238),
                 primarySwatch: MaterialColor(
                   0xFFE7E7E7,
                   <int, Color>{
@@ -67,7 +67,7 @@ class _MyAppState extends State<MyApp> {
                 primaryColorLight: Color.fromARGB(255, 179, 225, 237),
                 primaryColorDark: Color(0xff936F3E),
                 canvasColor: Color.fromARGB(255, 191, 200, 202),
-                scaffoldBackgroundColor: Color.fromARGB(255, 237, 239, 243),
+                scaffoldBackgroundColor: Color.fromARGB(255, 238, 238, 238),
                 bottomAppBarColor: Color(0xff6D42CE),
                 cardColor: Color.fromARGB(171, 255, 255, 255),
                 dividerColor: Color(0x1f6D42CE),
@@ -97,35 +97,38 @@ void main() async {
     1. Check if first time running app
     2. If so, check if LocalData has data to see if user is logged in
     */
+  FirebaseDynamicLinks links = FirebaseDynamicLinks.instance;
+
   if (firstLaunch &&
       (LocalDataService.getLocalUsername() == "null" ||
           LocalDataService.getLocalUsername() == null)) {
     AuthService tempAuth = new AuthService();
     await tempAuth.signOut(); // sign user out
 
-    FirebaseDynamicLinks links = FirebaseDynamicLinks.instance;
-    if (LocalDataService.hasCreatedDynamicLink() == null &&
-        !(LocalDataService.getLocalUsername() == "null" ||
-            LocalDataService.getLocalUsername() == null)) {
-      // create Firebase dynamic link if necessary
-      // links.buildLink();
-      // LocalDataService.preferences
-      //     .setBool("Created Dynamic Link", true); // update field
-    }
-
-    // else if (DatabaseService())  // check if "Contact" link has been corrupted by focus node bug (fix if necessary)
-    Analytics.logAppOpen();
-
-    // get params from deep link
-    PendingDynamicLinkData linkData = await links.getInitialLink();
-    // print("Deep Link Params: " + linkData.utmParameters.toString())
-
-    runApp(MyApp(linkData)); // run app,
-
-    await LocalDataService.preferences
-        .setBool("hasLaunched", true); // user has launched app
-
+    // if (LocalDataService.hasCreatedDynamicLink() == null &&
+    //     !(LocalDataService.getLocalUsername() == "null" ||
+    //         LocalDataService.getLocalUsername() == null)) {
+    // create Firebase dynamic link if necessary
+    // links.buildLink();
+    // LocalDataService.preferences
+    //     .setBool("Created Dynamic Link", true); // update field
   }
+
+  // else if (DatabaseService())  // check if "Contact" link has been corrupted by focus node bug (fix if necessary)
+  Analytics.logAppOpen();
+
+  // get params from deep link
+  PendingDynamicLinkData linkData = await links.getInitialLink();
+  // print("Deep Link Params: " + linkData.utmParameters.toString())
+  runApp(MyApp(linkData));
+
+  await LocalDataService.preferences
+      .setBool("hasLaunched", true); // user has launched app
+
+  if (linkData != null) {
+    print(linkData.utmParameters);
+  }
+// }
 }
 
 // class RestartWidget extends StatefulWidget {

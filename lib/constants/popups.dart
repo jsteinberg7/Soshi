@@ -112,7 +112,7 @@ class Popups {
           return AlertDialog(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(40.0))),
-            backgroundColor: Colors.grey[850],
+            // backgroundColor: Colors.grey[850],
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -173,6 +173,192 @@ class Popups {
         });
   }
 
+  static void editUsernamePopup(BuildContext context, String soshiuser,
+      String platformName, String hinttext, String indicator, double width) {
+    DatabaseService databaseService =
+        new DatabaseService(currSoshiUsernameIn: soshiuser);
+    TextEditingController usernameController = new TextEditingController();
+    String usernameForPlatform =
+        LocalDataService.getLocalUsernameForPlatform(platformName);
+    usernameController.text = usernameForPlatform;
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(40.0))),
+            backgroundColor: Colors.blueGrey[900],
+            title: Text(
+              "Edit your " + platformName,
+              style: TextStyle(
+                  color: Colors.cyan[600], fontWeight: FontWeight.bold),
+            ),
+            content: Row(
+              children: [
+                Text(
+                  indicator,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: width / 20,
+                      fontWeight: FontWeight.bold),
+                ),
+                SizedBox(width: width / 40),
+                Expanded(
+                  child: TextField(
+                    autocorrect: false,
+                    controller: usernameController,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: width / 20,
+                        color: Colors.cyan[300]),
+                    onSubmitted: (String inputText) {
+                      LocalDataService.updateUsernameForPlatform(
+                          platform: platformName, username: inputText);
+                      databaseService.updateUsernameForPlatform(
+                          platform: platformName, username: inputText);
+                      Navigator.pop(context);
+                    },
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            // color: Colors.grey[600],
+                            ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.cyan[300],
+                        ),
+                      ),
+                      filled: true,
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      label: Text(platformName),
+                      labelStyle: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        // color: Colors.grey[400]),
+                      ),
+                      // fillColor: Colors.grey[850],
+                      hintText: hinttext,
+                      hintStyle: TextStyle(
+                          // color: Colors.grey[500],
+                          fontSize: 12,
+                          letterSpacing: 2,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            actions: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  TextButton(
+                    child: Text(
+                      'Cancel',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  TextButton(
+                    child: Text(
+                      'Done',
+                      style: TextStyle(fontSize: 20, color: Colors.blue),
+                    ),
+                    onPressed: () async {
+                      LocalDataService.updateUsernameForPlatform(
+                          platform: platformName,
+                          username: usernameController.text);
+                      databaseService.updateUsernameForPlatform(
+                          platform: platformName,
+                          username: usernameController.text);
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
+            ],
+          );
+        });
+  }
+
+  static void deletePlatformPopup(BuildContext context,
+      {String platformName, Function refreshScreen}) {
+    DatabaseService databaseService = new DatabaseService();
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(40.0))),
+            backgroundColor: Colors.blueGrey[900],
+            title: Text(
+              "Remove Platform",
+              style: TextStyle(
+                  color: Colors.cyan[600], fontWeight: FontWeight.bold),
+            ),
+            content: Text(
+              ("Are you sure you want to remove " +
+                  platformName +
+                  " from your profile?"),
+              style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.cyan[700],
+                  fontWeight: FontWeight.bold),
+            ),
+            actions: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  TextButton(
+                    child: Text(
+                      'No',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  TextButton(
+                    child: Text(
+                      'Yes',
+                      style: TextStyle(fontSize: 20, color: Colors.red),
+                    ),
+                    onPressed: () async {
+                      if (!LocalDataService.getLocalChoosePlatforms()
+                          .contains(platformName)) {
+                        Navigator.pop(context);
+
+                        await LocalDataService.removePlatformsFromProfile(
+                            platformName);
+                        LocalDataService.addToChoosePlatforms(platformName);
+
+                        LocalDataService.updateSwitchForPlatform(
+                            platform: platformName, state: false);
+                        databaseService.updatePlatformSwitch(
+                            platform: platformName, state: false);
+                        databaseService.removePlatformFromProfile(platformName);
+                        databaseService.addToChoosePlatforms(platformName);
+                        print(LocalDataService.getLocalProfilePlatforms()
+                            .toString());
+                        refreshScreen();
+                      } else {
+                        Navigator.pop(context);
+                        await LocalDataService.removePlatformsFromProfile(
+                            platformName);
+                        refreshScreen();
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ],
+          );
+        });
+  }
   // // display popup with user profile and social media links
   // static Future<void> showUserProfilePopup(BuildContext context,
   //     {String soshiUsername, Function refreshScreen}) async {
@@ -423,7 +609,7 @@ class Popups {
                 elevation: 50,
                 insetPadding: EdgeInsets.all(width / 14),
                 //insetPadding: EdgeInsets.all(0.0),
-                backgroundColor: Colors.black,
+                // backgroundColor: Colors.black,
                 // contentPadding:
                 //     EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
                 shape: RoundedRectangleBorder(
@@ -450,16 +636,17 @@ class Popups {
                                   Text(
                                     fullName,
                                     style: TextStyle(
-                                        fontSize: width / 23,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey[200]),
+                                      fontSize: width / 23,
+                                      fontWeight: FontWeight.bold,
+                                      // color: Colors.grey[200]
+                                    ),
                                   ),
                                   SizedBox(height: height / 120),
                                   Text(
                                     "@" + usernames["Soshi"],
                                     style: TextStyle(
                                         fontSize: 15.0,
-                                        color: Colors.grey[500],
+                                        // color: Colors.grey[500],
                                         fontStyle: FontStyle.italic),
                                   ),
                                   SizedBox(height: height / 170),
@@ -474,7 +661,7 @@ class Popups {
                                         "Friends: " + numFriendsString,
                                         style: TextStyle(
                                             fontSize: 15.0,
-                                            color: Colors.grey[500],
+                                            // color: Colors.grey[500],
                                             fontStyle: FontStyle.italic),
                                       ),
                                     ],
@@ -498,15 +685,15 @@ class Popups {
                                 child: (bio != null)
                                     ? Text(bio,
                                         style: TextStyle(
-                                          color: Colors.grey[300],
-                                        ))
+                                            // color: Colors.grey[300],
+                                            ))
                                     : Container()),
                           ),
                         ),
                         Divider(
-                          color: Colors.blueGrey,
-                          thickness: 2,
-                        ),
+                            // color: Colors.blueGrey,
+                            // thickness: 2,
+                            ),
                         Container(
                           height: height / 3.5,
                           width: width,

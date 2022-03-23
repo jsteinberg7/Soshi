@@ -258,6 +258,9 @@ class _QRScreenState extends State<QRScreen> {
                   size: 25,
                   soshiUsername: LocalDataService.getLocalUsername())),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(15.0)))),
             child: Container(
               child: Row(mainAxisSize: MainAxisSize.min, children: [
                 Text(

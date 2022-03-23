@@ -43,7 +43,7 @@ class _MainAppState extends State<MainApp> {
                   URL.launchURL("sms:" + "5713351885");
                 },
                 style: ElevatedButton.styleFrom(
-                    primary: Theme.of(context).primaryColor,
+                    // primary: Theme.of(context).primaryColor,
                     shadowColor: Colors.grey[900],
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(15.0)))),
@@ -80,7 +80,9 @@ class _MainAppState extends State<MainApp> {
           ],
           elevation: 40,
           title: Image.asset(
-            "assets/images/SoshiLogos/soshi_logo.png",
+            Theme.of(context).brightness == Brightness.light
+                ? "assets/images/SoshiLogos/soshi_logo_black.png"
+                : "assets/images/SoshiLogos/soshi_logo.png",
             height: Utilities.getHeight(context) / 22,
           ),
           backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
@@ -107,7 +109,7 @@ class _MainAppState extends State<MainApp> {
           selectedColor: Colors.cyan[300],
           strokeColor: Colors.cyan[800],
           unSelectedColor: Colors.grey[500],
-          backgroundColor: Colors.grey[900],
+          // backgroundColor: Colors.grey[900],
           items: [
             CustomNavigationBarItem(
               icon: Icon(AntDesign.qrcode),

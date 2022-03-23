@@ -1,3 +1,4 @@
+//import 'dart:html';
 import 'dart:typed_data';
 
 import 'package:contacts_service/contacts_service.dart';
@@ -120,19 +121,34 @@ class _SMCardState extends State<SMCard> {
             databaseService.updatePlatformSwitch(
                 platform: platformName, state: true);
           }
-          if (platformName != "Contact") {
-            // prevent contact from being overwritten through textfield
-            LocalDataService.updateUsernameForPlatform(
-                platform: platformName, username: usernameController.text);
-            databaseService.updateUsernameForPlatform(
-                platform: platformName, username: usernameController.text);
-            Analytics.logUpdateUsernameForPlatform(platformName);
-          }
         }
+
+        String usernameControllerLower = usernameController.text.toLowerCase();
+
+        LocalDataService.updateUsernameForPlatform(
+            platform: platformName, username: usernameControllerLower.trim());
+        databaseService.updateUsernameForPlatform(
+            platform: platformName, username: usernameControllerLower.trim());
       }
     });
 
     double height = Utilities.getHeight(context);
+    double width = Utilities.getWidth(context);
+    List platformsExceptForContact = [
+      "Phone",
+      "Instagram",
+      "Snapchat",
+      "Linkedin",
+      "Discord",
+      "Tiktok",
+      "Twitter",
+      "Venmo",
+      "Email",
+      "Facebook",
+      "Reddit",
+      "Spotify"
+    ];
+
     //double width = Utilities.getWidth(context);
     // text controller for username box
 
@@ -141,204 +157,161 @@ class _SMCardState extends State<SMCard> {
         Card(
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10.0),
-              side: (isSwitched == true)
-                  ? BorderSide(color: Colors.blueGrey)
-                  : BorderSide.none),
-          elevation: 10,
+              side:
+                  // (isSwitched == true)
+                  // ?
+                  // BorderSide(color: Colors.blueGrey)
+
+                  // :
+                  BorderSide.none),
+          elevation: 5,
 
           // color: Colors.grey[850],
 
           //Colors.grey[850],
           child: Container(
-              height: height / 12,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                child: Row(
-                  children: <Widget>[
-                    Switch(
-                        activeThumbImage: AssetImage(
-                            'assets/images/SoshiLogos/soshi_icon.png'),
-                        inactiveThumbImage: AssetImage(
-                            'assets/images/SoshiLogos/soshi_icon_marble.png'),
-                        value: isSwitched,
-                        activeColor: Colors.cyan[500],
-                        onChanged: (bool value) {
-                          setState(() {
-                            isSwitched = value;
-                          });
-                          LocalDataService.updateSwitchForPlatform(
-                              platform: platformName, state: value);
-                          databaseService.updatePlatformSwitch(
-                              platform: platformName, state: value);
+              height: height / 11,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Switch(
+                      activeThumbImage:
+                          AssetImage('assets/images/SoshiLogos/soshi_icon.png'),
+                      inactiveThumbImage: AssetImage(
+                          'assets/images/SoshiLogos/soshi_icon_marble.png'),
+                      value: isSwitched,
+                      activeColor: Colors.cyan[500],
+                      onChanged: (bool value) {
+                        setState(() {
+                          isSwitched = value;
+                        });
+                        LocalDataService.updateSwitchForPlatform(
+                            platform: platformName, state: value);
+                        databaseService.updatePlatformSwitch(
+                            platform: platformName, state: value);
 
-                          if (LocalDataService.getFirstSwitchTap()) {
-                            LocalDataService.updateFirstSwitchTap(false);
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(40.0))),
-                                    // backgroundColor: Colors.blueGrey[900],
-                                    title: Text(
-                                      "Platform Switches",
-                                      style: TextStyle(
-                                          color: Colors.cyan[600],
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    content: Text(
-                                      ("These switches control what platform(s) you are sharing. "),
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          color: Colors.cyan[700],
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        child: Text(
-                                          'Ok',
-                                          style: TextStyle(fontSize: 20),
-                                        ),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
+                        if (LocalDataService.getFirstSwitchTap()) {
+                          LocalDataService.updateFirstSwitchTap(false);
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(40.0))),
+                                  backgroundColor: Colors.blueGrey[900],
+                                  title: Text(
+                                    "Platform Switches",
+                                    style: TextStyle(
+                                        // color: Colors.cyan[600],
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  content: Text(
+                                    ("These switches control what platform(s) you are sharing. "),
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        // color: Colors.cyan[700],
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: Text(
+                                        'Ok',
+                                        style: TextStyle(fontSize: 20),
                                       ),
-                                    ],
-                                  );
-                                });
-                          }
-                        }),
-                    Center(
-                      child: Material(
-                        color: Colors.transparent,
-                        shadowColor: Colors.black54,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                        child: IconButton(
-                          splashColor: Colors.cyan[300],
-                          splashRadius: Utilities.getWidth(context) / 11,
-                          icon: Image.asset(
-                            'assets/images/SMLogos/' +
-                                platformName +
-                                'Logo.png',
-                          ),
-                          onPressed: () async {
-                            if (platformName == "Contact") {
-                              double width = Utilities.getWidth(context);
-                              String firstName =
-                                  LocalDataService.getLocalFirstName();
-                              String lastName =
-                                  LocalDataService.getLocalLastName();
-                              String photoUrl =
-                                  LocalDataService.getLocalProfilePictureURL();
-                              Uint8List profilePicBytes;
-                              try {
-                                // try to load profile pic from url
-                                await http
-                                    .get(Uri.parse(photoUrl))
-                                    .then((http.Response response) {
-                                  profilePicBytes = response.bodyBytes;
-                                });
-                              } catch (e) {
-                                // if url is invalid, use default profile pic
-                                ByteData data = await rootBundle.load(
-                                    "assets/images/SoshiLogos/soshi_icon.png");
-                                profilePicBytes = data.buffer.asUint8List();
-                              }
-                              Contact contact = new Contact(
-                                  givenName: firstName,
-                                  familyName: lastName,
-                                  emails: [
-                                    Item(
-                                      label: "Email",
-                                      value: LocalDataService
-                                          .getLocalUsernameForPlatform("Email"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
                                     ),
                                   ],
-                                  phones: [
-                                    Item(
-                                        label: "Cell",
-                                        value: LocalDataService
-                                            .getLocalUsernameForPlatform(
-                                                "Phone")),
-                                  ],
-                                  avatar: profilePicBytes);
-                              await askPermissions(context);
-                              ContactsService.addContact(contact)
-                                  .then((dynamic success) {
-                                Popups.showContactAddedPopup(
-                                    context, width, firstName, lastName);
+                                );
                               });
-                            } else {
-                              URL.launchURL(URL.getPlatformURL(
-                                  platform: platformName,
-                                  username: LocalDataService
-                                      .getLocalUsernameForPlatform(
-                                          platformName)));
-                            }
-                          },
-                          iconSize: 60.0,
-                        ),
-                      ),
+                        }
+                      }),
+                  // Center(
+                  //   child: Material(
+                  //     color: Colors.transparent,
+                  //     shadowColor: Colors.black54,
+                  //     shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.circular(0.0),
+                  //     ),
+                  //child:
+                  IconButton(
+                    splashColor: Colors.cyan[300],
+                    splashRadius: Utilities.getWidth(context) / 15,
+                    icon: Image.asset(
+                      'assets/images/SMLogos/' + platformName + 'Logo.png',
                     ),
-                    SizedBox(width: 5),
-                    ['Email', 'Phone', 'Contact', 'Linkedin', 'Facebook']
-                            .contains(platformName)
-                        ? Container()
-                        : Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
-                            child: Text("@",
-                                style: TextStyle(
-                                    // color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20)),
-                          ),
-                    Expanded(
-                        child: TextField(
-                      autofillHints: ['Phone'].contains(platformName)
-                          ? [AutofillHints.telephoneNumber]
-                          : null,
-                      keyboardType: ["Phone"].contains(platformName)
-                          ? TextInputType.numberWithOptions(
-                              signed: true, decimal: true)
-                          : (["Email"].contains(platformName)
-                              ? TextInputType.emailAddress
-                              : null),
-                      inputFormatters: platformName == "Email"
-                          ? []
-                          : [FilteringTextInputFormatter.deny(RegExp(r'@'))],
-                      readOnly: widget.platformName == "Contact" ? true : false,
-                      controller: usernameController,
-                      focusNode: focusNode,
-                      decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
-                            // borderSide: BorderSide(color: Colors.grey[800]),
-                            ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.cyan),
-                        ), //border: Inp
-                        hintText: hintText,
-                        hintStyle: TextStyle(
-                          fontSize: 15,
-                          //fontWeight: FontWeight.bold,
-                          // color: Colors.grey[600],
-                          letterSpacing: 1.0,
-                        ),
-                      ),
-                      style: TextStyle(
-                        fontSize: 18,
-                        //fontWeight: FontWeight.bold,
-                        // color: Colors.grey[50],
-                        letterSpacing: 1.0,
-                      ),
-                    )),
-                    Padding(
-                      padding: EdgeInsets.only(right: 35),
-                    )
-                  ],
-                ),
+                    onPressed: () async {
+                      if (platformName == "Contact") {
+                        double width = Utilities.getWidth(context);
+                        String firstName = LocalDataService.getLocalFirstName();
+                        String lastName = LocalDataService.getLocalLastName();
+                        String photoUrl =
+                            LocalDataService.getLocalProfilePictureURL();
+                        Uint8List profilePicBytes;
+                        try {
+                          // try to load profile pic from url
+                          await http
+                              .get(Uri.parse(photoUrl))
+                              .then((http.Response response) {
+                            profilePicBytes = response.bodyBytes;
+                          });
+                        } catch (e) {
+                          // if url is invalid, use default profile pic
+                          ByteData data = await rootBundle
+                              .load("assets/images/SoshiLogos/soshi_icon.png");
+                          profilePicBytes = data.buffer.asUint8List();
+                        }
+                        Contact contact = new Contact(
+                            givenName: firstName,
+                            familyName: lastName,
+                            emails: [
+                              Item(
+                                label: "Email",
+                                value: LocalDataService
+                                    .getLocalUsernameForPlatform("Email"),
+                              ),
+                            ],
+                            phones: [
+                              Item(
+                                  label: "Cell",
+                                  value: LocalDataService
+                                      .getLocalUsernameForPlatform("Phone")),
+                            ],
+                            avatar: profilePicBytes);
+                        await askPermissions(context);
+                        ContactsService.addContact(contact)
+                            .then((dynamic success) {
+                          Popups.showContactAddedPopup(
+                              context, width, firstName, lastName);
+                        });
+                      } else {
+                        URL.launchURL(URL.getPlatformURL(
+                            platform: platformName,
+                            username:
+                                LocalDataService.getLocalUsernameForPlatform(
+                                    platformName)));
+                      }
+                    },
+                    iconSize: 55.0,
+                  ),
+
+                  // ['Email', 'Phone', 'Contact', 'Linkedin', 'Facebook']
+                  //         .contains(platformName)
+                  //     ? Container()
+                  //     : Padding(
+                  //         padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                  //         child: Text("@",
+                  //             style: TextStyle(
+                  //                 color: Colors.white,
+                  //                 fontWeight: FontWeight.bold,
+                  //                 fontSize: 20)),
+                  //       ),
+                  // Padding(
+                  //   padding: EdgeInsets.only(right: 35),
+                  // )
+                ],
               )),
         ),
         Visibility(
@@ -353,119 +326,264 @@ class _SMCardState extends State<SMCard> {
                     platform: platformName, state: true);
               },
               child: Card(
+                // color: Colors.black12,
+                color: Colors.transparent,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 child: Container(
-                  height: Utilities.getHeight(context) / 12,
+                  height: Utilities.getHeight(context) / 11,
                   child: Row(
                     children: [Expanded(child: Text(""))],
                   ),
                 ),
-                // color: Colors.black26
               ),
             ),
             visible: !isSwitched),
         Padding(
-          padding: EdgeInsets.only(top: height / 40),
+          padding: EdgeInsets.fromLTRB(0, height / 35, width / 70, 0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              IconButton(
-                icon: Icon(
-                  Icons.more_vert_rounded,
-                  size: 30,
-                  // color: Colors.white,
-                ),
-                onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(40.0))),
-                          // backgroundColor: Colors.blueGrey[900],
-                          title: Text(
-                            "Remove Platform",
-                            style: TextStyle(
-                                // color: Colors.cyan[600],
-                                fontWeight: FontWeight.bold),
-                          ),
-                          content: Text(
-                            ("Are you sure you want to remove " +
-                                platformName +
-                                " from your profile?"),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 20,
-                              // color: Colors.cyan[700],
-                            ),
-                          ),
-                          actions: <Widget>[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                TextButton(
-                                  child: Text(
-                                    'Cancel',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                                TextButton(
-                                  child: Text(
-                                    'Remove',
-                                    style: TextStyle(
-                                        fontSize: 20, color: Colors.red),
-                                  ),
-                                  onPressed: () async {
-                                    if (!LocalDataService
-                                            .getLocalChoosePlatforms()
-                                        .contains(platformName)) {
-                                      Navigator.pop(context);
+              // SizedBox(
+              //   width: width / 3,
+              // ),
+              platformName != "Contact"
+                  ? IconButton(
+                      onPressed: () {
+                        if (platformName == "Instagram" ||
+                            platformName == "Snapchat" ||
+                            platformName == "Venmo" ||
+                            platformName == "Twitter" ||
+                            platformName == "Tiktok" ||
+                            platformName == "Discord" ||
+                            platformName == "Spotify") {
+                          Popups.editUsernamePopup(context, soshiUsername,
+                              platformName, "Username", "@", width);
+                        } else {
+                          if (platformName == "Facebook" ||
+                              platformName == "Linkedin") {
+                            Popups.editUsernamePopup(
+                                context,
+                                soshiUsername,
+                                platformName,
+                                "Link to Profile",
+                                "https://",
+                                width);
+                          } else if (platformName == "Phone") {
+                            Popups.editUsernamePopup(context, soshiUsername,
+                                platformName, "Phone", "#", width);
+                          } else {
+                            Popups.editUsernamePopup(context, soshiUsername,
+                                platformName, "", "", width);
+                          }
+                        }
 
-                                      await LocalDataService
-                                          .removePlatformsFromProfile(
-                                              platformName);
-                                      LocalDataService.addToChoosePlatforms(
-                                          platformName);
+                        //popup of edit username
+                      },
+                      iconSize: 25,
+                      splashRadius: 20,
+                      icon: Icon(Icons.edit),
+                      // color: Colors.white,
+                    )
+                  : IconButton(
+                      icon: Icon(Icons.edit_off_rounded),
+                      iconSize: 25,
+                      // color: Colors.white,
+                      onPressed: () {},
+                      splashRadius: 5,
+                    )
 
-                                      LocalDataService.updateSwitchForPlatform(
-                                          platform: platformName, state: false);
-                                      databaseService.updatePlatformSwitch(
-                                          platform: platformName, state: false);
-                                      databaseService.removePlatformFromProfile(
-                                          platformName);
-                                      databaseService
-                                          .addToChoosePlatforms(platformName);
-                                      print(LocalDataService
-                                              .getLocalProfilePlatforms()
-                                          .toString());
-                                      widget.refreshScreen();
-                                    } else {
-                                      Navigator.pop(context);
-                                      await LocalDataService
-                                          .removePlatformsFromProfile(
-                                              platformName);
-                                      widget.refreshScreen();
-                                    }
-                                  },
-                                ),
-                              ],
-                            ),
-                          ],
-                        );
-                      });
-                },
-              )
+              // IconButton(
+              //   icon: Icon(
+              //     Icons.more_vert_rounded,
+              //     size: 30,
+              //     color: Colors.white,
+              //   ),
+              //   splashRadius: 10,
+              //   onPressed: () {
+              //     // showDialog(
+              //     //     context: context,
+              //     //     builder: (BuildContext context) {
+              //     //       return AlertDialog(
+              //     //         shape: RoundedRectangleBorder(
+              //     //             borderRadius:
+              //     //                 BorderRadius.all(Radius.circular(40.0))),
+              //     //         backgroundColor: Colors.blueGrey[900],
+              //     //         title: Text(
+              //     //           "Remove Platform",
+              //     //           style: TextStyle(
+              //     //               color: Colors.cyan[600],
+              //     //               fontWeight: FontWeight.bold),
+              //     //         ),
+              //     //         content: Text(
+              //     //           ("Are you sure you want to remove " +
+              //     //               platformName +
+              //     //               " from your profile?"),
+              //     //           style: TextStyle(
+              //     //               fontSize: 20,
+              //     //               color: Colors.cyan[700],
+              //     //               fontWeight: FontWeight.bold),
+              //     //         ),
+              //     //         actions: <Widget>[
+              //     //           Row(
+              //     //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              //     //             children: <Widget>[
+              //     //               TextButton(
+              //     //                 child: Text(
+              //     //                   'No',
+              //     //                   style: TextStyle(fontSize: 20),
+              //     //                 ),
+              //     //                 onPressed: () {
+              //     //                   Navigator.pop(context);
+              //     //                 },
+              //     //               ),
+              //     //               TextButton(
+              //     //                 child: Text(
+              //     //                   'Yes',
+              //     //                   style: TextStyle(
+              //     //                       fontSize: 20, color: Colors.red),
+              //     //                 ),
+              //     //                 onPressed: () async {
+              //     //                   if (!LocalDataService
+              //     //                           .getLocalChoosePlatforms()
+              //     //                       .contains(platformName)) {
+              //     //                     Navigator.pop(context);
+
+              //     //                     await LocalDataService
+              //     //                         .removePlatformsFromProfile(
+              //     //                             platformName);
+              //     //                     LocalDataService.addToChoosePlatforms(
+              //     //                         platformName);
+
+              //     //                     LocalDataService.updateSwitchForPlatform(
+              //     //                         platform: platformName, state: false);
+              //     //                     databaseService.updatePlatformSwitch(
+              //     //                         platform: platformName, state: false);
+              //     //                     databaseService.removePlatformFromProfile(
+              //     //                         platformName);
+              //     //                     databaseService
+              //     //                         .addToChoosePlatforms(platformName);
+              //     //                     print(LocalDataService
+              //     //                             .getLocalProfilePlatforms()
+              //     //                         .toString());
+              //     //                     widget.refreshScreen();
+              //     //                   } else {
+              //     //                     Navigator.pop(context);
+              //     //                     await LocalDataService
+              //     //                         .removePlatformsFromProfile(
+              //     //                             platformName);
+              //     //                     widget.refreshScreen();
+              //     //                   }
+              //     //                 },
+              //     //               ),
+              //     //             ],
+              //     //           ),
+              //     //         ],
+              //     //       );
+              //     //     });
+              //   },
+              // )
             ],
           ),
-        )
+        ),
+        Positioned(
+            width: width / 1.16,
+            height: height / 35,
+            child: ElevatedButton(
+              style: ButtonStyle(
+                shape: MaterialStateProperty.all(CircleBorder()),
+                // backgroundColor: MaterialStateProperty.all(Colors.black)
+              ),
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(40.0))),
+                        backgroundColor: Colors.blueGrey[900],
+                        title: Text(
+                          "Remove Platform",
+                          style: TextStyle(
+                              // color: Colors.cyan[600],
+                              fontWeight: FontWeight.bold),
+                        ),
+                        content: Text(
+                          ("Are you sure you want to remove " +
+                              platformName +
+                              " from your profile?"),
+                          style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.cyan[700],
+                              fontWeight: FontWeight.bold),
+                        ),
+                        actions: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              TextButton(
+                                child: Text(
+                                  'Cancel',
+                                  style: TextStyle(
+                                      fontSize: 20, color: Colors.blue),
+                                ),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              TextButton(
+                                child: Text(
+                                  'Remove',
+                                  style: TextStyle(
+                                      fontSize: 20, color: Colors.red),
+                                ),
+                                onPressed: () async {
+                                  if (!LocalDataService
+                                          .getLocalChoosePlatforms()
+                                      .contains(platformName)) {
+                                    Navigator.pop(context);
+
+                                    await LocalDataService
+                                        .removePlatformsFromProfile(
+                                            platformName);
+                                    LocalDataService.addToChoosePlatforms(
+                                        platformName);
+
+                                    LocalDataService.updateSwitchForPlatform(
+                                        platform: platformName, state: false);
+                                    databaseService.updatePlatformSwitch(
+                                        platform: platformName, state: false);
+                                    databaseService.removePlatformFromProfile(
+                                        platformName);
+                                    databaseService
+                                        .addToChoosePlatforms(platformName);
+                                    print(LocalDataService
+                                            .getLocalProfilePlatforms()
+                                        .toString());
+                                    widget.refreshScreen();
+                                  } else {
+                                    Navigator.pop(context);
+                                    await LocalDataService
+                                        .removePlatformsFromProfile(
+                                            platformName);
+                                    widget.refreshScreen();
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
+                    });
+              },
+              child: Icon(
+                Icons.remove,
+                size: 20,
+                // color: Colors.white,
+              ),
+            ))
       ],
     );
   }
@@ -576,7 +694,7 @@ class ProfileState extends State<Profile> {
         return SingleChildScrollView(
           child: Container(
             child: Padding(
-                padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
+                padding: EdgeInsets.fromLTRB(width / 35, 20, width / 35, 0),
                 child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -620,7 +738,7 @@ class ProfileState extends State<Profile> {
                                           child: Icon(
                                             Icons.edit,
                                             size: 20,
-                                            // color: Colors.cyan,
+                                            color: Colors.cyan,
                                           ),
                                         ))
                                   ],
@@ -637,7 +755,10 @@ class ProfileState extends State<Profile> {
                                           refreshProfile: refreshScreen));
                                 }));
                               },
-                              // style: Constants.ButtonStyleDark,
+                              style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(15.0)))),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -648,8 +769,7 @@ class ProfileState extends State<Profile> {
                                           )),
                                   SizedBox(width: 4.0),
                                   Icon(Icons.person_rounded,
-                                      // color: Colors.cyan[300],
-                                      size: 20.0),
+                                      color: Colors.cyan[300], size: 20.0),
                                 ],
                               ),
                             ),
@@ -672,8 +792,8 @@ class ProfileState extends State<Profile> {
                         children: <Widget>[],
                       ),
                       Divider(
-                          // color: Colors.cyan[300],
-                          ),
+                        color: Colors.cyan[300],
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
@@ -692,7 +812,7 @@ class ProfileState extends State<Profile> {
                             ),
                             style: ElevatedButton.styleFrom(
                                 fixedSize: Size(35, 35),
-                                // primary: Colors.blueGrey[500],
+                                primary: Colors.blueGrey[500],
                                 shape: CircleBorder()),
                             onPressed: () {
                               Popups.showPlatformHelpPopup(context, height);
@@ -748,7 +868,7 @@ class ProfileState extends State<Profile> {
                                   SizedBox(height: 5),
                                 ],
                               )
-                            : ListView.builder(
+                            : GridView.builder(
                                 physics: const NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
                                 itemBuilder: (BuildContext context, int index) {
@@ -761,7 +881,13 @@ class ProfileState extends State<Profile> {
                                         refreshScreen: refreshScreen),
                                   );
                                 },
-                                itemCount: profilePlatforms.length),
+                                itemCount: profilePlatforms.length,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        childAspectRatio: 1.75,
+                                        crossAxisSpacing: 7),
+                              ),
                       ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(50, 10, 50, 40),
@@ -808,7 +934,10 @@ class ProfileState extends State<Profile> {
                               ));
                             }));
                           },
-                          // style: Constants.ButtonStyleDark,
+                          style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(15.0)))),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
@@ -823,7 +952,7 @@ class ProfileState extends State<Profile> {
                               Text('Add Platforms!',
                                   style: TextStyle(
                                       fontSize: 14,
-                                      color: Colors.cyan[300],
+                                      // color: Colors.cyan[300],
                                       letterSpacing: 3.0,
                                       fontWeight: FontWeight.bold))
                             ],
