@@ -596,7 +596,6 @@ class _SMCardState extends State<SMCard> {
                                 platformName, "", "", width);
                           }
                         }
-
                         //popup of edit username
                       },
                       iconSize: 25,
@@ -605,10 +604,13 @@ class _SMCardState extends State<SMCard> {
                       color: Colors.white,
                     )
                   : IconButton(
-                      icon: Icon(Icons.edit_off_rounded),
+                      icon: Icon(Icons.question_mark_rounded),
                       iconSize: 25,
                       color: Colors.white,
-                      onPressed: () {},
+                      onPressed: () {
+                        Popups.contactCardExplainedPopup(
+                            context, width, height);
+                      },
                       splashRadius: 5,
                     )
 

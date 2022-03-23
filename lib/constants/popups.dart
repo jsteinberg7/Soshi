@@ -104,6 +104,53 @@ class Popups {
     );
   }
 
+  static void contactCardExplainedPopup(
+      BuildContext context, double width, double height) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(40.0))),
+            backgroundColor: Colors.blueGrey[900],
+            title: Text(
+              "Contact Card",
+              style: TextStyle(
+                  color: Colors.cyan[600], fontWeight: FontWeight.bold),
+            ),
+            content: Flexible(
+              child: Container(
+                decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.grey[850],
+                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(30))),
+                child: Image.asset("assets/images/SMLogos/ContactLogo.png",
+                    height: height, width: width),
+              ),
+            ),
+            // Text(
+            //   ("Sharing this allows others to immediately add you to their phone's contact list! Try it out!"),
+            //   style: TextStyle(
+            //       fontSize: 20,
+            //       color: Colors.cyan[700],
+            //       fontWeight: FontWeight.bold),
+            // ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                  'Done',
+                  style: TextStyle(fontSize: 20),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        });
+  }
+
   static Future<dynamic> showContactAddedPopup(
       BuildContext context, double width, String firstName, String lastName) {
     return showDialog(
