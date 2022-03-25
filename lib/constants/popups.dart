@@ -188,11 +188,12 @@ class Popups {
           return AlertDialog(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(40.0))),
-            backgroundColor: Colors.blueGrey[900],
+            // backgroundColor: Colors.blueGrey[900],
             title: Text(
               "Edit your " + platformName,
               style: TextStyle(
-                  color: Colors.cyan[600], fontWeight: FontWeight.bold),
+                  // color: Colors.cyan[600],
+                  fontWeight: FontWeight.bold),
             ),
             content: Row(
               children: [
@@ -257,7 +258,7 @@ class Popups {
                   TextButton(
                     child: Text(
                       'Cancel',
-                      style: TextStyle(fontSize: 20),
+                      style: TextStyle(fontSize: 20, color: Colors.red),
                     ),
                     onPressed: () {
                       Navigator.pop(context);
@@ -285,80 +286,80 @@ class Popups {
         });
   }
 
-  static void deletePlatformPopup(BuildContext context,
-      {String platformName, Function refreshScreen}) {
-    DatabaseService databaseService = new DatabaseService();
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(40.0))),
-            backgroundColor: Colors.blueGrey[900],
-            title: Text(
-              "Remove Platform",
-              style: TextStyle(
-                  color: Colors.cyan[600], fontWeight: FontWeight.bold),
-            ),
-            content: Text(
-              ("Are you sure you want to remove " +
-                  platformName +
-                  " from your profile?"),
-              style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.cyan[700],
-                  fontWeight: FontWeight.bold),
-            ),
-            actions: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  TextButton(
-                    child: Text(
-                      'No',
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  TextButton(
-                    child: Text(
-                      'Yes',
-                      style: TextStyle(fontSize: 20, color: Colors.red),
-                    ),
-                    onPressed: () async {
-                      if (!LocalDataService.getLocalChoosePlatforms()
-                          .contains(platformName)) {
-                        Navigator.pop(context);
+  // static void deletePlatformPopup(BuildContext context,
+  //     {String platformName, Function refreshScreen}) {
+  //   DatabaseService databaseService = new DatabaseService();
+  //   showDialog(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return AlertDialog(
+  //           shape: RoundedRectangleBorder(
+  //               borderRadius: BorderRadius.all(Radius.circular(40.0))),
+  //           // backgroundColor: Colors.blueGrey[900],
+  //           title: Text(
+  //             "Remove Platform",
+  //             style: TextStyle(
+  //                 color: Colors.cyan[600], fontWeight: FontWeight.bold),
+  //           ),
+  //           content: Text(
+  //             ("Are you sure you want to remove " +
+  //                 platformName +
+  //                 " from your profile?"),
+  //             style: TextStyle(
+  //                 fontSize: 20,
+  //                 color: Colors.cyan[700],
+  //                 fontWeight: FontWeight.bold),
+  //           ),
+  //           actions: <Widget>[
+  //             Row(
+  //               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //               children: <Widget>[
+  //                 TextButton(
+  //                   child: Text(
+  //                     'No',
+  //                     style: TextStyle(fontSize: 20),
+  //                   ),
+  //                   onPressed: () {
+  //                     Navigator.pop(context);
+  //                   },
+  //                 ),
+  //                 TextButton(
+  //                   child: Text(
+  //                     'Yes',
+  //                     style: TextStyle(fontSize: 20, color: Colors.red),
+  //                   ),
+  //                   onPressed: () async {
+  //                     if (!LocalDataService.getLocalChoosePlatforms()
+  //                         .contains(platformName)) {
+  //                       Navigator.pop(context);
 
-                        await LocalDataService.removePlatformsFromProfile(
-                            platformName);
-                        LocalDataService.addToChoosePlatforms(platformName);
+  //                       await LocalDataService.removePlatformsFromProfile(
+  //                           platformName);
+  //                       LocalDataService.addToChoosePlatforms(platformName);
 
-                        LocalDataService.updateSwitchForPlatform(
-                            platform: platformName, state: false);
-                        databaseService.updatePlatformSwitch(
-                            platform: platformName, state: false);
-                        databaseService.removePlatformFromProfile(platformName);
-                        databaseService.addToChoosePlatforms(platformName);
-                        print(LocalDataService.getLocalProfilePlatforms()
-                            .toString());
-                        refreshScreen();
-                      } else {
-                        Navigator.pop(context);
-                        await LocalDataService.removePlatformsFromProfile(
-                            platformName);
-                        refreshScreen();
-                      }
-                    },
-                  ),
-                ],
-              ),
-            ],
-          );
-        });
-  }
+  //                       LocalDataService.updateSwitchForPlatform(
+  //                           platform: platformName, state: false);
+  //                       databaseService.updatePlatformSwitch(
+  //                           platform: platformName, state: false);
+  //                       databaseService.removePlatformFromProfile(platformName);
+  //                       databaseService.addToChoosePlatforms(platformName);
+  //                       print(LocalDataService.getLocalProfilePlatforms()
+  //                           .toString());
+  //                       refreshScreen();
+  //                     } else {
+  //                       Navigator.pop(context);
+  //                       await LocalDataService.removePlatformsFromProfile(
+  //                           platformName);
+  //                       refreshScreen();
+  //                     }
+  //                   },
+  //                 ),
+  //               ],
+  //             ),
+  //           ],
+  //         );
+  //       });
+  // }
   // // display popup with user profile and social media links
   // static Future<void> showUserProfilePopup(BuildContext context,
   //     {String soshiUsername, Function refreshScreen}) async {

@@ -199,7 +199,7 @@ class _SMCardState extends State<SMCard> {
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(40.0))),
-                                  backgroundColor: Colors.blueGrey[900],
+                                  // backgroundColor: Colors.blueGrey[900],
                                   title: Text(
                                     "Platform Switches",
                                     style: TextStyle(
@@ -327,7 +327,7 @@ class _SMCardState extends State<SMCard> {
               },
               child: Card(
                 // color: Colors.black12,
-                color: Colors.transparent,
+                // color: Colors.transparent,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
@@ -503,7 +503,7 @@ class _SMCardState extends State<SMCard> {
                         shape: RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(40.0))),
-                        backgroundColor: Colors.blueGrey[900],
+                        // backgroundColor: Colors.blueGrey[900],
                         title: Text(
                           "Remove Platform",
                           style: TextStyle(
@@ -515,9 +515,10 @@ class _SMCardState extends State<SMCard> {
                               platformName +
                               " from your profile?"),
                           style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.cyan[700],
-                              fontWeight: FontWeight.bold),
+                            fontSize: 20,
+                            // color: Colors.cyan[700],
+                            // fontWeight: FontWeight.bold
+                          ),
                         ),
                         actions: <Widget>[
                           Row(
