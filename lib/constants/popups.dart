@@ -28,8 +28,9 @@ class Popups {
       String username,
       double size = 70.0,
       BuildContext context}) {
-    return IconButton(
-      splashColor: Colors.cyan[300],
+    return Container(
+        child: IconButton(
+      // splashColor: Colors.cyan[300],
       splashRadius: 55.0,
       icon: Image.asset(
         "assets/images/SMLogos/" + platform + "Logo.png",
@@ -101,7 +102,43 @@ class Popups {
         }
       },
       iconSize: size,
-    );
+    ));
+  }
+
+  static void platformSwitchesExplained(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(40.0))),
+            //backgroundColor: Colors.blueGrey[900],
+            title: Text(
+              "Platform Switches",
+              style: TextStyle(
+                  // color: Colors.cyan[600],
+                  fontWeight: FontWeight.bold),
+            ),
+            content: Text(
+              ("These switches control what platform(s) you are sharing. "),
+              style: TextStyle(
+                  fontSize: 20,
+                  // color: Colors.cyan[700],
+                  fontWeight: FontWeight.bold),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                  'Ok',
+                  style: TextStyle(fontSize: 20, color: Colors.blue),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
   }
 
   static void contactCardExplainedPopup(
@@ -112,18 +149,19 @@ class Popups {
           return AlertDialog(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(40.0))),
-            backgroundColor: Colors.blueGrey[900],
+            // backgroundColor: Colors.blueGrey[900],
             title: Text(
               "Contact Card",
               style: TextStyle(
-                  color: Colors.cyan[600], fontWeight: FontWeight.bold),
+                  // color: Colors.cyan[600],
+                  fontWeight: FontWeight.bold),
             ),
             content: Flexible(
               child: Container(
                 decoration: BoxDecoration(
                     border: Border.all(
-                      color: Colors.grey[850],
-                    ),
+                        // color: Colors.grey[850],
+                        ),
                     borderRadius: BorderRadius.all(Radius.circular(30))),
                 child: Image.asset("assets/images/SMLogos/ContactLogo.png",
                     height: height, width: width),
@@ -159,7 +197,7 @@ class Popups {
           return AlertDialog(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(40.0))),
-            backgroundColor: Colors.grey[850],
+            // backgroundColor: Colors.grey[850],
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -193,7 +231,7 @@ class Popups {
                     style: TextStyle(
                       fontSize: 20.0,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      // color: Colors.white,
                       //fontFamily: GoogleFonts.lato().fontFamily,
                     ),
                   ),
@@ -235,18 +273,20 @@ class Popups {
           return AlertDialog(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(40.0))),
-            backgroundColor: Colors.blueGrey[900],
+            // backgroundColor: Colors.blueGrey[900],
             title: Text(
               "Edit your " + platformName,
-              style: TextStyle(
-                  color: Colors.cyan[600], fontWeight: FontWeight.bold),
             ),
+            //   style: TextStyle(
+            //       //color: Colors.cyan[600],
+            //       //fontWeight: FontWeight.bold),
+            // ),
             content: Row(
               children: [
                 Text(
                   indicator,
                   style: TextStyle(
-                      color: Colors.white,
+                      // color: Colors.white,
                       fontSize: width / 20,
                       fontWeight: FontWeight.bold),
                 ),
@@ -269,8 +309,8 @@ class Popups {
                     decoration: InputDecoration(
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.grey[600],
-                        ),
+                            // color: Colors.grey[600],
+                            ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
@@ -279,16 +319,19 @@ class Popups {
                       ),
                       filled: true,
                       floatingLabelBehavior: FloatingLabelBehavior.always,
-                      label: Text(platformName),
+                      label: Text(platformName + indicator),
                       labelStyle: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                          color: Colors.grey[400]),
-                      fillColor: Colors.grey[850],
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        //color: Colors.black
+
+                        // \\\color: Colors.grey[400]),
+                      ),
+                      // fillColor: Colors.grey[850],
                       hintText: hinttext,
                       hintStyle: TextStyle(
                           color: Colors.grey[500],
-                          fontSize: 12,
+                          fontSize: 20,
                           letterSpacing: 2,
                           fontWeight: FontWeight.bold),
                     ),
@@ -303,7 +346,7 @@ class Popups {
                   TextButton(
                     child: Text(
                       'Cancel',
-                      style: TextStyle(fontSize: 20),
+                      style: TextStyle(fontSize: width / 20, color: Colors.red),
                     ),
                     onPressed: () {
                       Navigator.pop(context);
@@ -312,7 +355,8 @@ class Popups {
                   TextButton(
                     child: Text(
                       'Done',
-                      style: TextStyle(fontSize: 20, color: Colors.blue),
+                      style:
+                          TextStyle(fontSize: width / 20, color: Colors.blue),
                     ),
                     onPressed: () async {
                       LocalDataService.updateUsernameForPlatform(
@@ -332,7 +376,7 @@ class Popups {
   }
 
   static void deletePlatformPopup(BuildContext context,
-      {String platformName, Function refreshScreen}) {
+      {@required String platformName, @required Function refreshScreen}) {
     DatabaseService databaseService = new DatabaseService();
     showDialog(
         context: context,
@@ -340,20 +384,22 @@ class Popups {
           return AlertDialog(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(40.0))),
-            backgroundColor: Colors.blueGrey[900],
+            // backgroundColor: Colors.blueGrey[900],
             title: Text(
               "Remove Platform",
               style: TextStyle(
-                  color: Colors.cyan[600], fontWeight: FontWeight.bold),
+                  // color: Colors.cyan[600],
+                  fontWeight: FontWeight.bold),
             ),
             content: Text(
               ("Are you sure you want to remove " +
                   platformName +
                   " from your profile?"),
               style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.cyan[700],
-                  fontWeight: FontWeight.bold),
+                fontSize: 20,
+                // color: Colors.cyan[700],
+                // fontWeight: FontWeight.bold
+              ),
             ),
             actions: <Widget>[
               Row(
@@ -361,8 +407,8 @@ class Popups {
                 children: <Widget>[
                   TextButton(
                     child: Text(
-                      'No',
-                      style: TextStyle(fontSize: 20),
+                      'Cancel',
+                      style: TextStyle(fontSize: 20, color: Colors.red),
                     ),
                     onPressed: () {
                       Navigator.pop(context);
@@ -370,8 +416,8 @@ class Popups {
                   ),
                   TextButton(
                     child: Text(
-                      'Yes',
-                      style: TextStyle(fontSize: 20, color: Colors.red),
+                      'Remove',
+                      style: TextStyle(fontSize: 20, color: Colors.blue),
                     ),
                     onPressed: () async {
                       if (!LocalDataService.getLocalChoosePlatforms()
@@ -655,7 +701,7 @@ class Popups {
                 elevation: 50,
                 insetPadding: EdgeInsets.all(width / 14),
                 //insetPadding: EdgeInsets.all(0.0),
-                backgroundColor: Colors.black,
+                // backgroundColor: Colors.black,
                 // contentPadding:
                 //     EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
                 shape: RoundedRectangleBorder(
@@ -681,17 +727,19 @@ class Popups {
                                 children: <Widget>[
                                   Text(
                                     fullName,
+                                    overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
-                                        fontSize: width / 23,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey[200]),
+                                      fontSize: width / 23,
+                                      fontWeight: FontWeight.bold,
+                                      // color: Colors.grey[200]
+                                    ),
                                   ),
                                   SizedBox(height: height / 120),
                                   Text(
                                     "@" + usernames["Soshi"],
                                     style: TextStyle(
                                         fontSize: 15.0,
-                                        color: Colors.grey[500],
+                                        // color: Colors.grey[500],
                                         fontStyle: FontStyle.italic),
                                   ),
                                   SizedBox(height: height / 170),
@@ -706,7 +754,7 @@ class Popups {
                                         "Friends: " + numFriendsString,
                                         style: TextStyle(
                                             fontSize: 15.0,
-                                            color: Colors.grey[500],
+                                            // color: Colors.grey[500],
                                             fontStyle: FontStyle.italic),
                                       ),
                                     ],
@@ -730,14 +778,15 @@ class Popups {
                                 child: (bio != null)
                                     ? Text(bio,
                                         style: TextStyle(
-                                          color: Colors.grey[300],
-                                        ))
+                                            // color: Colors.grey[300],
+                                            ))
                                     : Container()),
                           ),
                         ),
                         Divider(
-                          color: Colors.blueGrey,
-                          thickness: 2,
+                          // color: Colors.blueGrey,
+                          color: Colors.grey[850],
+                          thickness: 1,
                         ),
                         Container(
                           height: height / 3.5,
@@ -783,22 +832,36 @@ class Popups {
                                 await LocalDataService.addFriend(
                                     friendsoshiUsername: friendSoshiUsername);
                                 databaseService.addFriend(
+                                    thisSoshiUsername:
+                                        databaseService.currSoshiUsername,
                                     friendSoshiUsername: friendSoshiUsername);
+
+                                bool friendHasTwoWaySharing =
+                                    await databaseService
+                                        .getTwoWaySharing(userData);
+                                if (friendHasTwoWaySharing == null ||
+                                    friendHasTwoWaySharing == true) {
+                                  // if user has two way sharing on, add self to user's friends list
+                                  databaseService.addFriend(
+                                      thisSoshiUsername: friendSoshiUsername,
+                                      friendSoshiUsername:
+                                          databaseService.currSoshiUsername);
+                                }
                                 Analytics.logAddFriend(friendSoshiUsername);
                                 refreshScreen();
                               }
                             },
                             style: ElevatedButton.styleFrom(
-                                elevation: 10.0,
-                                minimumSize: Size(width / 1.7, height / 15),
-                                shape: RoundedRectangleBorder(
-                                    side: (isFriendAdded)
-                                        ? BorderSide.none
-                                        : BorderSide(color: Colors.cyan),
-                                    borderRadius: BorderRadius.circular(25.0)),
-                                primary: isFriendAdded
-                                    ? Colors.white
-                                    : Colors.transparent),
+                              elevation: 10.0,
+                              minimumSize: Size(width / 1.7, height / 15),
+                              shape: RoundedRectangleBorder(
+                                  side: (isFriendAdded)
+                                      ? BorderSide.none
+                                      : BorderSide(color: Colors.cyan),
+                                  borderRadius: BorderRadius.circular(25.0)),
+                              //  primary:
+                              // Colors.white
+                            ),
                             child: Container(
                               width: 150.0,
                               child: Row(
@@ -808,9 +871,10 @@ class Popups {
                                           Text(
                                             "Friend Added",
                                             style: TextStyle(
-                                                fontSize: 17.0,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.black),
+                                              fontSize: 17.0,
+                                              fontWeight: FontWeight.bold,
+                                              //color: Colors.black
+                                            ),
                                           ),
                                         ]
                                       : [
@@ -1037,6 +1101,17 @@ class Popups {
         });
   }
 
+  void usernameEmptyPopup(
+      BuildContext context, String platformName, String identifier) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Error"),
+          );
+        });
+  }
+
   static Future<dynamic> showPlatformHelpPopup(
       BuildContext context, double height) async {
     return showGeneralDialog(
@@ -1053,12 +1128,12 @@ class Popups {
               child: AlertDialog(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(40.0))),
-                backgroundColor: Colors.blueGrey[900],
+                // backgroundColor: Colors.blueGrey[900],
                 title: Text(
                   "Linking Social Media",
                   style: TextStyle(
                     decoration: TextDecoration.underline,
-                    color: Colors.cyan[600],
+                    //color: Colors.cyan[600],
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -1071,7 +1146,7 @@ class Popups {
                         "For sharing TIKTOK, LINKEDIN, or FACEBOOK:",
                         style: TextStyle(
                           fontSize: 15,
-                          color: Colors.cyan[700],
+                          // color: Colors.cyan[700],
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -1083,7 +1158,7 @@ class Popups {
                               "Tiktok: ",
                               textAlign: TextAlign.left,
                               style: TextStyle(
-                                  color: Colors.cyan[700],
+                                  // color: Colors.cyan[700],
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20),
                             ),
@@ -1091,7 +1166,7 @@ class Popups {
                               padding: const EdgeInsets.only(left: 5),
                               child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                      primary: Colors.blueGrey,
+                                      // primary: Colors.blueGrey,
                                       shadowColor: Constants.buttonColorDark,
                                       shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.all(
@@ -1113,7 +1188,7 @@ class Popups {
                               "LinkedIn: ",
                               textAlign: TextAlign.left,
                               style: TextStyle(
-                                  color: Colors.cyan[700],
+                                  // color: Colors.cyan[700],
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20),
                             ),
@@ -1121,7 +1196,7 @@ class Popups {
                               padding: const EdgeInsets.only(left: 5),
                               child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                      primary: Colors.blueGrey,
+                                      // primary: Colors.blueGrey,
                                       shadowColor: Constants.buttonColorDark,
                                       shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.all(
@@ -1143,7 +1218,7 @@ class Popups {
                               "Facebook: ",
                               textAlign: TextAlign.left,
                               style: TextStyle(
-                                  color: Colors.cyan[700],
+                                  // color: Colors.cyan[700],
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20),
                             ),
@@ -1151,7 +1226,7 @@ class Popups {
                               padding: const EdgeInsets.only(left: 5),
                               child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                      primary: Colors.blueGrey,
+                                      // primary: Colors.blueGrey,
                                       shadowColor: Constants.buttonColorDark,
                                       shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.all(
@@ -1175,7 +1250,7 @@ class Popups {
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontSize: 15,
-                                color: Colors.cyan[700],
+                                // color: Colors.cyan[700],
                                 //fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -1187,7 +1262,7 @@ class Popups {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 15,
-                                color: Colors.cyan[700],
+                                // color: Colors.cyan[700],
                                 //fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -1226,7 +1301,7 @@ void displayNameErrorPopUp(String firstOrLast, BuildContext context) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(40.0))),
-          backgroundColor: Colors.blueGrey[900],
+          // backgroundColor: Colors.blueGrey[900],
           title: Text(
             "Error",
             style:
@@ -1234,8 +1309,9 @@ void displayNameErrorPopUp(String firstOrLast, BuildContext context) {
           ),
           content: Text(
             ("$firstOrLast name must be between 1 and 12 characters"),
-            style:
-                TextStyle(color: Colors.cyan[700], fontWeight: FontWeight.bold),
+            style: TextStyle(
+                //color: Colors.cyan[700],
+                fontWeight: FontWeight.bold),
           ),
           actions: <Widget>[
             TextButton(

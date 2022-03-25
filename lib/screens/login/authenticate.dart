@@ -3,6 +3,7 @@ import 'package:soshi/constants/constants.dart';
 import 'package:soshi/constants/utilities.dart';
 import 'package:soshi/screens/login/register.dart';
 
+import '../../constants/widgets.dart';
 import 'loginscreen.dart';
 
 class Authenticate extends StatefulWidget {
@@ -11,7 +12,7 @@ class Authenticate extends StatefulWidget {
 }
 
 class _AuthenticateState extends State<Authenticate> {
-  bool isRegistering = false;
+  bool isRegistering = true;
 
   void toggleIsRegistering(bool state) {
     setState(() {
@@ -23,17 +24,13 @@ class _AuthenticateState extends State<Authenticate> {
   Widget build(BuildContext context) {
     return Scaffold(
         // backgroundColor: Colors.white,
-        appBar: AppBar(
-          
-          // This is creating the app bar with the Soshi Logo and text
-          elevation: 40,
-          title: Image.asset(
-            "assets/images/SoshiLogos/soshi_logo.png",
-            height: Utilities.getHeight(context) / 22,
-          ),
-          backgroundColor: Constants.appBarColor,
-          centerTitle: true,
-        ),
-        body: isRegistering ? RegisterScreen(toggleScreen: toggleIsRegistering) : LoginScreen(toggleScreen: toggleIsRegistering));
+        appBar: PreferredSize(
+            //Create "Beta" icon on left
+            preferredSize: Size(
+                Utilities.getWidth(context), Utilities.getHeight(context) / 16),
+            child: SoshiAppBar()),
+        body: isRegistering
+            ? RegisterScreen(toggleScreen: toggleIsRegistering)
+            : LoginScreen(toggleScreen: toggleIsRegistering));
   }
 }

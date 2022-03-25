@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +39,8 @@ class DatabaseService {
   */
   Future<void> createUserFile(
       {String username, String email, String first, String last}) async {
+    var links = FirebaseDynamicLinks.instance; // register dynamic link
+    // links.buildShortLink(DynamicLinkParameters(link: link, uriPrefix: uriPrefix));
     await emailToUsernameCollection
         .doc(email)
         .set(<String, dynamic>{"soshiUsername": username});
@@ -185,9 +188,11 @@ class DatabaseService {
   METHODS PERTAINING TO FRIENDS LIST
   */
   // add new friend to current user's friend list
-  Future<void> addFriend({String friendSoshiUsername}) async {
+  Future<void> addFriend(
+      {@required String thisSoshiUsername,
+      @required String friendSoshiUsername}) async {
     // get copy of current friends list
-    List<dynamic> friendsList = await getFriends(currSoshiUsername);
+    List<dynamic> friendsList = await getFriends(thisSoshiUsername);
 
     // check to see if list already exists
     if (friendsList == null) {
@@ -199,7 +204,7 @@ class DatabaseService {
     }
 
     await usersCollection
-        .doc(currSoshiUsername)
+        .doc(thisSoshiUsername)
         .update({"Friends": friendsList});
 
     // usersCollection.doc(friendSoshiUsername).update({"Added Me": addedMeList})
@@ -336,6 +341,11 @@ class DatabaseService {
     return userData["Name"];
   }
 
+  // get state of two way sharing of user
+  bool getTwoWaySharing(Map userData) {
+    return userData["Two Way Sharing"];
+  }
+
   // pass in soshiUsername, return (String) full name of user
   String getFullName(Map userData) {
     Map fullNameMap = getFullNameMap(userData);
@@ -358,8 +368,6 @@ class DatabaseService {
     });
     return data["Profile Platforms"];
   }
-
-// UV functions
 
   Future<List<dynamic>> getChoosePlatforms() async {
     dynamic data;
@@ -543,4 +551,10 @@ class DatabaseService {
   //   // bool check = await IsFirstRun.isFirstRun();
   //   // return check;
   // }
+
+  Future<void> updateTwoWaySharing(bool state) async {
+    await usersCollection
+        .doc(currSoshiUsername)
+        .update({"Two Way Sharing": state});
+  }
 }

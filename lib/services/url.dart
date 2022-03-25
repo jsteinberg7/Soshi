@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:url_launcher/url_launcher.dart';
-import 'package:soshi/services/localData.dart';
 
 // Basic wrapper for url services (all methods are static)
 abstract class URL {

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 abstract class Constants {
   static TextStyle CustomCyan = new TextStyle(
@@ -9,8 +8,6 @@ abstract class Constants {
       fontStyle: FontStyle.italic,
       fontWeight: FontWeight.bold);
 
-  static ThemeData CustomTheme = new ThemeData(
-      primaryColor: Colors.grey[800], accentColor: Colors.cyan[300]);
   static Color appBarColor = Colors.grey[850];
 
   static Color backgroundColor = Colors.grey[800];
