@@ -64,7 +64,9 @@ class _SMCardState extends State<SMCard> {
     platformName = widget.platformName;
     if (platformName == "Phone") {
       hintText = "Phone Number";
-    } else if (platformName == "Linkedin" || platformName == "Facebook") {
+    } else if (platformName == "Linkedin" ||
+        platformName == "Facebook" ||
+        platformName == "Personal") {
       hintText = "Link to Profile";
     } else {
       hintText = "Username";
@@ -86,7 +88,7 @@ class _SMCardState extends State<SMCard> {
     focusNode = new FocusNode();
     focusNode.addListener(() {
       if (!focusNode.hasFocus) {
-        if (usernameController.text.length > 3) {
+        if (usernameController.text.length != "") {
           // turn on switch if username is not empty (say, at least 3 chars)
 
           if (!isSwitched) {
@@ -123,7 +125,8 @@ class _SMCardState extends State<SMCard> {
       "Email",
       "Facebook",
       "Reddit",
-      "Spotify"
+      "Spotify",
+      "Personal"
     ];
 
     //double width = Utilities.getWidth(context);
@@ -187,7 +190,8 @@ class _SMCardState extends State<SMCard> {
                                 Popups.editUsernamePopup(context, soshiUsername,
                                     platformName, "Username", "@", width);
                               } else {
-                                if (platformName == "Facebook" ||
+                                if (platformName == "Personal" ||
+                                    platformName == "Facebook" ||
                                     platformName == "Linkedin") {
                                   Popups.editUsernamePopup(
                                       context,
@@ -201,7 +205,7 @@ class _SMCardState extends State<SMCard> {
                                       context,
                                       soshiUsername,
                                       platformName,
-                                      "Phone",
+                                      "Phone Number",
                                       "#",
                                       width);
                                 } else {
@@ -236,7 +240,7 @@ class _SMCardState extends State<SMCard> {
                     //     ),
                     //child:
                     IconButton(
-                      splashRadius: Utilities.getWidth(context) / 15,
+                      splashRadius: Utilities.getWidth(context) / 25,
                       icon: Image.asset(
                         'assets/images/SMLogos/' + platformName + 'Logo.png',
                       ),
@@ -338,7 +342,7 @@ class _SMCardState extends State<SMCard> {
             ),
             visible: !isSwitched),
         Padding(
-          padding: EdgeInsets.fromLTRB(0, height / 35, width / 70, 0),
+          padding: EdgeInsets.fromLTRB(0, height / 38, 0, 0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -346,41 +350,48 @@ class _SMCardState extends State<SMCard> {
               //   width: width / 3,
               // ),
               platformName != "Contact"
-                  ? IconButton(
-                      onPressed: () {
-                        if (platformName == "Instagram" ||
-                            platformName == "Snapchat" ||
-                            platformName == "Venmo" ||
-                            platformName == "Twitter" ||
-                            platformName == "Tiktok" ||
-                            platformName == "Discord" ||
-                            platformName == "Spotify") {
-                          Popups.editUsernamePopup(context, soshiUsername,
-                              platformName, "Username", "@", width);
-                        } else {
-                          if (platformName == "Facebook" ||
-                              platformName == "Linkedin") {
-                            Popups.editUsernamePopup(
-                                context,
-                                soshiUsername,
-                                platformName,
-                                "Link to Profile",
-                                "https://",
-                                width);
-                          } else if (platformName == "Phone") {
+                  ? Container(
+                      height: height / 20,
+                      width: width / 9,
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.transparent)),
+                      child: IconButton(
+                        onPressed: () {
+                          if (platformName == "Instagram" ||
+                              platformName == "Snapchat" ||
+                              platformName == "Venmo" ||
+                              platformName == "Twitter" ||
+                              platformName == "Tiktok" ||
+                              platformName == "Discord" ||
+                              platformName == "Spotify") {
                             Popups.editUsernamePopup(context, soshiUsername,
-                                platformName, "Phone", "#", width);
+                                platformName, "Username", "@", width);
                           } else {
-                            Popups.editUsernamePopup(context, soshiUsername,
-                                platformName, "", "", width);
+                            if (platformName == "Facebook" ||
+                                platformName == "Linkedin" ||
+                                platformName == "Personal") {
+                              Popups.editUsernamePopup(
+                                  context,
+                                  soshiUsername,
+                                  platformName,
+                                  "Link to Profile",
+                                  "https://",
+                                  width);
+                            } else if (platformName == "Phone") {
+                              Popups.editUsernamePopup(context, soshiUsername,
+                                  platformName, "Phone", "#", width);
+                            } else {
+                              Popups.editUsernamePopup(context, soshiUsername,
+                                  platformName, "", "", width);
+                            }
                           }
-                        }
-                        //popup of edit username
-                      },
-                      iconSize: 25,
-                      splashRadius: 20,
-                      icon: Icon(Icons.edit),
-                      // color: Colors.white,
+                          //popup of edit username
+                        },
+                        iconSize: 25,
+                        splashRadius: 20,
+                        icon: Icon(Icons.edit),
+                        // color: Colors.white,
+                      ),
                     )
                   : IconButton(
                       icon: Icon(Icons.question_mark_rounded),
@@ -667,6 +678,7 @@ class ProfileState extends State<Profile> {
                               },
                               style: ElevatedButton.styleFrom(
                                   elevation: 5.0,
+                                  shadowColor: Colors.cyan,
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(15.0)))),

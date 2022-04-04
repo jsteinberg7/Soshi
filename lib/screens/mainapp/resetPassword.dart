@@ -28,18 +28,18 @@ class _ResetPassword extends State<ResetPassword> {
         new TextEditingController();
 
     return Scaffold(
-      backgroundColor: Colors.grey[850],
+      //backgroundColor: Colors.grey[850],
       appBar: AppBar(
         title: Text(
           "Forgot Password",
           style: TextStyle(
-              color: Colors.cyan[200],
-              fontSize: 20,
+              //color: Colors.cyan[200],
+              fontSize: 25,
               letterSpacing: 2,
               fontWeight: FontWeight.bold,
               fontStyle: FontStyle.italic),
         ),
-        backgroundColor: Colors.grey[800],
+        //backgroundColor: Colors.grey[800],
         centerTitle: true,
       ),
       body: SafeArea(
@@ -66,13 +66,15 @@ class _ResetPassword extends State<ResetPassword> {
                         child: TextFormField(
                       decoration: const InputDecoration(
                           labelText: "Email",
-                          labelStyle:
-                              TextStyle(color: Colors.blueGrey, fontSize: 15)),
+                          labelStyle: TextStyle(
+                              //color: Colors.blueGrey,
+                              fontSize: 15)),
                       controller: resetPasswordEmailController,
                       style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                          color: Colors.white),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        //color: Colors.white
+                      ),
                       textAlign: TextAlign.left,
                       //obscureText: _obscureTextCurrent,
                     )),
@@ -82,119 +84,115 @@ class _ResetPassword extends State<ResetPassword> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
                 child: FractionallySizedBox(
-                  widthFactor: .7,
-                  //heightFactor: .1,
-                  child: RaisedButton(
-                      elevation: 20,
-                      color: Colors.grey[500],
-                      padding: EdgeInsets.all(10),
-                      onPressed: () async {
-                        String email = resetPasswordEmailController.text.trim();
-                        try {
-                          await auth.sendPasswordResetEmail(email: email);
+                    widthFactor: .7,
+                    //heightFactor: .1,
+                    child: ElevatedButton(
+                        //color: Colors.grey[500],
+                        onPressed: () async {
+                          String email = resetPasswordEmailController.text
+                              .trim()
+                              .toLowerCase();
+                          try {
+                            await auth.sendPasswordResetEmail(email: email);
 
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(40.0))),
-                                  backgroundColor: Colors.blueGrey[900],
-                                  title: Text(
-                                    "Email Successfully Sent",
-                                    style: TextStyle(
-                                      color: Colors.cyan[600],
-                                      fontWeight: FontWeight.bold,
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(40.0))),
+                                    //backgroundColor: Colors.blueGrey[900],
+                                    title: Text(
+                                      "Email Successfully Sent",
+                                      style: TextStyle(
+                                        color: Colors.cyan[600],
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
-                                  content: Text(
-                                    ("A password reset email has been sent to $email."),
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.cyan[700],
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  actions: <Widget>[
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: <Widget>[
-                                        TextButton(
+                                    content: Text(
+                                      ("A password reset email has been sent to $email."),
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.cyan[700],
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    actions: <Widget>[
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: <Widget>[
+                                          TextButton(
+                                            child: Text(
+                                              'Done',
+                                              style: TextStyle(fontSize: 20),
+                                            ),
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  );
+                                });
+                          } catch (e) {
+                            Navigator.of(context).pop();
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(40.0))),
+                                    //backgroundColor: Colors.blueGrey[900],
+                                    title: Text(
+                                      "Email Could Not Be Sent",
+                                      style: TextStyle(
+                                        // color: Colors.cyan[600],
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    content: Text(
+                                      ("Please enter a valid email and try again."),
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          //color: Colors.cyan[700],
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    actions: <Widget>[
+                                      Padding(
+                                        padding: EdgeInsets.only(right: 15.0),
+                                        child: TextButton(
                                           child: Text(
                                             'Dismiss',
-                                            style: TextStyle(fontSize: 20),
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                color: Colors.blue),
                                           ),
                                           onPressed: () {
                                             Navigator.pop(context);
                                           },
                                         ),
-                                        // TextButton(
-                                        //   child: Text(
-                                        //     'Open Email App',
-                                        //     style: TextStyle(
-                                        //         fontSize: 20,
-                                        //         color: Colors.red),
-                                        //   ),
-                                        //   onPressed: () async {
-                                        //     // open email app
-                                        //   },
-                                        // ),
-                                      ],
-                                    ),
-                                  ],
-                                );
-                              });
-                        } catch (e) {
-                          Navigator.of(context).pop();
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(40.0))),
-                                  backgroundColor: Colors.blueGrey[900],
-                                  title: Text(
-                                    "Email Could Not Be Sent",
-                                    style: TextStyle(
-                                      color: Colors.cyan[600],
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  content: Text(
-                                    ("Please enter a valid email and try again."),
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.cyan[700],
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      child: Text(
-                                        'Dismiss',
-                                        style: TextStyle(fontSize: 20),
                                       ),
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                  ],
-                                );
-                              });
-                        }
-                      },
-                      splashColor: Colors.cyan[700],
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0)),
-                      child: Text(
-                        "Send Request",
-                        style: TextStyle(
-                            fontSize: 20,
-                            letterSpacing: 2,
-                            fontWeight: FontWeight.bold),
-                      )),
-                ),
+                                    ],
+                                  );
+                                });
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shadowColor: Colors.cyan,
+                          elevation: 15,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30.0)),
+                        ),
+                        child: Text(
+                          "Send Request",
+                          style: TextStyle(
+                              fontSize: 20,
+                              letterSpacing: 2,
+                              fontWeight: FontWeight.bold),
+                        ))),
               )
             ],
           ),

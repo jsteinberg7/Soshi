@@ -141,6 +141,43 @@ class Popups {
         });
   }
 
+  static void twoWarSharingExplained(
+      BuildContext context, double width, double height) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(40.0))),
+            //backgroundColor: Colors.blueGrey[900],
+            title: Text(
+              "2 way sharing!",
+              style: TextStyle(
+                  // color: Colors.cyan[600],
+                  fontWeight: FontWeight.bold),
+            ),
+            content: Text(
+              ("When this switch is enabled, this means that when you share your QR code, you are added as a friend on their account AND they are added as a friend on yours!"),
+              style: TextStyle(
+                  fontSize: 20,
+                  // color: Colors.cyan[700],
+                  fontWeight: FontWeight.bold),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                  'Ok',
+                  style: TextStyle(fontSize: 20, color: Colors.blue),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
   static void contactCardExplainedPopup(
       BuildContext context, double width, double height) {
     showDialog(
@@ -156,33 +193,39 @@ class Popups {
                   // color: Colors.cyan[600],
                   fontWeight: FontWeight.bold),
             ),
-            content: Flexible(
-              child: Container(
-                decoration: BoxDecoration(
-                    border: Border.all(
-                        // color: Colors.grey[850],
-                        ),
-                    borderRadius: BorderRadius.all(Radius.circular(30))),
-                child: Image.asset("assets/images/SMLogos/ContactLogo.png",
-                    height: height, width: width),
-              ),
+            content: Flex(
+              direction: Axis.vertical,
+              children: [
+                Flexible(
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Theme.of(context).brightness == Brightness.light
+                        ? Image.network(
+                            "https://firebasestorage.googleapis.com/v0/b/soshi-bc9ec.appspot.com/o/GifsAndAnimations%2FcontactCardExampleLight.gif?alt=media&token=6f3b422b-d9f8-4ff3-9a1b-71ec657e8f31")
+                        : Image.network(
+                            "https://firebasestorage.googleapis.com/v0/b/soshi-bc9ec.appspot.com/o/GifsAndAnimations%2FcontactCardExampleDark.gif?alt=media&token=3eab18ba-4088-4ff8-b801-f645a01a182f",
+                          ),
+                    Padding(
+                      padding: EdgeInsets.only(top: height / 55.0),
+                      child: Text("Share your contact card with one tap!"),
+                    )
+                  ],
+                ))
+              ],
             ),
-            // Text(
-            //   ("Sharing this allows others to immediately add you to their phone's contact list! Try it out!"),
-            //   style: TextStyle(
-            //       fontSize: 20,
-            //       color: Colors.cyan[700],
-            //       fontWeight: FontWeight.bold),
-            // ),
             actions: <Widget>[
-              TextButton(
-                child: Text(
-                  'Done',
-                  style: TextStyle(fontSize: 20),
+              Padding(
+                padding: EdgeInsets.only(right: width / 20),
+                child: TextButton(
+                  child: Text(
+                    'Done',
+                    style: TextStyle(fontSize: 20, color: Colors.blue),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                 ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
               ),
             ],
           );
@@ -293,6 +336,9 @@ class Popups {
                 SizedBox(width: width / 40),
                 Expanded(
                   child: TextField(
+                    keyboardType: platformName.contains("Phone")
+                        ? TextInputType.phone
+                        : null,
                     autocorrect: false,
                     controller: usernameController,
                     style: TextStyle(
@@ -319,7 +365,7 @@ class Popups {
                       ),
                       filled: true,
                       floatingLabelBehavior: FloatingLabelBehavior.always,
-                      label: Text(platformName + indicator),
+                      label: Text(platformName),
                       labelStyle: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 15,
@@ -667,6 +713,7 @@ class Popups {
     // get list of all visible platforms
     DatabaseService databaseService = new DatabaseService(
         currSoshiUsernameIn: LocalDataService.getLocalUsername());
+    String userUsername = LocalDataService.getLocalUsername();
     Map userData = await databaseService.getUserFile(friendSoshiUsername);
     List<String> visiblePlatforms =
         await databaseService.getEnabledPlatformsList(userData);
@@ -721,45 +768,64 @@ class Popups {
                                   url: profilePhotoURL, radius: height / 16),
                             ),
                             Padding(
-                              padding: EdgeInsets.only(left: width / 20),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    fullName,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: width / 23,
-                                      fontWeight: FontWeight.bold,
-                                      // color: Colors.grey[200]
+                              padding: EdgeInsets.only(left: width / 30),
+                              child: Container(
+                                height: height / 8,
+                                width: width / 2.5,
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  // crossAxisAlignment:
+                                  //     CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                      fullName,
+                                      softWrap: false,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.fade,
+                                      style: TextStyle(
+                                        fontSize: width / 22,
+                                        fontWeight: FontWeight.bold,
+                                        // color: Colors.grey[200]
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(height: height / 120),
-                                  Text(
-                                    "@" + usernames["Soshi"],
-                                    style: TextStyle(
-                                        fontSize: 15.0,
-                                        // color: Colors.grey[500],
-                                        fontStyle: FontStyle.italic),
-                                  ),
-                                  SizedBox(height: height / 170),
-                                  Row(
-                                    children: <Widget>[
-                                      Icon(
-                                        Icons.emoji_people,
-                                        color: Colors.cyan,
-                                      ),
-                                      SizedBox(width: 3),
-                                      Text(
-                                        "Friends: " + numFriendsString,
-                                        style: TextStyle(
-                                            fontSize: 15.0,
-                                            // color: Colors.grey[500],
-                                            fontStyle: FontStyle.italic),
-                                      ),
-                                    ],
-                                  )
-                                ],
+                                    //SizedBox(height: height / 120),
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "@" + usernames["Soshi"],
+                                          style: TextStyle(
+                                              fontSize: width / 23,
+                                              // color: Colors.grey[500],
+                                              fontStyle: FontStyle.italic),
+                                        ),
+                                        SizedBox(height: height / 80),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Icon(
+                                              Icons.emoji_people,
+                                              color: Colors.cyan,
+                                            ),
+                                            SizedBox(width: width / 100),
+                                            Text(
+                                              "Friends: " + numFriendsString,
+                                              style: TextStyle(
+                                                  fontSize: width / 25,
+                                                  // color: Colors.grey[500],
+                                                  fontStyle: FontStyle.italic),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             )
                           ],
@@ -822,7 +888,8 @@ class Popups {
                         ),
                         ElevatedButton(
                             onPressed: () async {
-                              if (isFriendAdded) {
+                              if (isFriendAdded ||
+                                  friendSoshiUsername == userUsername) {
                                 // do nothing
                               } else {
                                 setState(() {

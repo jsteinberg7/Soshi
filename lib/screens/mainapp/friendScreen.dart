@@ -107,6 +107,9 @@ class _FriendScreenState extends State<FriendScreen> {
           title: Column(
             children: <Widget>[
               Text(friend.fullName,
+                  maxLines: 1,
+                  softWrap: false,
+                  overflow: TextOverflow.fade,
                   style: TextStyle(
                       // color: Colors.cyan[600],
                       fontWeight: FontWeight.bold,
@@ -428,6 +431,8 @@ class _FriendScreenState extends State<FriendScreen> {
                           ]),
                         ),
                         style: ElevatedButton.styleFrom(
+                            shadowColor: Colors.cyan,
+                            elevation: 10,
                             shape: RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(15.0)))),

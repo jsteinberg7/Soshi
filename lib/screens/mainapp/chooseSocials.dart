@@ -141,6 +141,8 @@ class _ChooseSocialsState extends State<ChooseSocials> {
     List<String> choosePlatforms = LocalDataService.getLocalChoosePlatforms();
     return Scaffold(
       appBar: AppBar(
+        elevation: 10,
+        shadowColor: Colors.cyan,
         title: Text(
           "Add Platform",
           style: TextStyle(
