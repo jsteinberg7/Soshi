@@ -71,7 +71,13 @@ abstract class Constants {
   ];
 
   // list of all platforms added since initial launch (update when adding new platforms)
-  static List<String> addedPlatforms = ["Email", "Venmo", "Spotify", "Contact"];
+  static List<String> addedPlatforms = [
+    "Email",
+    "Venmo",
+    "Spotify",
+    "Contact",
+    "Personal"
+  ];
   /* Instructions for injecting/adding new platforms: 
     1. Add to addedPlatforms (above)
     2. Add Logo and Writing Logo to assets

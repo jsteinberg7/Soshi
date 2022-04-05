@@ -70,6 +70,12 @@ abstract class URL {
     } else if (platform == "Contact") {
       // launch .vcf file
       return username;
+    } else if (platform == "Personal") {
+      String personalLink;
+      username.contains("https://")
+          ? personalLink = username
+          : personalLink = "https://" + username;
+      return personalLink;
     }
   }
 }

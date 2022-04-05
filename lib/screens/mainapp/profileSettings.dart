@@ -12,6 +12,8 @@ import 'package:soshi/services/localData.dart';
 import 'package:soshi/constants/widgets.dart';
 import 'package:soshi/constants/utilities.dart';
 
+import '../../constants/popups.dart';
+
 /* 
 * Widget allows users to access their profile settings 
 * (name, password, etc) 
@@ -51,13 +53,18 @@ class ProfileSettingsState extends State<ProfileSettings> {
 
   @override
   Widget build(BuildContext context) {
+    double height = Utilities.getHeight(context);
+    double width = Utilities.getWidth(context);
+
     return Scaffold(
       appBar: AppBar(
+        elevation: 10,
+        shadowColor: Colors.cyan,
         title: Text(
           "Edit Profile",
           style: TextStyle(
               // color: Colors.cyan[200],
-              fontSize: 25,
+              fontSize: width / 15,
               letterSpacing: 2,
               fontWeight: FontWeight.bold,
               fontStyle: FontStyle.italic),
@@ -75,20 +82,27 @@ class ProfileSettingsState extends State<ProfileSettings> {
       body: SingleChildScrollView(
         child: SafeArea(
           child: Padding(
-              padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
+              padding:
+                  EdgeInsets.fromLTRB(width / 20, height / 50, width / 20, 0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Center(
                     child: ProfilePic(
-                      radius: 50.0,
+                      radius: width / 8.0,
                       url: LocalDataService.getLocalProfilePictureURL(),
                     ),
                   ),
-                  RaisedButton(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        elevation: 7.0,
+                        shadowColor: Colors.cyan,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(30))),
+
+                    // style: RoundedRectangleBorder(
+                    //   borderRadius: BorderRadius.circular(30.0),
+                    // ),
                     // color: Colors.grey[850],
                     // splashColor: Colors.grey[800],
                     onPressed: () async {
@@ -124,49 +138,55 @@ class ProfileSettingsState extends State<ProfileSettings> {
                           Text(
                             'Edit Profile Picture',
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: width / 25,
                               // color: Colors.cyan[300],
                               letterSpacing: 2,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(width: 5),
+                          SizedBox(width: width / 60),
                           Icon(
                             Icons.mode_edit,
-                            size: 15,
-                            color: Colors.blueGrey,
+                            size: height / 40,
+                            // color: Colors.blueGrey,
                           )
                         ],
                       ),
                     ),
                   ),
-                  Divider(height: 40, color: Colors.blueGrey),
+                  Divider(
+                      height: height / 25,
+                      color: Theme.of(context).brightness == Brightness.light
+                          ? Colors.black
+                          : Colors.white
+                      //color: Colors.blueGrey
+                      ),
                   Row(
                     children: <Widget>[
                       Text(
                         'Display Name',
                         style: TextStyle(
-                          color: Colors.grey,
+                          //color: Colors.grey,
                           letterSpacing: 2,
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 7),
+                  SizedBox(height: height / 80),
                   DisplayNameTextFields(),
-                  SizedBox(height: 10),
+                  SizedBox(height: height / 50),
                   Row(
                     children: [
                       Text(
                         'Username',
                         style: TextStyle(
-                          color: Colors.grey,
+                          //color: Colors.grey,
                           letterSpacing: 2,
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: height / 100),
                   Row(children: [
                     Text(
                       LocalDataService.getLocalUsernameForPlatform("Soshi"),
@@ -174,25 +194,41 @@ class ProfileSettingsState extends State<ProfileSettings> {
                       style: TextStyle(
                         // color: Colors.cyan[300],
                         letterSpacing: 2,
-                        fontSize: 20,
+                        fontSize: width / 20,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ]),
-                  SizedBox(height: 20),
+                  //SizedBox(height: height / 50),
                   Row(
                     children: [
                       Text(
                         'Two-Way Sharing',
                         style: TextStyle(
-                          color: Colors.grey,
-                          letterSpacing: 2,
+                            //color: Colors.grey,
+                            letterSpacing: 2,
+                            fontSize: 15),
+                      ),
+                      ElevatedButton(
+                        child: Icon(
+                          Icons.question_mark_sharp,
+                          size: 20,
+                        ),
+                        onPressed: () {
+                          Popups.twoWarSharingExplained(context, width, height);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          elevation: 7,
+                          shadowColor: Colors.cyan,
+                          fixedSize: Size(width / 50, height / 50),
+                          shape: const CircleBorder(),
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 10),
+                  //SizedBox(height: height / 100),
                   Row(children: [
+                    Icon(Icons.person),
                     Switch(
                         activeThumbImage: AssetImage(
                             'assets/images/SoshiLogos/soshi_icon.png'),
@@ -207,17 +243,19 @@ class ProfileSettingsState extends State<ProfileSettings> {
                           LocalDataService.updateTwoWaySharing(value);
                           databaseService.updateTwoWaySharing(value);
                         }),
+                    Icon(Icons.people),
+                    // SizedBox(width: width / 45),
                   ]),
-                  SizedBox(height: 20),
+                  SizedBox(height: height / 50),
                   Text(
                     'Password',
                     style: TextStyle(
-                      color: Colors.grey,
+                      //color: Colors.grey,
                       letterSpacing: 2,
                     ),
                   ),
                   SizedBox(
-                    height: 7,
+                    height: height / 100,
                   ),
                   Row(
                     children: <Widget>[
@@ -228,13 +266,16 @@ class ProfileSettingsState extends State<ProfileSettings> {
                             : Colors.white,
                       ),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
-                        child: RaisedButton(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0),
+                        padding: EdgeInsets.fromLTRB(width / 25, 0, 0, 0),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            elevation: 7,
+                            shadowColor: Colors.cyan,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            // color: Colors.grey[850],
                           ),
-                          // color: Colors.grey[850],
-                          splashColor: Colors.cyan,
                           onPressed: () {
                             Navigator.push(context,
                                 MaterialPageRoute(builder: (context) {
@@ -246,7 +287,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                               Text(
                                 "Forgot Password?",
                                 style: TextStyle(
-                                  fontSize: 15,
+                                  fontSize: width / 30,
                                   // color: Colors.cyan[300],
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -257,12 +298,12 @@ class ProfileSettingsState extends State<ProfileSettings> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: height / 50),
                   Icon(Icons.email_outlined,
 
                       // color: Colors.grey,
                       size: 25),
-                  SizedBox(height: 10),
+                  SizedBox(height: height / 100),
                   Text(
                     Provider.of<User>(context, listen: false).email,
                     style: TextStyle(
@@ -272,7 +313,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 40),
+                  SizedBox(height: height / 30),
                   Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
@@ -280,205 +321,12 @@ class ProfileSettingsState extends State<ProfileSettings> {
                           width: 5,
                         ),
                         // DeleteProfileButton(),
-                        SizedBox(
-                          width: 0,
-                        ),
                         SignOutButton(),
                       ]),
                 ],
               )),
         ),
       ),
-    );
-  }
-}
-
-class DeleteProfileButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            // primary: Colors.black,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30.0),
-            ),
-          ),
-          child: Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 5, 3, 3),
-                child: Icon(
-                  Icons.delete,
-                  color: Theme.of(context).brightness == Brightness.light
-                      ? Colors.black
-                      : Colors.white,
-                ),
-              ),
-              Text("Delete Account",
-                  style: TextStyle(
-                      // color: Colors.cyan[300],
-                      fontWeight: FontWeight.bold)),
-            ],
-          ),
-          onPressed: () async {
-            showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(40.0))),
-                    backgroundColor: Colors.blueGrey[900],
-                    title: Text(
-                      "Delete Account",
-                      style: TextStyle(
-                        // color: Colors.cyan[600],
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    content: Text(
-                      ("Are you sure you want to delete your profile? This cannot be undone."),
-                      style: TextStyle(
-                          fontSize: 20,
-                          // color: Colors.cyan[700],
-                          fontWeight: FontWeight.bold),
-                    ),
-                    actions: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          TextButton(
-                            child: Text(
-                              'No',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                          ),
-                          TextButton(
-                            child: Text(
-                              'Yes',
-                              style: TextStyle(fontSize: 20, color: Colors.red),
-                            ),
-                            onPressed: () async {
-                              String soshiUsername =
-                                  LocalDataService.getLocalUsername();
-                              DatabaseService databaseService =
-                                  new DatabaseService(
-                                      currSoshiUsernameIn: soshiUsername);
-                              await databaseService.deleteProfileData();
-
-                              // wipe profile data in firestore
-                              AuthService authService = new AuthService();
-                              Navigator.of(context).pop();
-                              await authService
-                                  .deleteProfile(); // delete user account from firebase
-                              LocalDataService
-                                  .wipeSharedPreferences(); // clear local user data
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
-                  );
-                });
-          }),
-    );
-  }
-}
-
-class SignOutButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        // primary: Colors.grey[850],
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-      ),
-      child: Row(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 5, 3, 3),
-            child: Icon(
-              Icons.exit_to_app,
-              color: Theme.of(context).brightness == Brightness.light
-                  ? Colors.black
-                  : Colors.white,
-            ),
-          ),
-          Text("Sign out",
-              style: TextStyle(
-                  // color: Colors.cyan[300],
-                  fontWeight: FontWeight.bold)),
-        ],
-      ),
-
-      onPressed: () {
-        AuthService authService = new AuthService();
-
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(40.0))),
-                // backgroundColor: Colors.blueGrey[900],
-                title: Text(
-                  "Sign Out",
-                  style: TextStyle(
-                    // color: Colors.cyan[600],
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                content: Text(
-                  ("Are you sure you want to sign out?"),
-                  style: TextStyle(
-                    fontSize: 20,
-                    // color: Colors.cyan[700],
-                    // fontWeight: FontWeight.bold
-                  ),
-                ),
-                actions: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      TextButton(
-                        child: Text(
-                          'No',
-                          style: TextStyle(fontSize: 20, color: Colors.red),
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                      TextButton(
-                        child: Text(
-                          'Yes',
-                          style: TextStyle(fontSize: 20, color: Colors.blue),
-                        ),
-                        onPressed: () async {
-                          await authService.signOut();
-                          Navigator.pop(context); // close popup
-                          Navigator.pop(context); // pop to login screen
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              );
-            });
-      },
-      // icon: //Text("Sign out"),
-      //     Icon(
-      //   Icons.exit_to_app,
-      //   color: Colors.cyan,
-      // ),
-      // elevation: 20,
-      // backgroundColor: Colors.grey[850],
     );
   }
 }

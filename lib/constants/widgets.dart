@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 import 'package:soshi/constants/popups.dart';
 import 'package:soshi/constants/utilities.dart';
+import 'package:soshi/services/auth.dart';
 import 'package:soshi/services/database.dart';
 import 'package:soshi/services/localData.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -66,6 +67,198 @@ class ProfilePic extends StatelessWidget {
   }
 }
 
+class SignOutButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        elevation: 5,
+        shadowColor: Colors.cyan,
+        // primary: Colors.grey[850],
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+      ),
+      child: Row(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 5, 3, 3),
+            child: Icon(
+              Icons.exit_to_app,
+              color: Theme.of(context).brightness == Brightness.light
+                  ? Colors.black
+                  : Colors.white,
+            ),
+          ),
+          Text("Sign out",
+              style: TextStyle(
+                  // color: Colors.cyan[300],
+                  fontWeight: FontWeight.bold)),
+        ],
+      ),
+
+      onPressed: () {
+        AuthService authService = new AuthService();
+
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(40.0))),
+                // backgroundColor: Colors.blueGrey[900],
+                title: Text(
+                  "Sign Out",
+                  style: TextStyle(
+                    // color: Colors.cyan[600],
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                content: Text(
+                  ("Are you sure you want to sign out?"),
+                  style: TextStyle(
+                    fontSize: 20,
+                    // color: Colors.cyan[700],
+                    // fontWeight: FontWeight.bold
+                  ),
+                ),
+                actions: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      TextButton(
+                        child: Text(
+                          'No',
+                          style: TextStyle(fontSize: 20, color: Colors.red),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                      TextButton(
+                        child: Text(
+                          'Yes',
+                          style: TextStyle(fontSize: 20, color: Colors.blue),
+                        ),
+                        onPressed: () async {
+                          await authService.signOut();
+                          Navigator.pop(context); // close popup
+                          Navigator.pop(context); // pop to login screen
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              );
+            });
+      },
+      // icon: //Text("Sign out"),
+      //     Icon(
+      //   Icons.exit_to_app,
+      //   color: Colors.cyan,
+      // ),
+      // elevation: 20,
+      // backgroundColor: Colors.grey[850],
+    );
+  }
+}
+
+class DeleteProfileButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            // primary: Colors.black,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30.0),
+            ),
+          ),
+          child: Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 5, 3, 3),
+                child: Icon(
+                  Icons.delete,
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.black
+                      : Colors.white,
+                ),
+              ),
+              Text("Delete Account",
+                  style: TextStyle(
+                      // color: Colors.cyan[300],
+                      fontWeight: FontWeight.bold)),
+            ],
+          ),
+          onPressed: () async {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(40.0))),
+                    backgroundColor: Colors.blueGrey[900],
+                    title: Text(
+                      "Delete Account",
+                      style: TextStyle(
+                        // color: Colors.cyan[600],
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    content: Text(
+                      ("Are you sure you want to delete your profile? This cannot be undone."),
+                      style: TextStyle(
+                          fontSize: 20,
+                          // color: Colors.cyan[700],
+                          fontWeight: FontWeight.bold),
+                    ),
+                    actions: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          TextButton(
+                            child: Text(
+                              'No',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                          TextButton(
+                            child: Text(
+                              'Yes',
+                              style: TextStyle(fontSize: 20, color: Colors.red),
+                            ),
+                            onPressed: () async {
+                              String soshiUsername =
+                                  LocalDataService.getLocalUsername();
+                              DatabaseService databaseService =
+                                  new DatabaseService(
+                                      currSoshiUsernameIn: soshiUsername);
+                              await databaseService.deleteProfileData();
+
+                              // wipe profile data in firestore
+                              AuthService authService = new AuthService();
+                              Navigator.of(context).pop();
+                              await authService
+                                  .deleteProfile(); // delete user account from firebase
+                              LocalDataService
+                                  .wipeSharedPreferences(); // clear local user data
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  );
+                });
+          }),
+    );
+  }
+}
+
 /* Widget to build the display name textfields */
 class DisplayNameTextFields extends StatefulWidget {
   @override
@@ -83,7 +276,12 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
   @override
   Widget build(BuildContext context) {
     firstNameController.text = LocalDataService.getLocalFirstName();
+    firstNameController.selection = TextSelection.fromPosition(
+        TextPosition(offset: firstNameController.text.length));
     lastNameController.text = LocalDataService.getLocalLastName();
+    lastNameController.selection = TextSelection.fromPosition(
+        TextPosition(offset: lastNameController.text.length));
+
     String soshiUsername =
         LocalDataService.getLocalUsernameForPlatform("Soshi");
     DatabaseService dbService =
@@ -134,12 +332,13 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
             ),
             onSubmitted: (String inputText) {
               if (inputText.length > 0 && inputText.length <= 12) {
-                LocalDataService.updateFirstName(firstNameController.text);
-                LocalDataService.updateLastName(lastNameController.text);
+                LocalDataService.updateFirstName(
+                    firstNameController.text.trim());
+                LocalDataService.updateLastName(lastNameController.text.trim());
 
                 dbService.updateDisplayName(
-                    firstNameParam: firstNameController.text,
-                    lastNameParam: lastNameController.text);
+                    firstNameParam: firstNameController.text.trim(),
+                    lastNameParam: lastNameController.text.trim());
                 print(firstName + lastName);
               } else {
                 displayNameErrorPopUp("First", context);
@@ -194,12 +393,13 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
             controller: lastNameController,
             onSubmitted: (String text) {
               if (text.length > 0 && text.length <= 12) {
-                LocalDataService.updateLastName(lastNameController.text);
-                LocalDataService.updateFirstName(firstNameController.text);
+                LocalDataService.updateLastName(lastNameController.text.trim());
+                LocalDataService.updateFirstName(
+                    firstNameController.text.trim());
 
                 dbService.updateDisplayName(
-                    firstNameParam: firstNameController.text,
-                    lastNameParam: lastNameController.text);
+                    firstNameParam: firstNameController.text.trim(),
+                    lastNameParam: lastNameController.text.trim());
                 print(firstName + lastName);
               } else {
                 displayNameErrorPopUp("Last", context);

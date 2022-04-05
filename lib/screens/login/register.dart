@@ -117,6 +117,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
           Form(
             key: usernameKeyRegister,
             child: TextFormField(
+              textInputAction: TextInputAction.next,
+
               validator: FieldValidator.password(
                   minLength: 2,
                   maxLength: 15,
