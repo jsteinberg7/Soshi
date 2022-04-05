@@ -31,7 +31,7 @@ abstract class Themes {
 
   static ThemeData darkTheme = ThemeData(
       brightness: Brightness.dark,
-      backgroundColor: Color(0x1f6D42CE),
+      backgroundColor: Colors.grey[900],
       primarySwatch: MaterialColor(
         0xFFF5E0C3,
         <int, Color>{
