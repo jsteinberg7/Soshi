@@ -10,6 +10,7 @@ import 'package:soshi/services/localData.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:soshi/services/url.dart';
 import 'constants.dart';
 
 /* Widget to build the profile picture and check if they are null */
@@ -127,9 +128,10 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
             autocorrect: false,
             controller: firstNameController,
             style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 15,
-                color: Colors.cyan[300]),
+              fontWeight: FontWeight.bold,
+              fontSize: 15,
+              // color: Colors.cyan[300]
+            ),
             onSubmitted: (String inputText) {
               if (inputText.length > 0 && inputText.length <= 12) {
                 LocalDataService.updateFirstName(firstNameController.text);
@@ -154,7 +156,12 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
                   color: Colors.cyan[300],
                 ),
               ),
-              prefixIcon: Icon(Icons.person, color: Colors.cyanAccent),
+              prefixIcon: Icon(
+                Icons.person,
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.black
+                    : Colors.white,
+              ),
               filled: true,
               floatingLabelBehavior: FloatingLabelBehavior.always,
               label: Text("First"),
@@ -162,7 +169,7 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
                   fontWeight: FontWeight.bold,
                   fontSize: 15,
                   color: Colors.grey[400]),
-              fillColor: Colors.grey[850],
+              // fillColor: Colors.grey[850],
               hintText: "First Name",
               hintStyle: TextStyle(
                   color: Colors.grey[500],
@@ -178,9 +185,12 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
           padding: const EdgeInsets.all(4.0),
           child: TextField(
             style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 15,
-                color: Colors.cyan[300]),
+              fontWeight: FontWeight.bold,
+              fontSize: 15,
+              color: Theme.of(context).brightness == Brightness.light
+                  ? Colors.black
+                  : Colors.white,
+            ),
             controller: lastNameController,
             onSubmitted: (String text) {
               if (text.length > 0 && text.length <= 12) {
@@ -206,7 +216,12 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
                   color: Colors.cyan[300],
                 ),
               ),
-              prefixIcon: Icon(Icons.person, color: Colors.cyanAccent),
+              prefixIcon: Icon(
+                Icons.person,
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.black
+                    : Colors.white,
+              ),
               filled: true,
               floatingLabelBehavior: FloatingLabelBehavior.always,
               label: Text("Last"),
@@ -214,7 +229,7 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
                   fontWeight: FontWeight.bold,
                   fontSize: 15,
                   color: Colors.grey[400]),
-              fillColor: Colors.grey[850],
+              //fillColor: Colors.grey[850],
               hintText: "Last Name",
               hintStyle: TextStyle(
                   color: Colors.black,
@@ -242,7 +257,9 @@ class _ReturnNumConnectionsState extends State<ReturnNumConnections> {
     if (connectionsCount.toString() == "1") {
       return Text("1 friend",
           style: TextStyle(
-            color: Colors.cyan[300],
+            color: Theme.of(context).brightness == Brightness.light
+                ? Colors.black
+                : Colors.white,
             letterSpacing: 2.0,
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -250,7 +267,9 @@ class _ReturnNumConnectionsState extends State<ReturnNumConnections> {
     }
     return Text(connectionsCount.toString() + " friends",
         style: TextStyle(
-          color: Colors.cyan[300],
+          color: Theme.of(context).brightness == Brightness.light
+              ? Colors.black
+              : Colors.white,
           letterSpacing: 2.0,
           fontSize: 20,
           fontWeight: FontWeight.bold,
@@ -602,5 +621,67 @@ class _CircularProfileAvatarState extends State<CircularProfileAvatar> {
                     'assets/images/SoshiLogos/soshi_icon.png',
                     fit: widget.imageFit,
                   ));
+  }
+}
+
+class SoshiAppBar extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      leadingWidth: 100,
+      actions: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+          child: ElevatedButton(
+            onPressed: () {
+              URL.launchURL("sms:" + "5713351885");
+            },
+            style: ElevatedButton.styleFrom(
+                // primary: Theme.of(context).primaryColor,
+                //shadowColor: Colors.grey[900],
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(15.0)))),
+            child: Row(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Send",
+                        style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1)),
+                    Text("feedback!",
+                        style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1)),
+                  ],
+                ),
+                // Icon(
+                //   Icons.feedback,
+                //   color: Colors.cyan[300],
+                //   size: 10,
+                // ),
+              ],
+            ),
+
+            // Icon(Icons.person_rounded,
+            //     color: Colors.cyan[300], size: 10.0),
+          ),
+        ),
+      ],
+      elevation: 7,
+      shadowColor: Colors.cyan,
+      title: Image.asset(
+        Theme.of(context).brightness == Brightness.light
+            ? "assets/images/SoshiLogos/soshi_logo_black.png"
+            : "assets/images/SoshiLogos/soshi_logo.png",
+        height: Utilities.getHeight(context) / 22,
+      ),
+      backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+      centerTitle: true,
+    );
   }
 }

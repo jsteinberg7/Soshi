@@ -6,6 +6,7 @@ import 'package:soshi/constants/utilities.dart';
 import 'package:soshi/screens/mainapp/profile.dart';
 import 'package:soshi/screens/mainapp/qrCode.dart';
 import 'package:soshi/services/url.dart';
+import '../../constants/widgets.dart';
 import 'friendScreen.dart';
 import 'package:soshi/constants/constants.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -30,65 +31,10 @@ class _MainAppState extends State<MainApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        //Create "Beta" icon on left
-        preferredSize: Size(
-            Utilities.getWidth(context), Utilities.getHeight(context) / 16),
-        child: AppBar(
-          leadingWidth: 100,
-          actions: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-              child: ElevatedButton(
-                onPressed: () {
-                  URL.launchURL("sms:" + "5713351885");
-                },
-                style: ElevatedButton.styleFrom(
-                    // primary: Theme.of(context).primaryColor,
-                    shadowColor: Colors.grey[900],
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(15.0)))),
-                child: Row(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("Send",
-                            style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1)),
-                        Text("feedback!",
-                            style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1)),
-                      ],
-                    ),
-                    // Icon(
-                    //   Icons.feedback,
-                    //   color: Colors.cyan[300],
-                    //   size: 10,
-                    // ),
-                  ],
-                ),
-
-                // Icon(Icons.person_rounded,
-                //     color: Colors.cyan[300], size: 10.0),
-              ),
-            ),
-          ],
-          elevation: 40,
-          title: Image.asset(
-            Theme.of(context).brightness == Brightness.light
-                ? "assets/images/SoshiLogos/soshi_logo_black.png"
-                : "assets/images/SoshiLogos/soshi_logo.png",
-            height: Utilities.getHeight(context) / 22,
-          ),
-          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-          centerTitle: true,
-        ),
-      ),
+          //Create "Beta" icon on left
+          preferredSize: Size(
+              Utilities.getWidth(context), Utilities.getHeight(context) / 16),
+          child: SoshiAppBar()),
       backgroundColor: Theme.of(context).backgroundColor,
       // backgroundColor: Colors.white,
 

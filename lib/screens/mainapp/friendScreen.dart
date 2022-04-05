@@ -108,7 +108,7 @@ class _FriendScreenState extends State<FriendScreen> {
             children: <Widget>[
               Text(friend.fullName,
                   style: TextStyle(
-                      color: Colors.cyan[600],
+                      // color: Colors.cyan[600],
                       fontWeight: FontWeight.bold,
                       fontSize: 20)),
               Text(
@@ -120,12 +120,14 @@ class _FriendScreenState extends State<FriendScreen> {
               ),
             ],
           ),
-          tileColor: Theme.of(context).cardColor,
+          tileColor: Colors.grey[50],
+
           // selectedTileColor: Constants.buttonColorLight,
           contentPadding: EdgeInsets.all(10.0),
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-              side: BorderSide(width: .5)),
+            borderRadius: BorderRadius.circular(15),
+            // side: BorderSide(width: .5)
+          ),
           trailing: IconButton(
             icon: Icon(
               Icons.more_vert_rounded,
@@ -349,7 +351,7 @@ class _FriendScreenState extends State<FriendScreen> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                     child: Divider(
-                      // color: Colors.blueGrey,
+                      color: Colors.grey[850],
                       thickness: 1,
                     ),
                   ),
@@ -364,10 +366,21 @@ class _FriendScreenState extends State<FriendScreen> {
                               // return Padding(padding: EdgeInsets.all(0.0));
                               // },
                               itemBuilder: (BuildContext context, int i) {
-                                return createFriendTile(
-                                    context: context,
-                                    friend: friendsList[i],
-                                    databaseService: databaseService);
+                                return Column(
+                                  children: [
+                                    createFriendTile(
+                                        context: context,
+                                        friend: friendsList[i],
+                                        databaseService: databaseService),
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          20, 0, 20, 0),
+                                      child: Divider(
+                                        color: Colors.grey[500],
+                                      ),
+                                    )
+                                  ],
+                                );
                               },
                               itemCount: (friendsList == null)
                                   ? 1

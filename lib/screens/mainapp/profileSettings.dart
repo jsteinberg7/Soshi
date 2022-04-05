@@ -10,6 +10,7 @@ import 'package:soshi/services/auth.dart';
 import 'package:soshi/services/database.dart';
 import 'package:soshi/services/localData.dart';
 import 'package:soshi/constants/widgets.dart';
+import 'package:soshi/constants/utilities.dart';
 
 /* 
 * Widget allows users to access their profile settings 
@@ -34,6 +35,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
   int connectionCount = 0;
 
   Function refreshProfileScreen;
+  bool twoWaySharingSwitch;
 
   void refreshProfileSettings() {
     setState(() {});
@@ -44,6 +46,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
     soshiUsername = widget.soshiUsername;
     refreshProfileScreen = widget.refreshProfileScreen;
     databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
+    bool twoWaySharingSwitch = LocalDataService.getTwoWaySharing();
   }
 
   @override
@@ -53,19 +56,19 @@ class ProfileSettingsState extends State<ProfileSettings> {
         title: Text(
           "Edit Profile",
           style: TextStyle(
-              color: Colors.cyan[200],
+              // color: Colors.cyan[200],
               fontSize: 25,
               letterSpacing: 2,
               fontWeight: FontWeight.bold,
               fontStyle: FontStyle.italic),
         ),
-        backgroundColor: Colors.grey[850],
+        // backgroundColor: Colors.grey[850],
         centerTitle: true,
       ),
 
       resizeToAvoidBottomInset: false,
 
-      backgroundColor: Colors.grey[900],
+      // backgroundColor: Colors.grey[900],
 
       // floatingActionButton:
 
@@ -86,8 +89,8 @@ class ProfileSettingsState extends State<ProfileSettings> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30.0),
                     ),
-                    color: Colors.grey[850],
-                    splashColor: Colors.grey[800],
+                    // color: Colors.grey[850],
+                    // splashColor: Colors.grey[800],
                     onPressed: () async {
                       DatabaseService dbService = new DatabaseService();
                       //dbService.chooseAndCropImage();
@@ -122,7 +125,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                             'Edit Profile Picture',
                             style: TextStyle(
                               fontSize: 14,
-                              color: Colors.cyan[300],
+                              // color: Colors.cyan[300],
                               letterSpacing: 2,
                               fontWeight: FontWeight.bold,
                             ),
@@ -164,16 +167,47 @@ class ProfileSettingsState extends State<ProfileSettings> {
                     ],
                   ),
                   SizedBox(height: 10),
-                  Text(
-                    LocalDataService.getLocalUsernameForPlatform("Soshi"),
-                    //"Soshi username",
-                    style: TextStyle(
-                      color: Colors.cyan[300],
-                      letterSpacing: 2,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                  Row(children: [
+                    Text(
+                      LocalDataService.getLocalUsernameForPlatform("Soshi"),
+                      //"Soshi username",
+                      style: TextStyle(
+                        // color: Colors.cyan[300],
+                        letterSpacing: 2,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
+                  ]),
+                  SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Text(
+                        'Two-Way Sharing',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          letterSpacing: 2,
+                        ),
+                      ),
+                    ],
                   ),
+                  SizedBox(height: 10),
+                  Row(children: [
+                    Switch(
+                        activeThumbImage: AssetImage(
+                            'assets/images/SoshiLogos/soshi_icon.png'),
+                        inactiveThumbImage: AssetImage(
+                            'assets/images/SoshiLogos/soshi_icon_marble.png'),
+                        value: twoWaySharingSwitch,
+                        activeColor: Colors.cyan[500],
+                        onChanged: (bool value) {
+                          setState(() {
+                            twoWaySharingSwitch = value;
+                          });
+                          LocalDataService.updateTwoWaySharing(value);
+                          databaseService.updateTwoWaySharing(value);
+                        }),
+                  ]),
                   SizedBox(height: 20),
                   Text(
                     'Password',
@@ -187,14 +221,19 @@ class ProfileSettingsState extends State<ProfileSettings> {
                   ),
                   Row(
                     children: <Widget>[
-                      Icon(Icons.lock, color: Colors.cyanAccent),
+                      Icon(
+                        Icons.lock,
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? Colors.black
+                            : Colors.white,
+                      ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
                         child: RaisedButton(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
                           ),
-                          color: Colors.grey[850],
+                          // color: Colors.grey[850],
                           splashColor: Colors.cyan,
                           onPressed: () {
                             Navigator.push(context,
@@ -208,7 +247,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                                 "Forgot Password?",
                                 style: TextStyle(
                                   fontSize: 15,
-                                  color: Colors.cyan[300],
+                                  // color: Colors.cyan[300],
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -219,12 +258,15 @@ class ProfileSettingsState extends State<ProfileSettings> {
                     ],
                   ),
                   SizedBox(height: 10),
-                  Icon(Icons.email_outlined, color: Colors.grey, size: 25),
+                  Icon(Icons.email_outlined,
+
+                      // color: Colors.grey,
+                      size: 25),
                   SizedBox(height: 10),
                   Text(
                     Provider.of<User>(context, listen: false).email,
                     style: TextStyle(
-                      color: Colors.cyan[300],
+                      // color: Colors.cyan[300],
                       letterSpacing: 2.0,
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
@@ -258,7 +300,7 @@ class DeleteProfileButton extends StatelessWidget {
       padding: const EdgeInsets.all(10.0),
       child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            primary: Colors.black,
+            // primary: Colors.black,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30.0),
             ),
@@ -269,12 +311,15 @@ class DeleteProfileButton extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(0, 5, 3, 3),
                 child: Icon(
                   Icons.delete,
-                  color: Colors.cyan,
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.black
+                      : Colors.white,
                 ),
               ),
               Text("Delete Account",
                   style: TextStyle(
-                      color: Colors.cyan[300], fontWeight: FontWeight.bold)),
+                      // color: Colors.cyan[300],
+                      fontWeight: FontWeight.bold)),
             ],
           ),
           onPressed: () async {
@@ -288,7 +333,7 @@ class DeleteProfileButton extends StatelessWidget {
                     title: Text(
                       "Delete Account",
                       style: TextStyle(
-                        color: Colors.cyan[600],
+                        // color: Colors.cyan[600],
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -296,7 +341,7 @@ class DeleteProfileButton extends StatelessWidget {
                       ("Are you sure you want to delete your profile? This cannot be undone."),
                       style: TextStyle(
                           fontSize: 20,
-                          color: Colors.cyan[700],
+                          // color: Colors.cyan[700],
                           fontWeight: FontWeight.bold),
                     ),
                     actions: <Widget>[
@@ -349,7 +394,7 @@ class SignOutButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        primary: Colors.grey[850],
+        // primary: Colors.grey[850],
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
@@ -360,12 +405,15 @@ class SignOutButton extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(0, 5, 3, 3),
             child: Icon(
               Icons.exit_to_app,
-              color: Colors.cyan,
+              color: Theme.of(context).brightness == Brightness.light
+                  ? Colors.black
+                  : Colors.white,
             ),
           ),
           Text("Sign out",
               style: TextStyle(
-                  color: Colors.cyan[300], fontWeight: FontWeight.bold)),
+                  // color: Colors.cyan[300],
+                  fontWeight: FontWeight.bold)),
         ],
       ),
 
@@ -378,20 +426,21 @@ class SignOutButton extends StatelessWidget {
               return AlertDialog(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(40.0))),
-                backgroundColor: Colors.blueGrey[900],
+                // backgroundColor: Colors.blueGrey[900],
                 title: Text(
                   "Sign Out",
                   style: TextStyle(
-                    color: Colors.cyan[600],
+                    // color: Colors.cyan[600],
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 content: Text(
                   ("Are you sure you want to sign out?"),
                   style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.cyan[700],
-                      fontWeight: FontWeight.bold),
+                    fontSize: 20,
+                    // color: Colors.cyan[700],
+                    // fontWeight: FontWeight.bold
+                  ),
                 ),
                 actions: <Widget>[
                   Row(
@@ -400,7 +449,7 @@ class SignOutButton extends StatelessWidget {
                       TextButton(
                         child: Text(
                           'No',
-                          style: TextStyle(fontSize: 20),
+                          style: TextStyle(fontSize: 20, color: Colors.red),
                         ),
                         onPressed: () {
                           Navigator.pop(context);
@@ -409,7 +458,7 @@ class SignOutButton extends StatelessWidget {
                       TextButton(
                         child: Text(
                           'Yes',
-                          style: TextStyle(fontSize: 20, color: Colors.red),
+                          style: TextStyle(fontSize: 20, color: Colors.blue),
                         ),
                         onPressed: () async {
                           await authService.signOut();

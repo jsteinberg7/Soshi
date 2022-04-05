@@ -1,11 +1,15 @@
+import 'dart:io';
+
 import 'package:url_launcher/url_launcher.dart';
 
 // Basic wrapper for url services (all methods are static)
 abstract class URL {
   // open browser to specified url target
-  static void launchURL(String url) async {
+  static launchURL(String url) async {
     try {
-      await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
+      await canLaunch(url)
+          ? await launch(url, forceWebView: false, forceSafariVC: false)
+          : throw 'Could not launch $url';
     } catch (e) {
       // to avoid app crash
       print(e);
@@ -59,6 +63,9 @@ abstract class URL {
     } else if (platform == "Spotify") {
       return "https://open.spotify.com/user/" + username;
     } else if (platform == "Venmo") {
+      if (Platform.isIOS) {
+        return "venmo://paycharge?txn=pay&recipients=$username";
+      }
       return "https://venmo.com/" + username;
     } else if (platform == "Contact") {
       // launch .vcf file

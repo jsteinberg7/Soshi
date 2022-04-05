@@ -42,8 +42,9 @@ class _LoginScreenState extends State<LoginScreen> {
         children: <Widget>[
           Text(
             'Email',
-            style:
-                TextStyle(color: Colors.cyan[600], fontWeight: FontWeight.bold),
+            style: TextStyle(
+                // color: Colors.cyan[600],
+                fontWeight: FontWeight.bold),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
@@ -60,13 +61,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     _emailController, // Controllers are used as basically a text cursor, a way to input text from the keyboard
                 keyboardType: TextInputType.emailAddress,
                 style: TextStyle(
-                  color: Colors.white,
+                  // color: Colors.white,
                   fontFamily: 'OpenSans',
                 ),
 
                 decoration: InputDecoration(
                   enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
+                    borderSide: BorderSide(
+                        // color: Colors.white
+                        ),
                   ),
                   focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.cyan),
@@ -74,10 +77,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   contentPadding: EdgeInsets.only(top: 14.0),
                   prefixIcon: Icon(
                     Icons.email,
-                    color: Colors.white,
+                    color: Theme.of(context).brightness == Brightness.light
+                        ? Colors.black
+                        : Colors.white,
                   ),
                   hintText: 'Enter your Email',
-                  hintStyle: kHintTextStyle,
+                  // hintStyle:
+                  // kHintTextStyle,
                 ),
               ),
             ),
@@ -95,8 +101,9 @@ class _LoginScreenState extends State<LoginScreen> {
       children: <Widget>[
         Text(
           'Password',
-          style:
-              TextStyle(color: Colors.cyan[600], fontWeight: FontWeight.bold),
+          style: TextStyle(
+              // color: Colors.cyan[600],
+              fontWeight: FontWeight.bold),
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
@@ -110,12 +117,15 @@ class _LoginScreenState extends State<LoginScreen> {
               controller: _passwordController,
               obscureText: true,
               style: TextStyle(
-                color: Colors.white,
+                // color: Colors.white,
                 fontFamily: 'OpenSans',
               ),
               decoration: InputDecoration(
                 enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
+                  borderSide: BorderSide(
+                      // color:
+                      // Colors.white
+                      ),
                 ),
                 focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.cyan),
@@ -123,10 +133,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 contentPadding: EdgeInsets.only(top: 14.0),
                 prefixIcon: Icon(
                   Icons.lock,
-                  color: Colors.white,
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.black
+                      : Colors.white,
                 ),
                 hintText: 'Enter your Password',
-                hintStyle: kHintTextStyle,
+                // hintStyle: kHintTextStyle,
               ),
             ),
           ),
@@ -148,7 +160,10 @@ class _LoginScreenState extends State<LoginScreen> {
         },
         child: Text('Forgot Password?',
             style: TextStyle(
-                color: Colors.grey[500], fontWeight: FontWeight.bold)),
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.grey[700]
+                    : Colors.grey[500],
+                fontWeight: FontWeight.bold)),
       ),
     );
   }
@@ -198,7 +213,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Text(
           'LOGIN',
           style: TextStyle(
-            color: Colors.black,
+            // color: Colors.black,
             letterSpacing: 2,
             fontSize: 20.0,
             fontWeight: FontWeight.bold,
@@ -216,7 +231,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Text(
           '- OR -',
           style: TextStyle(
-            color: Colors.cyan[600],
+            // color: Colors.cyan[600],
             fontWeight: FontWeight.w400,
           ),
         ),
@@ -225,7 +240,9 @@ class _LoginScreenState extends State<LoginScreen> {
           padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
           child: Text('Sign in with',
               style: TextStyle(
-                  color: Colors.cyan[600], fontWeight: FontWeight.bold)),
+                  // color:
+                  // Colors.cyan[600],
+                  fontWeight: FontWeight.bold)),
         ),
       ],
     );
@@ -240,7 +257,7 @@ class _LoginScreenState extends State<LoginScreen> {
         width: 60.0,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: Colors.white,
+          // color: Colors.white,
           boxShadow: [
             BoxShadow(
               color: Colors.black26,
@@ -300,11 +317,14 @@ class _LoginScreenState extends State<LoginScreen> {
         children: <Widget>[
           Text('Don\'t have an Account?',
               style: TextStyle(
-                  color: Colors.cyan[300], fontWeight: FontWeight.bold)),
+                  // color: Colors.cyan[300],
+                  fontWeight: FontWeight.bold)),
           Icon(
             Icons.arrow_forward_sharp,
             size: 20,
-            color: Colors.cyan[200],
+            color: Theme.of(context).brightness == Brightness.light
+                ? Colors.black
+                : Colors.white,
           ),
           ElevatedButton(
             onPressed: () {
@@ -317,7 +337,7 @@ class _LoginScreenState extends State<LoginScreen> {
               "Register!",
               style: TextStyle(
                   fontSize: 15,
-                  color: Colors.black,
+                  // color: Colors.black,
                   fontWeight: FontWeight.bold),
             ),
             style: ElevatedButton.styleFrom(
@@ -359,8 +379,8 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Stack(
                 children: <Widget>[
                   Container(
-                    color: Colors.grey[850],
-                  ),
+                      //color: Colors.grey[850],
+                      ),
                   Container(
                     child: SingleChildScrollView(
                       padding: EdgeInsets.symmetric(
@@ -375,7 +395,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: Text(
                               'Sign in',
                               style: TextStyle(
-                                color: Colors.cyan[600],
+                                // color: Colors.cyan[600],
                                 fontFamily: 'OpenSans',
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.bold,

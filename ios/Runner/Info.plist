@@ -22,6 +22,18 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>instagram</string>
+		<string>snapchat</string>
+		<string>twitter</string>
+		<string>tiktok</string>
+		<string>linkedin</string>
+		<string>spotify</string>
+		<string>discord</string>
+		<string>facebook</string>
+		<string>venmo</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>

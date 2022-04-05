@@ -31,7 +31,7 @@ class _WrapperState extends State<Wrapper> {
       //     context); // precache profile picture
       return MainApp();
     } else {
-      if (! widget.firstLaunch) {
+      if (!widget.firstLaunch) {
         return Authenticate();
       } else {
         return Onboarding();

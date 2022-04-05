@@ -61,7 +61,7 @@ class _QRScreenState extends State<QRScreen> {
           Container(
             width: Utilities.getWidth(context) / 1.05,
             child: Card(
-              elevation: 2.0,
+              elevation: 8.0,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),
                 // side: BorderSide(color: Colors.cyanAccent, width: .3)
@@ -72,14 +72,29 @@ class _QRScreenState extends State<QRScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Container(
-                        child: ProfilePic(
-                          url: LocalDataService.getLocalProfilePictureURL(),
-                          radius: 50.0,
+                    Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Container(
+                            child: ProfilePic(
+                              url: LocalDataService.getLocalProfilePictureURL(),
+                              radius: 50.0,
+                            ),
+                          ),
                         ),
-                      ),
+                        Text(
+                          "@" +
+                              LocalDataService.getLocalUsernameForPlatform(
+                                  "Soshi"),
+                          style: TextStyle(
+                              // color: Colors.grey[500],
+                              letterSpacing: 2,
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FontStyle.italic),
+                        ),
+                      ],
                     ),
                     Expanded(
                       child: Column(
@@ -89,21 +104,8 @@ class _QRScreenState extends State<QRScreen> {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  Text(
-                                    "@" +
-                                        LocalDataService
-                                            .getLocalUsernameForPlatform(
-                                                "Soshi"),
-                                    style: TextStyle(
-                                        // color: Colors.grey[500],
-                                        letterSpacing: 2,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
-                                        fontStyle: FontStyle.italic),
-                                  ),
                                   //SizedBox(width: width / 40),
                                   GestureDetector(
                                     onTap: () {
@@ -160,17 +162,16 @@ class _QRScreenState extends State<QRScreen> {
                             //SizedBox(height: height / 150),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(0, 10, 10, 0),
-                              child: Container(
-                                child: Text(
-                                  LocalDataService.getLocalFirstName() +
-                                      " " +
-                                      LocalDataService.getLocalLastName(),
-                                  style: TextStyle(
-                                    color: Colors.cyan[300],
-                                    letterSpacing: 2,
-                                    fontSize: width / 17,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                              child: Text(
+                                LocalDataService.getLocalFirstName() +
+                                    " " +
+                                    LocalDataService.getLocalLastName(),
+                                overflow: TextOverflow.fade,
+                                style: TextStyle(
+                                  //color: Colors.cyan[300],
+                                  letterSpacing: 2,
+                                  fontSize: width / 17,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
@@ -259,6 +260,7 @@ class _QRScreenState extends State<QRScreen> {
                   soshiUsername: LocalDataService.getLocalUsername())),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
+                elevation: 15,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(15.0)))),
             child: Container(
@@ -266,9 +268,9 @@ class _QRScreenState extends State<QRScreen> {
                 Text(
                   "Scan QR Code",
                   style: TextStyle(
-                    fontSize: 15,
+                    fontSize: width / 25,
                     fontWeight: FontWeight.bold,
-                    // color: Colors.cyan[300],
+                    //color: Colors.cyan[300],
                     letterSpacing: 2.0,
                   ),
                 ),

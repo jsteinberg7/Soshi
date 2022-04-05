@@ -64,7 +64,7 @@ class _ChooseSocialsCardState extends State<ChooseSocialsCard> {
                 ? BorderSide(color: Colors.cyanAccent[100])
                 : BorderSide.none),
         elevation: 20,
-        color: Colors.grey[800],
+        // color: Colors.grey[800],
         child: Padding(
           padding: const EdgeInsets.fromLTRB(15, 15, 5, 15),
           child: Row(
@@ -144,13 +144,15 @@ class _ChooseSocialsState extends State<ChooseSocials> {
         title: Text(
           "Add Platform",
           style: TextStyle(
-              color: Colors.cyan[200],
+              color: Theme.of(context).brightness == Brightness.light
+                  ? Colors.black
+                  : Colors.cyan,
               fontSize: 25,
               letterSpacing: 2,
               fontWeight: FontWeight.bold,
               fontStyle: FontStyle.italic),
         ),
-        backgroundColor: Colors.grey[850],
+        // backgroundColor: Colors.grey[850],
         centerTitle: true,
       ),
       floatingActionButton: Align(
@@ -163,11 +165,26 @@ class _ChooseSocialsState extends State<ChooseSocials> {
             DialogBuilder dialogBuilder = new DialogBuilder(context);
             dialogBuilder.showLoadingIndicator();
 
+            /* this accounts for the edge case where there is a platform that 
+            is in both profile platforms and choose socials. (only seen on emula)
+            */
+            for (int i = 0; i < Queue.choosePlatformsQueue.length; i++) {
+              if (LocalDataService.getLocalProfilePlatforms()
+                  .contains(Queue.choosePlatformsQueue[i])) {
+                Queue.filteredChoosePlatformsQueue
+                    .add(Queue.choosePlatformsQueue[i]);
+                Queue.choosePlatformsQueue
+                    .remove(Queue.choosePlatformsQueue[i]);
+              }
+            }
+            LocalDataService.removeFromChoosePlatforms(
+                Queue.filteredChoosePlatformsQueue);
+
             // if platform has username, turn switch on
             for (String platform in Queue.choosePlatformsQueue) {
               String username =
                   LocalDataService.getLocalUsernameForPlatform(platform);
-              if (username != null && username.length > 3) {
+              if (username != null && username.length != "") {
                 // turn switch on
                 await LocalDataService.updateSwitchForPlatform(
                     platform: platform, state: true);
@@ -195,7 +212,7 @@ class _ChooseSocialsState extends State<ChooseSocials> {
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30.0),
               side: BorderSide(color: Colors.cyan[400])),
-          color: Colors.grey[300],
+          // color: Colors.grey[300],
           child: Text(
             'Add to profile',
             style: TextStyle(
@@ -209,7 +226,7 @@ class _ChooseSocialsState extends State<ChooseSocials> {
           ),
         ),
       ),
-      backgroundColor: Colors.grey[900],
+      // backgroundColor: Colors.grey[900],
       body: Padding(
         padding: const EdgeInsets.fromLTRB(15, 15, 15, 110),
         child: ListView.builder(

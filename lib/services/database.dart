@@ -61,7 +61,7 @@ class DatabaseService {
         "Tiktok": null,
         "Discord": null,
         "Email": email,
-        // "Venmo": null,
+        "Venmo": null,
         "Spotify": null,
         "Contact": null,
       },
@@ -76,7 +76,7 @@ class DatabaseService {
         "Tiktok": false,
         "Discord": false,
         "Email": false,
-        // "Venmo": false,
+        "Venmo": false,
         "Spotify": false,
       },
       "Photo URL": "null",
@@ -84,7 +84,7 @@ class DatabaseService {
         "Email",
         "Instagram",
         "Snapchat",
-        // "Venmo",
+        "Venmo",
         "Linkedin",
         "Twitter",
         "Tiktok",
@@ -188,9 +188,11 @@ class DatabaseService {
   METHODS PERTAINING TO FRIENDS LIST
   */
   // add new friend to current user's friend list
-  Future<void> addFriend({String friendSoshiUsername}) async {
+  Future<void> addFriend(
+      {@required String thisSoshiUsername,
+      @required String friendSoshiUsername}) async {
     // get copy of current friends list
-    List<dynamic> friendsList = await getFriends(currSoshiUsername);
+    List<dynamic> friendsList = await getFriends(thisSoshiUsername);
 
     // check to see if list already exists
     if (friendsList == null) {
@@ -202,7 +204,7 @@ class DatabaseService {
     }
 
     await usersCollection
-        .doc(currSoshiUsername)
+        .doc(thisSoshiUsername)
         .update({"Friends": friendsList});
 
     // usersCollection.doc(friendSoshiUsername).update({"Added Me": addedMeList})
@@ -339,6 +341,11 @@ class DatabaseService {
     return userData["Name"];
   }
 
+  // get state of two way sharing of user
+  bool getTwoWaySharing(Map userData) {
+    return userData["Two Way Sharing"];
+  }
+
   // pass in soshiUsername, return (String) full name of user
   String getFullName(Map userData) {
     Map fullNameMap = getFullNameMap(userData);
@@ -361,8 +368,6 @@ class DatabaseService {
     });
     return data["Profile Platforms"];
   }
-
-// UV functions
 
   Future<List<dynamic>> getChoosePlatforms() async {
     dynamic data;
@@ -546,4 +551,10 @@ class DatabaseService {
   //   // bool check = await IsFirstRun.isFirstRun();
   //   // return check;
   // }
+
+  Future<void> updateTwoWaySharing(bool state) async {
+    await usersCollection
+        .doc(currSoshiUsername)
+        .update({"Two Way Sharing": state});
+  }
 }

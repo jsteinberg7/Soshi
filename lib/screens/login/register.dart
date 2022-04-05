@@ -52,7 +52,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
             child: Text(
               'Email',
               style: TextStyle(
-                  color: Colors.cyan[300], fontWeight: FontWeight.bold),
+                  // color: Colors.cyan[300],
+                  fontWeight: FontWeight.bold),
             ),
           ),
           //alignment: Alignment.centerLeft,
@@ -66,12 +67,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
               style: TextStyle(
-                color: Colors.white,
+                // color: Colors.white,
                 fontFamily: 'OpenSans',
               ),
               decoration: InputDecoration(
                 enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
+                  borderSide: BorderSide(
+                      // color: Colors.white
+                      ),
                 ),
                 focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.cyan),
@@ -79,10 +82,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 contentPadding: EdgeInsets.only(top: 14.0),
                 prefixIcon: Icon(
                   Icons.email,
-                  color: Colors.white,
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.black
+                      : Colors.white,
                 ),
                 hintText: 'Enter your Email',
-                hintStyle: kHintTextStyle,
+                // hintStyle: kHintTextStyle,
               ),
             ),
           ),
@@ -102,7 +107,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
             child: Text(
               'Username',
               style: TextStyle(
-                  color: Colors.cyan[300], fontWeight: FontWeight.bold),
+                  // color: Colors.cyan[300],
+                  fontWeight: FontWeight.bold),
             ),
           ),
           //alignment: Alignment.centerLeft,
@@ -118,12 +124,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
               controller: _usernameController,
               //keyboardType: TextInputType.emailAddress,
               style: TextStyle(
-                color: Colors.white,
+                // color: Colors.white,
                 fontFamily: 'OpenSans',
               ),
               decoration: InputDecoration(
                 enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
+                  borderSide: BorderSide(
+                      // color: Colors.white
+                      ),
                 ),
                 focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.cyan),
@@ -131,10 +139,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 contentPadding: EdgeInsets.only(top: 14.0),
                 prefixIcon: Icon(
                   Icons.verified_user_rounded,
-                  color: Colors.white,
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.black
+                      : Colors.white,
                 ),
                 hintText: 'Enter your Username',
-                hintStyle: kHintTextStyle,
+                // hintStyle: kHintTextStyle,
               ),
             ),
           ),
@@ -154,7 +164,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
             child: Text(
               'First Name',
               style: TextStyle(
-                  color: Colors.cyan[300], fontWeight: FontWeight.bold),
+                  // color: Colors.cyan[300],
+                  fontWeight: FontWeight.bold),
             ),
           ),
           //alignment: Alignment.centerLeft,
@@ -172,12 +183,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
               controller: _firstNameController,
               //keyboardType: TextInputType.emailAddress,
               style: TextStyle(
-                color: Colors.white,
+                // color: Colors.white,
                 fontFamily: 'OpenSans',
               ),
               decoration: InputDecoration(
                 enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
+                  borderSide: BorderSide(
+                      // color:     Colors.white
+                      ),
                 ),
                 focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.cyan),
@@ -185,10 +198,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 contentPadding: EdgeInsets.only(top: 14.0),
                 prefixIcon: Icon(
                   Icons.person,
-                  color: Colors.white,
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.black
+                      : Colors.white,
                 ),
                 hintText: 'First Name',
-                hintStyle: kHintTextStyle,
+                // hintStyle: kHintTextStyle,
               ),
             ),
           ),
@@ -208,7 +223,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
             child: Text(
               'Last Name',
               style: TextStyle(
-                  color: Colors.cyan[300], fontWeight: FontWeight.bold),
+                  // color: Colors.cyan[300],
+                  fontWeight: FontWeight.bold),
             ),
           ),
           //alignment: Alignment.centerLeft,
@@ -226,12 +242,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
               controller: _lastNameController,
               //keyboardType: TextInputType.emailAddress,
               style: TextStyle(
-                color: Colors.white,
+                // color: Colors.white,
                 fontFamily: 'OpenSans',
               ),
               decoration: InputDecoration(
                 enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
+                  borderSide: BorderSide(
+                      // color: Colors.white
+                      ),
                 ),
                 focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.cyan),
@@ -239,10 +257,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 contentPadding: EdgeInsets.only(top: 14.0),
                 prefixIcon: Icon(
                   Icons.person,
-                  color: Colors.white,
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.black
+                      : Colors.white,
                 ),
                 hintText: 'Last Name',
-                hintStyle: kHintTextStyle,
+                // hintStyle: kHintTextStyle,
               ),
             ),
           ),
@@ -257,8 +277,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
       children: <Widget>[
         Text(
           'Password',
-          style:
-              TextStyle(color: Colors.cyan[600], fontWeight: FontWeight.bold),
+          style: TextStyle(
+              // color: Colors.cyan[600],
+              fontWeight: FontWeight.bold),
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
@@ -291,13 +312,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
               controller: _passwordController,
               obscureText: true,
               style: TextStyle(
-                color: Colors.white,
+                // color: Colors.white,
                 fontFamily: 'OpenSans',
               ),
 
               decoration: InputDecoration(
                 enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
+                  borderSide: BorderSide(
+                      // color: Colors.white
+                      ),
                 ),
                 focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.cyan),
@@ -308,10 +331,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 contentPadding: EdgeInsets.only(top: 14.0),
                 prefixIcon: Icon(
                   Icons.lock,
-                  color: Colors.white,
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.black
+                      : Colors.white,
                 ),
                 hintText: 'Enter your Password',
-                hintStyle: kHintTextStyle,
+                // hintStyle: kHintTextStyle,
               ),
             ),
           ),
@@ -334,6 +359,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             padding: const EdgeInsets.all(15.0),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30.0),
+              //side: BorderSide(color: Colors.cyan[400], width: 2),
             )),
 
         //elevation: 20.0,
@@ -341,7 +367,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           'REGISTER',
           style: TextStyle(
             //color: Color(0xFF527DAA),
-            color: Colors.black,
+            // color: Colors.black,
             letterSpacing: 2,
             fontSize: 20.0,
             fontWeight: FontWeight.bold,
@@ -415,12 +441,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
           padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
           child: Text('- OR -',
               style: TextStyle(
-                  color: Colors.cyan[300], fontWeight: FontWeight.bold)),
+                  // color: Colors.cyan[300],
+                  fontWeight: FontWeight.bold)),
         ),
         Text(
           'Register with',
-          style:
-              TextStyle(color: Colors.cyan[300], fontWeight: FontWeight.bold),
+          style: TextStyle(
+              // color: Colors.cyan[300],
+              fontWeight: FontWeight.bold),
         ),
       ],
     );
@@ -434,7 +462,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         width: 60.0,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: Colors.white,
+          // color: Colors.white,
           boxShadow: [
             BoxShadow(
               color: Colors.black26,
@@ -483,13 +511,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
         children: <Widget>[
           Text('Already have an account?',
               style: TextStyle(
-                  color: Colors.cyan[300],
+                  // color: Colors.cyan[300],
                   fontWeight: FontWeight.bold,
                   fontSize: 15)),
           Icon(
             Icons.arrow_forward_sharp,
             size: 20,
-            color: Colors.cyan[200],
+            color: Theme.of(context).brightness == Brightness.light
+                ? Colors.black
+                : Colors.white,
           ),
           ElevatedButton(
             onPressed: () {
@@ -502,7 +532,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               "Login!",
               style: TextStyle(
                   fontSize: 15,
-                  color: Colors.black,
+                  // color: Colors.black,
                   fontWeight: FontWeight.bold),
             ),
             style: ElevatedButton.styleFrom(
@@ -553,22 +583,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   Container(
                     height: double.infinity,
                     width: double.infinity,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Color(0xFF61E2D7),
-                          Color(0xFF53DACE),
-                          Color(0xFF3DC2B7),
-                          Color(0xFF28B9AD),
-                        ],
-                        stops: [0.1, 0.4, 0.7, 0.9],
-                      ),
-                    ),
+                    decoration: BoxDecoration(),
                   ),
                   Container(
-                    color: Colors.grey[850],
+                    // color: Colors.grey[850],
                     //height: double.infinity,
                     child: SingleChildScrollView(
                       physics: AlwaysScrollableScrollPhysics(),
@@ -583,7 +601,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             child: Text(
                               'Register',
                               style: TextStyle(
-                                color: Colors.cyan[300],
+                                // color: Colors.cyan[300],
                                 fontFamily: 'OpenSans',
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.bold,

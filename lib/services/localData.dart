@@ -100,6 +100,9 @@ abstract class LocalDataService {
       profilePlatforms.add(platform);
     }
     await preferences.setStringList("Profile Platforms", profilePlatforms);
+
+    await preferences.setBool(
+        "Two Way Sharing", true); // two way sharing defaults to "on"
   }
 
   // clear all local data stored in SharedPreferences
@@ -116,6 +119,10 @@ abstract class LocalDataService {
 
   static getInitialScreenBrightness() {
     return preferences.getBool("screen_brightness");
+  }
+
+  static getTwoWaySharing() {
+    return preferences.getBool("Two Way Sharing");
   }
 
   static getLocalUsername() {
@@ -202,6 +209,10 @@ abstract class LocalDataService {
   */
   static Future<void> updateLocalPhotoURL(String URL) async {
     await preferences.setString("Photo URL", URL);
+  }
+
+  static Future<void> updateTwoWaySharing(bool state) async {
+    await preferences.setBool("Two Way Sharing", state);
   }
 
   static Future<void> updateUsernameForPlatform(
