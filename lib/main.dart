@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:soshi/services/analytics.dart';
+import 'package:soshi/services/dynamicLinks.dart';
 import 'package:soshi/services/localData.dart';
 import 'constants/themes.dart';
 import 'services/auth.dart';
@@ -22,20 +25,33 @@ class MyApp extends StatefulWidget {
   }
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  Timer _timerLink;
   @override
   void initState() {
     super.initState();
-    // if (widget.linkData == null) {
-    //   print("Deep link params: null");
-    //   return;
-    // }
-    // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    //   content: Text(
-    //     "Deep link params " + widget.linkData.utmParameters.toString(),
-    //     textAlign: TextAlign.center,
-    //   ),
-    // ));
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _timerLink = new Timer(
+        const Duration(milliseconds: 1000),
+        () {
+          DynamicLinkService.retrieveDynamicLink(context);
+        },
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    if (_timerLink != null) {
+      _timerLink.cancel();
+    }
+    super.dispose();
   }
 
   @override
@@ -140,6 +156,8 @@ void main() async {
   }
 // }
 }
+
+
 
 // class RestartWidget extends StatefulWidget {
 //   RestartWidget({this.child});

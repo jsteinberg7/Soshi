@@ -601,16 +601,7 @@ class ProfileState extends State<Profile> {
 
     profileBioController.text = LocalDataService.getBio();
 
-    return KeyboardVisibilityBuilder(
-      builder: (context, isKeyboardVisisble) {
-        print("rebuilding b/c keyboard changes....");
-        String platform;
-        print("LocalData information:");
-        for (platform in LocalDataService.getLocalProfilePlatforms()) {
-          print(platform +
-              ": " +
-              LocalDataService.getLocalUsernameForPlatform(platform)
-                  .toString());
+  
         }
 
         return SingleChildScrollView(
@@ -888,8 +879,6 @@ class ProfileState extends State<Profile> {
                     ])),
           ),
         );
-      },
-    );
   }
 }
 
