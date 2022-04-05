@@ -311,8 +311,7 @@ class _QRScreenState extends State<QRScreen> {
                       },
                       child: QrImage(
                         errorCorrectionLevel: QrErrorCorrectLevel.M,
-                        embeddedImage: AssetImage(
-                            "assets/images/SoshiLogos/soshi_logo.png"),
+                        // +
                         dataModuleStyle: QrDataModuleStyle(
                           dataModuleShape: QrDataModuleShape.circle,
                         ),
