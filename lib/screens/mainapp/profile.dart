@@ -602,7 +602,7 @@ class ProfileState extends State<Profile> {
     profileBioController.text = LocalDataService.getBio();
 
   
-        }
+        
 
         return SingleChildScrollView(
           child: Container(

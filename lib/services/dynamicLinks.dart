@@ -9,7 +9,7 @@ abstract class DynamicLinkService {
       final PendingDynamicLinkData data =
           await FirebaseDynamicLinks.instance.getInitialLink();
       final Uri deepLink = data?.link;
-      print("RECEIVING DEEP LINK: " + deepLink?.toString());
+      // print("RECEIVING DEEP LINK: " + deepLink?.toString());
       if (deepLink != null) {
         Popups.showUserProfilePopupNew(context,
             friendSoshiUsername: "jason", refreshScreen: () {});

@@ -25,34 +25,7 @@ class MyApp extends StatefulWidget {
   }
 }
 
-class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
-  Timer _timerLink;
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _timerLink = new Timer(
-        const Duration(milliseconds: 1000),
-        () {
-          DynamicLinkService.retrieveDynamicLink(context);
-        },
-      );
-    }
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    if (_timerLink != null) {
-      _timerLink.cancel();
-    }
-    super.dispose();
-  }
+class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
