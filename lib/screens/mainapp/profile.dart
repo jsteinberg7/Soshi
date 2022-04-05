@@ -331,7 +331,7 @@ class _SMCardState extends State<SMCard> {
               },
               child: Card(
                 // color: Colors.black12,
-                // color: Colors.transparent,
+                color: Colors.transparent,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
@@ -601,284 +601,275 @@ class ProfileState extends State<Profile> {
 
     profileBioController.text = LocalDataService.getBio();
 
-  
-        
+    return SingleChildScrollView(
+      child: Container(
+        child: Padding(
+            padding: EdgeInsets.fromLTRB(width / 35, 20, width / 35, 0),
+            child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(children: <Widget>[
+                    Column(
+                      children: [
+                        Container(
+                          child: GestureDetector(
+                            onTap: () async {
+                              DatabaseService dbService = new DatabaseService();
+                              //dbService.chooseAndCropImage();
 
-        return SingleChildScrollView(
-          child: Container(
-            child: Padding(
-                padding: EdgeInsets.fromLTRB(width / 35, 20, width / 35, 0),
-                child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Row(children: <Widget>[
-                        Column(
-                          children: [
-                            Container(
-                              child: GestureDetector(
-                                onTap: () async {
-                                  DatabaseService dbService =
-                                      new DatabaseService();
-                                  //dbService.chooseAndCropImage();
-
-                                  // update profile picture on tap
-                                  // open up image picker
-                                  final ImagePicker imagePicker = ImagePicker();
-                                  final PickedFile pickedImage =
-                                      await imagePicker.getImage(
-                                          source: ImageSource.gallery,
-                                          imageQuality: 20);
-                                  await dbService
-                                      .cropAndUploadImage(pickedImage);
-                                  refreshScreen();
-                                },
-                                child: Stack(
-                                  children: [
-                                    ProfilePic(
-                                        radius: 55,
-                                        url: LocalDataService
-                                            .getLocalProfilePictureURL()),
-                                    Positioned(
-                                        bottom: width / 100,
-                                        right: width / 100,
-                                        child: Container(
-                                          padding: EdgeInsets.all(width / 100),
-                                          decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: Colors.cyan[500]),
-                                          child: Icon(
-                                            Icons.edit,
-                                            size: 20,
-                                            color: Colors.white,
-                                          ),
-                                        ))
-                                  ],
-                                ),
-                              ),
+                              // update profile picture on tap
+                              // open up image picker
+                              final ImagePicker imagePicker = ImagePicker();
+                              final PickedFile pickedImage =
+                                  await imagePicker.getImage(
+                                      source: ImageSource.gallery,
+                                      imageQuality: 20);
+                              await dbService.cropAndUploadImage(pickedImage);
+                              refreshScreen();
+                            },
+                            child: Stack(
+                              children: [
+                                ProfilePic(
+                                    radius: 55,
+                                    url: LocalDataService
+                                        .getLocalProfilePictureURL()),
+                                Positioned(
+                                    bottom: width / 100,
+                                    right: width / 100,
+                                    child: Container(
+                                      padding: EdgeInsets.all(width / 100),
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.cyan[500]),
+                                      child: Icon(
+                                        Icons.edit,
+                                        size: 20,
+                                        color: Colors.white,
+                                      ),
+                                    ))
+                              ],
                             ),
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) {
-                                  return Scaffold(
-                                      body: ProfileSettings(
-                                          soshiUsername: soshiUsername,
-                                          refreshProfile: refreshScreen));
-                                }));
-                              },
-                              style: ElevatedButton.styleFrom(
-                                  elevation: 5.0,
-                                  shadowColor: Colors.cyan,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(15.0)))),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Text("Edit Profile",
-                                      style: TextStyle(
-                                          // color: Colors.cyan[300],
-                                          )),
-                                  SizedBox(width: 4.0),
-                                  Icon(Icons.person_rounded,
-                                      // color: Colors.cyan[300],
-                                      size: 20.0),
-                                ],
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                        SizedBox(width: 10),
-                        Expanded(
-                          child: SizedBox(
-                            height: 160,
-                            child: BioTextField(
-                                importController: profileBioController,
-                                soshiUsername: soshiUsername),
-                          ),
-                        )
-                      ]),
-                      SizedBox(height: 5),
-                      Row(
-                        //mainAxisAlignment: MainAxisAlignment.start,
-                        //crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[],
-                      ),
-                      Divider(
-                        color: Colors.cyan[300],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            'Toggle',
-                            style: TextStyle(
-                              color: Colors.grey,
-                              letterSpacing: 2,
-                            ),
-                          ),
-                          // ElevatedButton(
-                          //   child: Icon(
-                          //     Icons.help,
-                          //     size: 30,
-                          //     // color: Colors.grey[900],
-                          //   ),
-                          //   style: ElevatedButton.styleFrom(
-                          //       fixedSize: Size(35, 35),
-                          //       primary: Colors.blueGrey[500],
-                          //       shape: CircleBorder()),
-                          //   onPressed: () {
-                          //     Popups.showPlatformHelpPopup(context, height);
-                          //   },
-                          // ),
-                          // SizedBox(
-                          //   width: width / 12,
-                          // ),
-                        ],
-                      ),
-                      Container(
-                        child: (profilePlatforms == null ||
-                                profilePlatforms.isEmpty == true)
-                            ? Column(
-                                children: <Widget>[
-                                  SizedBox(height: 10),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Text(
-                                        "Add your platforms!",
-                                        style: TextStyle(
-                                          color: Colors.cyan[300],
-                                          fontSize: 25,
-                                          fontStyle: FontStyle.italic,
-                                          letterSpacing: 3.0,
-                                          //fontWeight: FontWeight.bold
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 10),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.arrow_downward_rounded,
-                                        size: 30,
-                                        color: Colors.cyan[100],
-                                      ),
-                                      Icon(
-                                        Icons.arrow_downward_rounded,
-                                        size: 30,
-                                        color: Colors.cyan[300],
-                                      ),
-                                      Icon(
-                                        Icons.arrow_downward_rounded,
-                                        size: 30,
-                                        color: Colors.cyan[700],
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 5),
-                                ],
-                              )
-                            : GridView.builder(
-                                physics: const NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                    child: SMCard(
-                                        platformName: profilePlatforms[index],
-                                        soshiUsername: soshiUsername,
-                                        refreshScreen: refreshScreen),
-                                  );
-                                },
-                                itemCount: profilePlatforms.length,
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2,
-                                        childAspectRatio: 1.75,
-                                        crossAxisSpacing: 7),
-                              ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(50, 10, 50, 40),
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            // check if user has all platforms (in case of update)
-                            if (Constants.originalPlatforms.length +
-                                    Constants.addedPlatforms.length >
-                                LocalDataService.getLocalChoosePlatforms()
-                                        .length +
-                                    LocalDataService.getLocalProfilePlatforms()
-                                        .length) {
-                              // check which platforms need to be added
-                              for (String platform
-                                  in Constants.addedPlatforms) {
-                                if (!LocalDataService.getLocalProfilePlatforms()
-                                        .contains(platform) &&
-                                    !LocalDataService.getLocalChoosePlatforms()
-                                        .contains(platform)) {
-                                  await LocalDataService.addToChoosePlatforms(
-                                      platform); // add new platform to choose platforms
-                                  await LocalDataService.updateSwitchForPlatform(
-                                      platform: platform,
-                                      state:
-                                          false); // create switch for platform in and initialize to false
-                                  if (LocalDataService
-                                          .getLocalUsernameForPlatform(
-                                              platform) ==
-                                      null) {
-                                    await LocalDataService
-                                        .updateUsernameForPlatform(
-                                            platform: platform,
-                                            username:
-                                                ""); // create username mapping for platform if absent
-                                  }
-                                }
-                              }
-                            }
-                            await Navigator.push(context,
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(context,
                                 MaterialPageRoute(builder: (context) {
                               return Scaffold(
-                                  body: ChooseSocials(
-                                refreshFunction: refreshScreen,
-                              ));
+                                  body: ProfileSettings(
+                                      soshiUsername: soshiUsername,
+                                      refreshProfile: refreshScreen));
                             }));
                           },
                           style: ElevatedButton.styleFrom(
-                              elevation: 7.0,
+                              elevation: 5.0,
                               shadowColor: Colors.cyan,
                               shape: RoundedRectangleBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(15.0)))),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-                                child: Icon(
-                                  Icons.add_circle_outline_rounded,
-                                  color: Colors.cyan[300],
-                                  size: 30,
-                                ),
-                              ),
-                              Text('Add Platforms!',
+                              Text("Edit Profile",
                                   style: TextStyle(
-                                      fontSize: 14,
                                       // color: Colors.cyan[300],
-                                      letterSpacing: 3.0,
-                                      fontWeight: FontWeight.bold))
+                                      )),
+                              SizedBox(width: 4.0),
+                              Icon(Icons.person_rounded,
+                                  // color: Colors.cyan[300],
+                                  size: 20.0),
                             ],
                           ),
                         ),
-                      )
-                    ])),
-          ),
-        );
+                      ],
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: SizedBox(
+                        height: 160,
+                        child: BioTextField(
+                            importController: profileBioController,
+                            soshiUsername: soshiUsername),
+                      ),
+                    )
+                  ]),
+                  SizedBox(height: 5),
+                  Row(
+                    //mainAxisAlignment: MainAxisAlignment.start,
+                    //crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[],
+                  ),
+                  Divider(
+                    color: Colors.cyan[300],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'Toggle',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          letterSpacing: 2,
+                        ),
+                      ),
+                      // ElevatedButton(
+                      //   child: Icon(
+                      //     Icons.help,
+                      //     size: 30,
+                      //     // color: Colors.grey[900],
+                      //   ),
+                      //   style: ElevatedButton.styleFrom(
+                      //       fixedSize: Size(35, 35),
+                      //       primary: Colors.blueGrey[500],
+                      //       shape: CircleBorder()),
+                      //   onPressed: () {
+                      //     Popups.showPlatformHelpPopup(context, height);
+                      //   },
+                      // ),
+                      // SizedBox(
+                      //   width: width / 12,
+                      // ),
+                    ],
+                  ),
+                  Container(
+                    child: (profilePlatforms == null ||
+                            profilePlatforms.isEmpty == true)
+                        ? Column(
+                            children: <Widget>[
+                              SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Text(
+                                    "Add your platforms!",
+                                    style: TextStyle(
+                                      color: Colors.cyan[300],
+                                      fontSize: 25,
+                                      fontStyle: FontStyle.italic,
+                                      letterSpacing: 3.0,
+                                      //fontWeight: FontWeight.bold
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.arrow_downward_rounded,
+                                    size: 30,
+                                    color: Colors.cyan[100],
+                                  ),
+                                  Icon(
+                                    Icons.arrow_downward_rounded,
+                                    size: 30,
+                                    color: Colors.cyan[300],
+                                  ),
+                                  Icon(
+                                    Icons.arrow_downward_rounded,
+                                    size: 30,
+                                    color: Colors.cyan[700],
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 5),
+                            ],
+                          )
+                        : GridView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                child: SMCard(
+                                    platformName: profilePlatforms[index],
+                                    soshiUsername: soshiUsername,
+                                    refreshScreen: refreshScreen),
+                              );
+                            },
+                            itemCount: profilePlatforms.length,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    childAspectRatio: 1.75,
+                                    crossAxisSpacing: 7),
+                          ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(50, 10, 50, 40),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        // check if user has all platforms (in case of update)
+                        if (Constants.originalPlatforms.length +
+                                Constants.addedPlatforms.length >
+                            LocalDataService.getLocalChoosePlatforms().length +
+                                LocalDataService.getLocalProfilePlatforms()
+                                    .length) {
+                          // check which platforms need to be added
+                          for (String platform in Constants.addedPlatforms) {
+                            if (!LocalDataService.getLocalProfilePlatforms()
+                                    .contains(platform) &&
+                                !LocalDataService.getLocalChoosePlatforms()
+                                    .contains(platform)) {
+                              await LocalDataService.addToChoosePlatforms(
+                                  platform); // add new platform to choose platforms
+                              await LocalDataService.updateSwitchForPlatform(
+                                  platform: platform,
+                                  state:
+                                      false); // create switch for platform in and initialize to false
+                              if (LocalDataService.getLocalUsernameForPlatform(
+                                      platform) ==
+                                  null) {
+                                await LocalDataService.updateUsernameForPlatform(
+                                    platform: platform,
+                                    username:
+                                        ""); // create username mapping for platform if absent
+                              }
+                            }
+                          }
+                        }
+                        await Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return Scaffold(
+                              body: ChooseSocials(
+                            refreshFunction: refreshScreen,
+                          ));
+                        }));
+                      },
+                      style: ElevatedButton.styleFrom(
+                          elevation: 7.0,
+                          shadowColor: Colors.cyan,
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(15.0)))),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+                            child: Icon(
+                              Icons.add_circle_outline_rounded,
+                              color: Colors.cyan[300],
+                              size: 30,
+                            ),
+                          ),
+                          Text('Add Platforms!',
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  // color: Colors.cyan[300],
+                                  letterSpacing: 3.0,
+                                  fontWeight: FontWeight.bold))
+                        ],
+                      ),
+                    ),
+                  )
+                ])),
+      ),
+    );
   }
 }
 

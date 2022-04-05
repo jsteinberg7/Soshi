@@ -206,12 +206,12 @@ class Popups {
                         : Image.network(
                             "https://firebasestorage.googleapis.com/v0/b/soshi-bc9ec.appspot.com/o/GifsAndAnimations%2FcontactCardExampleDark.gif?alt=media&token=3eab18ba-4088-4ff8-b801-f645a01a182f",
                           ),
-                    Padding(
-                      padding: EdgeInsets.only(top: height / 55.0),
-                      child: Text("Share your contact card with one tap!"),
-                    )
                   ],
-                ))
+                )),
+                Padding(
+                  padding: EdgeInsets.only(top: height / 90),
+                  child: Text("Share your contact card!"),
+                )
               ],
             ),
             actions: <Widget>[
