@@ -331,7 +331,7 @@ class _SMCardState extends State<SMCard> {
               },
               child: Card(
                 // color: Colors.black12,
-                color: Colors.transparent,
+                // color: Colors.transparent,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
@@ -601,17 +601,8 @@ class ProfileState extends State<Profile> {
 
     profileBioController.text = LocalDataService.getBio();
 
-    return KeyboardVisibilityBuilder(
-      builder: (context, isKeyboardVisisble) {
-        print("rebuilding b/c keyboard changes....");
-        String platform;
-        print("LocalData information:");
-        for (platform in LocalDataService.getLocalProfilePlatforms()) {
-          print(platform +
-              ": " +
-              LocalDataService.getLocalUsernameForPlatform(platform)
-                  .toString());
-        }
+  
+        
 
         return SingleChildScrollView(
           child: Container(
@@ -888,8 +879,6 @@ class ProfileState extends State<Profile> {
                     ])),
           ),
         );
-      },
-    );
   }
 }
 

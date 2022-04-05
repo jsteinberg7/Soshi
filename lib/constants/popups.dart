@@ -428,75 +428,81 @@ class Popups {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(40.0))),
-            // backgroundColor: Colors.blueGrey[900],
-            title: Text(
-              "Remove Platform",
-              style: TextStyle(
-                  // color: Colors.cyan[600],
-                  fontWeight: FontWeight.bold),
-            ),
-            content: Text(
-              ("Are you sure you want to remove " +
-                  platformName +
-                  " from your profile?"),
-              style: TextStyle(
-                fontSize: 20,
-                // color: Colors.cyan[700],
-                // fontWeight: FontWeight.bold
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(40.0))),
+              // backgroundColor: Colors.blueGrey[900],
+              title: Text(
+                "Remove Platform",
+                style: TextStyle(
+                    // color: Colors.cyan[600],
+                    fontWeight: FontWeight.bold),
               ),
-            ),
-            actions: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  TextButton(
-                    child: Text(
-                      'Cancel',
-                      style: TextStyle(fontSize: 20, color: Colors.red),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  TextButton(
-                    child: Text(
-                      'Remove',
-                      style: TextStyle(fontSize: 20, color: Colors.blue),
-                    ),
-                    onPressed: () async {
-                      if (!LocalDataService.getLocalChoosePlatforms()
-                          .contains(platformName)) {
-                        Navigator.pop(context);
-
-                        await LocalDataService.removePlatformsFromProfile(
-                            platformName);
-                        LocalDataService.addToChoosePlatforms(platformName);
-
-                        LocalDataService.updateSwitchForPlatform(
-                            platform: platformName, state: false);
-                        databaseService.updatePlatformSwitch(
-                            platform: platformName, state: false);
-                        databaseService.removePlatformFromProfile(platformName);
-                        databaseService.addToChoosePlatforms(platformName);
-                        print(LocalDataService.getLocalProfilePlatforms()
-                            .toString());
-                        refreshScreen();
-                      } else {
-                        Navigator.pop(context);
-                        await LocalDataService.removePlatformsFromProfile(
-                            platformName);
-                        refreshScreen();
-                      }
-                    },
-                  ),
-                ],
+              content: Text(
+                ("Are you sure you want to remove " +
+                    platformName +
+                    " from your profile?"),
+                style: TextStyle(
+                  fontSize: 20,
+                  // color: Colors.cyan[700],
+                  // fontWeight: FontWeight.bold
+                ),
               ),
-            ],
-          );
+              actions: <Widget>[
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      TextButton(
+                        child: Text(
+                          'Cancel',
+                          style: TextStyle(fontSize: 20, color: Colors.red),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                      TextButton(
+                          child: Text(
+                            'Remove',
+                            style: TextStyle(fontSize: 20, color: Colors.blue),
+                          ),
+                          onPressed: () async {
+                            if (!LocalDataService.getLocalChoosePlatforms()
+                                .contains(platformName)) {
+                              Navigator.pop(context);
+                            }
+                          })
+                    ])
+              ]);
         });
   }
+
+  //                       await LocalDataService.removePlatformsFromProfile(
+  //                           platformName);
+  //                       LocalDataService.addToChoosePlatforms(platformName);
+
+  //                       LocalDataService.updateSwitchForPlatform(
+  //                           platform: platformName, state: false);
+  //                       databaseService.updatePlatformSwitch(
+  //                           platform: platformName, state: false);
+  //                       databaseService.removePlatformFromProfile(platformName);
+  //                       databaseService.addToChoosePlatforms(platformName);
+  //                       print(LocalDataService.getLocalProfilePlatforms()
+  //                           .toString());
+  //                       refreshScreen();
+  //                     } else {
+  //                       Navigator.pop(context);
+  //                       await LocalDataService.removePlatformsFromProfile(
+  //                           platformName);
+  //                       refreshScreen();
+  //                     }
+  //                   },
+  //                 ),
+  //               ],
+  //             ),
+  //           ],
+  //         );
+  //       });
+  // }
   // // display popup with user profile and social media links
   // static Future<void> showUserProfilePopup(BuildContext context,
   //     {String soshiUsername, Function refreshScreen}) async {
