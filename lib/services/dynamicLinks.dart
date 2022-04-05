@@ -14,6 +14,8 @@ abstract class DynamicLinkService {
         if (deepLink != null) {
           await Popups.showUserProfilePopupNew(context,
               friendSoshiUsername: "jason", refreshScreen: () {});
+          await Future.delayed(Duration(seconds: 3));
+          // reset popup disabler after timer
         }
         FirebaseDynamicLinks.instance.onLink
             .listen((PendingDynamicLinkData dynamicLink) async {
