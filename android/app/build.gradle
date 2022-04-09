@@ -53,7 +53,10 @@ android {
         versionName flutterVersionName
     }
 
+    // dependencies {
+    //     api 'com.google.firebase:firebase-ml-vision-image-label-model:19.0.0'
 
+    // }
 
     signingConfigs {
         release {

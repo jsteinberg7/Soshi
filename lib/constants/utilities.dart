@@ -1,8 +1,9 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 abstract class Utilities {
-  
   static double getHeight(BuildContext context) {
     return MediaQuery.of(context).size.height;
   }
@@ -25,5 +26,20 @@ abstract class Utilities {
     // return result
     return barcodeScanResult;
   }
-
 }
+
+// class BarcodeScanner extends StatelessWidget {
+  
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(title: const Text('Mobile Scanner')),
+//       body: MobileScanner(
+//           allowDuplicates: false,
+//           onDetect: (barcode, args) {
+//             final String code = barcode.rawValue;
+//             debugPrint('Barcode found! $code');
+//           }),
+//     );
+//   }
+// }

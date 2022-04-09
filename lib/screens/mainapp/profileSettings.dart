@@ -1,6 +1,7 @@
 //import 'dart:html';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:image_picker/image_picker.dart';
@@ -31,7 +32,6 @@ class ProfileSettings extends StatefulWidget {
 }
 
 class ProfileSettingsState extends State<ProfileSettings> {
-  @override
   String soshiUsername;
   DatabaseService databaseService;
   int connectionCount = 0;
@@ -48,7 +48,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
     soshiUsername = widget.soshiUsername;
     refreshProfileScreen = widget.refreshProfileScreen;
     databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
-    bool twoWaySharingSwitch = LocalDataService.getTwoWaySharing();
+    twoWaySharingSwitch = LocalDataService.getTwoWaySharing() ?? true;
   }
 
   @override
@@ -229,20 +229,21 @@ class ProfileSettingsState extends State<ProfileSettings> {
                   //SizedBox(height: height / 100),
                   Row(children: [
                     Icon(Icons.person),
-                    Switch(
-                        activeThumbImage: AssetImage(
-                            'assets/images/SoshiLogos/soshi_icon.png'),
-                        inactiveThumbImage: AssetImage(
-                            'assets/images/SoshiLogos/soshi_icon_marble.png'),
-                        value: twoWaySharingSwitch,
-                        activeColor: Colors.cyan[500],
-                        onChanged: (bool value) {
-                          setState(() {
-                            twoWaySharingSwitch = value;
-                          });
-                          LocalDataService.updateTwoWaySharing(value);
-                          databaseService.updateTwoWaySharing(value);
-                        }),
+                    Transform.scale(
+                      scaleY: .9,
+                      scaleX: .9,
+                      child: CupertinoSwitch(
+                          value: twoWaySharingSwitch,
+                          activeColor: Colors.cyan[500],
+                          onChanged: (bool value) {
+                            setState(() {
+                              twoWaySharingSwitch = value;
+                            });
+                            LocalDataService.updateTwoWaySharing(value);
+                            databaseService.updateTwoWaySharing(value);
+                          }),
+                    ),
+
                     Icon(Icons.people),
                     // SizedBox(width: width / 45),
                   ]),

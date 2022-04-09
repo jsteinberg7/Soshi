@@ -366,7 +366,8 @@ class _QRScreenState extends State<QRScreen> {
                     Vibration.vibrate();
                     try {
                       Popups.showUserProfilePopupNew(context,
-                          friendSoshiUsername: QRScanResult.split("/").last);
+                          friendSoshiUsername: QRScanResult.split("/").last,
+                          refreshScreen: () {});
                       Analytics.logQRScan(QRScanResult, true, "qrCode.dart");
                     } catch (e) {
                       Analytics.logQRScan(QRScanResult, false, "qrCode.dart");
