@@ -714,6 +714,8 @@ class Popups {
   //       });
   // }
 
+  static bool popup_live = false;
+
   static void showUserProfilePopupNew(BuildContext context,
       {String friendSoshiUsername, Function refreshScreen}) async {
     // get list of all visible platforms
@@ -737,7 +739,7 @@ class Popups {
     int numfriends = userData["Friends"].length;
     String numFriendsString = numfriends.toString();
     // increment variable for use with scrolling SM buttons (use instead of i)
-
+    popup_live = true;
     showGeneralDialog(
 
         //barrierColor: Colors.grey[500].withOpacity(.25),
@@ -1171,7 +1173,7 @@ class Popups {
                   }),
                 )),
           );
-        });
+        }).then((_) => popup_live = false);
   }
 
   void usernameEmptyPopup(

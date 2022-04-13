@@ -310,6 +310,8 @@ class _QRScreenState extends State<QRScreen> {
                         Analytics.logCopyLinkToClipboard();
                       },
                       child: QrImage(
+                        errorCorrectionLevel: QrErrorCorrectLevel.M,
+                        // +
                         dataModuleStyle: QrDataModuleStyle(
                           dataModuleShape: QrDataModuleShape.circle,
                         ),

@@ -2,6 +2,7 @@
 import 'dart:typed_data';
 
 import 'package:contacts_service/contacts_service.dart';
+import 'package:device_display_brightness/device_display_brightness.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/cupertino.dart';
 // import 'package:device_display_brightness/device_display_brightness.dart';
@@ -208,6 +209,14 @@ class _SMCardState extends State<SMCard> {
                                       "Phone Number",
                                       "#",
                                       width);
+                                } else if (platformName == "Youtube") {
+                                  Popups.editUsernamePopup(
+                                      context,
+                                      soshiUsername,
+                                      platformName,
+                                      "Channel ID",
+                                      "Chan. ID",
+                                      width);
                                 } else {
                                   Popups.editUsernamePopup(
                                       context,
@@ -380,6 +389,14 @@ class _SMCardState extends State<SMCard> {
                             } else if (platformName == "Phone") {
                               Popups.editUsernamePopup(context, soshiUsername,
                                   platformName, "Phone", "#", width);
+                            } else if (platformName == "Youtube") {
+                              Popups.editUsernamePopup(
+                                  context,
+                                  soshiUsername,
+                                  platformName,
+                                  "Channel ID",
+                                  "Chan. ID",
+                                  width);
                             } else {
                               Popups.editUsernamePopup(context, soshiUsername,
                                   platformName, "", "", width);
@@ -538,7 +555,7 @@ class ProfileState extends State<Profile> {
     // double startingBrightness = LocalDataService.getInitialScreenBrightness();
     // DeviceDisplayBrightness.setBrightness(startingBrightness);
 
-    // DeviceDisplayBrightness.resetBrightness();
+    DeviceDisplayBrightness.resetBrightness();
 
     soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
     profilePlatforms = LocalDataService.getLocalProfilePlatforms();
@@ -781,7 +798,8 @@ class ProfileState extends State<Profile> {
                         : GridView.builder(
                             physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
-                            itemBuilder: (BuildContext context, int index) {
+                            itemBuilder: 
+                            (BuildContext context, int index) {
                               return Padding(
                                 padding:
                                     const EdgeInsets.fromLTRB(0, 10, 0, 10),

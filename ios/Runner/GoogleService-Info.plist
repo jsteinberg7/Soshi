@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>976498646691-qdrqf4o0lhsdu2m8s3q38av3coo9umlq.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.976498646691-qdrqf4o0lhsdu2m8s3q38av3coo9umlq</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>976498646691-9tcal5mpusorepdj4jlsr715kqb0if6q.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBotTOpHnRLc4gVxKLhpxr8DF71nUvWuWA</string>
+	<key>GCM_SENDER_ID</key>
+	<string>976498646691</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.strippedsoshi</string>
+	<key>PROJECT_ID</key>
+	<string>soshi-bc9ec</string>
+	<key>STORAGE_BUCKET</key>
+	<string>soshi-bc9ec.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:976498646691:ios:24f32cb371ec24c6092916</string>
+	<key>DATABASE_URL</key>
+	<string>https://soshi-bc9ec-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>

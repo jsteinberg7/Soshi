@@ -91,6 +91,7 @@ class DatabaseService {
         "Twitter",
         "Tiktok",
         "Linkedin",
+        "Youtube",
         "Spotify",
         "Facebook",
         "Discord",

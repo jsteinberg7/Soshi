@@ -13,7 +13,7 @@ class ChooseSocialsCard extends StatefulWidget {
   String platformName, soshiUsername;
   Function() refreshScreen;
   ChooseSocialsCard(
-      {String platformName, String soshiUsername, Function refreshScren}) {
+      {String platformName, String soshiUsername, Function refreshScreen}) {
     this.platformName = platformName;
     this.soshiUsername = soshiUsername;
     this.refreshScreen = refreshScreen;
