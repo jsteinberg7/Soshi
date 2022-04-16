@@ -76,7 +76,8 @@ abstract class Constants {
     "Venmo",
     "Spotify",
     "Contact",
-    "Personal"
+    "Personal",
+    "Youtube",
   ];
   /* Instructions for injecting/adding new platforms: 
     1. Add to addedPlatforms (above)
@@ -84,7 +85,6 @@ abstract class Constants {
     3. Add handler to URL service
     4. Update createUserFile() in database.dart to include new platform (for accounts created in the future)
     5. Add specific parameters to platform popup in SMCard (profile.dart)
-    6. Go to ios -> runner -> info.plist and add the platform name in the "LSApplicationQueriesSchemes" array
     7. Reset vscode
     8. Repeat steps 2 (Logo only) and 3 for web
   */

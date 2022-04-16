@@ -184,6 +184,9 @@ class Popups {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
+            backgroundColor: Theme.of(context).brightness == Brightness.light
+                ? Colors.white
+                : Colors.grey[850],
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(40.0))),
             // backgroundColor: Colors.blueGrey[900],
@@ -753,6 +756,10 @@ class Popups {
           return Transform.scale(
             scale: a1.value,
             child: AlertDialog(
+                backgroundColor:
+                    Theme.of(context).brightness == Brightness.light
+                        ? null
+                        : Colors.black,
                 elevation: 50,
                 insetPadding: EdgeInsets.all(width / 14),
                 //insetPadding: EdgeInsets.all(0.0),

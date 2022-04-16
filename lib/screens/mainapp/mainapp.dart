@@ -33,7 +33,6 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
       _timerLink = new Timer(
         const Duration(milliseconds: 1000),
         () async {
-    
           DynamicLinkService.retrieveDynamicLink(context);
         },
       );
@@ -87,7 +86,9 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
           selectedColor: Colors.cyan[300],
           strokeColor: Colors.cyan[800],
           unSelectedColor: Colors.grey[500],
-          // backgroundColor: Colors.grey[900],
+          backgroundColor: Theme.of(context).brightness == Brightness.light
+              ? Colors.white
+              : Colors.grey[900],
           items: [
             CustomNavigationBarItem(
               icon: Icon(AntDesign.qrcode),

@@ -123,7 +123,9 @@ class _FriendScreenState extends State<FriendScreen> {
               ),
             ],
           ),
-          tileColor: Colors.grey[50],
+          tileColor: Theme.of(context).brightness == Brightness.light
+              ? Colors.grey[50]
+              : Colors.grey[850],
 
           // selectedTileColor: Constants.buttonColorLight,
           contentPadding: EdgeInsets.all(10.0),

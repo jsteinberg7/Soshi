@@ -175,59 +175,59 @@ class _SMCardState extends State<SMCard> {
                               isSwitched = value;
                             });
 
-                            if (LocalDataService.getLocalUsernameForPlatform(
-                                        platformName) ==
-                                    null ||
-                                LocalDataService.getLocalUsernameForPlatform(
-                                        platformName) ==
-                                    "") {
-                              if (platformName == "Instagram" ||
-                                  platformName == "Snapchat" ||
-                                  platformName == "Venmo" ||
-                                  platformName == "Twitter" ||
-                                  platformName == "Tiktok" ||
-                                  platformName == "Discord" ||
-                                  platformName == "Spotify") {
-                                Popups.editUsernamePopup(context, soshiUsername,
-                                    platformName, "Username", "@", width);
-                              } else {
-                                if (platformName == "Personal" ||
-                                    platformName == "Facebook" ||
-                                    platformName == "Linkedin") {
-                                  Popups.editUsernamePopup(
-                                      context,
-                                      soshiUsername,
-                                      platformName,
-                                      "Link to Profile",
-                                      "https://",
-                                      width);
-                                } else if (platformName == "Phone") {
-                                  Popups.editUsernamePopup(
-                                      context,
-                                      soshiUsername,
-                                      platformName,
-                                      "Phone Number",
-                                      "#",
-                                      width);
-                                } else if (platformName == "Youtube") {
-                                  Popups.editUsernamePopup(
-                                      context,
-                                      soshiUsername,
-                                      platformName,
-                                      "Channel ID",
-                                      "Chan. ID",
-                                      width);
-                                } else {
-                                  Popups.editUsernamePopup(
-                                      context,
-                                      soshiUsername,
-                                      platformName,
-                                      "",
-                                      "",
-                                      width);
-                                }
-                              }
-                            }
+                            // if (LocalDataService.getLocalUsernameForPlatform(
+                            //             platformName) ==
+                            //         null ||
+                            //     LocalDataService.getLocalUsernameForPlatform(
+                            //             platformName) ==
+                            //         "") {
+                            //   if (platformName == "Instagram" ||
+                            //       platformName == "Snapchat" ||
+                            //       platformName == "Venmo" ||
+                            //       platformName == "Twitter" ||
+                            //       platformName == "Tiktok" ||
+                            //       platformName == "Discord" ||
+                            //       platformName == "Spotify") {
+                            //     Popups.editUsernamePopup(context, soshiUsername,
+                            //         platformName, "Username", "@", width);
+                            //   } else {
+                            //     if (platformName == "Personal" ||
+                            //         platformName == "Facebook" ||
+                            //         platformName == "Linkedin") {
+                            //       Popups.editUsernamePopup(
+                            //           context,
+                            //           soshiUsername,
+                            //           platformName,
+                            //           "Link to Profile",
+                            //           "https://",
+                            //           width);
+                            //     } else if (platformName == "Phone") {
+                            //       Popups.editUsernamePopup(
+                            //           context,
+                            //           soshiUsername,
+                            //           platformName,
+                            //           "Phone Number",
+                            //           "#",
+                            //           width);
+                            //     } else if (platformName == "Youtube") {
+                            //       Popups.editUsernamePopup(
+                            //           context,
+                            //           soshiUsername,
+                            //           platformName,
+                            //           "Channel ID",
+                            //           "Chan. ID",
+                            //           width);
+                            //     } else {
+                            //       Popups.editUsernamePopup(
+                            //           context,
+                            //           soshiUsername,
+                            //           platformName,
+                            //           "",
+                            //           "",
+                            //           width);
+                            //     }
+                            //   }
+                            // }
 
                             LocalDataService.updateSwitchForPlatform(
                                 platform: platformName, state: value);
@@ -798,8 +798,7 @@ class ProfileState extends State<Profile> {
                         : GridView.builder(
                             physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
-                            itemBuilder: 
-                            (BuildContext context, int index) {
+                            itemBuilder: (BuildContext context, int index) {
                               return Padding(
                                 padding:
                                     const EdgeInsets.fromLTRB(0, 10, 0, 10),
