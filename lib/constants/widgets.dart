@@ -872,7 +872,7 @@ class SoshiAppBar extends StatelessWidget {
           ),
         ),
       ],
-      elevation: 7,
+      elevation: 5,
       shadowColor: Colors.cyan,
       title: Image.asset(
         Theme.of(context).brightness == Brightness.light
@@ -880,7 +880,9 @@ class SoshiAppBar extends StatelessWidget {
             : "assets/images/SoshiLogos/soshi_logo.png",
         height: Utilities.getHeight(context) / 22,
       ),
-      backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+      backgroundColor: Theme.of(context).brightness == Brightness.light
+          ? Theme.of(context).appBarTheme.backgroundColor
+          : Colors.grey[900],
       centerTitle: true,
     );
   }

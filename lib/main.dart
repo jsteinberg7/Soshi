@@ -26,7 +26,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   Widget build(BuildContext context) {
     return StreamProvider<User>.value(
@@ -52,9 +51,9 @@ class _MyAppState extends State<MyApp> {
                   900: Color.fromARGB(26, 64, 116, 117),
                 },
               ),
-              primaryColor: Color.fromARGB(255, 179, 225, 237),
+              //primaryColor: Color.fromARGB(255, 179, 225, 237),
               primaryColorLight: Color.fromARGB(255, 179, 225, 237),
-              primaryColorDark: Color(0xff936F3E),
+              // primaryColorDark: Colors.grey[850],
               canvasColor: Color.fromARGB(255, 191, 200, 202),
               scaffoldBackgroundColor: Colors.grey[50],
               bottomAppBarColor: Color.fromARGB(255, 0, 0, 0),
@@ -73,7 +72,52 @@ class _MyAppState extends State<MyApp> {
               )),
               // , buttonTheme: ButtonTheme()
             ),
-            darkTheme: Themes.darkTheme,
+            darkTheme: ThemeData(
+                brightness: Brightness.dark,
+                backgroundColor: Colors.grey[850],
+                primarySwatch: MaterialColor(
+                  0xFFF5E0C3,
+                  <int, Color>{
+                    50: Color(0x1a5D4524),
+                    100: Color(0xa15D4524),
+                    200: Color(0xaa5D4524),
+                    300: Color(0xaf5D4524),
+                    400: Color(0x1a483112),
+                    500: Color(0xa1483112),
+                    600: Color(0xaa483112),
+                    700: Color(0xff483112),
+                    800: Color(0xaf2F1E06),
+                    900: Color(0xff2F1E06)
+                  },
+                ),
+                primaryColor: Colors.grey[850],
+                primaryColorLight: Color(0x1a311F06),
+                primaryColorDark: Colors.black,
+                canvasColor: Colors.grey[850],
+                scaffoldBackgroundColor: Colors.grey[250],
+                bottomAppBarColor: Color(0xff6D42CE),
+                cardColor: Colors.grey[900],
+                dividerColor: Color(0x1f6D42CE),
+                elevatedButtonTheme: ElevatedButtonThemeData(
+                    style: ButtonStyle(
+                  // MaterialStateProperty.resolveWith<TextStyle>(Set<MaterialState> states) {
+                  //   return TextStyle(color: Colors.white);
+                  // }
+
+                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                      (Set<MaterialState> states) {
+                    return Colors.grey[900];
+                  }),
+                  elevation: MaterialStateProperty.resolveWith<double>(
+                      (Set<MaterialState> states) {
+                    return 5.0;
+                  }),
+                  foregroundColor: MaterialStateProperty.resolveWith<Color>(
+                      (Set<MaterialState> states) {
+                    return Colors.white;
+                  }),
+                )),
+                focusColor: Color(0x1a311F06)),
             home: Wrapper(firstLaunch)));
   }
 }

@@ -31,7 +31,7 @@ abstract class Themes {
 
   static ThemeData darkTheme = ThemeData(
       brightness: Brightness.dark,
-      backgroundColor: Colors.grey[900],
+      backgroundColor: Colors.grey[850],
       primarySwatch: MaterialColor(
         0xFFF5E0C3,
         <int, Color>{
@@ -47,13 +47,13 @@ abstract class Themes {
           900: Color(0xff2F1E06)
         },
       ),
-      primaryColor: Color(0xff5D4524),
+      primaryColor: Colors.grey[850],
       primaryColorLight: Color(0x1a311F06),
       primaryColorDark: Color(0xff936F3E),
-      canvasColor: Color(0xffE09E45),
-      scaffoldBackgroundColor: Color.fromARGB(255, 96, 107, 131),
+      canvasColor: Colors.grey[850],
+      scaffoldBackgroundColor: Colors.grey[250],
       bottomAppBarColor: Color(0xff6D42CE),
-      cardColor: Color(0xaa311F06),
+      cardColor: Colors.grey[900],
       dividerColor: Color(0x1f6D42CE),
       focusColor: Color(0x1a311F06));
 }

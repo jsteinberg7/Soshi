@@ -13,7 +13,7 @@ class ChooseSocialsCard extends StatefulWidget {
   String platformName, soshiUsername;
   Function() refreshScreen;
   ChooseSocialsCard(
-      {String platformName, String soshiUsername, Function refreshScren}) {
+      {String platformName, String soshiUsername, Function refreshScreen}) {
     this.platformName = platformName;
     this.soshiUsername = soshiUsername;
     this.refreshScreen = refreshScreen;
@@ -64,7 +64,10 @@ class _ChooseSocialsCardState extends State<ChooseSocialsCard> {
                 ? BorderSide(color: Colors.cyanAccent[100])
                 : BorderSide.none),
         elevation: 20,
-        // color: Colors.grey[800],
+        //color: Colors.grey[8,
+        color: Theme.of(context).brightness == Brightness.light
+            ? Colors.white
+            : Colors.grey[700],
         child: Padding(
           padding: const EdgeInsets.fromLTRB(15, 15, 5, 15),
           child: Row(
@@ -134,6 +137,9 @@ class _ChooseSocialsState extends State<ChooseSocials> {
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+
     String soshiUsername =
         LocalDataService.getLocalUsernameForPlatform("Soshi");
     databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
@@ -148,7 +154,7 @@ class _ChooseSocialsState extends State<ChooseSocials> {
           style: TextStyle(
               color: Theme.of(context).brightness == Brightness.light
                   ? Colors.black
-                  : Colors.cyan,
+                  : Colors.white,
               fontSize: 25,
               letterSpacing: 2,
               fontWeight: FontWeight.bold,
@@ -159,10 +165,16 @@ class _ChooseSocialsState extends State<ChooseSocials> {
       ),
       floatingActionButton: Align(
         alignment: Alignment.bottomRight,
-        child: RaisedButton(
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              elevation: 7.0,
+              shadowColor: Colors.cyan,
+              shape: RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(30))),
+
           //style: ElevatedButton.styleFrom(side: BorderSide(width: 5.0, color: Colors.red,)),
           //color: Colors.grey[500],
-          elevation: 20,
+          //elevation: 20,
           onPressed: () async {
             DialogBuilder dialogBuilder = new DialogBuilder(context);
             dialogBuilder.showLoadingIndicator();
@@ -210,20 +222,23 @@ class _ChooseSocialsState extends State<ChooseSocials> {
             databaseService
                 .removeFromChoosePlatforms(Queue.choosePlatformsQueue);
           },
-          padding: EdgeInsets.all(15.0),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30.0),
-              side: BorderSide(color: Colors.cyan[400])),
+          //padding: EdgeInsets.all(15.0),
+          // shape: RoundedRectangleBorder(
+          //     borderRadius: BorderRadius.circular(30.0),
+          //     side: BorderSide(color: Colors.cyan[400])),
           // color: Colors.grey[300],
-          child: Text(
-            'Add to profile',
-            style: TextStyle(
-              //color: Color(0xFF527DAA),
-              color: Colors.black,
-              letterSpacing: 2,
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold,
-              fontFamily: 'OpenSans',
+          child: Padding(
+            padding: EdgeInsets.all(width / 25.0),
+            child: Text(
+              'Add to profile',
+              style: TextStyle(
+                //color: Color(0xFF527DAA),
+                // color: Colors.black,
+                letterSpacing: 2,
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'OpenSans',
+              ),
             ),
           ),
         ),

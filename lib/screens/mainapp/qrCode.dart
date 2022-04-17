@@ -158,17 +158,26 @@ class _QRScreenState extends State<QRScreen> {
                                             child: Container(
                                               decoration: BoxDecoration(
                                                   boxShadow: [
-                                                    // BoxShadow(
-                                                    //   // color: Colors.black26,
-                                                    //   blurRadius: 2.0,
-                                                    //   spreadRadius: 0.0,
-                                                    //   offset: Offset(2.0,
-                                                    //       2.0), // shadow direction: bottom right
-                                                    // )
+                                                    BoxShadow(
+                                                      color: Theme.of(context)
+                                                                  .brightness ==
+                                                              Brightness.light
+                                                          ? Colors.transparent
+                                                          : Colors.transparent,
+
+                                                      //blurRadius: 2.0,
+                                                      //spreadRadius: 0.0,
+                                                      // offset: Offset(2.0,
+                                                      //     2.0), // shadow direction: bottom right
+                                                    )
                                                   ],
                                                   // color: Colors.black12,
                                                   border: Border.all(
-                                                      // color: Colors.grey[700],
+                                                      color: Theme.of(context)
+                                                                  .brightness ==
+                                                              Brightness.light
+                                                          ? Colors.black
+                                                          : Colors.white,
                                                       width: width / 500),
                                                   borderRadius:
                                                       BorderRadius.all(
