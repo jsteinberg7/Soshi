@@ -206,7 +206,10 @@ class DatabaseService {
       friendsList = [friendSoshiUsername];
     } else {
       // add new friend to list
-      friendsList.add(friendSoshiUsername);
+      if (!friendsList.contains(friendSoshiUsername)) {
+        // ensure friend isn't already added
+        friendsList.add(friendSoshiUsername);
+      }
     }
 
     await usersCollection

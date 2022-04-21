@@ -917,7 +917,6 @@ class Popups {
                                     thisSoshiUsername:
                                         databaseService.currSoshiUsername,
                                     friendSoshiUsername: friendSoshiUsername);
-
                                 bool friendHasTwoWaySharing =
                                     await databaseService
                                         .getTwoWaySharing(userData);
