@@ -369,7 +369,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           'REGISTER',
           style: TextStyle(
             //color: Color(0xFF527DAA),
-            // color: Colors.black,
+            color: Colors.black,
             letterSpacing: 2,
             fontSize: 20.0,
             fontWeight: FontWeight.bold,
@@ -534,7 +534,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               "Login!",
               style: TextStyle(
                   fontSize: 15,
-                  // color: Colors.black,
+                  color: Colors.black,
                   fontWeight: FontWeight.bold),
             ),
             style: ElevatedButton.styleFrom(

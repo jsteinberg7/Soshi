@@ -49,6 +49,7 @@ class DatabaseService {
       "Name": {"First": first, "Last": last},
       "Friends": <String>["soshi"],
       "Bio": "",
+      "Verified": false,
       "Usernames": <String, String>{
         "Soshi": username,
         "Phone": phoneNumber,
@@ -67,6 +68,7 @@ class DatabaseService {
         "Email": email,
         "Contact": null,
       },
+      "Two Way Sharing": true,
       "Switches": <String, bool>{
         "Phone": (phoneNumber != null),
         "Instagram": false,
@@ -101,6 +103,23 @@ class DatabaseService {
       ],
       "Profile Platforms": <String>["Phone"],
     });
+  }
+
+  /*
+  Getting the list of verified users
+  */
+
+  Future<List<dynamic>> getVerifiedUsers() async {
+    List<dynamic> verifiedUsers;
+    await usersCollection
+        .doc("#Verified Users")
+        .get()
+        .then((DocumentSnapshot ds) {
+      Map data = ds.data();
+      verifiedUsers = data["Verified Users"];
+    });
+
+    return verifiedUsers;
   }
 
   /*
@@ -206,7 +225,10 @@ class DatabaseService {
       friendsList = [friendSoshiUsername];
     } else {
       // add new friend to list
-      friendsList.add(friendSoshiUsername);
+      if (!friendsList.contains(friendSoshiUsername)) {
+        // ensure friend isn't already added
+        friendsList.add(friendSoshiUsername);
+      }
     }
 
     await usersCollection
@@ -550,6 +572,17 @@ class DatabaseService {
 
   Future<void> updateBio(String soshiUser, String newBio) async {
     await usersCollection.doc(soshiUser).update({"Bio": newBio});
+  }
+
+  bool getVerifiedStatus(Map userData) {
+    return userData["Verified"];
+    // if (isVerified == null) {
+    //   isVerified == false;
+    // }
+  }
+
+  Future<void> updateVerifiedStatus(String soshiUser, bool isVerified) async {
+    await usersCollection.doc(soshiUser).update({"Verified": isVerified});
   }
 
   // bool isFirstTime() {

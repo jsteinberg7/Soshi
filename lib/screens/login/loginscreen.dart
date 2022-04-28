@@ -213,7 +213,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Text(
           'LOGIN',
           style: TextStyle(
-            // color: Colors.black,
+            color: Colors.black,
             letterSpacing: 2,
             fontSize: 20.0,
             fontWeight: FontWeight.bold,
@@ -337,7 +337,7 @@ class _LoginScreenState extends State<LoginScreen> {
               "Register!",
               style: TextStyle(
                   fontSize: 15,
-                  // color: Colors.black,
+                  color: Colors.black,
                   fontWeight: FontWeight.bold),
             ),
             style: ElevatedButton.styleFrom(

@@ -49,6 +49,7 @@ class _QRScreenState extends State<QRScreen> {
   Widget build(BuildContext context) {
     String soshiUsername =
         LocalDataService.getLocalUsernameForPlatform("Soshi");
+    bool isVerified = LocalDataService.getVerifiedStatus();
     DatabaseService databaseService =
         new DatabaseService(currSoshiUsernameIn: soshiUsername);
     double height = MediaQuery.of(context).size.height;
@@ -102,19 +103,30 @@ class _QRScreenState extends State<QRScreen> {
                                 child: Padding(
                                   padding: EdgeInsets.all(5),
                                   // height / 80, 0, 0, height / 80),
-                                  child: Text(
-                                    "@" +
-                                        LocalDataService
-                                            .getLocalUsernameForPlatform(
-                                                "Soshi"),
-                                    softWrap: false,
-                                    overflow: TextOverflow.fade,
-                                    style: TextStyle(
-                                        // color: Colors.grey[500],
-                                        letterSpacing: .5,
-                                        fontSize: width / 35,
-                                        fontWeight: FontWeight.bold,
-                                        fontStyle: FontStyle.italic),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Text(
+                                        "@" +
+                                            LocalDataService
+                                                .getLocalUsernameForPlatform(
+                                                    "Soshi"),
+                                        softWrap: false,
+                                        overflow: TextOverflow.fade,
+                                        style: TextStyle(
+                                            // color: Colors.grey[500],
+                                            letterSpacing: .5,
+                                            fontSize: width / 35,
+                                            fontWeight: FontWeight.bold,
+                                            fontStyle: FontStyle.italic),
+                                      ),
+                                      SizedBox(width: width / 100),
+                                      isVerified == null || isVerified == false
+                                          ? Container()
+                                          : Image.asset(
+                                              "assets/images/Verified.png",
+                                              scale: width / 20,
+                                            )
+                                    ],
                                   ),
                                 ),
                               ),

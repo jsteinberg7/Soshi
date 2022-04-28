@@ -724,6 +724,7 @@ class Popups {
     // get list of all visible platforms
     DatabaseService databaseService = new DatabaseService(
         currSoshiUsernameIn: LocalDataService.getLocalUsername());
+
     String userUsername = LocalDataService.getLocalUsername();
     Map userData = await databaseService.getUserFile(friendSoshiUsername);
     List<String> visiblePlatforms =
@@ -735,6 +736,7 @@ class Popups {
     bool isFriendAdded = LocalDataService.isFriendAdded(friendSoshiUsername);
     String profilePhotoURL = databaseService.getPhotoURL(userData);
     String bio = databaseService.getBio(userData);
+    bool isVerified = databaseService.getVerifiedStatus(userData);
 
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
@@ -811,12 +813,28 @@ class Popups {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: [
-                                        Text(
-                                          "@" + usernames["Soshi"],
-                                          style: TextStyle(
-                                              fontSize: width / 23,
-                                              // color: Colors.grey[500],
-                                              fontStyle: FontStyle.italic),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              "@" + usernames["Soshi"],
+                                              style: TextStyle(
+                                                  fontSize: width / 23,
+                                                  // color: Colors.grey[500],
+                                                  fontStyle: FontStyle.italic),
+                                            ),
+                                            SizedBox(
+                                              width: width / 150,
+                                            ),
+                                            isVerified == null ||
+                                                    isVerified == false
+                                                ? Container()
+                                                : Image.asset(
+                                                    "assets/images/Verified.png",
+                                                    scale: width / 20,
+                                                  )
+                                          ],
                                         ),
                                         SizedBox(height: height / 80),
                                         Row(
@@ -917,7 +935,6 @@ class Popups {
                                     thisSoshiUsername:
                                         databaseService.currSoshiUsername,
                                     friendSoshiUsername: friendSoshiUsername);
-
                                 bool friendHasTwoWaySharing =
                                     await databaseService
                                         .getTwoWaySharing(userData);

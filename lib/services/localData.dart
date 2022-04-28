@@ -29,6 +29,9 @@ abstract class LocalDataService {
     DatabaseService databaseService =
         new DatabaseService(currSoshiUsernameIn: currSoshiUsername);
 
+    DatabaseService databaseServiceV =
+        new DatabaseService(currSoshiUsernameIn: "#Verified Users");
+
     Map userData = await databaseService.getUserFile(currSoshiUsername);
 
     String bioFromDB = await databaseService.getBio(userData);
@@ -49,6 +52,17 @@ abstract class LocalDataService {
     String username = await databaseService.getUsernameForPlatform(
         userData: userData, platform: "Soshi");
     await preferences.setString("Username", username);
+
+    List<dynamic> verifiedUsersDynamic =
+        await databaseServiceV.getVerifiedUsers();
+    List<String> verifiedUsersString = [];
+    for (dynamic verifiedUser in verifiedUsersDynamic) {
+      verifiedUsersString.add(verifiedUser);
+    }
+    await preferences.setStringList("Verified Users", verifiedUsersString);
+
+    await preferences.setBool(
+        "Verified Status", verifiedUsersString.contains(currSoshiUsername));
 
     // set friends list
     List<dynamic> friendsListDynamic =
@@ -117,12 +131,24 @@ abstract class LocalDataService {
   ** note: local getters can only be used for the current user (not for friends)
   */
 
+  // static List<String> getVerifiedUsers()  {
+  //   return
+  // }
+
   static getInitialScreenBrightness() {
     return preferences.getBool("screen_brightness");
   }
 
   static getTwoWaySharing() {
     return preferences.getBool("Two Way Sharing");
+  }
+
+  static getVerifiedUsersLocal() {
+    return preferences.getStringList("Verified Users");
+  }
+
+  static getVerifiedStatus() {
+    return preferences.getBool("Verified Status");
   }
 
   static getLocalUsername() {
@@ -207,6 +233,11 @@ abstract class LocalDataService {
   /*
   Setters
   */
+
+  static Future<void> updateVerifiedStatus(bool isVerified) async {
+    await preferences.setBool("Verified Status", isVerified);
+  }
+
   static Future<void> updateLocalPhotoURL(String URL) async {
     await preferences.setString("Photo URL", URL);
   }

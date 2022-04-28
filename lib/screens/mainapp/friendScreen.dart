@@ -20,8 +20,9 @@ import 'package:soshi/constants/widgets.dart';
 /* Stores information for individual friend/connection */
 class Friend {
   String soshiUsername, fullName, photoURL;
+  bool isVerified;
 
-  Friend({this.soshiUsername, this.fullName, this.photoURL});
+  Friend({this.soshiUsername, this.fullName, this.photoURL, this.isVerified});
 }
 
 /* This widget displays a list of the user's friends. */
@@ -59,6 +60,7 @@ class _FriendScreenState extends State<FriendScreen> {
     List<String> friendsToRemove = [];
     Map friendData;
     String fullName, username, photoURL; // store data of current friend in list
+    bool isVerified;
     String othersoshiUsername;
     for (int i = friendsListsoshiUsernames.length - 1; i >= 0; i--) {
       friendData =
@@ -69,11 +71,13 @@ class _FriendScreenState extends State<FriendScreen> {
         // if friend exists in database
         fullName = databaseService.getFullName(friendData);
         photoURL = databaseService.getPhotoURL(friendData);
+        isVerified = databaseService.getVerifiedStatus(friendData);
         formattedFriendsList.add(new Friend(
             // instantiate new friend and add to list
             soshiUsername: othersoshiUsername,
             fullName: fullName,
-            photoURL: photoURL));
+            photoURL: photoURL,
+            isVerified: isVerified));
       } else {
         // if friend no longer exists, flag friend for removal
         friendsToRemove.add(othersoshiUsername);
@@ -94,6 +98,8 @@ class _FriendScreenState extends State<FriendScreen> {
   Widget createFriendTile(
       {BuildContext context, Friend friend, DatabaseService databaseService}) {
     double width = Utilities.getWidth(context);
+    double height = Utilities.getHeight(context);
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(10.0, 5, 10, 5),
       child: ListTile(
@@ -114,12 +120,27 @@ class _FriendScreenState extends State<FriendScreen> {
                       // color: Colors.cyan[600],
                       fontWeight: FontWeight.bold,
                       fontSize: 20)),
-              Text(
-                "@" + friend.soshiUsername,
-                style: TextStyle(
-                    color: Colors.grey[500],
-                    fontSize: 15,
-                    fontStyle: FontStyle.italic),
+              SizedBox(height: height / 170),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "@" + friend.soshiUsername,
+                    style: TextStyle(
+                        color: Colors.grey[500],
+                        fontSize: 15,
+                        fontStyle: FontStyle.italic),
+                  ),
+                  SizedBox(
+                    width: width / 150,
+                  ),
+                  friend.isVerified == null || friend.isVerified == false
+                      ? Container()
+                      : Image.asset(
+                          "assets/images/Verified.png",
+                          scale: width / 20,
+                        )
+                ],
               ),
             ],
           ),
@@ -356,7 +377,7 @@ class _FriendScreenState extends State<FriendScreen> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                     child: Divider(
-                      color: Colors.grey[850],
+                      color: Colors.cyan,
                       thickness: 1,
                     ),
                   ),

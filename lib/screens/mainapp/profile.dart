@@ -540,8 +540,12 @@ class ProfileState extends State<Profile> {
     });
   }
 
+  List verifiedUsers;
+  bool isVerified;
   String soshiUsername;
   List profilePlatforms;
+  DatabaseService databaseService = new DatabaseService();
+
   // FocusNode bioFocusNode;
   TextEditingController profileBioController = TextEditingController(
       text: LocalDataService.getBio() == null
@@ -559,6 +563,13 @@ class ProfileState extends State<Profile> {
 
     soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
     profilePlatforms = LocalDataService.getLocalProfilePlatforms();
+    verifiedUsers = LocalDataService.getVerifiedUsersLocal();
+    print(verifiedUsers.toString());
+    isVerified = verifiedUsers.contains(soshiUsername);
+    databaseService.updateVerifiedStatus(soshiUsername, isVerified);
+    LocalDataService.updateVerifiedStatus(isVerified);
+    print(LocalDataService.getVerifiedStatus());
+
     // bioFocusNode = new FocusNode();
     // bioFocusNode.addListener(() {
     //   if (!bioFocusNode.hasFocus) {

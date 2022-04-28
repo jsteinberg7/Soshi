@@ -38,6 +38,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
 
   Function refreshProfileScreen;
   bool twoWaySharingSwitch;
+  bool isVerified;
 
   void refreshProfileSettings() {
     setState(() {});
@@ -49,6 +50,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
     refreshProfileScreen = widget.refreshProfileScreen;
     databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
     twoWaySharingSwitch = LocalDataService.getTwoWaySharing() ?? true;
+    isVerified = LocalDataService.getVerifiedStatus();
   }
 
   @override
@@ -198,6 +200,13 @@ class ProfileSettingsState extends State<ProfileSettings> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                    SizedBox(width: width / 45),
+                    isVerified == null || isVerified == false
+                        ? Container()
+                        : Image.asset(
+                            "assets/images/Verified.png",
+                            scale: width / 30,
+                          )
                   ]),
                   //SizedBox(height: height / 50),
                   Row(
