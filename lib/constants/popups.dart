@@ -737,7 +737,7 @@ class Popups {
     String profilePhotoURL = databaseService.getPhotoURL(userData);
     String bio = databaseService.getBio(userData);
     bool isVerified = databaseService.getVerifiedStatus(userData);
-
+    
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
