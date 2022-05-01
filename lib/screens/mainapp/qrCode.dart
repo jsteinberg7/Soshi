@@ -386,9 +386,32 @@ class _QRScreenState extends State<QRScreen> {
                     // vibrate when QR code is successfully scanned
                     Vibration.vibrate();
                     try {
+                      String friendSoshiUsername = QRScanResult.split("/").last;
+                      Map friendData = await databaseService
+                          .getUserFile(friendSoshiUsername);
+
                       Popups.showUserProfilePopupNew(context,
-                          friendSoshiUsername: QRScanResult.split("/").last,
+                          friendSoshiUsername: friendSoshiUsername,
                           refreshScreen: () {});
+
+                      await LocalDataService.addFriend(
+                          friendsoshiUsername: friendSoshiUsername);
+                      databaseService.addFriend(
+                          thisSoshiUsername: databaseService.currSoshiUsername,
+                          friendSoshiUsername: friendSoshiUsername);
+                      bool friendHasTwoWaySharing =
+                          await databaseService.getTwoWaySharing(friendData);
+                      if (friendHasTwoWaySharing == null ||
+                          friendHasTwoWaySharing == true) {
+                        // if user has two way sharing on, add self to user's friends list
+                        databaseService.addFriend(
+                            thisSoshiUsername: friendSoshiUsername,
+                            friendSoshiUsername:
+                                databaseService.currSoshiUsername);
+                      }
+
+                      //add friend right here
+
                       Analytics.logQRScan(QRScanResult, true, "qrCode.dart");
                     } catch (e) {
                       Analytics.logQRScan(QRScanResult, false, "qrCode.dart");
