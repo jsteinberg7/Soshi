@@ -144,7 +144,7 @@ abstract class LocalDataService {
   }
 
   static getVerifiedUsersLocal() {
-    return preferences.getStringList("Verified Users");
+    return preferences.getStringList("Verified Users") ?? [];
   }
 
   static getVerifiedStatus() {
