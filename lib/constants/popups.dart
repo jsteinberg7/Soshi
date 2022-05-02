@@ -894,6 +894,7 @@ class Popups {
                             child: Center(
                                 child: (bio != null)
                                     ? Text(bio,
+                                        textAlign: TextAlign.center,
                                         style: TextStyle(
                                             // color: Colors.grey[300],
                                             ))
