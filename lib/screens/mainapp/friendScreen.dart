@@ -289,91 +289,115 @@ class _FriendScreenState extends State<FriendScreen> {
               child: Column(
                 children: <Widget>[
                   SizedBox(height: 10),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-                          child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  // primary: Constants.buttonColorDark,
-                                  shape: CircleBorder()),
-                              onPressed: () async {
-                                String QRScanResult =
-                                    await Utilities.scanQR(mounted);
-                                if (QRScanResult.length > 5) {
-                                  // vibrate when QR code is successfully scanned
-                                  Vibration.vibrate();
-                                  try {
-                                    Popups.showUserProfilePopupNew(context,
-                                        friendSoshiUsername:
-                                            QRScanResult.split("/").last);
-                                    Analytics.logQRScan(QRScanResult, true,
-                                        "friendScreen.dart corner icon");
-                                  } catch (e) {
-                                    Analytics.logQRScan(QRScanResult, false,
-                                        "friendScreen.dart corner icon");
-                                    print(e);
-                                  }
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: <
+                      Widget>[
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              // primary: Constants.buttonColorDark,
+                              shape: CircleBorder()),
+                          onPressed: () async {
+                            String QRScanResult =
+                                await Utilities.scanQR(mounted);
+                            if (QRScanResult.length > 5) {
+                              // vibrate when QR code is successfully scanned
+                              Vibration.vibrate();
+                              try {
+                                String friendSoshiUsername =
+                                    QRScanResult.split("/").last;
+                                Map friendData = await databaseService
+                                    .getUserFile(friendSoshiUsername);
+
+                                Popups.showUserProfilePopupNew(context,
+                                    friendSoshiUsername: friendSoshiUsername,
+                                    refreshScreen: () {});
+
+                                await LocalDataService.addFriend(
+                                    friendsoshiUsername: friendSoshiUsername);
+                                databaseService.addFriend(
+                                    thisSoshiUsername:
+                                        databaseService.currSoshiUsername,
+                                    friendSoshiUsername: friendSoshiUsername);
+                                bool friendHasTwoWaySharing =
+                                    await databaseService
+                                        .getTwoWaySharing(friendData);
+                                if (friendHasTwoWaySharing == null ||
+                                    friendHasTwoWaySharing == true) {
+                                  // if user has two way sharing on, add self to user's friends list
+                                  databaseService.addFriend(
+                                      thisSoshiUsername: friendSoshiUsername,
+                                      friendSoshiUsername:
+                                          databaseService.currSoshiUsername);
                                 }
-                              },
-                              child: Icon(Icons.qr_code_scanner_sharp,
-                                  // color: Colors.cyan[300],
-                                  size: width / 25)),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                          child: Column(
+
+                                //add friend right here
+
+                                Analytics.logQRScan(QRScanResult, true,
+                                    "friendScreen.dart corner icon");
+                              } catch (e) {
+                                Analytics.logQRScan(QRScanResult, false,
+                                    "friendScreen.dart corner icon");
+                                print(e);
+                              }
+                            }
+                          },
+                          child: Icon(Icons.qr_code_scanner_sharp,
+                              // color: Colors.cyan[300],
+                              size: width / 25)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                      child: Column(
+                        children: [
+                          Row(
                             children: [
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.emoji_people, // or Icons.poeple_round
-                                    color: Colors.cyan,
-                                    size: 30,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 5),
-                                    child: Text(
-                                      "Friends",
-                                      //textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          // color: Colors.white,
-                                          fontSize: 30.0,
-                                          fontWeight: FontWeight.bold,
-                                          fontStyle: FontStyle.italic),
-                                    ),
-                                  ),
-                                ],
+                              Icon(
+                                Icons.emoji_people, // or Icons.poeple_round
+                                color: Colors.cyan,
+                                size: 30,
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(top: 3),
+                                padding: const EdgeInsets.only(left: 5),
                                 child: Text(
-                                  "Total: " +
-                                      LocalDataService.getFriendsListCount()
-                                          .toString(),
+                                  "Friends",
+                                  //textAlign: TextAlign.center,
                                   style: TextStyle(
-                                      // color: Colors.cyan[300]
-                                      ),
+                                      // color: Colors.white,
+                                      fontSize: 30.0,
+                                      fontWeight: FontWeight.bold,
+                                      fontStyle: FontStyle.italic),
                                 ),
-                              )
+                              ),
                             ],
                           ),
-                        ),
-                        Padding(
-                            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                            child: ShareButton(
-                              size: width / 20,
-                              soshiUsername:
-                                  LocalDataService.getLocalUsername(),
-                            )
-                            // AddedMeButton(
-                            //   size: width / 20,
-                            //   soshiUsername: LocalDataService.getLocalUsername(),
-                            //   databaseService: databaseService,
-                            // ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 3),
+                            child: Text(
+                              "Total: " +
+                                  LocalDataService.getFriendsListCount()
+                                      .toString(),
+                              style: TextStyle(
+                                  // color: Colors.cyan[300]
+                                  ),
                             ),
-                      ]),
+                          )
+                        ],
+                      ),
+                    ),
+                    Padding(
+                        padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        child: ShareButton(
+                          size: width / 20,
+                          soshiUsername: LocalDataService.getLocalUsername(),
+                        )
+                        // AddedMeButton(
+                        //   size: width / 20,
+                        //   soshiUsername: LocalDataService.getLocalUsername(),
+                        //   databaseService: databaseService,
+                        // ),
+                        ),
+                  ]),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                     child: Divider(
@@ -465,9 +489,33 @@ class _FriendScreenState extends State<FriendScreen> {
                             // vibrate when QR code is successfully scanned
                             Vibration.vibrate();
                             try {
+                              String friendSoshiUsername =
+                                  QRScanResult.split("/").last;
+                              Map friendData = await databaseService
+                                  .getUserFile(friendSoshiUsername);
+
                               Popups.showUserProfilePopupNew(context,
-                                  friendSoshiUsername:
-                                      QRScanResult.split("/").last);
+                                  friendSoshiUsername: friendSoshiUsername,
+                                  refreshScreen: () {});
+
+                              await LocalDataService.addFriend(
+                                  friendsoshiUsername: friendSoshiUsername);
+                              databaseService.addFriend(
+                                  thisSoshiUsername:
+                                      databaseService.currSoshiUsername,
+                                  friendSoshiUsername: friendSoshiUsername);
+                              bool friendHasTwoWaySharing =
+                                  await databaseService
+                                      .getTwoWaySharing(friendData);
+                              if (friendHasTwoWaySharing == null ||
+                                  friendHasTwoWaySharing == true) {
+                                // if user has two way sharing on, add self to user's friends list
+                                databaseService.addFriend(
+                                    thisSoshiUsername: friendSoshiUsername,
+                                    friendSoshiUsername:
+                                        databaseService.currSoshiUsername);
+                              }
+
                               Analytics.logQRScan(QRScanResult, true,
                                   "friendScreen.dart Add new friends");
                             } catch (e) {
