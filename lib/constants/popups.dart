@@ -729,6 +729,24 @@ class Popups {
     Map userData = await databaseService.getUserFile(friendSoshiUsername);
     List<String> visiblePlatforms =
         await databaseService.getEnabledPlatformsList(userData);
+
+    double popupHeightDivisor;
+    double innerContainerSizeDivisor;
+
+    if (visiblePlatforms.length >= 0 && visiblePlatforms.length <= 3) {
+      popupHeightDivisor = 2.7;
+      innerContainerSizeDivisor = 8.0;
+    } else if (visiblePlatforms.length > 3 && visiblePlatforms.length <= 6) {
+      popupHeightDivisor = 2.05;
+      innerContainerSizeDivisor = 4.0;
+    } else if (visiblePlatforms.length > 6 && visiblePlatforms.length <= 9) {
+      popupHeightDivisor = 1.7;
+      innerContainerSizeDivisor = 2.8;
+    } else {
+      popupHeightDivisor = 1.45;
+      innerContainerSizeDivisor = 2.2;
+    }
+
     // get list of profile usernames
     Map<String, dynamic> usernames =
         databaseService.getUserProfileNames(userData);
@@ -737,7 +755,7 @@ class Popups {
     String profilePhotoURL = databaseService.getPhotoURL(userData);
     String bio = databaseService.getBio(userData);
     bool isVerified = databaseService.getVerifiedStatus(userData);
-    
+
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
@@ -773,7 +791,7 @@ class Popups {
                   borderRadius: BorderRadius.circular(30.0),
                 ),
                 content: Container(
-                  height: height / 1.7,
+                  height: height / popupHeightDivisor,
                   child: StatefulBuilder(
                       builder: (BuildContext context, StateSetter setState) {
                     return Column(
@@ -888,7 +906,7 @@ class Popups {
                           thickness: 1,
                         ),
                         Container(
-                          height: height / 3.5,
+                          height: height / innerContainerSizeDivisor,
                           width: width,
                           padding: EdgeInsets.only(top: 10.0),
                           child: (visiblePlatforms.length > 0)
@@ -919,80 +937,80 @@ class Popups {
                                   ),
                                 ),
                         ),
-                        ElevatedButton(
-                            onPressed: () async {
-                              if (isFriendAdded ||
-                                  friendSoshiUsername == userUsername) {
-                                // do nothing
-                              } else {
-                                setState(() {
-                                  isFriendAdded = true;
-                                });
-                                // add friend, update button, refresh screen
-                                await LocalDataService.addFriend(
-                                    friendsoshiUsername: friendSoshiUsername);
-                                databaseService.addFriend(
-                                    thisSoshiUsername:
-                                        databaseService.currSoshiUsername,
-                                    friendSoshiUsername: friendSoshiUsername);
-                                bool friendHasTwoWaySharing =
-                                    await databaseService
-                                        .getTwoWaySharing(userData);
-                                if (friendHasTwoWaySharing == null ||
-                                    friendHasTwoWaySharing == true) {
-                                  // if user has two way sharing on, add self to user's friends list
-                                  databaseService.addFriend(
-                                      thisSoshiUsername: friendSoshiUsername,
-                                      friendSoshiUsername:
-                                          databaseService.currSoshiUsername);
-                                }
-                                Analytics.logAddFriend(friendSoshiUsername);
-                                refreshScreen();
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              elevation: 10.0,
-                              minimumSize: Size(width / 1.7, height / 15),
-                              shape: RoundedRectangleBorder(
-                                  side: (isFriendAdded)
-                                      ? BorderSide.none
-                                      : BorderSide(color: Colors.cyan),
-                                  borderRadius: BorderRadius.circular(25.0)),
-                              //  primary:
-                              // Colors.white
-                            ),
-                            child: Container(
-                              width: 150.0,
-                              child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: (isFriendAdded)
-                                      ? [
-                                          Text(
-                                            "Friend Added",
-                                            style: TextStyle(
-                                              fontSize: 17.0,
-                                              fontWeight: FontWeight.bold,
-                                              //color: Colors.black
-                                            ),
-                                          ),
-                                        ]
-                                      : [
-                                          Text(
-                                            "Add Friend",
-                                            style: TextStyle(
-                                                fontSize: 20.0,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.cyan[300]),
-                                          ),
-                                          Padding(
-                                              padding:
-                                                  EdgeInsets.only(left: 5.0)),
-                                          Icon(
-                                            Icons.add_reaction_outlined,
-                                            color: Colors.cyan[300],
-                                          )
-                                        ]),
-                            )),
+                        // ElevatedButton(
+                        //     onPressed: () async {
+                        //       if (isFriendAdded ||
+                        //           friendSoshiUsername == userUsername) {
+                        //         // do nothing
+                        //       } else {
+                        //         setState(() {
+                        //           isFriendAdded = true;
+                        //         });
+                        //         // add friend, update button, refresh screen
+                        //         await LocalDataService.addFriend(
+                        //             friendsoshiUsername: friendSoshiUsername);
+                        //         databaseService.addFriend(
+                        //             thisSoshiUsername:
+                        //                 databaseService.currSoshiUsername,
+                        //             friendSoshiUsername: friendSoshiUsername);
+                        //         bool friendHasTwoWaySharing =
+                        //             await databaseService
+                        //                 .getTwoWaySharing(userData);
+                        //         if (friendHasTwoWaySharing == null ||
+                        //             friendHasTwoWaySharing == true) {
+                        //           // if user has two way sharing on, add self to user's friends list
+                        //           databaseService.addFriend(
+                        //               thisSoshiUsername: friendSoshiUsername,
+                        //               friendSoshiUsername:
+                        //                   databaseService.currSoshiUsername);
+                        //         }
+                        //         Analytics.logAddFriend(friendSoshiUsername);
+                        //         refreshScreen();
+                        //       }
+                        //     },
+                        //     style: ElevatedButton.styleFrom(
+                        //       elevation: 10.0,
+                        //       minimumSize: Size(width / 1.7, height / 15),
+                        //       shape: RoundedRectangleBorder(
+                        //           side: (isFriendAdded)
+                        //               ? BorderSide.none
+                        //               : BorderSide(color: Colors.cyan),
+                        //           borderRadius: BorderRadius.circular(25.0)),
+                        //       //  primary:
+                        //       // Colors.white
+                        //     ),
+                        //     child: Container(
+                        //       width: 150.0,
+                        //       child: Row(
+                        //           mainAxisAlignment: MainAxisAlignment.center,
+                        //           children: (isFriendAdded)
+                        //               ? [
+                        //                   Text(
+                        //                     "Friend Added",
+                        //                     style: TextStyle(
+                        //                       fontSize: 17.0,
+                        //                       fontWeight: FontWeight.bold,
+                        //                       //color: Colors.black
+                        //                     ),
+                        //                   ),
+                        //                 ]
+                        //               : [
+                        //                   Text(
+                        //                     "Add Friend",
+                        //                     style: TextStyle(
+                        //                         fontSize: 20.0,
+                        //                         fontWeight: FontWeight.bold,
+                        //                         color: Colors.cyan[300]),
+                        //                   ),
+                        //                   Padding(
+                        //                       padding:
+                        //                           EdgeInsets.only(left: 5.0)),
+                        //                   Icon(
+                        //                     Icons.add_reaction_outlined,
+                        //                     color: Colors.cyan[300],
+                        //                   )
+                        //                 ]),
+                        //     )),
                       ],
                     );
 

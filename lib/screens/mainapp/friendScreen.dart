@@ -39,7 +39,7 @@ class _FriendScreenState extends State<FriendScreen> {
 
     // double startingBrightness = LocalDataService.getInitialScreenBrightness();
     // DeviceDisplayBrightness.setBrightness(startingBrightness);
-    DeviceDisplayBrightness.resetBrightness();
+    // DeviceDisplayBrightness.resetBrightness();
   }
 
   /* refresh screen */

@@ -559,13 +559,16 @@ class ProfileState extends State<Profile> {
     // double startingBrightness = LocalDataService.getInitialScreenBrightness();
     // DeviceDisplayBrightness.setBrightness(startingBrightness);
 
-    DeviceDisplayBrightness.resetBrightness();
+    // DeviceDisplayBrightness.resetBrightness();
 
     soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
     profilePlatforms = LocalDataService.getLocalProfilePlatforms();
+
     verifiedUsers = LocalDataService.getVerifiedUsersLocal();
     print(verifiedUsers.toString());
+
     isVerified = verifiedUsers.contains(soshiUsername);
+
     databaseService.updateVerifiedStatus(soshiUsername, isVerified);
     LocalDataService.updateVerifiedStatus(isVerified);
     print(LocalDataService.getVerifiedStatus());
