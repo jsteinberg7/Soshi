@@ -279,8 +279,8 @@ class ProfileSettingsState extends State<ProfileSettings> {
                         padding: EdgeInsets.fromLTRB(width / 25, 0, 0, 0),
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            elevation: 7,
-                            shadowColor: Colors.cyan,
+                            elevation: 3,
+                            // shadowColor: Colors.cyan,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20.0),
                             ),
