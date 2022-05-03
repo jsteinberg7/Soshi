@@ -399,16 +399,16 @@ class _QRScreenState extends State<QRScreen> {
                       databaseService.addFriend(
                           thisSoshiUsername: databaseService.currSoshiUsername,
                           friendSoshiUsername: friendSoshiUsername);
-                      bool friendHasTwoWaySharing =
-                          await databaseService.getTwoWaySharing(friendData);
-                      if (friendHasTwoWaySharing == null ||
-                          friendHasTwoWaySharing == true) {
-                        // if user has two way sharing on, add self to user's friends list
-                        databaseService.addFriend(
-                            thisSoshiUsername: friendSoshiUsername,
-                            friendSoshiUsername:
-                                databaseService.currSoshiUsername);
-                      }
+                      // bool friendHasTwoWaySharing =
+                      //     await databaseService.getTwoWaySharing(friendData);
+                      // if (friendHasTwoWaySharing == null ||
+                      //     friendHasTwoWaySharing == true) {
+                      //   // if user has two way sharing on, add self to user's friends list
+                      //   databaseService.addFriend(
+                      //       thisSoshiUsername: friendSoshiUsername,
+                      //       friendSoshiUsername:
+                      //           databaseService.currSoshiUsername);
+                      // }
 
                       //add friend right here
 
