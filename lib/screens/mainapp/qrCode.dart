@@ -42,7 +42,7 @@ class _QRScreenState extends State<QRScreen> {
   @override
   void initState() {
     super.initState();
-    DeviceDisplayBrightness.setBrightness(0.9);
+    // DeviceDisplayBrightness.setBrightness(0.9);
   }
 
   @override
@@ -356,15 +356,15 @@ class _QRScreenState extends State<QRScreen> {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     elevation: 15,
-                    shadowColor: Colors.cyan,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(15.0)))),
                 child: Container(
+                  height: height / 17,
                   child: Row(mainAxisSize: MainAxisSize.min, children: [
                     Text(
                       "Scan QR Code",
                       style: TextStyle(
-                        fontSize: width / 25,
+                        fontSize: width / 22,
                         fontWeight: FontWeight.bold,
                         //color: Colors.cyan[300],
                         letterSpacing: 2.0,
@@ -420,6 +420,7 @@ class _QRScreenState extends State<QRScreen> {
                   }
                 },
               ),
+              SizedBox(height: 10)
             ]),
           )),
     );

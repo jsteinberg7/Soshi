@@ -559,7 +559,7 @@ class ProfileState extends State<Profile> {
     // double startingBrightness = LocalDataService.getInitialScreenBrightness();
     // DeviceDisplayBrightness.setBrightness(startingBrightness);
 
-    DeviceDisplayBrightness.resetBrightness();
+    // DeviceDisplayBrightness.resetBrightness();
 
     soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
     profilePlatforms = LocalDataService.getLocalProfilePlatforms();
@@ -694,8 +694,8 @@ class ProfileState extends State<Profile> {
                             }));
                           },
                           style: ElevatedButton.styleFrom(
-                              elevation: 3,
-                              shadowColor: Colors.cyan,
+                              elevation: 5,
+                              // shadowColor: Colors.cyan,
                               shape: RoundedRectangleBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(15.0)))),

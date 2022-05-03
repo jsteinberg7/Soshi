@@ -39,7 +39,7 @@ class _FriendScreenState extends State<FriendScreen> {
 
     // double startingBrightness = LocalDataService.getInitialScreenBrightness();
     // DeviceDisplayBrightness.setBrightness(startingBrightness);
-    DeviceDisplayBrightness.resetBrightness();
+    // DeviceDisplayBrightness.resetBrightness();
   }
 
   /* refresh screen */
@@ -268,7 +268,7 @@ class _FriendScreenState extends State<FriendScreen> {
             return Center(
                 child: CustomThreeInOut(
                     color: Theme.of(context).brightness == Brightness.light
-                        ? Colors.grey[500]
+                        ? Colors.grey[800]
                         : Colors.white,
                     size: 50.0));
           } else if (snapshot.connectionState == ConnectionState.none) {
