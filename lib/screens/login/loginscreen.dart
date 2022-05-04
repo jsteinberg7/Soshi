@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart'; // Importing packages and certain files
 import 'package:flutter/services.dart';
+import 'package:lottie/lottie.dart';
 import 'package:soshi/screens/login/register.dart';
 import 'package:soshi/screens/mainapp/resetPassword.dart';
 import 'package:soshi/services/auth.dart';
@@ -33,6 +35,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final emailKey = GlobalKey<FormState>();
   final passwordKey = GlobalKey<FormState>();
 
+  bool showEnabled = false;
+
 /* This widget is building the Email Box where users enter their email associated with their Soshi account */
   Widget _buildEmailTF() {
     return Container(
@@ -59,6 +63,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   // color: Colors.white,
                   fontFamily: 'OpenSans',
                 ),
+
+                onChanged: (text) {
+                  setState(() {});
+                },
 
                 decoration: InputDecoration(
                   enabledBorder: UnderlineInputBorder(
@@ -113,6 +121,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 // color: Colors.white,
                 fontFamily: 'OpenSans',
               ),
+              onChanged: (text) {
+                setState(() {});
+              },
               decoration: InputDecoration(
                 enabledBorder: UnderlineInputBorder(
                   borderSide: BorderSide(
@@ -140,35 +151,29 @@ class _LoginScreenState extends State<LoginScreen> {
 
 /* This Widget creates the "Forgot password" button that redirects the user to the forgot password screen */
   Widget _buildForgotPasswordBtn() {
-    // return Container(
-    //   alignment: Alignment.centerRight,
-    //   child: TextButton(
-    //     onPressed: () {
-    //       // On pressed attribute is where you declare what happens when you press the button
-    //       Navigator.push(context, MaterialPageRoute(builder: (context) {
-    //         return ResetPassword(); // Returning the ResetPassword screen
-    //       }));
-    //     },
-    //     child: Text('Forgot Password?',
-    //         style: TextStyle(
-    //             color: Theme.of(context).brightness == Brightness.light
-    //                 ? Colors.grey[700]
-    //                 : Colors.grey[500],
-    //             fontWeight: FontWeight.bold)),
-    //   ),
-    // );
-
-    return Constants.makeBlueShadowButton("Forgot Password?", Icons.help, () {
-      // On pressed attribute is where you declare what happens when you press the button
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return ResetPassword(); // Returning the ResetPassword screen
-      }));
-    });
+    return Container(
+      alignment: Alignment.centerRight,
+      child: TextButton(
+        onPressed: () {
+          // On pressed attribute is where you declare what happens when you press the button
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return ResetPassword(); // Returning the ResetPassword screen
+          }));
+        },
+        child: Text('Forgot Password?',
+            style: TextStyle(
+                color: Theme.of(context).brightness == Brightness.light ? Colors.grey[700] : Colors.grey[500], fontWeight: FontWeight.bold)),
+      ),
+    );
   }
 
 /* This widget creates the Log in button which basically validates that the email and password match a pair in Firebase */
   Widget _buildLoginBtn() {
+    setState(() {
+      showEnabled = EmailValidator.validate(this._emailController.text) && this._passwordController.text.length >= 8 ? true : false;
+    });
     return Container(
+      height: 120,
       padding: EdgeInsets.symmetric(vertical: 25.0),
       width: double.infinity,
       child: ElevatedButton(
@@ -195,24 +200,66 @@ class _LoginScreenState extends State<LoginScreen> {
           }
         },
 
-        style: ElevatedButton.styleFrom(
-          primary: Colors.cyanAccent,
-          side: BorderSide(color: Colors.cyan[400], width: 2),
-          elevation: 20,
-          padding: const EdgeInsets.all(15.0),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30.0),
-          ),
-        ),
+        style: showEnabled
+            ? ElevatedButton.styleFrom(
+                primary: Colors.cyanAccent,
+                side: BorderSide(color: Colors.cyan[400], width: 2),
+                elevation: 20,
+                padding: const EdgeInsets.all(15.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+              )
+            : ElevatedButton.styleFrom(
+                primary: Color.fromARGB(255, 168, 169, 169),
+                side: BorderSide(color: Colors.black54, width: 2),
+                elevation: 20,
+                padding: const EdgeInsets.all(15.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+              ),
 
-        child: Text(
-          'LOGIN',
-          style: TextStyle(
-            color: Colors.black,
-            letterSpacing: 2,
-            fontSize: 20.0,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'OpenSans',
+        child: Container(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'LOGIN',
+                style: TextStyle(
+                  color: Colors.black,
+                  letterSpacing: 2,
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'OpenSans',
+                ),
+              ),
+              // LottieBuilder.asset(
+              //   "assets/images/animations/rightArrow.json",
+              //   height: 20,
+              //   width: 20,
+              // )
+
+              // Lottie.asset("assets/images/animations/rightArrow.json")
+              // OverflowBox(
+              //     maxWidth: 100,
+              //     minHeight: 10,
+              //     child: SizedBox(width: 300, height: 50, child: Lottie.network("https://assets4.lottiefiles.com/packages/lf20_6UVhfF.json")))
+
+              showEnabled
+                  ? SizedBox(
+                      // height: 50,
+                      width: 100,
+                      child: OverflowBox(
+                        minHeight: 170,
+                        maxHeight: 170,
+                        child: Lottie.network(
+                          "https://assets4.lottiefiles.com/packages/lf20_6UVhfF.json",
+                        ),
+                      ),
+                    )
+                  : Container()
+            ],
           ),
         ),
       ),
@@ -307,10 +354,7 @@ class _LoginScreenState extends State<LoginScreen> {
 /* This widget creates a button that redirects the user to the sign up screen */
   Widget _buildSignupBtn() {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <Widget>[
-      Text('Don\'t have an Account?',
-          style: TextStyle(
-              // color: Colors.cyan[300],
-              fontWeight: FontWeight.bold)),
+      Text('Don\'t have an Account?', style: TextStyle(fontWeight: FontWeight.bold)),
       Icon(
         Icons.arrow_forward_sharp,
         size: 20,
@@ -319,9 +363,6 @@ class _LoginScreenState extends State<LoginScreen> {
       ElevatedButton(
         onPressed: () {
           widget.changeIsRegisteringState(true);
-          // Navigator.push(context, MaterialPageRoute(builder: (context) {
-          //   return Scaffold(body: RegisterScreen());
-          // }));
         },
         child: Text(
           "Register!",
@@ -337,20 +378,6 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     ]);
-    // return GestureDetector(
-    //   onTap: () {
-    //     widget.changeIsRegisteringState(true);
-    //   },
-    //   child: Row(
-    //       children: [
-    //         Text(
-    //             text: 'Don\'t have an Account? ',
-    //             style: TextStyle(
-    //                 color: Colors.cyan[600], fontWeight: FontWeight.bold)),
-
-    //       ],
-    //     ),
-    //   ),
   }
 
 /* This is the build of the screen, basically using all the previous widgets to create our full fleshed log in screen */
