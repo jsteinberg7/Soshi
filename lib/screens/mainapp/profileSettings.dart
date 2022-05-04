@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:soshi/constants/constants.dart';
 import 'package:soshi/screens/mainapp/resetPassword.dart';
 import 'package:soshi/services/auth.dart';
 import 'package:soshi/services/database.dart';
@@ -84,8 +85,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
       body: SingleChildScrollView(
         child: SafeArea(
           child: Padding(
-              padding:
-                  EdgeInsets.fromLTRB(width / 20, height / 50, width / 20, 0),
+              padding: EdgeInsets.fromLTRB(width / 20, height / 50, width / 20, 0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -95,72 +95,71 @@ class ProfileSettingsState extends State<ProfileSettings> {
                       url: LocalDataService.getLocalProfilePictureURL(),
                     ),
                   ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        elevation: 7.0,
-                        shadowColor: Colors.cyan,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(30))),
+                  SizedBox(height: 15),
 
-                    // style: RoundedRectangleBorder(
-                    //   borderRadius: BorderRadius.circular(30.0),
-                    // ),
-                    // color: Colors.grey[850],
-                    // splashColor: Colors.grey[800],
-                    onPressed: () async {
-                      DatabaseService dbService = new DatabaseService();
-                      //dbService.chooseAndCropImage();
+                  Constants.makeBlueShadowButton("Edit Profile Picture", Icons.edit, () async {
+                    DatabaseService dbService = new DatabaseService();
+                    //dbService.chooseAndCropImage();
 
-                      // update profile picture on tap
-                      // open up image picker
-                      final ImagePicker imagePicker = ImagePicker();
-                      final PickedFile pickedImage = await imagePicker.getImage(
-                          source: ImageSource.gallery, imageQuality: 20);
-                      await dbService.cropAndUploadImage(pickedImage);
-                      refreshProfileSettings(); // force refresh
-                      refreshProfileScreen();
+                    // update profile picture on tap
+                    // open up image picker
+                    final ImagePicker imagePicker = ImagePicker();
+                    final PickedFile pickedImage = await imagePicker.getImage(source: ImageSource.gallery, imageQuality: 20);
+                    await dbService.cropAndUploadImage(pickedImage);
+                    refreshProfileSettings(); // force refresh
+                    refreshProfileScreen();
 
-                      // String soshiUsername =
-                      //     LocalDataService.getLocalUsernameForPlatform("Soshi");
-                      // // send image to website based on URL
-                      // DatabaseService databaseService =
-                      //     new DatabaseService(soshiUsernameIn: soshiUsername);
-                      // await databaseService.uploadProfilePicture(pickedImage);
-                      // String URL = await FirebaseStorage.instance
-                      //     .ref()
-                      //     .child("Profile Pictures/" + soshiUsername)
-                      //     .getDownloadURL();
-                      // await LocalDataService.updateLocalPhotoURL(URL);
-                      // databaseService.updateUserProfilePictureURL(URL);
-                    },
-                    child: Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            'Edit Profile Picture',
-                            style: TextStyle(
-                              fontSize: width / 25,
-                              // color: Colors.cyan[300],
-                              letterSpacing: 2,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(width: width / 60),
-                          Icon(
-                            Icons.mode_edit,
-                            size: height / 40,
-                            // color: Colors.blueGrey,
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  Divider(
-                      height: height / 25,
-                      color: Theme.of(context).brightness == Brightness.light
-                          ? Colors.black
-                          : Colors.white
+                    // String soshiUsername =
+                    //     LocalDataService.getLocalUsernameForPlatform("Soshi");
+                    // // send image to website based on URL
+                    // DatabaseService databaseService =
+                    //     new DatabaseService(soshiUsernameIn: soshiUsername);
+                    // await databaseService.uploadProfilePicture(pickedImage);
+                    // String URL = await FirebaseStorage.instance
+                    //     .ref()
+                    //     .child("Profile Pictures/" + soshiUsername)
+                    //     .getDownloadURL();
+                    // await LocalDataService.updateLocalPhotoURL(URL);
+                    // databaseService.updateUserProfilePictureURL(URL);
+                  }),
+
+                  // ElevatedButton(
+                  //   style: ElevatedButton.styleFrom(
+                  //       elevation: 7.0,
+                  //       shadowColor: Colors.cyan,
+                  //       shape: RoundedRectangleBorder(
+                  //           borderRadius: new BorderRadius.circular(30))),
+
+                  //   // style: RoundedRectangleBorder(
+                  //   //   borderRadius: BorderRadius.circular(30.0),
+                  //   // ),
+                  //   // color: Colors.grey[850],
+                  //   // splashColor: Colors.grey[800],
+                  //   onPressed: ,
+                  //   child: Center(
+                  //     child: Row(
+                  //       mainAxisAlignment: MainAxisAlignment.center,
+                  //       children: <Widget>[
+                  //         Text(
+                  //           'Edit Profile Picture',
+                  //           style: TextStyle(
+                  //             fontSize: width / 25,
+                  //             // color: Colors.cyan[300],
+                  //             letterSpacing: 2,
+                  //             fontWeight: FontWeight.bold,
+                  //           ),
+                  //         ),
+                  //         SizedBox(width: width / 60),
+                  //         Icon(
+                  //           Icons.mode_edit,
+                  //           size: height / 40,
+                  //           // color: Colors.blueGrey,
+                  //         )
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
+                  Divider(height: height / 25, color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white
                       //color: Colors.blueGrey
                       ),
                   Row(
@@ -271,40 +270,46 @@ class ProfileSettingsState extends State<ProfileSettings> {
                     children: <Widget>[
                       Icon(
                         Icons.lock,
-                        color: Theme.of(context).brightness == Brightness.light
-                            ? Colors.black
-                            : Colors.white,
+                        color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
                       ),
                       Padding(
                         padding: EdgeInsets.fromLTRB(width / 25, 0, 0, 0),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            elevation: 7,
-                            shadowColor: Colors.cyan,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                            // color: Colors.grey[850],
-                          ),
-                          onPressed: () {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
+                        child: Container(
+                          width: 220,
+                          child: Constants.makeBlueShadowButton("Forgot Password?", null, () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) {
                               return ResetPassword();
                             }));
-                          },
-                          child: Row(
-                            children: <Widget>[
-                              Text(
-                                "Forgot Password?",
-                                style: TextStyle(
-                                  fontSize: width / 30,
-                                  // color: Colors.cyan[300],
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
+                          }),
                         ),
+
+                        // child: ElevatedButton(
+                        //   style: ElevatedButton.styleFrom(
+                        //     elevation: 7,
+                        //     shadowColor: Colors.cyan,
+                        //     shape: RoundedRectangleBorder(
+                        //       borderRadius: BorderRadius.circular(20.0),
+                        //     ),
+                        //     // color: Colors.grey[850],
+                        //   ),
+                        //   onPressed: () {
+                        //     Navigator.push(context, MaterialPageRoute(builder: (context) {
+                        //       return ResetPassword();
+                        //     }));
+                        //   },
+                        //   child: Row(
+                        //     children: <Widget>[
+                        //       Text(
+                        //         "Forgot Password?",
+                        //         style: TextStyle(
+                        //           fontSize: width / 30,
+                        //           // color: Colors.cyan[300],
+                        //           fontWeight: FontWeight.bold,
+                        //         ),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
                       ),
                     ],
                   ),
@@ -324,15 +329,13 @@ class ProfileSettingsState extends State<ProfileSettings> {
                     ),
                   ),
                   SizedBox(height: height / 30),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        SizedBox(
-                          width: 5,
-                        ),
-                        // DeleteProfileButton(),
-                        SignOutButton(),
-                      ]),
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+                    SizedBox(
+                      width: 5,
+                    ),
+                    // DeleteProfileButton(),
+                    SignOutButton(),
+                  ]),
                 ],
               )),
         ),

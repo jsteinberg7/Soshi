@@ -65,20 +65,15 @@ class _SMCardState extends State<SMCard> {
     platformName = widget.platformName;
     if (platformName == "Phone") {
       hintText = "Phone Number";
-    } else if (platformName == "Linkedin" ||
-        platformName == "Facebook" ||
-        platformName == "Personal") {
+    } else if (platformName == "Linkedin" || platformName == "Facebook" || platformName == "Personal") {
       hintText = "Link to Profile";
     } else {
       hintText = "Username";
     }
 
-    databaseService = new DatabaseService(
-        currSoshiUsernameIn: soshiUsername); // store ref to databaseService
-    isSwitched = LocalDataService.getLocalStateForPlatform(platformName) ??
-        false; // track state of platform switch
-    usernameController.text =
-        LocalDataService.getLocalUsernameForPlatform(platformName) ?? null;
+    databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername); // store ref to databaseService
+    isSwitched = LocalDataService.getLocalStateForPlatform(platformName) ?? false; // track state of platform switch
+    usernameController.text = LocalDataService.getLocalUsernameForPlatform(platformName) ?? null;
 
     if (platformName == "Contact") {
       usernameController.text = "Contact Card";
@@ -96,19 +91,15 @@ class _SMCardState extends State<SMCard> {
             setState(() {
               isSwitched = true;
             });
-            LocalDataService.updateSwitchForPlatform(
-                platform: platformName, state: true);
-            databaseService.updatePlatformSwitch(
-                platform: platformName, state: true);
+            LocalDataService.updateSwitchForPlatform(platform: platformName, state: true);
+            databaseService.updatePlatformSwitch(platform: platformName, state: true);
           }
         }
 
         String usernameControllerLower = usernameController.text.toLowerCase();
 
-        LocalDataService.updateUsernameForPlatform(
-            platform: platformName, username: usernameControllerLower.trim());
-        databaseService.updateUsernameForPlatform(
-            platform: platformName, username: usernameControllerLower.trim());
+        LocalDataService.updateUsernameForPlatform(platform: platformName, username: usernameControllerLower.trim());
+        databaseService.updateUsernameForPlatform(platform: platformName, username: usernameControllerLower.trim());
       }
     });
 
@@ -229,10 +220,8 @@ class _SMCardState extends State<SMCard> {
                             //   }
                             // }
 
-                            LocalDataService.updateSwitchForPlatform(
-                                platform: platformName, state: value);
-                            databaseService.updatePlatformSwitch(
-                                platform: platformName, state: value);
+                            LocalDataService.updateSwitchForPlatform(platform: platformName, state: value);
+                            databaseService.updatePlatformSwitch(platform: platformName, state: value);
 
                             if (LocalDataService.getFirstSwitchTap()) {
                               LocalDataService.updateFirstSwitchTap(false);
@@ -256,23 +245,18 @@ class _SMCardState extends State<SMCard> {
                       onPressed: () async {
                         if (platformName == "Contact") {
                           double width = Utilities.getWidth(context);
-                          String firstName =
-                              LocalDataService.getLocalFirstName();
+                          String firstName = LocalDataService.getLocalFirstName();
                           String lastName = LocalDataService.getLocalLastName();
-                          String photoUrl =
-                              LocalDataService.getLocalProfilePictureURL();
+                          String photoUrl = LocalDataService.getLocalProfilePictureURL();
                           Uint8List profilePicBytes;
                           try {
                             // try to load profile pic from url
-                            await http
-                                .get(Uri.parse(photoUrl))
-                                .then((http.Response response) {
+                            await http.get(Uri.parse(photoUrl)).then((http.Response response) {
                               profilePicBytes = response.bodyBytes;
                             });
                           } catch (e) {
                             // if url is invalid, use default profile pic
-                            ByteData data = await rootBundle.load(
-                                "assets/images/SoshiLogos/soshi_icon.png");
+                            ByteData data = await rootBundle.load("assets/images/SoshiLogos/soshi_icon.png");
                             profilePicBytes = data.buffer.asUint8List();
                           }
                           Contact contact = new Contact(
@@ -281,29 +265,20 @@ class _SMCardState extends State<SMCard> {
                               emails: [
                                 Item(
                                   label: "Email",
-                                  value: LocalDataService
-                                      .getLocalUsernameForPlatform("Email"),
+                                  value: LocalDataService.getLocalUsernameForPlatform("Email"),
                                 ),
                               ],
                               phones: [
-                                Item(
-                                    label: "Cell",
-                                    value: LocalDataService
-                                        .getLocalUsernameForPlatform("Phone")),
+                                Item(label: "Cell", value: LocalDataService.getLocalUsernameForPlatform("Phone")),
                               ],
                               avatar: profilePicBytes);
                           await askPermissions(context);
-                          ContactsService.addContact(contact)
-                              .then((dynamic success) {
-                            Popups.showContactAddedPopup(
-                                context, width, firstName, lastName);
+                          ContactsService.addContact(contact).then((dynamic success) {
+                            Popups.showContactAddedPopup(context, width, firstName, lastName);
                           });
                         } else {
-                          URL.launchURL(URL.getPlatformURL(
-                              platform: platformName,
-                              username:
-                                  LocalDataService.getLocalUsernameForPlatform(
-                                      platformName)));
+                          URL.launchURL(
+                              URL.getPlatformURL(platform: platformName, username: LocalDataService.getLocalUsernameForPlatform(platformName)));
                         }
                       },
                       iconSize: 55.0,
@@ -333,10 +308,8 @@ class _SMCardState extends State<SMCard> {
                 setState(() {
                   isSwitched = true;
                 });
-                LocalDataService.updateSwitchForPlatform(
-                    platform: platformName, state: true);
-                databaseService.updatePlatformSwitch(
-                    platform: platformName, state: true);
+                LocalDataService.updateSwitchForPlatform(platform: platformName, state: true);
+                databaseService.updatePlatformSwitch(platform: platformName, state: true);
               },
               child: Card(
                 // color: Colors.black12,
@@ -362,8 +335,7 @@ class _SMCardState extends State<SMCard> {
                   ? Container(
                       height: height / 20,
                       width: width / 9,
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.transparent)),
+                      decoration: BoxDecoration(border: Border.all(color: Colors.transparent)),
                       child: IconButton(
                         onPressed: () {
                           if (platformName == "Instagram" ||
@@ -373,33 +345,16 @@ class _SMCardState extends State<SMCard> {
                               platformName == "Tiktok" ||
                               platformName == "Discord" ||
                               platformName == "Spotify") {
-                            Popups.editUsernamePopup(context, soshiUsername,
-                                platformName, "Username", "@", width);
+                            Popups.editUsernamePopup(context, soshiUsername, platformName, "Username", "@", width);
                           } else {
-                            if (platformName == "Facebook" ||
-                                platformName == "Linkedin" ||
-                                platformName == "Personal") {
-                              Popups.editUsernamePopup(
-                                  context,
-                                  soshiUsername,
-                                  platformName,
-                                  "Link to Profile",
-                                  "https://",
-                                  width);
+                            if (platformName == "Facebook" || platformName == "Linkedin" || platformName == "Personal") {
+                              Popups.editUsernamePopup(context, soshiUsername, platformName, "Link to Profile", "https://", width);
                             } else if (platformName == "Phone") {
-                              Popups.editUsernamePopup(context, soshiUsername,
-                                  platformName, "Phone", "#", width);
+                              Popups.editUsernamePopup(context, soshiUsername, platformName, "Phone", "#", width);
                             } else if (platformName == "Youtube") {
-                              Popups.editUsernamePopup(
-                                  context,
-                                  soshiUsername,
-                                  platformName,
-                                  "Channel ID",
-                                  "Chan. ID",
-                                  width);
+                              Popups.editUsernamePopup(context, soshiUsername, platformName, "Channel ID", "Chan. ID", width);
                             } else {
-                              Popups.editUsernamePopup(context, soshiUsername,
-                                  platformName, "", "", width);
+                              Popups.editUsernamePopup(context, soshiUsername, platformName, "", "", width);
                             }
                           }
                           //popup of edit username
@@ -413,12 +368,9 @@ class _SMCardState extends State<SMCard> {
                   : IconButton(
                       icon: Icon(Icons.question_mark_rounded),
                       iconSize: 25,
-                      color: Theme.of(context).brightness == Brightness.light
-                          ? Colors.black
-                          : Colors.white,
+                      color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
                       onPressed: () {
-                        Popups.contactCardExplainedPopup(
-                            context, width, height);
+                        Popups.contactCardExplainedPopup(context, width, height);
                       },
                       splashRadius: 5,
                     )
@@ -438,9 +390,7 @@ class _SMCardState extends State<SMCard> {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(40.0))),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40.0))),
                         // backgroundColor: Colors.blueGrey[900],
                         title: Text(
                           "Remove Platform",
@@ -449,9 +399,7 @@ class _SMCardState extends State<SMCard> {
                               fontWeight: FontWeight.bold),
                         ),
                         content: Text(
-                          ("Are you sure you want to remove " +
-                              platformName +
-                              " from your profile?"),
+                          ("Are you sure you want to remove " + platformName + " from your profile?"),
                           style: TextStyle(
                             fontSize: 20,
                             // color: Colors.cyan[700],
@@ -465,8 +413,7 @@ class _SMCardState extends State<SMCard> {
                               TextButton(
                                 child: Text(
                                   'Cancel',
-                                  style: TextStyle(
-                                      fontSize: 20, color: Colors.red),
+                                  style: TextStyle(fontSize: 20, color: Colors.red),
                                 ),
                                 onPressed: () {
                                   Navigator.pop(context);
@@ -475,38 +422,24 @@ class _SMCardState extends State<SMCard> {
                               TextButton(
                                 child: Text(
                                   'Remove',
-                                  style: TextStyle(
-                                      fontSize: 20, color: Colors.blue),
+                                  style: TextStyle(fontSize: 20, color: Colors.blue),
                                 ),
                                 onPressed: () async {
-                                  if (!LocalDataService
-                                          .getLocalChoosePlatforms()
-                                      .contains(platformName)) {
+                                  if (!LocalDataService.getLocalChoosePlatforms().contains(platformName)) {
                                     Navigator.pop(context);
 
-                                    await LocalDataService
-                                        .removePlatformsFromProfile(
-                                            platformName);
-                                    LocalDataService.addToChoosePlatforms(
-                                        platformName);
+                                    await LocalDataService.removePlatformsFromProfile(platformName);
+                                    LocalDataService.addToChoosePlatforms(platformName);
 
-                                    LocalDataService.updateSwitchForPlatform(
-                                        platform: platformName, state: false);
-                                    databaseService.updatePlatformSwitch(
-                                        platform: platformName, state: false);
-                                    databaseService.removePlatformFromProfile(
-                                        platformName);
-                                    databaseService
-                                        .addToChoosePlatforms(platformName);
-                                    print(LocalDataService
-                                            .getLocalProfilePlatforms()
-                                        .toString());
+                                    LocalDataService.updateSwitchForPlatform(platform: platformName, state: false);
+                                    databaseService.updatePlatformSwitch(platform: platformName, state: false);
+                                    databaseService.removePlatformFromProfile(platformName);
+                                    databaseService.addToChoosePlatforms(platformName);
+                                    print(LocalDataService.getLocalProfilePlatforms().toString());
                                     widget.refreshScreen();
                                   } else {
                                     Navigator.pop(context);
-                                    await LocalDataService
-                                        .removePlatformsFromProfile(
-                                            platformName);
+                                    await LocalDataService.removePlatformsFromProfile(platformName);
                                     widget.refreshScreen();
                                   }
                                 },
@@ -547,10 +480,8 @@ class ProfileState extends State<Profile> {
   DatabaseService databaseService = new DatabaseService();
 
   // FocusNode bioFocusNode;
-  TextEditingController profileBioController = TextEditingController(
-      text: LocalDataService.getBio() == null
-          ? ""
-          : LocalDataService.getBio().toString());
+  TextEditingController profileBioController =
+      TextEditingController(text: LocalDataService.getBio() == null ? "" : LocalDataService.getBio().toString());
 
   @override
   void initState() {
@@ -636,269 +567,190 @@ class ProfileState extends State<Profile> {
       child: Container(
         child: Padding(
             padding: EdgeInsets.fromLTRB(width / 35, 20, width / 35, 0),
-            child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Row(children: <Widget>[
-                    Column(
-                      children: [
-                        Container(
-                          child: GestureDetector(
-                            onTap: () async {
-                              DatabaseService dbService = new DatabaseService();
-                              //dbService.chooseAndCropImage();
+            child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
+              Row(children: <Widget>[
+                Column(
+                  children: [
+                    Container(
+                      child: GestureDetector(
+                        onTap: () async {
+                          DatabaseService dbService = new DatabaseService();
+                          //dbService.chooseAndCropImage();
 
-                              // update profile picture on tap
-                              // open up image picker
-                              final ImagePicker imagePicker = ImagePicker();
-                              final PickedFile pickedImage =
-                                  await imagePicker.getImage(
-                                      source: ImageSource.gallery,
-                                      imageQuality: 20);
-                              await dbService.cropAndUploadImage(pickedImage);
-                              refreshScreen();
-                            },
-                            child: Stack(
-                              children: [
-                                ProfilePic(
-                                    radius: 55,
-                                    url: LocalDataService
-                                        .getLocalProfilePictureURL()),
-                                Positioned(
-                                    bottom: width / 100,
-                                    right: width / 100,
-                                    child: Container(
-                                      padding: EdgeInsets.all(width / 100),
-                                      decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Colors.cyan[500]),
-                                      child: Icon(
-                                        Icons.edit,
-                                        size: 20,
-                                        color: Colors.white,
-                                      ),
-                                    ))
-                              ],
-                            ),
-                          ),
+                          // update profile picture on tap
+                          // open up image picker
+                          final ImagePicker imagePicker = ImagePicker();
+                          final PickedFile pickedImage = await imagePicker.getImage(source: ImageSource.gallery, imageQuality: 20);
+                          await dbService.cropAndUploadImage(pickedImage);
+                          refreshScreen();
+                        },
+                        child: Stack(
+                          children: [
+                            ProfilePic(radius: 55, url: LocalDataService.getLocalProfilePictureURL()),
+                            Positioned(
+                                bottom: width / 100,
+                                right: width / 100,
+                                child: Container(
+                                  padding: EdgeInsets.all(width / 100),
+                                  decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.cyan[500]),
+                                  child: Icon(
+                                    Icons.edit,
+                                    size: 20,
+                                    color: Colors.white,
+                                  ),
+                                ))
+                          ],
                         ),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
-                              return Scaffold(
-                                  body: ProfileSettings(
-                                      soshiUsername: soshiUsername,
-                                      refreshProfile: refreshScreen));
-                            }));
-                          },
-                          style: ElevatedButton.styleFrom(
-                              elevation: 3,
-                              shadowColor: Colors.cyan,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(15.0)))),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Text("Edit Profile",
-                                  style: TextStyle(
-                                      // color: Colors.cyan[300],
-                                      )),
-                              SizedBox(width: 4.0),
-                              Icon(Icons.person_rounded,
-                                  // color: Colors.cyan[300],
-                                  size: 20.0),
-                            ],
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: SizedBox(
-                        height: 160,
-                        child: BioTextField(
-                            importController: profileBioController,
-                            soshiUsername: soshiUsername),
+                    SizedBox(height: 15),
+                    Container(
+                      width: 130,
+                      child: Constants.makeBlueShadowButtonSmall(
+                        "Edit Profile",
+                        Icons.person_rounded,
+                        () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return Scaffold(body: ProfileSettings(soshiUsername: soshiUsername, refreshProfile: refreshScreen));
+                          }));
+                        },
                       ),
                     )
-                  ]),
-                  SizedBox(height: 5),
-                  Row(
-                    //mainAxisAlignment: MainAxisAlignment.start,
-                    //crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[],
+                  ],
+                ),
+                SizedBox(width: 10),
+                Expanded(
+                  child: SizedBox(
+                    height: 160,
+                    child: BioTextField(importController: profileBioController, soshiUsername: soshiUsername),
                   ),
-                  Divider(
-                    color: Colors.cyan[300],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        'Toggle',
-                        style: TextStyle(
-                          color: Colors.grey,
-                          letterSpacing: 2,
-                        ),
-                      ),
-                      // ElevatedButton(
-                      //   child: Icon(
-                      //     Icons.help,
-                      //     size: 30,
-                      //     // color: Colors.grey[900],
-                      //   ),
-                      //   style: ElevatedButton.styleFrom(
-                      //       fixedSize: Size(35, 35),
-                      //       primary: Colors.blueGrey[500],
-                      //       shape: CircleBorder()),
-                      //   onPressed: () {
-                      //     Popups.showPlatformHelpPopup(context, height);
-                      //   },
-                      // ),
-                      // SizedBox(
-                      //   width: width / 12,
-                      // ),
-                    ],
-                  ),
-                  Container(
-                    child: (profilePlatforms == null ||
-                            profilePlatforms.isEmpty == true)
-                        ? Column(
-                            children: <Widget>[
-                              SizedBox(height: 10),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Text(
-                                    "Add your platforms!",
-                                    style: TextStyle(
-                                      color: Colors.cyan[300],
-                                      fontSize: 25,
-                                      fontStyle: FontStyle.italic,
-                                      letterSpacing: 3.0,
-                                      //fontWeight: FontWeight.bold
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 10),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.arrow_downward_rounded,
-                                    size: 30,
-                                    color: Colors.cyan[100],
-                                  ),
-                                  Icon(
-                                    Icons.arrow_downward_rounded,
-                                    size: 30,
-                                    color: Colors.cyan[300],
-                                  ),
-                                  Icon(
-                                    Icons.arrow_downward_rounded,
-                                    size: 30,
-                                    color: Colors.cyan[700],
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 5),
-                            ],
-                          )
-                        : GridView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                child: SMCard(
-                                    platformName: profilePlatforms[index],
-                                    soshiUsername: soshiUsername,
-                                    refreshScreen: refreshScreen),
-                              );
-                            },
-                            itemCount: profilePlatforms.length,
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                    childAspectRatio: 1.75,
-                                    crossAxisSpacing: 7),
-                          ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(50, 10, 50, 40),
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        // check if user has all platforms (in case of update)
-                        if (Constants.originalPlatforms.length +
-                                Constants.addedPlatforms.length >
-                            LocalDataService.getLocalChoosePlatforms().length +
-                                LocalDataService.getLocalProfilePlatforms()
-                                    .length) {
-                          // check which platforms need to be added
-                          for (String platform in Constants.addedPlatforms) {
-                            if (!LocalDataService.getLocalProfilePlatforms()
-                                    .contains(platform) &&
-                                !LocalDataService.getLocalChoosePlatforms()
-                                    .contains(platform)) {
-                              await LocalDataService.addToChoosePlatforms(
-                                  platform); // add new platform to choose platforms
-                              await LocalDataService.updateSwitchForPlatform(
-                                  platform: platform,
-                                  state:
-                                      false); // create switch for platform in and initialize to false
-                              if (LocalDataService.getLocalUsernameForPlatform(
-                                      platform) ==
-                                  null) {
-                                await LocalDataService.updateUsernameForPlatform(
-                                    platform: platform,
-                                    username:
-                                        ""); // create username mapping for platform if absent
-                              }
-                            }
-                          }
-                        }
-                        await Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return Scaffold(
-                              body: ChooseSocials(
-                            refreshFunction: refreshScreen,
-                          ));
-                        }));
-                      },
-                      style: ElevatedButton.styleFrom(
-                          elevation: 7.0,
-                          shadowColor: Colors.cyan,
-                          shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(15.0)))),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-                            child: Icon(
-                              Icons.add_circle_outline_rounded,
-                              color: Colors.cyan[300],
-                              size: 30,
-                            ),
-                          ),
-                          Text('Add Platforms!',
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  // color: Colors.cyan[300],
-                                  letterSpacing: 3.0,
-                                  fontWeight: FontWeight.bold))
-                        ],
-                      ),
+                )
+              ]),
+              SizedBox(height: 5),
+              Row(
+                //mainAxisAlignment: MainAxisAlignment.start,
+                //crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[],
+              ),
+              Divider(
+                color: Colors.cyan[300],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    'Toggle',
+                    style: TextStyle(
+                      color: Colors.grey,
+                      letterSpacing: 2,
                     ),
-                  )
-                ])),
+                  ),
+                  // ElevatedButton(
+                  //   child: Icon(
+                  //     Icons.help,
+                  //     size: 30,
+                  //     // color: Colors.grey[900],
+                  //   ),
+                  //   style: ElevatedButton.styleFrom(
+                  //       fixedSize: Size(35, 35),
+                  //       primary: Colors.blueGrey[500],
+                  //       shape: CircleBorder()),
+                  //   onPressed: () {
+                  //     Popups.showPlatformHelpPopup(context, height);
+                  //   },
+                  // ),
+                  // SizedBox(
+                  //   width: width / 12,
+                  // ),
+                ],
+              ),
+              Container(
+                child: (profilePlatforms == null || profilePlatforms.isEmpty == true)
+                    ? Column(
+                        children: <Widget>[
+                          SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                "Add your platforms!",
+                                style: TextStyle(
+                                  color: Colors.cyan[300],
+                                  fontSize: 25,
+                                  fontStyle: FontStyle.italic,
+                                  letterSpacing: 3.0,
+                                  //fontWeight: FontWeight.bold
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.arrow_downward_rounded,
+                                size: 30,
+                                color: Colors.cyan[100],
+                              ),
+                              Icon(
+                                Icons.arrow_downward_rounded,
+                                size: 30,
+                                color: Colors.cyan[300],
+                              ),
+                              Icon(
+                                Icons.arrow_downward_rounded,
+                                size: 30,
+                                color: Colors.cyan[700],
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 5),
+                        ],
+                      )
+                    : GridView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                            child: SMCard(platformName: profilePlatforms[index], soshiUsername: soshiUsername, refreshScreen: refreshScreen),
+                          );
+                        },
+                        itemCount: profilePlatforms.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 1.75, crossAxisSpacing: 7),
+                      ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(50, 10, 50, 40),
+                child: Constants.makeBlueShadowButton("Add Platforms!", Icons.add_circle_outline_rounded, () async {
+                  // check if user has all platforms (in case of update)
+                  if (Constants.originalPlatforms.length + Constants.addedPlatforms.length >
+                      LocalDataService.getLocalChoosePlatforms().length + LocalDataService.getLocalProfilePlatforms().length) {
+                    // check which platforms need to be added
+                    for (String platform in Constants.addedPlatforms) {
+                      if (!LocalDataService.getLocalProfilePlatforms().contains(platform) &&
+                          !LocalDataService.getLocalChoosePlatforms().contains(platform)) {
+                        await LocalDataService.addToChoosePlatforms(platform); // add new platform to choose platforms
+                        await LocalDataService.updateSwitchForPlatform(
+                            platform: platform, state: false); // create switch for platform in and initialize to false
+                        if (LocalDataService.getLocalUsernameForPlatform(platform) == null) {
+                          await LocalDataService.updateUsernameForPlatform(
+                              platform: platform, username: ""); // create username mapping for platform if absent
+                        }
+                      }
+                    }
+                  }
+                  await Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return Scaffold(
+                        body: ChooseSocials(
+                      refreshFunction: refreshScreen,
+                    ));
+                  }));
+                }),
+              ),
+              SizedBox(height: 30)
+            ])),
       ),
     );
   }
@@ -927,8 +779,7 @@ class _BioTextFieldState extends State<BioTextField> {
         LocalDataService.updateBio(widget.importController.text);
         print(LocalDataService.getBio().toString());
         DatabaseService databaseService = new DatabaseService();
-        databaseService.updateBio(
-            widget.soshiUsername, widget.importController.text);
+        databaseService.updateBio(widget.soshiUsername, widget.importController.text);
       }
     });
   }
@@ -972,8 +823,7 @@ class _BioTextFieldState extends State<BioTextField> {
           onSubmitted: (String bio) {
             DatabaseService tempDB = new DatabaseService();
             LocalDataService.updateBio(bio);
-            tempDB.updateBio(
-                LocalDataService.getLocalUsernameForPlatform("Soshi"), bio);
+            tempDB.updateBio(LocalDataService.getLocalUsernameForPlatform("Soshi"), bio);
 
             // bioFocusNode.unfocus();
             FocusScope.of(context).unfocus();

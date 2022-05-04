@@ -70,96 +70,60 @@ class ProfilePic extends StatelessWidget {
 class SignOutButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        elevation: 5,
-        shadowColor: Colors.cyan,
-        // primary: Colors.grey[850],
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-      ),
-      child: Row(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 5, 3, 3),
-            child: Icon(
-              Icons.exit_to_app,
-              color: Theme.of(context).brightness == Brightness.light
-                  ? Colors.black
-                  : Colors.white,
-            ),
-          ),
-          Text("Sign out",
-              style: TextStyle(
-                  // color: Colors.cyan[300],
-                  fontWeight: FontWeight.bold)),
-        ],
-      ),
+    return Constants.makeRedShadowButton("Sign out", Icons.logout_outlined, () {
+      AuthService authService = new AuthService();
 
-      onPressed: () {
-        AuthService authService = new AuthService();
-
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(40.0))),
-                // backgroundColor: Colors.blueGrey[900],
-                title: Text(
-                  "Sign Out",
-                  style: TextStyle(
-                    // color: Colors.cyan[600],
-                    fontWeight: FontWeight.bold,
-                  ),
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40.0))),
+              // backgroundColor: Colors.blueGrey[900],
+              title: Text(
+                "Sign Out",
+                style: TextStyle(
+                  // color: Colors.cyan[600],
+                  fontWeight: FontWeight.bold,
                 ),
-                content: Text(
-                  ("Are you sure you want to sign out?"),
-                  style: TextStyle(
-                    fontSize: 20,
-                    // color: Colors.cyan[700],
-                    // fontWeight: FontWeight.bold
-                  ),
+              ),
+              content: Text(
+                ("Are you sure you want to sign out?"),
+                style: TextStyle(
+                  fontSize: 20,
+                  // color: Colors.cyan[700],
+                  // fontWeight: FontWeight.bold
                 ),
-                actions: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      TextButton(
-                        child: Text(
-                          'No',
-                          style: TextStyle(fontSize: 20, color: Colors.red),
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
+              ),
+              actions: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    TextButton(
+                      child: Text(
+                        'No',
+                        style: TextStyle(fontSize: 20, color: Colors.red),
                       ),
-                      TextButton(
-                        child: Text(
-                          'Yes',
-                          style: TextStyle(fontSize: 20, color: Colors.blue),
-                        ),
-                        onPressed: () async {
-                          await authService.signOut();
-                          Navigator.pop(context); // close popup
-                          Navigator.pop(context); // pop to login screen
-                        },
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                    TextButton(
+                      child: Text(
+                        'Yes',
+                        style: TextStyle(fontSize: 20, color: Colors.blue),
                       ),
-                    ],
-                  ),
-                ],
-              );
-            });
-      },
-      // icon: //Text("Sign out"),
-      //     Icon(
-      //   Icons.exit_to_app,
-      //   color: Colors.cyan,
-      // ),
-      // elevation: 20,
-      // backgroundColor: Colors.grey[850],
-    );
+                      onPressed: () async {
+                        await authService.signOut();
+                        Navigator.pop(context); // close popup
+                        Navigator.pop(context); // pop to login screen
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            );
+          });
+    });
   }
 }
 
@@ -181,9 +145,7 @@ class DeleteProfileButton extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(0, 5, 3, 3),
                 child: Icon(
                   Icons.delete,
-                  color: Theme.of(context).brightness == Brightness.light
-                      ? Colors.black
-                      : Colors.white,
+                  color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
                 ),
               ),
               Text("Delete Account",
@@ -197,8 +159,7 @@ class DeleteProfileButton extends StatelessWidget {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(40.0))),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40.0))),
                     backgroundColor: Colors.blueGrey[900],
                     title: Text(
                       "Delete Account",
@@ -233,20 +194,15 @@ class DeleteProfileButton extends StatelessWidget {
                               style: TextStyle(fontSize: 20, color: Colors.red),
                             ),
                             onPressed: () async {
-                              String soshiUsername =
-                                  LocalDataService.getLocalUsername();
-                              DatabaseService databaseService =
-                                  new DatabaseService(
-                                      currSoshiUsernameIn: soshiUsername);
+                              String soshiUsername = LocalDataService.getLocalUsername();
+                              DatabaseService databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
                               await databaseService.deleteProfileData();
 
                               // wipe profile data in firestore
                               AuthService authService = new AuthService();
                               Navigator.of(context).pop();
-                              await authService
-                                  .deleteProfile(); // delete user account from firebase
-                              LocalDataService
-                                  .wipeSharedPreferences(); // clear local user data
+                              await authService.deleteProfile(); // delete user account from firebase
+                              LocalDataService.wipeSharedPreferences(); // clear local user data
                             },
                           ),
                         ],
@@ -276,16 +232,12 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
   @override
   Widget build(BuildContext context) {
     firstNameController.text = LocalDataService.getLocalFirstName();
-    firstNameController.selection = TextSelection.fromPosition(
-        TextPosition(offset: firstNameController.text.length));
+    firstNameController.selection = TextSelection.fromPosition(TextPosition(offset: firstNameController.text.length));
     lastNameController.text = LocalDataService.getLocalLastName();
-    lastNameController.selection = TextSelection.fromPosition(
-        TextPosition(offset: lastNameController.text.length));
+    lastNameController.selection = TextSelection.fromPosition(TextPosition(offset: lastNameController.text.length));
 
-    String soshiUsername =
-        LocalDataService.getLocalUsernameForPlatform("Soshi");
-    DatabaseService dbService =
-        new DatabaseService(currSoshiUsernameIn: soshiUsername);
+    String soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
+    DatabaseService dbService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
 
     // firstNameFN.addListener(() {
     //   if (!firstNameFN.hasFocus) {
@@ -332,13 +284,10 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
             ),
             onSubmitted: (String inputText) {
               if (inputText.length > 0 && inputText.length <= 12) {
-                LocalDataService.updateFirstName(
-                    firstNameController.text.trim());
+                LocalDataService.updateFirstName(firstNameController.text.trim());
                 LocalDataService.updateLastName(lastNameController.text.trim());
 
-                dbService.updateDisplayName(
-                    firstNameParam: firstNameController.text.trim(),
-                    lastNameParam: lastNameController.text.trim());
+                dbService.updateDisplayName(firstNameParam: firstNameController.text.trim(), lastNameParam: lastNameController.text.trim());
                 print(firstName + lastName);
               } else {
                 displayNameErrorPopUp("First", context);
@@ -357,24 +306,15 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
               ),
               prefixIcon: Icon(
                 Icons.person,
-                color: Theme.of(context).brightness == Brightness.light
-                    ? Colors.black
-                    : Colors.white,
+                color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
               ),
               filled: true,
               floatingLabelBehavior: FloatingLabelBehavior.always,
               label: Text("First"),
-              labelStyle: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                  color: Colors.grey[400]),
+              labelStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.grey[400]),
               // fillColor: Colors.grey[850],
               hintText: "First Name",
-              hintStyle: TextStyle(
-                  color: Colors.grey[500],
-                  fontSize: 12,
-                  letterSpacing: 2,
-                  fontWeight: FontWeight.bold),
+              hintStyle: TextStyle(color: Colors.grey[500], fontSize: 12, letterSpacing: 2, fontWeight: FontWeight.bold),
             ),
           ),
         ),
@@ -386,20 +326,15 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 15,
-              color: Theme.of(context).brightness == Brightness.light
-                  ? Colors.black
-                  : Colors.white,
+              color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
             ),
             controller: lastNameController,
             onSubmitted: (String text) {
               if (text.length > 0 && text.length <= 12) {
                 LocalDataService.updateLastName(lastNameController.text.trim());
-                LocalDataService.updateFirstName(
-                    firstNameController.text.trim());
+                LocalDataService.updateFirstName(firstNameController.text.trim());
 
-                dbService.updateDisplayName(
-                    firstNameParam: firstNameController.text.trim(),
-                    lastNameParam: lastNameController.text.trim());
+                dbService.updateDisplayName(firstNameParam: firstNameController.text.trim(), lastNameParam: lastNameController.text.trim());
                 print(firstName + lastName);
               } else {
                 displayNameErrorPopUp("Last", context);
@@ -418,24 +353,15 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
               ),
               prefixIcon: Icon(
                 Icons.person,
-                color: Theme.of(context).brightness == Brightness.light
-                    ? Colors.black
-                    : Colors.white,
+                color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
               ),
               filled: true,
               floatingLabelBehavior: FloatingLabelBehavior.always,
               label: Text("Last"),
-              labelStyle: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                  color: Colors.grey[400]),
+              labelStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.grey[400]),
               //fillColor: Colors.grey[850],
               hintText: "Last Name",
-              hintStyle: TextStyle(
-                  color: Colors.black,
-                  fontSize: 12,
-                  letterSpacing: 2,
-                  fontWeight: FontWeight.bold),
+              hintStyle: TextStyle(color: Colors.black, fontSize: 12, letterSpacing: 2, fontWeight: FontWeight.bold),
             ),
           ),
         ),
@@ -457,9 +383,7 @@ class _ReturnNumConnectionsState extends State<ReturnNumConnections> {
     if (connectionsCount.toString() == "1") {
       return Text("1 friend",
           style: TextStyle(
-            color: Theme.of(context).brightness == Brightness.light
-                ? Colors.black
-                : Colors.white,
+            color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
             letterSpacing: 2.0,
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -467,9 +391,7 @@ class _ReturnNumConnectionsState extends State<ReturnNumConnections> {
     }
     return Text(connectionsCount.toString() + " friends",
         style: TextStyle(
-          color: Theme.of(context).brightness == Brightness.light
-              ? Colors.black
-              : Colors.white,
+          color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
           letterSpacing: 2.0,
           fontSize: 20,
           fontWeight: FontWeight.bold,
@@ -488,10 +410,7 @@ class ShareButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(shape: CircleBorder()),
       onPressed: () {
         Share.share("https://soshi.app/" + soshiUsername,
-            subject: LocalDataService.getLocalFirstName() +
-                " " +
-                LocalDataService.getLocalLastName() +
-                "'s Soshi Contact Card");
+            subject: LocalDataService.getLocalFirstName() + " " + LocalDataService.getLocalLastName() + "'s Soshi Contact Card");
       },
       child: Icon(Icons.share, size: size),
     );
@@ -507,9 +426,7 @@ class CustomThreeInOut extends StatefulWidget {
     this.duration = const Duration(milliseconds: 500),
     this.delay = const Duration(milliseconds: 50),
     this.controller,
-  })  : assert(
-            !(itemBuilder is IndexedWidgetBuilder && color is Color) &&
-                !(itemBuilder == null && color == null),
+  })  : assert(!(itemBuilder is IndexedWidgetBuilder && color is Color) && !(itemBuilder == null && color == null),
             'You should specify either a itemBuilder or a color'),
         super(key: key);
 
@@ -524,8 +441,7 @@ class CustomThreeInOut extends StatefulWidget {
   _CustomThreeInOutState createState() => _CustomThreeInOutState();
 }
 
-class _CustomThreeInOutState extends State<CustomThreeInOut>
-    with SingleTickerProviderStateMixin {
+class _CustomThreeInOutState extends State<CustomThreeInOut> with SingleTickerProviderStateMixin {
   AnimationController _controller;
 
   List<Widget> _widgets;
@@ -547,8 +463,7 @@ class _CustomThreeInOutState extends State<CustomThreeInOut>
       ),
     );
 
-    _controller = widget.controller ??
-        AnimationController(vsync: this, duration: widget.duration);
+    _controller = widget.controller ?? AnimationController(vsync: this, duration: widget.duration);
 
     _controller.forward();
 
@@ -560,8 +475,7 @@ class _CustomThreeInOutState extends State<CustomThreeInOut>
       _lastAnim = _controller.value;
 
       if (_controller.isCompleted) {
-        _forwardTimer =
-            Timer(widget.delay, () => _controller?.forward(from: 0));
+        _forwardTimer = Timer(widget.delay, () => _controller?.forward(from: 0));
       }
     });
   }
@@ -627,9 +541,7 @@ class _CustomThreeInOutState extends State<CustomThreeInOut>
 
   Widget _itemBuilder(int index) => widget.itemBuilder != null
       ? widget.itemBuilder(context, index)
-      : DecoratedBox(
-          decoration:
-              BoxDecoration(color: widget.color, shape: BoxShape.circle));
+      : DecoratedBox(decoration: BoxDecoration(color: widget.color, shape: BoxShape.circle));
 }
 
 ///CircularProfileAvatar allows developers to implement circular profile avatar with border,
@@ -740,14 +652,11 @@ class _CircularProfileAvatarState extends State<CircularProfileAvatar> {
             width: widget.radius * 2,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(widget.radius),
-              border: Border.all(
-                  width: widget.borderWidth, color: widget.borderColor),
+              border: Border.all(width: widget.borderWidth, color: widget.borderColor),
             ),
             child: Center(
               child: Container(
-                decoration: BoxDecoration(
-                    color: widget.backgroundColor,
-                    borderRadius: BorderRadius.circular(widget.radius)),
+                decoration: BoxDecoration(color: widget.backgroundColor, borderRadius: BorderRadius.circular(widget.radius)),
                 child: widget.child == null
                     ? Stack(
                         fit: StackFit.expand,
@@ -759,8 +668,7 @@ class _CircularProfileAvatarState extends State<CircularProfileAvatar> {
                                     Container(
                                       decoration: BoxDecoration(
                                         color: widget.foregroundColor,
-                                        borderRadius: BorderRadius.circular(
-                                            widget.radius),
+                                        borderRadius: BorderRadius.circular(widget.radius),
                                       ),
                                     ),
                                     _initialsText,
@@ -792,9 +700,7 @@ class _CircularProfileAvatarState extends State<CircularProfileAvatar> {
     return widget.cacheImage
         ? ClipRRect(
             borderRadius: BorderRadius.circular(widget.radius),
-            child: ((widget.imageUrl != null) &&
-                    widget.imageUrl != "null" &&
-                    widget.imageUrl != null)
+            child: ((widget.imageUrl != null) && widget.imageUrl != "null" && widget.imageUrl != null)
                 ? CachedNetworkImage(
                     fit: widget.imageFit,
                     imageUrl: widget.imageUrl,
@@ -802,8 +708,7 @@ class _CircularProfileAvatarState extends State<CircularProfileAvatar> {
                     placeholder: widget.placeHolder,
                     imageBuilder: widget.imageBuilder,
                     progressIndicatorBuilder: widget.progressIndicatorBuilder,
-                    useOldImageOnUrlChange:
-                        widget.animateFromOldImageOnUrlChange ?? false,
+                    useOldImageOnUrlChange: widget.animateFromOldImageOnUrlChange ?? false,
                   )
                 : Image.asset(
                     'assets/images/SoshiLogos/soshi_icon.png',
@@ -839,24 +744,15 @@ class SoshiAppBar extends StatelessWidget {
             style: ElevatedButton.styleFrom(
                 // primary: Theme.of(context).primaryColor,
                 //shadowColor: Colors.grey[900],
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(15.0)))),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0)))),
             child: Row(
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Send",
-                        style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1)),
-                    Text("feedback!",
-                        style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1)),
+                    Text("Send", style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1)),
+                    Text("feedback!", style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1)),
                   ],
                 ),
                 // Icon(
@@ -880,9 +776,7 @@ class SoshiAppBar extends StatelessWidget {
             : "assets/images/SoshiLogos/soshi_logo.png",
         height: Utilities.getHeight(context) / 22,
       ),
-      backgroundColor: Theme.of(context).brightness == Brightness.light
-          ? Theme.of(context).appBarTheme.backgroundColor
-          : Colors.grey[900],
+      backgroundColor: Theme.of(context).brightness == Brightness.light ? Theme.of(context).appBarTheme.backgroundColor : Colors.grey[900],
       centerTitle: true,
     );
   }

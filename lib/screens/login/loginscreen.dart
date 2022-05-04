@@ -25,8 +25,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   bool loading = false;
 
-  final AuthService _authService =
-      AuthService(); // Authentication service for connecting Firebase
+  final AuthService _authService = AuthService(); // Authentication service for connecting Firebase
 
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
@@ -49,16 +48,12 @@ class _LoginScreenState extends State<LoginScreen> {
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
             child: Form(
-              key:
-                  emailKey, // This is the emailKey that is used to validate that the user is entering a valid email
+              key: emailKey, // This is the emailKey that is used to validate that the user is entering a valid email
               child: TextFormField(
                 textInputAction: TextInputAction.next,
                 autofillHints: [AutofillHints.email],
-                validator: FieldValidator.email(
-                    message:
-                        "Invalid Email format"), // The validator package uses this to confirm a valid email
-                controller:
-                    _emailController, // Controllers are used as basically a text cursor, a way to input text from the keyboard
+                validator: FieldValidator.email(message: "Invalid Email format"), // The validator package uses this to confirm a valid email
+                controller: _emailController, // Controllers are used as basically a text cursor, a way to input text from the keyboard
                 keyboardType: TextInputType.emailAddress,
                 style: TextStyle(
                   // color: Colors.white,
@@ -77,9 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   contentPadding: EdgeInsets.only(top: 14.0),
                   prefixIcon: Icon(
                     Icons.email,
-                    color: Theme.of(context).brightness == Brightness.light
-                        ? Colors.black
-                        : Colors.white,
+                    color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
                   ),
                   hintText: 'Enter your Email',
                   // hintStyle:
@@ -133,9 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 contentPadding: EdgeInsets.only(top: 14.0),
                 prefixIcon: Icon(
                   Icons.lock,
-                  color: Theme.of(context).brightness == Brightness.light
-                      ? Colors.black
-                      : Colors.white,
+                  color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
                 ),
                 hintText: 'Enter your Password',
                 // hintStyle: kHintTextStyle,
@@ -149,23 +140,30 @@ class _LoginScreenState extends State<LoginScreen> {
 
 /* This Widget creates the "Forgot password" button that redirects the user to the forgot password screen */
   Widget _buildForgotPasswordBtn() {
-    return Container(
-      alignment: Alignment.centerRight,
-      child: TextButton(
-        onPressed: () {
-          // On pressed attribute is where you declare what happens when you press the button
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return ResetPassword(); // Returning the ResetPassword screen
-          }));
-        },
-        child: Text('Forgot Password?',
-            style: TextStyle(
-                color: Theme.of(context).brightness == Brightness.light
-                    ? Colors.grey[700]
-                    : Colors.grey[500],
-                fontWeight: FontWeight.bold)),
-      ),
-    );
+    // return Container(
+    //   alignment: Alignment.centerRight,
+    //   child: TextButton(
+    //     onPressed: () {
+    //       // On pressed attribute is where you declare what happens when you press the button
+    //       Navigator.push(context, MaterialPageRoute(builder: (context) {
+    //         return ResetPassword(); // Returning the ResetPassword screen
+    //       }));
+    //     },
+    //     child: Text('Forgot Password?',
+    //         style: TextStyle(
+    //             color: Theme.of(context).brightness == Brightness.light
+    //                 ? Colors.grey[700]
+    //                 : Colors.grey[500],
+    //             fontWeight: FontWeight.bold)),
+    //   ),
+    // );
+
+    return Constants.makeBlueShadowButton("Forgot Password?", Icons.help, () {
+      // On pressed attribute is where you declare what happens when you press the button
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return ResetPassword(); // Returning the ResetPassword screen
+      }));
+    });
   }
 
 /* This widget creates the Log in button which basically validates that the email and password match a pair in Firebase */
@@ -177,15 +175,12 @@ class _LoginScreenState extends State<LoginScreen> {
         // elevation: 20,
         onPressed: () async {
           // Checking to see if email and password are a pair in Firebase when button is clicked
-          if (emailKey.currentState.validate() &&
-              passwordKey.currentState.validate()) {
+          if (emailKey.currentState.validate() && passwordKey.currentState.validate()) {
             setState(() {
               loading = true;
             });
             User loginResult = await _authService.signInWithEmailAndPassword(
-                emailIn: _emailController.text,
-                passwordIn: _passwordController.text,
-                contextIn: context);
+                emailIn: _emailController.text, passwordIn: _passwordController.text, contextIn: context);
             // added in update to avoid infinite loading
             if (Platform.isAndroid) {
               Navigator.pop(context);
@@ -293,8 +288,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 loading = true;
               });
 
-              dynamic loginResult =
-                  await _authService.signInWithGoogle(context);
+              dynamic loginResult = await _authService.signInWithGoogle(context);
 
               // acknowledge login attempt
               if (loginResult == null) {
@@ -312,44 +306,37 @@ class _LoginScreenState extends State<LoginScreen> {
 
 /* This widget creates a button that redirects the user to the sign up screen */
   Widget _buildSignupBtn() {
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          Text('Don\'t have an Account?',
-              style: TextStyle(
-                  // color: Colors.cyan[300],
-                  fontWeight: FontWeight.bold)),
-          Icon(
-            Icons.arrow_forward_sharp,
-            size: 20,
-            color: Theme.of(context).brightness == Brightness.light
-                ? Colors.black
-                : Colors.white,
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <Widget>[
+      Text('Don\'t have an Account?',
+          style: TextStyle(
+              // color: Colors.cyan[300],
+              fontWeight: FontWeight.bold)),
+      Icon(
+        Icons.arrow_forward_sharp,
+        size: 20,
+        color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+      ),
+      ElevatedButton(
+        onPressed: () {
+          widget.changeIsRegisteringState(true);
+          // Navigator.push(context, MaterialPageRoute(builder: (context) {
+          //   return Scaffold(body: RegisterScreen());
+          // }));
+        },
+        child: Text(
+          "Register!",
+          style: TextStyle(fontSize: 15, color: Colors.black, fontWeight: FontWeight.bold),
+        ),
+        style: ElevatedButton.styleFrom(
+          elevation: 20,
+          side: BorderSide(color: Colors.cyan[400]),
+          primary: Colors.cyanAccent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
           ),
-          ElevatedButton(
-            onPressed: () {
-              widget.changeIsRegisteringState(true);
-              // Navigator.push(context, MaterialPageRoute(builder: (context) {
-              //   return Scaffold(body: RegisterScreen());
-              // }));
-            },
-            child: Text(
-              "Register!",
-              style: TextStyle(
-                  fontSize: 15,
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold),
-            ),
-            style: ElevatedButton.styleFrom(
-              elevation: 20,
-              side: BorderSide(color: Colors.cyan[400]),
-              primary: Colors.cyanAccent,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-            ),
-          ),
-        ]);
+        ),
+      ),
+    ]);
     // return GestureDetector(
     //   onTap: () {
     //     widget.changeIsRegisteringState(true);
