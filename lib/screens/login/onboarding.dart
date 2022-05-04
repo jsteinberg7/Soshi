@@ -15,7 +15,7 @@ class _OnboardingState extends State<Onboarding> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // backgroundColor: Constants.backgroundColor,
+        // backgroundColor: Colors.white,
         // appBar: AppBar(
         //   // This is creating the app bar with the Soshi Logo and text
         //   elevation: 40,
@@ -52,8 +52,7 @@ class _OnboardingState extends State<Onboarding> {
               "Easily share with QR code",
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
             ),
-            body:
-                "All your socials in a single QR code",
+            body: "All your socials in a single QR code",
             image: Center(
               // child: Image.network("https://domaine.com/image.png", height: 175.0),
               child: Lottie.network(
