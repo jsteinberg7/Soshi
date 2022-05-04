@@ -41,7 +41,7 @@ class _QRScreenState extends State<QRScreen> {
   @override
   void initState() {
     super.initState();
-    DeviceDisplayBrightness.setBrightness(0.9);
+    // DeviceDisplayBrightness.setBrightness(0.9);
   }
 
   @override

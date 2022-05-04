@@ -21,9 +21,9 @@ abstract class LocalDataService {
     preferences = await SharedPreferences.getInstance();
 
     await preferences.setBool("firstSwitchTap", true);
-    double brightness = await DeviceDisplayBrightness.getBrightness();
+    // double brightness = await DeviceDisplayBrightness.getBrightness();
 
-    await preferences.setDouble("screen_brightness", brightness);
+    // await preferences.setDouble("screen_brightness", brightness);
 
     // initialize DatabaseService to fetch updated values
     DatabaseService databaseService =

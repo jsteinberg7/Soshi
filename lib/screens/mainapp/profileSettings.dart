@@ -38,7 +38,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
   int connectionCount = 0;
 
   Function refreshProfileScreen;
-  bool twoWaySharingSwitch;
+  // bool twoWaySharingSwitch;
   bool isVerified;
 
   void refreshProfileSettings() {
@@ -50,7 +50,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
     soshiUsername = widget.soshiUsername;
     refreshProfileScreen = widget.refreshProfileScreen;
     databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
-    twoWaySharingSwitch = LocalDataService.getTwoWaySharing() ?? true;
+    // twoWaySharingSwitch = LocalDataService.getTwoWaySharing() ?? true;
     isVerified = LocalDataService.getVerifiedStatus();
   }
 
@@ -208,53 +208,53 @@ class ProfileSettingsState extends State<ProfileSettings> {
                           )
                   ]),
                   //SizedBox(height: height / 50),
-                  Row(
-                    children: [
-                      Text(
-                        'Two-Way Sharing',
-                        style: TextStyle(
-                            //color: Colors.grey,
-                            letterSpacing: 2,
-                            fontSize: 15),
-                      ),
-                      ElevatedButton(
-                        child: Icon(
-                          Icons.question_mark_sharp,
-                          size: 20,
-                        ),
-                        onPressed: () {
-                          Popups.twoWarSharingExplained(context, width, height);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          elevation: 7,
-                          shadowColor: Colors.cyan,
-                          fixedSize: Size(width / 50, height / 50),
-                          shape: const CircleBorder(),
-                        ),
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   children: [
+                  //     Text(
+                  //       'Two-Way Sharing',
+                  //       style: TextStyle(
+                  //           //color: Colors.grey,
+                  //           letterSpacing: 2,
+                  //           fontSize: 15),
+                  //     ),
+                  //     ElevatedButton(
+                  //       child: Icon(
+                  //         Icons.question_mark_sharp,
+                  //         size: 20,
+                  //       ),
+                  //       onPressed: () {
+                  //         Popups.twoWarSharingExplained(context, width, height);
+                  //       },
+                  //       style: ElevatedButton.styleFrom(
+                  //         elevation: 7,
+                  //         shadowColor: Colors.cyan,
+                  //         fixedSize: Size(width / 50, height / 50),
+                  //         shape: const CircleBorder(),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                   //SizedBox(height: height / 100),
-                  Row(children: [
-                    Icon(Icons.person),
-                    Transform.scale(
-                      scaleY: .9,
-                      scaleX: .9,
-                      child: CupertinoSwitch(
-                          value: twoWaySharingSwitch,
-                          activeColor: Colors.cyan[500],
-                          onChanged: (bool value) {
-                            setState(() {
-                              twoWaySharingSwitch = value;
-                            });
-                            LocalDataService.updateTwoWaySharing(value);
-                            databaseService.updateTwoWaySharing(value);
-                          }),
-                    ),
+                  // Row(children: [
+                  //   Icon(Icons.person),
+                  //   Transform.scale(
+                  //     scaleY: .9,
+                  //     scaleX: .9,
+                  //     child: CupertinoSwitch(
+                  //         value: twoWaySharingSwitch,
+                  //         activeColor: Colors.cyan[500],
+                  //         onChanged: (bool value) {
+                  //           setState(() {
+                  //             twoWaySharingSwitch = value;
+                  //           });
+                  //           LocalDataService.updateTwoWaySharing(value);
+                  //           databaseService.updateTwoWaySharing(value);
+                  //         }),
+                  //   ),
 
-                    Icon(Icons.people),
-                    // SizedBox(width: width / 45),
-                  ]),
+                  //   Icon(Icons.people),
+                  //   // SizedBox(width: width / 45),
+                  // ]),
                   SizedBox(height: height / 50),
                   Text(
                     'Password',
