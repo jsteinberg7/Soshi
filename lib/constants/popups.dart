@@ -940,10 +940,11 @@ class Popups {
                         ),
                         // ElevatedButton(
                         //     onPressed: () async {
-                        //       if (isFriendAdded ||
-                        //           friendSoshiUsername == userUsername) {
-                        //         // do nothing
-                        //       } else {
+                              // if (isFriendAdded ||
+                              //     friendSoshiUsername == userUsername) {
+                              //   // do nothing
+                              // } 
+                              //else {
                         //         setState(() {
                         //           isFriendAdded = true;
                         //         });

@@ -353,34 +353,10 @@ class _QRScreenState extends State<QRScreen> {
                   child: ShareButton(
                       size: 25,
                       soshiUsername: LocalDataService.getLocalUsername())),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    elevation: 15,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(15.0)))),
-                child: Container(
-                  height: height / 17,
-                  child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    Text(
-                      "Scan QR Code",
-                      style: TextStyle(
-                        fontSize: width / 22,
-                        fontWeight: FontWeight.bold,
-                        //color: Colors.cyan[300],
-                        letterSpacing: 2.0,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(5.0),
-                    ),
-                    Icon(
-                      Icons.qr_code_scanner_rounded,
-                      // color: Colors.cyan
-                    )
-                  ]),
-                ),
-                // style: Constants.ButtonStyleDark,
-                onPressed: () async {
+              Constants.makeBlueShadowButton(
+                "Scan QR Code",
+                Icons.photo_camera_rounded,
+                () async {
                   String QRScanResult = await Utilities.scanQR(mounted);
                   if (QRScanResult.length > 5) {
                     // vibrate when QR code is successfully scanned
@@ -389,27 +365,27 @@ class _QRScreenState extends State<QRScreen> {
                       String friendSoshiUsername = QRScanResult.split("/").last;
                       Map friendData = await databaseService
                           .getUserFile(friendSoshiUsername);
+                      bool isFriendAdded = await LocalDataService.isFriendAdded(
+                          friendSoshiUsername);
 
                       Popups.showUserProfilePopupNew(context,
                           friendSoshiUsername: friendSoshiUsername,
                           refreshScreen: () {});
+                      if (!isFriendAdded &&
+                          friendSoshiUsername != soshiUsername) {
+                        await LocalDataService.addFriend(
+                            friendsoshiUsername: friendSoshiUsername);
+                        databaseService.addFriend(
+                            thisSoshiUsername:
+                                databaseService.currSoshiUsername,
+                            friendSoshiUsername: friendSoshiUsername);
+                      }
 
-                      await LocalDataService.addFriend(
-                          friendsoshiUsername: friendSoshiUsername);
-                      databaseService.addFriend(
-                          thisSoshiUsername: databaseService.currSoshiUsername,
-                          friendSoshiUsername: friendSoshiUsername);
-                      // bool friendHasTwoWaySharing =
-                      //     await databaseService.getTwoWaySharing(friendData);
-                      // if (friendHasTwoWaySharing == null ||
-                      //     friendHasTwoWaySharing == true) {
+                      // bool friendHasTwoWaySharing = await databaseService.getTwoWaySharing(friendData);
+                      // if (friendHasTwoWaySharing == null || friendHasTwoWaySharing == true) {
                       //   // if user has two way sharing on, add self to user's friends list
-                      //   databaseService.addFriend(
-                      //       thisSoshiUsername: friendSoshiUsername,
-                      //       friendSoshiUsername:
-                      //           databaseService.currSoshiUsername);
+                      //   databaseService.addFriend(thisSoshiUsername: friendSoshiUsername, friendSoshiUsername: databaseService.currSoshiUsername);
                       // }
-
                       //add friend right here
 
                       Analytics.logQRScan(QRScanResult, true, "qrCode.dart");
@@ -419,8 +395,7 @@ class _QRScreenState extends State<QRScreen> {
                     }
                   }
                 },
-              ),
-              SizedBox(height: 10)
+              )
             ]),
           )),
     );
