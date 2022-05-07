@@ -305,13 +305,41 @@ class Popups {
   }
 
   static void editUsernamePopup(BuildContext context, String soshiuser,
-      String platformName, String hinttext, String indicator, double width) {
+      String platformName, double width) {
     DatabaseService databaseService =
         new DatabaseService(currSoshiUsernameIn: soshiuser);
     TextEditingController usernameController = new TextEditingController();
     String usernameForPlatform =
         LocalDataService.getLocalUsernameForPlatform(platformName);
     usernameController.text = usernameForPlatform;
+    String indicator;
+    String hintText;
+    if (platformName == "Instagram" ||
+        platformName == "Snapchat" ||
+        platformName == "Venmo" ||
+        platformName == "Twitter" ||
+        platformName == "Tiktok" ||
+        platformName == "Discord" ||
+        platformName == "Spotify") {
+      hintText = "Username";
+      indicator = "@";
+    } else {
+      if (platformName == "Facebook" ||
+          platformName == "Linkedin" ||
+          platformName == "Personal") {
+        hintText = "Link To Profile";
+        indicator = "https://";
+      } else if (platformName == "Phone") {
+        hintText = "Phone Number";
+        indicator = "#";
+      } else if (platformName == "Youtube") {
+        hintText = "Channel ID";
+        indicator = "Chan. ID";
+      } else {
+        hintText = "";
+        indicator = "";
+      }
+    }
 
     showDialog(
         context: context,
@@ -377,7 +405,7 @@ class Popups {
                         // \\\color: Colors.grey[400]),
                       ),
                       // fillColor: Colors.grey[850],
-                      hintText: hinttext,
+                      hintText: hintText,
                       hintStyle: TextStyle(
                           color: Colors.grey[500],
                           fontSize: 20,
@@ -634,21 +662,21 @@ class Popups {
   //                               ),
   //                       ),
   //                       ElevatedButton(
-                            // onPressed: () async {
-                            //   if (isFriendAdded) {
-                            //     // do nothing
-                            //   } else {
-                            //     setState(() {
-                            //       isFriendAdded = true;
-                            //     });
-                            //     // add friend, update button, refresh screen
-                            //     await LocalDataService.addFriend(
-                            //         friendsoshiUsername: soshiUsername);
-                            //     databaseService.addFriend(
-                            //         friendSoshiUsername: soshiUsername);
-                            //     refreshScreen();
-                            //   }
-                            // },
+  // onPressed: () async {
+  //   if (isFriendAdded) {
+  //     // do nothing
+  //   } else {
+  //     setState(() {
+  //       isFriendAdded = true;
+  //     });
+  //     // add friend, update button, refresh screen
+  //     await LocalDataService.addFriend(
+  //         friendsoshiUsername: soshiUsername);
+  //     databaseService.addFriend(
+  //         friendSoshiUsername: soshiUsername);
+  //     refreshScreen();
+  //   }
+  // },
   //                           style: ElevatedButton.styleFrom(
   //                               primary: isFriendAdded
   //                                   ? Colors.white
@@ -940,11 +968,11 @@ class Popups {
                         ),
                         // ElevatedButton(
                         //     onPressed: () async {
-                              // if (isFriendAdded ||
-                              //     friendSoshiUsername == userUsername) {
-                              //   // do nothing
-                              // } 
-                              //else {
+                        // if (isFriendAdded ||
+                        //     friendSoshiUsername == userUsername) {
+                        //   // do nothing
+                        // }
+                        //else {
                         //         setState(() {
                         //           isFriendAdded = true;
                         //         });

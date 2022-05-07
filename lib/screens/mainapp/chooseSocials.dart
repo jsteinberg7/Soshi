@@ -198,7 +198,7 @@ class _ChooseSocialsState extends State<ChooseSocials> {
             for (String platform in Queue.choosePlatformsQueue) {
               String username =
                   LocalDataService.getLocalUsernameForPlatform(platform);
-              if (username != null && username.length != "") {
+              if (username != null && username.length != 0) {
                 // turn switch on
                 await LocalDataService.updateSwitchForPlatform(
                     platform: platform, state: true);
