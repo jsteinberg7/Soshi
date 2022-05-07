@@ -51,7 +51,8 @@ class _FriendScreenState extends State<FriendScreen> {
   }
 
   /* Generates a list of Friend(s) for the user by fetching data for each soshiUsername in their friends list */
-  Future<List<Friend>> generateFriendsList(DatabaseService databaseService) async {
+  Future<List<Friend>> generateFriendsList(
+      DatabaseService databaseService) async {
     List<dynamic> friendsListsoshiUsernames;
     friendsListsoshiUsernames = LocalDataService.getLocalFriendsList();
     // store list of friend soshiUsernames
@@ -62,7 +63,8 @@ class _FriendScreenState extends State<FriendScreen> {
     bool isVerified;
     String othersoshiUsername;
     for (int i = friendsListsoshiUsernames.length - 1; i >= 0; i--) {
-      friendData = await databaseService.getUserFile(friendsListsoshiUsernames[i]);
+      friendData =
+          await databaseService.getUserFile(friendsListsoshiUsernames[i]);
       othersoshiUsername = friendsListsoshiUsernames[i];
       if (friendData != null) {
         // ensure friend exists in database
@@ -83,15 +85,18 @@ class _FriendScreenState extends State<FriendScreen> {
     }
     for (String othersoshiUsername in friendsToRemove) {
       // remove friends that no longer exist
-      await LocalDataService.removeFriend(friendsoshiUsername: othersoshiUsername);
-      await databaseService.removeFriend(friendSoshiUsername: othersoshiUsername);
+      await LocalDataService.removeFriend(
+          friendsoshiUsername: othersoshiUsername);
+      await databaseService.removeFriend(
+          friendSoshiUsername: othersoshiUsername);
     }
 
     return formattedFriendsList;
   }
 
   /* Creates a single "friend tile" (an element of the ListView of Friends) */
-  Widget createFriendTile({BuildContext context, Friend friend, DatabaseService databaseService}) {
+  Widget createFriendTile(
+      {BuildContext context, Friend friend, DatabaseService databaseService}) {
     double width = Utilities.getWidth(context);
     double height = Utilities.getHeight(context);
 
@@ -100,7 +105,9 @@ class _FriendScreenState extends State<FriendScreen> {
       child: ListTile(
           onTap: () async {
             Popups.showUserProfilePopupNew(context,
-                friendSoshiUsername: friend.soshiUsername, refreshScreen: refreshFriendScreen); // show friend popup when tile is pressed
+                friendSoshiUsername: friend.soshiUsername,
+                refreshScreen:
+                    refreshFriendScreen); // show friend popup when tile is pressed
           },
           leading: ProfilePic(radius: width / 14, url: friend.photoURL),
           title: Column(
@@ -119,7 +126,10 @@ class _FriendScreenState extends State<FriendScreen> {
                 children: [
                   Text(
                     "@" + friend.soshiUsername,
-                    style: TextStyle(color: Colors.grey[500], fontSize: 15, fontStyle: FontStyle.italic),
+                    style: TextStyle(
+                        color: Colors.grey[500],
+                        fontSize: 15,
+                        fontStyle: FontStyle.italic),
                   ),
                   SizedBox(
                     width: width / 150,
@@ -134,7 +144,9 @@ class _FriendScreenState extends State<FriendScreen> {
               ),
             ],
           ),
-          tileColor: Theme.of(context).brightness == Brightness.light ? Colors.grey[50] : Colors.grey[850],
+          tileColor: Theme.of(context).brightness == Brightness.light
+              ? Colors.grey[50]
+              : Colors.grey[850],
 
           // selectedTileColor: Constants.buttonColorLight,
           contentPadding: EdgeInsets.all(10.0),
@@ -154,7 +166,9 @@ class _FriendScreenState extends State<FriendScreen> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40.0))),
+                      shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(40.0))),
                       // backgroundColor: Colors.blueGrey[900],
                       title: Text(
                         "Remove Friend",
@@ -163,7 +177,9 @@ class _FriendScreenState extends State<FriendScreen> {
                             fontWeight: FontWeight.bold),
                       ),
                       content: Text(
-                        ("Are you sure you want to remove " + friend.fullName + " as a friend?"),
+                        ("Are you sure you want to remove " +
+                            friend.fullName +
+                            " as a friend?"),
                         style: TextStyle(
                           fontSize: 20,
                           // color: Colors.cyan[700],
@@ -177,7 +193,8 @@ class _FriendScreenState extends State<FriendScreen> {
                             TextButton(
                               child: Text(
                                 'Cancel',
-                                style: TextStyle(fontSize: 20, color: Colors.blue),
+                                style:
+                                    TextStyle(fontSize: 20, color: Colors.blue),
                               ),
                               onPressed: () {
                                 Navigator.pop(context);
@@ -186,11 +203,14 @@ class _FriendScreenState extends State<FriendScreen> {
                             TextButton(
                               child: Text(
                                 'Remove',
-                                style: TextStyle(fontSize: 20, color: Colors.red),
+                                style:
+                                    TextStyle(fontSize: 20, color: Colors.red),
                               ),
                               onPressed: () {
-                                LocalDataService.removeFriend(friendsoshiUsername: friend.soshiUsername);
-                                databaseService.removeFriend(friendSoshiUsername: friend.soshiUsername);
+                                LocalDataService.removeFriend(
+                                    friendsoshiUsername: friend.soshiUsername);
+                                databaseService.removeFriend(
+                                    friendSoshiUsername: friend.soshiUsername);
                                 refreshFriendScreen();
                                 Navigator.pop(context);
                               },
@@ -237,14 +257,20 @@ class _FriendScreenState extends State<FriendScreen> {
     //implement loading icon
     double height = Utilities.getHeight(context);
     double width = Utilities.getWidth(context);
-    DatabaseService databaseService = new DatabaseService(currSoshiUsernameIn: LocalDataService.getLocalUsernameForPlatform("Soshi"));
+    DatabaseService databaseService = new DatabaseService(
+        currSoshiUsernameIn:
+            LocalDataService.getLocalUsernameForPlatform("Soshi"));
     return FutureBuilder(
         future: generateFriendsList(databaseService),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             // check if request is still loading
             return Center(
-                child: CustomThreeInOut(color: Theme.of(context).brightness == Brightness.light ? Colors.grey[500] : Colors.white, size: 50.0));
+                child: CustomThreeInOut(
+                    color: Theme.of(context).brightness == Brightness.light
+                        ? Colors.grey[500]
+                        : Colors.white,
+                    size: 50.0));
           } else if (snapshot.connectionState == ConnectionState.none) {
             // check if request is empty
             return Text(
@@ -263,7 +289,8 @@ class _FriendScreenState extends State<FriendScreen> {
               child: Column(
                 children: <Widget>[
                   SizedBox(height: 10),
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: <
+                      Widget>[
                     Padding(
                       padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
                       child: ElevatedButton(
@@ -271,15 +298,47 @@ class _FriendScreenState extends State<FriendScreen> {
                               // primary: Constants.buttonColorDark,
                               shape: CircleBorder()),
                           onPressed: () async {
-                            String QRScanResult = await Utilities.scanQR(mounted);
+                            String QRScanResult =
+                                await Utilities.scanQR(mounted);
                             if (QRScanResult.length > 5) {
                               // vibrate when QR code is successfully scanned
                               Vibration.vibrate();
                               try {
-                                Popups.showUserProfilePopupNew(context, friendSoshiUsername: QRScanResult.split("/").last);
-                                Analytics.logQRScan(QRScanResult, true, "friendScreen.dart corner icon");
+                                String friendSoshiUsername =
+                                    QRScanResult.split("/").last;
+                                Map friendData = await databaseService
+                                    .getUserFile(friendSoshiUsername);
+                                bool isFriendAdded =
+                                    await LocalDataService.isFriendAdded(
+                                        friendSoshiUsername);
+
+                                Popups.showUserProfilePopupNew(context,
+                                    friendSoshiUsername: friendSoshiUsername,
+                                    refreshScreen: () {});
+                                if (!isFriendAdded &&
+                                    friendSoshiUsername !=
+                                        databaseService.currSoshiUsername) {
+                                  await LocalDataService.addFriend(
+                                      friendsoshiUsername: friendSoshiUsername);
+                                  refreshFriendScreen();
+                                  databaseService.addFriend(
+                                      thisSoshiUsername:
+                                          databaseService.currSoshiUsername,
+                                      friendSoshiUsername: friendSoshiUsername);
+                                }
+
+                                // bool friendHasTwoWaySharing = await databaseService.getTwoWaySharing(friendData);
+                                // if (friendHasTwoWaySharing == null || friendHasTwoWaySharing == true) {
+                                //   // if user has two way sharing on, add self to user's friends list
+                                //   databaseService.addFriend(thisSoshiUsername: friendSoshiUsername, friendSoshiUsername: databaseService.currSoshiUsername);
+                                // }
+                                //add friend right here
+
+                                Analytics.logQRScan(QRScanResult, true,
+                                    "friendScreen.dart corner icon");
                               } catch (e) {
-                                Analytics.logQRScan(QRScanResult, false, "friendScreen.dart corner icon");
+                                Analytics.logQRScan(QRScanResult, false,
+                                    "friendScreen.dart corner icon");
                                 print(e);
                               }
                             }
@@ -316,7 +375,9 @@ class _FriendScreenState extends State<FriendScreen> {
                           Padding(
                             padding: const EdgeInsets.only(top: 3),
                             child: Text(
-                              "Total: " + LocalDataService.getFriendsListCount().toString(),
+                              "Total: " +
+                                  LocalDataService.getFriendsListCount()
+                                      .toString(),
                               style: TextStyle(
                                   // color: Colors.cyan[300]
                                   ),
@@ -358,9 +419,13 @@ class _FriendScreenState extends State<FriendScreen> {
                               itemBuilder: (BuildContext context, int i) {
                                 return Column(
                                   children: [
-                                    createFriendTile(context: context, friend: friendsList[i], databaseService: databaseService),
+                                    createFriendTile(
+                                        context: context,
+                                        friend: friendsList[i],
+                                        databaseService: databaseService),
                                     Padding(
-                                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                      padding: const EdgeInsets.fromLTRB(
+                                          20, 0, 20, 0),
                                       child: Divider(
                                         color: Colors.grey[500],
                                       ),
@@ -368,7 +433,9 @@ class _FriendScreenState extends State<FriendScreen> {
                                   ],
                                 );
                               },
-                              itemCount: (friendsList == null) ? 1 : friendsList.length,
+                              itemCount: (friendsList == null)
+                                  ? 1
+                                  : friendsList.length,
                               padding: EdgeInsets.fromLTRB(5.0, 0, 5.0, 0.0))
                           : Padding(
                               padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
@@ -377,7 +444,11 @@ class _FriendScreenState extends State<FriendScreen> {
                                   children: <Widget>[
                                     Text(
                                       "You have no friends :(",
-                                      style: TextStyle(color: Colors.cyan[300], fontSize: 20, fontStyle: FontStyle.italic, letterSpacing: 2),
+                                      style: TextStyle(
+                                          color: Colors.cyan[300],
+                                          fontSize: 20,
+                                          fontStyle: FontStyle.italic,
+                                          letterSpacing: 2),
                                     ),
                                   ],
                                 ),
@@ -387,16 +458,48 @@ class _FriendScreenState extends State<FriendScreen> {
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 5, 0, 20),
-                    child: Constants.makeBlueShadowButton("Add new friends", Icons.person_add, () async {
+                    child: Constants.makeBlueShadowButton(
+                        "Add new friends", Icons.person_add, () async {
                       String QRScanResult = await Utilities.scanQR(mounted);
                       if (QRScanResult.length > 5) {
                         // vibrate when QR code is successfully scanned
                         Vibration.vibrate();
                         try {
-                          Popups.showUserProfilePopupNew(context, friendSoshiUsername: QRScanResult.split("/").last);
-                          Analytics.logQRScan(QRScanResult, true, "friendScreen.dart Add new friends");
+                          String friendSoshiUsername =
+                              QRScanResult.split("/").last;
+                          Map friendData = await databaseService
+                              .getUserFile(friendSoshiUsername);
+                          bool isFriendAdded =
+                              await LocalDataService.isFriendAdded(
+                                  friendSoshiUsername);
+
+                          Popups.showUserProfilePopupNew(context,
+                              friendSoshiUsername: friendSoshiUsername,
+                              refreshScreen: () {});
+                          if (!isFriendAdded &&
+                              friendSoshiUsername !=
+                                  databaseService.currSoshiUsername) {
+                            await LocalDataService.addFriend(
+                                friendsoshiUsername: friendSoshiUsername);
+                            refreshFriendScreen();
+                            databaseService.addFriend(
+                                thisSoshiUsername:
+                                    databaseService.currSoshiUsername,
+                                friendSoshiUsername: friendSoshiUsername);
+                          }
+
+                          // bool friendHasTwoWaySharing = await databaseService.getTwoWaySharing(friendData);
+                          // if (friendHasTwoWaySharing == null || friendHasTwoWaySharing == true) {
+                          //   // if user has two way sharing on, add self to user's friends list
+                          //   databaseService.addFriend(thisSoshiUsername: friendSoshiUsername, friendSoshiUsername: databaseService.currSoshiUsername);
+                          // }
+                          //add friend right here
+
+                          Analytics.logQRScan(QRScanResult, true,
+                              "friendScreen.dart Add new friends");
                         } catch (e) {
-                          Analytics.logQRScan(QRScanResult, false, "friendScreen.dart Add new friends");
+                          Analytics.logQRScan(QRScanResult, false,
+                              "friendScreen.dart Add new friends");
                           print(e);
                         }
                       }

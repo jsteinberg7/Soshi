@@ -31,7 +31,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _emailController = new TextEditingController();
   final TextEditingController _passwordController = new TextEditingController();
   final TextEditingController _usernameController = new TextEditingController();
-  final TextEditingController _firstNameController = new TextEditingController();
+  final TextEditingController _firstNameController =
+      new TextEditingController();
   final TextEditingController _lastNameController = new TextEditingController();
   final emailKeyRegister = new GlobalKey<FormState>();
   final passwordKeyRegister = new GlobalKey<FormState>();
@@ -89,7 +90,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 contentPadding: EdgeInsets.only(top: 14.0),
                 prefixIcon: Icon(
                   Icons.email,
-                  color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.black
+                      : Colors.white,
                 ),
                 hintText: 'Enter your Email',
                 // hintStyle: kHintTextStyle,
@@ -128,7 +131,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
               textInputAction: TextInputAction.next,
 
-              validator: FieldValidator.password(minLength: 2, maxLength: 15, errorMessage: "2-15 characters allowed"),
+              validator: FieldValidator.password(
+                  minLength: 2,
+                  maxLength: 15,
+                  errorMessage: "2-15 characters allowed"),
               controller: _usernameController,
               //keyboardType: TextInputType.emailAddress,
               style: TextStyle(
@@ -147,7 +153,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 contentPadding: EdgeInsets.only(top: 14.0),
                 prefixIcon: Icon(
                   Icons.verified_user_rounded,
-                  color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.black
+                      : Colors.white,
                 ),
                 hintText: 'Enter your Username',
                 // hintStyle: kHintTextStyle,
@@ -186,7 +194,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
               textInputAction: TextInputAction.next,
               textCapitalization: TextCapitalization.sentences,
-              validator: FieldValidator.password(minLength: 1, maxLength: 10, errorMessage: "1-10 characters allowed"),
+              validator: FieldValidator.password(
+                  minLength: 1,
+                  maxLength: 10,
+                  errorMessage: "1-10 characters allowed"),
               controller: _firstNameController,
               //keyboardType: TextInputType.emailAddress,
               style: TextStyle(
@@ -205,7 +216,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 contentPadding: EdgeInsets.only(top: 14.0),
                 prefixIcon: Icon(
                   Icons.person,
-                  color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.black
+                      : Colors.white,
                 ),
                 hintText: 'First Name',
                 // hintStyle: kHintTextStyle,
@@ -244,7 +257,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
               textInputAction: TextInputAction.next,
               textCapitalization: TextCapitalization.sentences,
-              validator: FieldValidator.password(minLength: 1, maxLength: 15, errorMessage: "1-15 characters allowed"),
+              validator: FieldValidator.password(
+                  minLength: 1,
+                  maxLength: 15,
+                  errorMessage: "1-15 characters allowed"),
               controller: _lastNameController,
               //keyboardType: TextInputType.emailAddress,
               style: TextStyle(
@@ -263,7 +279,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 contentPadding: EdgeInsets.only(top: 14.0),
                 prefixIcon: Icon(
                   Icons.person,
-                  color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.black
+                      : Colors.white,
                 ),
                 hintText: 'Last Name',
                 // hintStyle: kHintTextStyle,
@@ -299,7 +317,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
               },
 
               textInputAction: TextInputAction.done,
-              validator: FieldValidator.password(minLength: 8, errorMessage: "Minimum of 8 characters"
+              validator: FieldValidator.password(
+                  minLength: 8, errorMessage: "Minimum of 8 characters"
                   // shouldContainNumber: true,
                   // shouldContainCapitalLetter: true,
                   // shouldContainSmallLetter: true,
@@ -338,7 +357,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 contentPadding: EdgeInsets.only(top: 14.0),
                 prefixIcon: Icon(
                   Icons.lock,
-                  color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.black
+                      : Colors.white,
                 ),
                 hintText: 'Enter your Password',
                 // hintStyle: kHintTextStyle,
@@ -428,7 +449,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
             });
 
             if (_usernameController.text.contains(" ")) {
-              String userNameEdited = _usernameController.text.replaceAll(" ", "");
+              String userNameEdited =
+                  _usernameController.text.replaceAll(" ", "");
               dynamic user = await _authService.registerWithEmailAndPassword(
                   email: _emailController.text.trim().toLowerCase(),
                   username: userNameEdited.trim().toLowerCase(),
@@ -456,9 +478,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
               }
             }
             // added in update to avoid infinite loading
-            if (Platform.isAndroid) {
-              Navigator.pop(context);
-            }
+            // if (Platform.isAndroid) {
+            //   Navigator.pop(context);
+            // }
           }
         },
       ),
@@ -538,38 +560,45 @@ class _RegisterScreenState extends State<RegisterScreen> {
   // }
 
   Widget _buildLoginBtn() {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <Widget>[
-      Text('Already have an account?',
-          style: TextStyle(
-              // color: Colors.cyan[300],
-              fontWeight: FontWeight.bold,
-              fontSize: 15)),
-      Icon(
-        Icons.arrow_forward_sharp,
-        size: 20,
-        color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
-      ),
-      ElevatedButton(
-        onPressed: () {
-          widget.toggleIsRegistering(false);
-          // Navigator.push(context, MaterialPageRoute(builder: (context) {
-          //   return Scaffold(body: RegisterScreen());
-          // }));
-        },
-        child: Text(
-          "Login!",
-          style: TextStyle(fontSize: 15, color: Colors.black, fontWeight: FontWeight.bold),
-        ),
-        style: ElevatedButton.styleFrom(
-          elevation: 20,
-          side: BorderSide(color: Colors.cyan[400]),
-          primary: Colors.cyanAccent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Text('Already have an account?',
+              style: TextStyle(
+                  // color: Colors.cyan[300],
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15)),
+          Icon(
+            Icons.arrow_forward_sharp,
+            size: 20,
+            color: Theme.of(context).brightness == Brightness.light
+                ? Colors.black
+                : Colors.white,
           ),
-        ),
-      ),
-    ]);
+          ElevatedButton(
+            onPressed: () {
+              widget.toggleIsRegistering(false);
+              // Navigator.push(context, MaterialPageRoute(builder: (context) {
+              //   return Scaffold(body: RegisterScreen());
+              // }));
+            },
+            child: Text(
+              "Login!",
+              style: TextStyle(
+                  fontSize: 15,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold),
+            ),
+            style: ElevatedButton.styleFrom(
+              elevation: 20,
+              side: BorderSide(color: Colors.cyan[400]),
+              primary: Colors.cyanAccent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+            ),
+          ),
+        ]);
   }
 
   //   return GestureDetector(

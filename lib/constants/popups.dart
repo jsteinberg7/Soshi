@@ -634,21 +634,21 @@ class Popups {
   //                               ),
   //                       ),
   //                       ElevatedButton(
-  //                           onPressed: () async {
-  //                             if (isFriendAdded) {
-  //                               // do nothing
-  //                             } else {
-  //                               setState(() {
-  //                                 isFriendAdded = true;
-  //                               });
-  //                               // add friend, update button, refresh screen
-  //                               await LocalDataService.addFriend(
-  //                                   friendsoshiUsername: soshiUsername);
-  //                               databaseService.addFriend(
-  //                                   friendSoshiUsername: soshiUsername);
-  //                               refreshScreen();
-  //                             }
-  //                           },
+                            // onPressed: () async {
+                            //   if (isFriendAdded) {
+                            //     // do nothing
+                            //   } else {
+                            //     setState(() {
+                            //       isFriendAdded = true;
+                            //     });
+                            //     // add friend, update button, refresh screen
+                            //     await LocalDataService.addFriend(
+                            //         friendsoshiUsername: soshiUsername);
+                            //     databaseService.addFriend(
+                            //         friendSoshiUsername: soshiUsername);
+                            //     refreshScreen();
+                            //   }
+                            // },
   //                           style: ElevatedButton.styleFrom(
   //                               primary: isFriendAdded
   //                                   ? Colors.white

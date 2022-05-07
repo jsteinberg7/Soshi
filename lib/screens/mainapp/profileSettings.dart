@@ -85,7 +85,8 @@ class ProfileSettingsState extends State<ProfileSettings> {
       body: SingleChildScrollView(
         child: SafeArea(
           child: Padding(
-              padding: EdgeInsets.fromLTRB(width / 20, height / 50, width / 20, 0),
+              padding:
+                  EdgeInsets.fromLTRB(width / 20, height / 50, width / 20, 0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -97,14 +98,16 @@ class ProfileSettingsState extends State<ProfileSettings> {
                   ),
                   SizedBox(height: 15),
 
-                  Constants.makeBlueShadowButton("Edit Profile Picture", Icons.edit, () async {
+                  Constants.makeBlueShadowButton(
+                      "Edit Profile Picture", Icons.edit, () async {
                     DatabaseService dbService = new DatabaseService();
                     //dbService.chooseAndCropImage();
 
                     // update profile picture on tap
                     // open up image picker
                     final ImagePicker imagePicker = ImagePicker();
-                    final PickedFile pickedImage = await imagePicker.getImage(source: ImageSource.gallery, imageQuality: 20);
+                    final PickedFile pickedImage = await imagePicker.getImage(
+                        source: ImageSource.gallery, imageQuality: 20);
                     await dbService.cropAndUploadImage(pickedImage);
                     refreshProfileSettings(); // force refresh
                     refreshProfileScreen();
@@ -159,7 +162,11 @@ class ProfileSettingsState extends State<ProfileSettings> {
                   //     ),
                   //   ),
                   // ),
-                  Divider(height: height / 25, color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white
+                  Divider(
+                      height: height / 25,
+                      color: Theme.of(context).brightness == Brightness.light
+                          ? Colors.black
+                          : Colors.white
                       //color: Colors.blueGrey
                       ),
                   Row(
@@ -270,14 +277,18 @@ class ProfileSettingsState extends State<ProfileSettings> {
                     children: <Widget>[
                       Icon(
                         Icons.lock,
-                        color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? Colors.black
+                            : Colors.white,
                       ),
                       Padding(
                         padding: EdgeInsets.fromLTRB(width / 25, 0, 0, 0),
                         child: Container(
                           width: 220,
-                          child: Constants.makeBlueShadowButton("Forgot Password?", null, () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) {
+                          child: Constants.makeBlueShadowButton(
+                              "Forgot Password?", null, () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
                               return ResetPassword();
                             }));
                           }),
@@ -329,13 +340,15 @@ class ProfileSettingsState extends State<ProfileSettings> {
                     ),
                   ),
                   SizedBox(height: height / 30),
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-                    SizedBox(
-                      width: 5,
-                    ),
-                    // DeleteProfileButton(),
-                    SignOutButton(),
-                  ]),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(
+                          width: 5,
+                        ),
+                        // DeleteProfileButton(),
+                        SignOutButton(),
+                      ]),
                 ],
               )),
         ),
