@@ -62,9 +62,11 @@ class _MyAppState extends State<MyApp> {
               cardColor: Colors.white,
               dividerColor: Color(0x1f6D42CE),
               focusColor: Color(0x1aF5E0C3),
-              textSelectionTheme: TextSelectionThemeData(cursorColor: Colors.cyan[500]),
+              textSelectionTheme:
+                  TextSelectionThemeData(cursorColor: Colors.cyan[500]),
               elevatedButtonTheme: ElevatedButtonThemeData(style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+                backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
                   return Colors.white;
                 }),
               )),
@@ -102,13 +104,16 @@ class _MyAppState extends State<MyApp> {
                   //   return TextStyle(color: Colors.white);
                   // }
 
-                  backgroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                      (Set<MaterialState> states) {
                     return Colors.grey[900];
                   }),
-                  elevation: MaterialStateProperty.resolveWith<double>((Set<MaterialState> states) {
+                  elevation: MaterialStateProperty.resolveWith<double>(
+                      (Set<MaterialState> states) {
                     return 5.0;
                   }),
-                  foregroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+                  foregroundColor: MaterialStateProperty.resolveWith<Color>(
+                      (Set<MaterialState> states) {
                     return Colors.white;
                   }),
                 )),
@@ -128,7 +133,8 @@ void main() async {
   LocalDataService.preferences = await SharedPreferences.getInstance();
 
   firstLaunch = (!LocalDataService.hasLaunched() ||
-      LocalDataService.hasLaunched() == null); // firstLaunched true if hasLaunched is false (first time running app)
+      LocalDataService.hasLaunched() ==
+          null); // firstLaunched true if hasLaunched is false (first time running app)
 
   /*
     1. Check if first time running app
@@ -136,7 +142,9 @@ void main() async {
     */
   FirebaseDynamicLinks links = FirebaseDynamicLinks.instance;
 
-  if (firstLaunch && (LocalDataService.getLocalUsername() == "null" || LocalDataService.getLocalUsername() == null)) {
+  if (firstLaunch &&
+      (LocalDataService.getLocalUsername() == "null" ||
+          LocalDataService.getLocalUsername() == null)) {
     AuthService tempAuth = new AuthService();
     await tempAuth.signOut(); // sign user out
 
@@ -157,7 +165,8 @@ void main() async {
   // print("Deep Link Params: " + linkData.utmParameters.toString())
   runApp(MyApp(linkData));
 
-  await LocalDataService.preferences.setBool("hasLaunched", true); // user has launched app
+  await LocalDataService.preferences
+      .setBool("hasLaunched", true); // user has launched app
 
   if (linkData != null) {
     print(linkData.utmParameters);
