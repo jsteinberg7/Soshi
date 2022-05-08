@@ -458,6 +458,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   first: _firstNameController.text.trim(),
                   last: _lastNameController.text.trim(),
                   contextIn: context);
+              // used to pop off loading screen
+              refresh();
+
               if (user == null) {
                 setState(() {
                   loading = false;
@@ -623,6 +626,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   //     ),
   //   );
   // }
+
+  // used to pop off loading screen
+  void refresh() {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -58,7 +58,6 @@ class _MyAppState extends State<MyApp> {
               scaffoldBackgroundColor: Colors.grey[50],
               bottomAppBarColor: Color.fromARGB(255, 0, 0, 0),
               appBarTheme: AppBarTheme(color: Colors.grey[50]),
-
               cardColor: Colors.white,
               dividerColor: Color(0x1f6D42CE),
               focusColor: Color(0x1aF5E0C3),
@@ -77,7 +76,7 @@ class _MyAppState extends State<MyApp> {
                 backgroundColor: Colors.grey[850],
                 primarySwatch: MaterialColor(
                   0xFFF5E0C3,
-                  <int, Color>{
+                  <int, Color> {
                     50: Color(0x1a5D4524),
                     100: Color(0xa15D4524),
                     200: Color(0xaa5D4524),
