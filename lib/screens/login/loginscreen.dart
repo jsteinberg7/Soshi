@@ -208,7 +208,8 @@ class _LoginScreenState extends State<LoginScreen> {
             // if (Platform.isAndroid) {
             //   // Navigator.pop(context);
             // }
-
+            // used to pop off loading screen
+            refresh();
             // acknowledge login attempt
             if (loginResult == null) {
               setState(() {
@@ -405,6 +406,11 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
         ]);
+  }
+
+  // used to pop off loading screen
+  void refresh() {
+    setState(() {});
   }
 
 /* This is the build of the screen, basically using all the previous widgets to create our full fleshed log in screen */
