@@ -22,6 +22,11 @@ class Wrapper extends StatefulWidget {
 }
 
 class _WrapperState extends State<Wrapper> {
+  void refreshApp() {
+    setState(() {});
+    print("app refreshed!");
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context); // get current user
@@ -32,7 +37,7 @@ class _WrapperState extends State<Wrapper> {
       return MainApp();
     } else {
       if (!widget.firstLaunch) {
-        return Authenticate();
+        return Authenticate(refresh: refreshApp);
       } else {
         return Onboarding();
       }

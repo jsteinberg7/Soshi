@@ -9,6 +9,12 @@ import 'loginscreen.dart';
 class Authenticate extends StatefulWidget {
   @override
   _AuthenticateState createState() => _AuthenticateState();
+
+  Function refreshWrapper;
+
+  Authenticate({@required refresh}) {
+    this.refreshWrapper = refresh;
+  }
 }
 
 class _AuthenticateState extends State<Authenticate> {
@@ -31,6 +37,6 @@ class _AuthenticateState extends State<Authenticate> {
             child: SoshiAppBar()),
         body: isRegistering
             ? RegisterScreen(toggleScreen: toggleIsRegistering)
-            : LoginScreen(toggleScreen: toggleIsRegistering));
+            : LoginScreen(toggleScreen: toggleIsRegistering, refresh: widget.refreshWrapper));
   }
 }

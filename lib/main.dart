@@ -161,6 +161,7 @@ void main() async {
 
   // get params from deep link
   PendingDynamicLinkData linkData = await links.getInitialLink();
+  
   // print("Deep Link Params: " + linkData.utmParameters.toString())
   runApp(MyApp(linkData));
 

@@ -18,9 +18,11 @@ class LoginScreen extends StatefulWidget {
   _LoginScreenState createState() => _LoginScreenState();
 
   Function changeIsRegisteringState;
+  Function refreshWrapper;
 
-  LoginScreen({Function toggleScreen}) {
+  LoginScreen({@required Function toggleScreen, @required refresh}) {
     this.changeIsRegisteringState = toggleScreen;
+    this.refreshWrapper = refresh;
   }
 }
 
@@ -203,13 +205,15 @@ class _LoginScreenState extends State<LoginScreen> {
             User loginResult = await _authService.signInWithEmailAndPassword(
                 emailIn: _emailController.text,
                 passwordIn: _passwordController.text,
-                contextIn: context);
+                contextIn: context,
+                refreshIn: widget.refreshWrapper);
             // added in update to avoid infinite loading
             // if (Platform.isAndroid) {
             //   // Navigator.pop(context);
             // }
             // used to pop off loading screen
-            refresh();
+            
+
             // acknowledge login attempt
             if (loginResult == null) {
               setState(() {
@@ -408,10 +412,10 @@ class _LoginScreenState extends State<LoginScreen> {
         ]);
   }
 
-  // used to pop off loading screen
-  void refresh() {
-    setState(() {});
-  }
+  // // used to pop off loading screen
+  // void refresh() {
+  //   setState(() {});
+  // }
 
 /* This is the build of the screen, basically using all the previous widgets to create our full fleshed log in screen */
   @override

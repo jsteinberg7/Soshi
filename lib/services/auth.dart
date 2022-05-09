@@ -24,7 +24,10 @@ class AuthService {
 
   // sign in with email and password
   Future signInWithEmailAndPassword(
-      {String emailIn, String passwordIn, BuildContext contextIn}) async {
+      {String emailIn,
+      String passwordIn,
+      BuildContext contextIn,
+      @required Function refreshIn}) async {
     try {
       String soshiUsername =
           await DatabaseService().getSoshiUsernameForLogin(email: emailIn);
@@ -36,6 +39,7 @@ class AuthService {
       User user = loginResult.user;
       Analytics.setUserAttributes(userId: user.uid);
       Analytics.logSignIn('email');
+      refreshIn();
       return user;
     } catch (e) {
       print("Login Error: " + e.toString());
@@ -153,7 +157,8 @@ class AuthService {
       String password,
       String first,
       String last,
-      BuildContext contextIn}) async {
+      BuildContext contextIn,
+      @required refreshIn}) async {
     try {
       DatabaseService databaseService =
           DatabaseService(currSoshiUsernameIn: username);
@@ -170,6 +175,7 @@ class AuthService {
       UserCredential registerResult = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
       User user = registerResult.user;
+      refreshIn();
       return user;
     } catch (e) {
       showDialog(
