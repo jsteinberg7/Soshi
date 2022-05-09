@@ -4,7 +4,7 @@
 <dict>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>applinks:soshi.app</string>
+		<string>applinks:soshi.app/user</string>
 	</array>
 </dict>
 </plist>
