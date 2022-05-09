@@ -23,7 +23,9 @@ class Wrapper extends StatefulWidget {
 
 class _WrapperState extends State<Wrapper> {
   void refreshApp() {
-    setState(() {});
+    setState(() {
+      widget.firstLaunch = false;
+    });
     print("app refreshed!");
   }
 
@@ -39,7 +41,7 @@ class _WrapperState extends State<Wrapper> {
       if (!widget.firstLaunch) {
         return Authenticate(refresh: refreshApp);
       } else {
-        return Onboarding();
+        return Onboarding(refresh: refreshApp,);
       }
     }
   }

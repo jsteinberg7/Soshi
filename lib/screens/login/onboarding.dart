@@ -9,6 +9,12 @@ import 'package:soshi/screens/login/loginscreen.dart';
 class Onboarding extends StatefulWidget {
   @override
   _OnboardingState createState() => _OnboardingState();
+
+  Function refreshApp;
+
+  Onboarding({@required Function refresh}) {
+    this.refreshApp = refresh;
+  }
 }
 
 class _OnboardingState extends State<Onboarding> {
@@ -80,9 +86,7 @@ class _OnboardingState extends State<Onboarding> {
         next: Icon(Icons.arrow_forward),
         onDone: () {
           // When done button is pressed
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return Authenticate(); // Returning the ResetPassword screen
-          }));
+          widget.refreshApp();
         },
         // showNextButton: true,
 
