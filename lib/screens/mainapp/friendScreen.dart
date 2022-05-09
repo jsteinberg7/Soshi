@@ -345,7 +345,7 @@ class _FriendScreenState extends State<FriendScreen> {
                           },
                           child: Icon(Icons.qr_code_scanner_sharp,
                               // color: Colors.cyan[300],
-                              size: width / 25)),
+                              size: width / 20)),
                     ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),

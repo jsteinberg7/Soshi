@@ -10,22 +10,23 @@ abstract class DynamicLinkService {
         final PendingDynamicLinkData data =
             await FirebaseDynamicLinks.instance.getInitialLink();
         final Uri deepLink = data?.link;
+        final String username = deepLink?.pathSegments?.last;
         print("RECEIVING DEEP LINK: " + deepLink?.toString());
         if (deepLink != null) {
-          await Popups.showUserProfilePopupNew(context,
-              friendSoshiUsername: "jason", refreshScreen: () {});
-          await Future.delayed(Duration(seconds: 3));
-          // reset popup disabler after timer
-          Popups.popup_live = false;
+          // await Popups.showUserProfilePopupNew(context,
+          //     friendSoshiUsername: "jason", refreshScreen: () {});
+          // await Future.delayed(Duration(seconds: 3));
+          // // reset popup disabler after timer
+          // Popups.popup_live = false;
+          FirebaseDynamicLinks.instance.onLink
+              .listen((PendingDynamicLinkData dynamicLink) async {
+            await Popups.showUserProfilePopupNew(context,
+                friendSoshiUsername: "jason", refreshScreen: () {});
+            await Future.delayed(Duration(seconds: 3));
+            // reset popup disabler after timer
+            Popups.popup_live = false;
+          });
         }
-        FirebaseDynamicLinks.instance.onLink
-            .listen((PendingDynamicLinkData dynamicLink) async {
-          await Popups.showUserProfilePopupNew(context,
-              friendSoshiUsername: "jason", refreshScreen: () {});
-          await Future.delayed(Duration(seconds: 3));
-          // reset popup disabler after timer
-          Popups.popup_live = false;
-        });
       }
     } catch (e) {
       print(e.toString());

@@ -20,9 +20,11 @@ class RegisterScreen extends StatefulWidget {
 
   // call this function when navigating back to login screen
   Function toggleIsRegistering;
+  Function refresh;
 
-  RegisterScreen({Function toggleScreen}) {
+  RegisterScreen({Function toggleScreen, Function refreshApp}) {
     this.toggleIsRegistering = toggleScreen;
+    this.refresh = refreshApp;
   }
 }
 
@@ -457,9 +459,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   password: _passwordController.text.trim(),
                   first: _firstNameController.text.trim(),
                   last: _lastNameController.text.trim(),
-                  contextIn: context);
+                  contextIn: context,
+                  refreshIn: refresh);
               // used to pop off loading screen
-              refresh();
+              // refresh();
 
               if (user == null) {
                 setState(() {
@@ -473,7 +476,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   password: _passwordController.text.trim(),
                   first: _firstNameController.text.trim(),
                   last: _lastNameController.text.trim(),
-                  contextIn: context);
+                  contextIn: context,
+                  refreshIn: refresh);
               if (user == null) {
                 setState(() {
                   loading = false;
