@@ -69,6 +69,8 @@ class _SMCardState extends State<SMCard> {
         platformName == "Facebook" ||
         platformName == "Personal") {
       hintText = "Link to Profile";
+    } else if (platformName == "Cryptowallet") {
+      hintText = "Wallet address";
     } else {
       hintText = "Username";
     }
@@ -256,6 +258,22 @@ class _SMCardState extends State<SMCard> {
                             Popups.showContactAddedPopup(
                                 context, width, firstName, lastName);
                           });
+                        } else if (platformName == "Cryptowallet") {
+                          Clipboard.setData(ClipboardData(
+                            text: LocalDataService.getLocalUsernameForPlatform(
+                                    "Cryptowallet")
+                                .toString(),
+                          ));
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: const Text(
+                              'Wallet address copied to clipboard!',
+                              textAlign: TextAlign.center,
+                            ),
+                          ));
+
+                          // snackbar or popup that says:
+                          // "First name + last name's wallet address has been copied to clipboard"
+
                         } else {
                           URL.launchURL(URL.getPlatformURL(
                               platform: platformName,

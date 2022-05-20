@@ -54,6 +54,7 @@ class DatabaseService {
         "Soshi": username,
         "Phone": phoneNumber,
         "Personal": null,
+        "Cryptowallet": null,
         "Instagram": null,
         "Snapchat": null,
         "Linkedin": null,
@@ -84,9 +85,11 @@ class DatabaseService {
         "Venmo": false,
         "Spotify": false,
         "Personal": false,
+        "Cryptowallet": false
       },
       "Photo URL": "null",
       "Choose Platforms": <String>[
+        "Cryptowallet",
         "Email",
         "Personal",
         "Instagram",
@@ -99,6 +102,7 @@ class DatabaseService {
         "Spotify",
         "Facebook",
         "Discord",
+
         // "Reddit",
       ],
       "Profile Platforms": <String>["Phone"],

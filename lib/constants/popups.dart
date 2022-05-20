@@ -95,6 +95,16 @@ class Popups {
           // .then((dynamic success) {
           //   Popups.showContactAddedPopup(context, width, firstName, lastName);
           // });
+        } else if (platform == "Cryptowallet") {
+          Clipboard.setData(ClipboardData(
+            text: username.toString(),
+          ));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: const Text(
+              'Wallet address copied to clipboard!',
+              textAlign: TextAlign.center,
+            ),
+          ));
         } else {
           print("Launching $username");
           URL.launchURL(
@@ -335,6 +345,9 @@ class Popups {
       } else if (platformName == "Youtube") {
         hintText = "Channel ID";
         indicator = "Chan. ID";
+      } else if (platformName == "Cryptowallet") {
+        hintText = "0x...";
+        indicator = "Wallet addr."; // or "Wallet Addr."
       } else {
         hintText = "";
         indicator = "";
@@ -349,7 +362,9 @@ class Popups {
                 borderRadius: BorderRadius.all(Radius.circular(40.0))),
             // backgroundColor: Colors.blueGrey[900],
             title: Text(
-              "Edit your " + platformName,
+              platformName.contains("Cryptowallet")
+                  ? "Edit your Crypto Wallet"
+                  : "Edit your " + platformName,
             ),
             //   style: TextStyle(
             //       //color: Colors.cyan[600],
@@ -396,7 +411,9 @@ class Popups {
                       ),
                       filled: true,
                       floatingLabelBehavior: FloatingLabelBehavior.always,
-                      label: Text(platformName),
+                      label: Text(platformName.contains("Cryptowallet")
+                          ? hintText
+                          : indicator),
                       labelStyle: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 15,

@@ -20,7 +20,7 @@ abstract class URL {
   // note: some platforms use a system not invloving usernames
   // (Linkedin, Facebook, Tiktok use a numbering system)
   static String getPlatformURL({String platform, String username}) {
-    // username = username.trim(); // remove whitespaces
+    username = username.trim(); // remove whitespaces
     if (username != "") {
       if (username[0] == '@') {
         username = username.replaceFirst('@', '');

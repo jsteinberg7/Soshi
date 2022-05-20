@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 abstract class Constants {
-  static Widget makeBlueShadowButton(String title, IconData iconData, Function clickFunction) {
+  static Widget makeBlueShadowButton(
+      String title, IconData iconData, Function clickFunction) {
     return InkWell(
       onTap: clickFunction,
       child: Center(
@@ -19,7 +20,11 @@ abstract class Constants {
                     )
                   : Container(),
               SizedBox(width: 10),
-              Text(title, style: TextStyle(fontSize: 14, letterSpacing: 2.0, fontWeight: FontWeight.bold))
+              Text(title,
+                  style: TextStyle(
+                      fontSize: 14,
+                      letterSpacing: 2.0,
+                      fontWeight: FontWeight.bold))
             ]),
           ),
         ),
@@ -27,7 +32,8 @@ abstract class Constants {
     );
   }
 
-  static Widget makeRedShadowButton(String title, IconData iconData, Function clickFunction) {
+  static Widget makeRedShadowButton(
+      String title, IconData iconData, Function clickFunction) {
     return InkWell(
       onTap: clickFunction,
       child: Center(
@@ -56,7 +62,12 @@ abstract class Constants {
                     )
                   : Container(),
               SizedBox(width: 10),
-              Text(title, style: TextStyle(fontSize: 14, letterSpacing: 2.0, fontWeight: FontWeight.bold, color: Colors.red))
+              Text(title,
+                  style: TextStyle(
+                      fontSize: 14,
+                      letterSpacing: 2.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red))
             ]),
           ),
         ),
@@ -64,7 +75,8 @@ abstract class Constants {
     );
   }
 
-  static Widget makeBlueShadowButtonSmall(String title, IconData iconData, Function clickFunction) {
+  static Widget makeBlueShadowButtonSmall(
+      String title, IconData iconData, Function clickFunction) {
     return InkWell(
       onTap: clickFunction,
       child: Center(
@@ -104,8 +116,12 @@ abstract class Constants {
     ],
   );
 
-  static TextStyle CustomCyan =
-      new TextStyle(color: Colors.cyan[300], fontSize: 15, letterSpacing: 2, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold);
+  static TextStyle CustomCyan = new TextStyle(
+      color: Colors.cyan[300],
+      fontSize: 15,
+      letterSpacing: 2,
+      fontStyle: FontStyle.italic,
+      fontWeight: FontWeight.bold);
 
   static Color appBarColor = Colors.grey[850];
 
@@ -118,16 +134,20 @@ abstract class Constants {
   static ButtonStyle ButtonStyleDark = ElevatedButton.styleFrom(
       primary: Constants.buttonColorDark,
       shadowColor: Constants.buttonColorDark,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))));
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(15.0))));
 
   static ButtonStyle ButtonStyleClear = ElevatedButton.styleFrom(
       primary: Colors.transparent,
       shadowColor: Constants.buttonColorDark,
       side: BorderSide(color: Colors.cyanAccent),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))));
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(15.0))));
 
-  static LinearGradient greyCyanGradient =
-      new LinearGradient(begin: Alignment.bottomLeft, end: Alignment.topRight, colors: [Colors.grey[800], Colors.cyan[300]]);
+  static LinearGradient greyCyanGradient = new LinearGradient(
+      begin: Alignment.bottomLeft,
+      end: Alignment.topRight,
+      colors: [Colors.grey[800], Colors.cyan[300]]);
 
   // static Gradient gradientForPlatform(String platform) {
   //   List<Color> colors = [];
@@ -173,13 +193,15 @@ abstract class Constants {
     "Contact",
     "Personal",
     "Youtube",
+    "Cryptowallet"
   ];
   /* Instructions for injecting/adding new platforms: 
     1. Add to addedPlatforms (above)
     2. Add Logo and Writing Logo to assets
     3. Add handler to URL service
-    4. Update createUserFile() in database.dart to include new platform (for accounts created in the future)
-    5. Add specific parameters to platform popup in SMCard (profile.dart)
+    4. Add hinttext and indicator params to Popups.editUsernamePopup
+    5. Update createUserFile() in database.dart to include new platform (for accounts created in the future)
+    6. Add specific parameters to platform popup in SMCard (profile.dart)
     7. Reset vscode
     8. Repeat steps 2 (Logo only) and 3 for web
   */

@@ -32,7 +32,7 @@ class _MyAppState extends State<MyApp> {
         value: AuthService().user,
         child: MaterialApp(
             debugShowCheckedModeBanner: false,
-            themeMode: ThemeMode.system,
+            themeMode: ThemeMode.dark,
             theme: ThemeData(
               brightness: Brightness.light,
               backgroundColor: Colors.grey[50],
@@ -76,7 +76,7 @@ class _MyAppState extends State<MyApp> {
                 backgroundColor: Colors.grey[850],
                 primarySwatch: MaterialColor(
                   0xFFF5E0C3,
-                  <int, Color> {
+                  <int, Color>{
                     50: Color(0x1a5D4524),
                     100: Color(0xa15D4524),
                     200: Color(0xaa5D4524),
@@ -161,7 +161,7 @@ void main() async {
 
   // get params from deep link
   PendingDynamicLinkData linkData = await links.getInitialLink();
-  
+
   // print("Deep Link Params: " + linkData.utmParameters.toString())
   runApp(MyApp(linkData));
 
