@@ -363,7 +363,7 @@ class Popups {
             // backgroundColor: Colors.blueGrey[900],
             title: Text(
               platformName.contains("Cryptowallet")
-                  ? "Edit your Crypto Wallet"
+                  ? "Edit your Crypto Hash"
                   : "Edit your " + platformName,
             ),
             //   style: TextStyle(
@@ -763,7 +763,6 @@ class Popups {
   // }
 
   static bool popup_live = false;
-
   static void showUserProfilePopupNew(BuildContext context,
       {String friendSoshiUsername, Function refreshScreen}) async {
     // get list of all visible platforms
@@ -809,7 +808,6 @@ class Popups {
     // increment variable for use with scrolling SM buttons (use instead of i)
     popup_live = true;
     showGeneralDialog(
-
         //barrierColor: Colors.grey[500].withOpacity(.25),
         context: context,
         transitionDuration: Duration(milliseconds: 150),
