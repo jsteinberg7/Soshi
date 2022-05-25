@@ -32,7 +32,11 @@ class DatabaseService {
   CollectionReference usersCollection =
       FirebaseFirestore.instance.collection("users");
 
-  // store reference to all user files
+  // store reference to all group files
+  CollectionReference groupsCollection =
+      FirebaseFirestore.instance.collection("groups");
+
+  // store reference to all email-username link files
   CollectionReference emailToUsernameCollection =
       FirebaseFirestore.instance.collection("emailToUsername");
   /*
@@ -622,5 +626,86 @@ class DatabaseService {
     await usersCollection
         .doc(currSoshiUsername)
         .update({"Two Way Sharing": state});
+  }
+
+  /*
+  Create group file, add pointer to file in user file 
+  */
+  Future<void> createGroup({@required String id, @required String name}) async {
+    await groupsCollection.doc(id).set(<String, dynamic>{
+      "Name": name,
+      "Description": "",
+      "Admin": [
+        "${this.currSoshiUsername}"
+      ], // store separate list of members w/ elevated privileges
+      "Members": [], // do not include owner/admin in members
+      "Photo URL": "null"
+    });
+
+    await _addGroupToUserFile(id); // add ref to user doc
+  }
+
+  /* Get list of groups for user */
+  Future<List<dynamic>> getGroups() async {
+    List<dynamic> groupsList;
+    await usersCollection
+        .doc(currSoshiUsername)
+        .get()
+        .then((DocumentSnapshot ds) {
+      Map data = ds.data();
+      groupsList = data["Groups"];
+    });
+    return groupsList;
+  }
+
+  /*
+  Return list of members in group
+  ** note ** Excludes admin
+  */
+  Future<List<dynamic>> getGroupMembers(String id) async {
+    List<dynamic> membersList;
+    await groupsCollection.doc(id).get().then((DocumentSnapshot ds) {
+      Map data = ds.data();
+      membersList = data["Members"];
+    });
+    return membersList;
+  }
+
+  Future<void> joinGroup(String id) async {
+    await _addUserToGroupFile(
+        id); // add username to group members list (in group doc)
+    await _addGroupToUserFile(id); // add group to user doc
+  }
+
+  Future<void> _addGroupToUserFile(String id) async {
+    // get copy of current friends list
+    List<dynamic> groupsList = await getGroups();
+
+    // check to see if list already exists
+    if (groupsList == null) {
+      // create new list
+      groupsList = [id];
+    } else {
+      // add new group to list
+      if (!groupsList.contains(id)) {
+        // ensure group isn't already added
+        groupsList.add(id);
+      }
+    }
+
+    await usersCollection.doc(currSoshiUsername).update({"Groups": groupsList});
+  }
+
+  Future<void> _addUserToGroupFile(id) async {
+    List<dynamic> groupMembers =
+        await getGroupMembers(id); // get current group members
+
+    // add new member to list (if not already in group)
+    if (!groupMembers.contains(currSoshiUsername)) {
+      // ensure friend isn't already added
+      groupMembers.add(currSoshiUsername);
+    }
+
+    await groupsCollection.doc(id).update({"Members": groupMembers});
   }
 }
