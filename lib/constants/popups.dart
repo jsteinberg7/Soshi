@@ -14,6 +14,7 @@ import 'package:soshi/services/localData.dart';
 import 'package:http/http.dart' as http;
 import 'package:soshi/services/url.dart';
 // import 'package:circular_profile_avatar/circular_profile_avatar.dart';
+import '../screens/mainapp/friendScreen.dart';
 import 'constants.dart';
 //import 'package:google_fonts/google_fonts.dart';
 
@@ -386,6 +387,7 @@ class Popups {
                     decoration: InputDecoration(
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
+
                             // color: Colors.grey[600],
                             ),
                       ),
@@ -748,15 +750,30 @@ class Popups {
   static bool popup_live = false;
 
   static void showUserProfilePopupNew(BuildContext context,
-      {String friendSoshiUsername, Function refreshScreen}) async {
+      {String friendSoshiUsername,
+      Friend friend,
+      Function refreshScreen}) async {
     // get list of all visible platforms
     DatabaseService databaseService = new DatabaseService(
         currSoshiUsernameIn: LocalDataService.getLocalUsername());
 
     String userUsername = LocalDataService.getLocalUsername();
     Map userData = await databaseService.getUserFile(friendSoshiUsername);
-    List<String> visiblePlatforms =
-        await databaseService.getEnabledPlatformsList(userData);
+
+    List<String> visiblePlatforms;
+    Map<String, dynamic> usernames;
+
+    if (friend == null) {
+      // DYNAMIC SHARING if no friend data passed in
+      visiblePlatforms =
+          await databaseService.getEnabledPlatformsList(userData);
+      // get list of profile usernames
+      usernames = databaseService.getUserProfileNames(userData);
+    } else {
+      // STATIC SHARING
+      visiblePlatforms = friend.enabledUsernames.keys.toList();
+      usernames = friend.enabledUsernames;
+    }
 
     double popupHeightDivisor;
     double innerContainerSizeDivisor;
@@ -775,9 +792,6 @@ class Popups {
       innerContainerSizeDivisor = 2.2;
     }
 
-    // get list of profile usernames
-    Map<String, dynamic> usernames =
-        databaseService.getUserProfileNames(userData);
     String fullName = databaseService.getFullName(userData);
     bool isFriendAdded = LocalDataService.isFriendAdded(friendSoshiUsername);
     String profilePhotoURL = databaseService.getPhotoURL(userData);
@@ -792,7 +806,6 @@ class Popups {
     // increment variable for use with scrolling SM buttons (use instead of i)
     popup_live = true;
     showGeneralDialog(
-
         //barrierColor: Colors.grey[500].withOpacity(.25),
         context: context,
         transitionDuration: Duration(milliseconds: 150),
@@ -864,7 +877,10 @@ class Popups {
                                               MainAxisAlignment.center,
                                           children: [
                                             Text(
-                                              "@" + usernames["Soshi"],
+                                              "@" +
+                                                  ((friend == null)
+                                                      ? usernames["Soshi"]
+                                                      : friend.soshiUsername),
                                               style: TextStyle(
                                                   fontSize: width / 23,
                                                   // color: Colors.grey[500],

@@ -23,6 +23,8 @@ import 'package:vibration/vibration.dart';
 import 'package:share/share.dart';
 import 'package:device_display_brightness/device_display_brightness.dart';
 
+import 'friendScreen.dart';
+
 /*
 Screen displaying user's QR code and allowing QR scanning
 */
@@ -365,6 +367,8 @@ class _QRScreenState extends State<QRScreen> {
                       String friendSoshiUsername = QRScanResult.split("/").last;
                       Map friendData = await databaseService
                           .getUserFile(friendSoshiUsername);
+                      Friend friend =
+                          databaseService.userDataToFriend(friendData);
                       bool isFriendAdded = await LocalDataService.isFriendAdded(
                           friendSoshiUsername);
 
@@ -373,12 +377,9 @@ class _QRScreenState extends State<QRScreen> {
                           refreshScreen: () {});
                       if (!isFriendAdded &&
                           friendSoshiUsername != soshiUsername) {
-                        await LocalDataService.addFriend(
-                            friendsoshiUsername: friendSoshiUsername);
-                        databaseService.addFriend(
-                            thisSoshiUsername:
-                                databaseService.currSoshiUsername,
-                            friendSoshiUsername: friendSoshiUsername);
+                        List<String> newFriendsList =
+                            await LocalDataService.addFriend(friend: friend);
+                        databaseService.overwriteFriendsList(newFriendsList);
                       }
 
                       // bool friendHasTwoWaySharing = await databaseService.getTwoWaySharing(friendData);

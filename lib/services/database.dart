@@ -12,6 +12,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
+import '../screens/mainapp/friendScreen.dart';
 import 'contacts.dart';
 import 'localData.dart';
 
@@ -103,6 +104,20 @@ class DatabaseService {
       ],
       "Profile Platforms": <String>["Phone"],
     });
+  }
+
+  /*
+  Convert userData to Friend
+  */
+  Friend userDataToFriend(Map userData) {
+    return new Friend(
+        fullName: getFullName(userData),
+        soshiUsername:
+            getUsernameForPlatform(userData: userData, platform: "Soshi"),
+        photoURL: getPhotoURL(userData),
+        isVerified: getVerifiedStatus(userData),
+        switches: getUserSwitches(userData),
+        usernames: getUserProfileNames(userData));
   }
 
   /*
@@ -238,6 +253,18 @@ class DatabaseService {
     // usersCollection.doc(friendSoshiUsername).update({"Added Me": addedMeList})
   }
 
+  Future<void> overwriteFriendsList(List<String> newFriendsList) async {
+    await usersCollection
+        .doc(currSoshiUsername)
+        .update({"Friends": newFriendsList});
+  }
+
+  Future<void> setFriendsListReformatted(bool hasReformatted) async {
+    await usersCollection
+        .doc(this.currSoshiUsername)
+        .update({"Friends List Reformatted": hasReformatted});
+  }
+
   // remove friend from current user's friend list
   Future<void> removeFriend({String friendSoshiUsername}) async {
     List<dynamic> friendsList;
@@ -356,8 +383,8 @@ class DatabaseService {
   }
 
   // return username for specified platform
-  Future<String> getUsernameForPlatform(
-      {@required Map userData, @required String platform}) async {
+  String getUsernameForPlatform(
+      {@required Map userData, @required String platform}) {
     String username;
     Map<String, dynamic> profileNamesMap = getUserProfileNames(userData);
     username = profileNamesMap[platform];

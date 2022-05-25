@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:soshi/services/analytics.dart';
+import 'package:soshi/services/database.dart';
 import 'package:soshi/services/dynamicLinks.dart';
 import 'package:soshi/services/localData.dart';
 import 'constants/themes.dart';
@@ -76,7 +77,7 @@ class _MyAppState extends State<MyApp> {
                 backgroundColor: Colors.grey[850],
                 primarySwatch: MaterialColor(
                   0xFFF5E0C3,
-                  <int, Color> {
+                  <int, Color>{
                     50: Color(0x1a5D4524),
                     100: Color(0xa15D4524),
                     200: Color(0xaa5D4524),
@@ -141,19 +142,30 @@ void main() async {
     */
   FirebaseDynamicLinks links = FirebaseDynamicLinks.instance;
 
-  if (firstLaunch &&
-      (LocalDataService.getLocalUsername() == "null" ||
-          LocalDataService.getLocalUsername() == null)) {
-    AuthService tempAuth = new AuthService();
-    await tempAuth.signOut(); // sign user out
+  if ((LocalDataService.getLocalUsername() == "null" ||
+      LocalDataService.getLocalUsername() == null)) {
+    // check if user is signed in
+    if (firstLaunch) {
+      AuthService tempAuth = new AuthService();
+      await tempAuth.signOut(); // sign user out
 
-    // if (LocalDataService.hasCreatedDynamicLink() == null &&
-    //     !(LocalDataService.getLocalUsername() == "null" ||
-    //         LocalDataService.getLocalUsername() == null)) {
-    // create Firebase dynamic link if necessary
-    // links.buildLink();
-    // LocalDataService.preferences
-    //     .setBool("Created Dynamic Link", true); // update field
+      // if (LocalDataService.hasCreatedDynamicLink() == null &&
+      //     !(LocalDataService.getLocalUsername() == "null" ||
+      //         LocalDataService.getLocalUsername() == null)) {
+      // create Firebase dynamic link if necessary
+      // links.buildLink();
+      // LocalDataService.preferences
+      //     .setBool("Created Dynamic Link", true); // update field
+    } else {
+      // if signed in and not first launch
+      if (LocalDataService.friendsListReformatted() == null &&
+          !LocalDataService.getLocalFriendsList().isEmpty) {
+        // check if friendsList has been reformatted
+        // if null, reformated friends list
+        await LocalDataService
+            .reformatFriendsList(); // should only ever run once per user
+      }
+    }
   }
 
   // else if (DatabaseService())  // check if "Contact" link has been corrupted by focus node bug (fix if necessary)
@@ -161,7 +173,7 @@ void main() async {
 
   // get params from deep link
   PendingDynamicLinkData linkData = await links.getInitialLink();
-  
+
   // print("Deep Link Params: " + linkData.utmParameters.toString())
   runApp(MyApp(linkData));
 
@@ -171,39 +183,6 @@ void main() async {
   if (linkData != null) {
     print(linkData.utmParameters);
   }
-// }
+
+  // pull friendslist data to ensure up to date (name, bio, verified) ** USER MUST BE LOGGED IN
 }
-
-
-
-// class RestartWidget extends StatefulWidget {
-//   RestartWidget({this.child});
-
-//   final Widget child;
-
-//   static void restartApp(BuildContext context) {
-//     context.findAncestorStateOfType<_RestartWidgetState>().restartApp();
-//   }
-
-//   @override
-//   _RestartWidgetState createState() => _RestartWidgetState();
-// }
-
-// class _RestartWidgetState extends State<RestartWidget> {
-//   Key key = UniqueKey();
-
-//   void restartApp() {
-//     setState(() {
-//       key = UniqueKey();
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return KeyedSubtree(
-//       key: key,
-//       child: widget.child,
-//     );
-//   }
-// }
-
