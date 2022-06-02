@@ -371,15 +371,16 @@ class _QRScreenState extends State<QRScreen> {
                       Popups.showUserProfilePopupNew(context,
                           friendSoshiUsername: friendSoshiUsername,
                           refreshScreen: () {});
-                      if (!isFriendAdded &&
-                          friendSoshiUsername != soshiUsername) {
-                        await LocalDataService.addFriend(
-                            friendsoshiUsername: friendSoshiUsername);
-                        databaseService.addFriend(
-                            thisSoshiUsername:
-                                databaseService.currSoshiUsername,
-                            friendSoshiUsername: friendSoshiUsername);
-                      }
+
+                      // if (!isFriendAdded &&  *Add friend without pressing "add friend"
+                      //     friendSoshiUsername != soshiUsername) {
+                      //   await LocalDataService.addFriend(
+                      //       friendsoshiUsername: friendSoshiUsername);
+                      //   databaseService.addFriend(
+                      //       thisSoshiUsername:
+                      //           databaseService.currSoshiUsername,
+                      //       friendSoshiUsername: friendSoshiUsername);
+                      // }
 
                       // bool friendHasTwoWaySharing = await databaseService.getTwoWaySharing(friendData);
                       // if (friendHasTwoWaySharing == null || friendHasTwoWaySharing == true) {

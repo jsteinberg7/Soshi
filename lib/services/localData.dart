@@ -41,6 +41,13 @@ abstract class LocalDataService {
       await preferences.setString("Bio", bioFromDB);
     }
 
+    int soshiPointsFromDB = await databaseService.getSoshiPoints(userData);
+    if (soshiPointsFromDB == null) {
+      await preferences.setInt("Soshi Points", 0);
+    } else {
+      await preferences.setInt("Soshi Points", soshiPointsFromDB);
+    }
+
     // store first and last name map (used to set both first and last name)
     Map<String, dynamic> fullName =
         await databaseService.getFullNameMap(userData);
@@ -117,6 +124,11 @@ abstract class LocalDataService {
 
     await preferences.setBool(
         "Two Way Sharing", true); // two way sharing defaults to "on"
+
+    // await preferences.setBool("INJECTION Soshi Points Flag", false);
+    // await preferences.setBool("INJECTION Bio Flag", false);
+    // await preferences.setBool("INJECTION Profile Pic Flag", false);
+    // await preferences.setBool("INJECTION Passions Flag", false);
   }
 
   // clear all local data stored in SharedPreferences
@@ -141,6 +153,10 @@ abstract class LocalDataService {
 
   static getTwoWaySharing() {
     return preferences.getBool("Two Way Sharing");
+  }
+
+  static getInjectionFlag(String injectionName) {
+    return preferences.getBool("INJECTION $injectionName Flag") ?? false;
   }
 
   static getVerifiedUsersLocal() {
@@ -226,6 +242,10 @@ abstract class LocalDataService {
     return preferences.getString("Bio");
   }
 
+  static int getSoshiPoints() {
+    return preferences.getInt("Soshi Points") ?? 0;
+  }
+
   static bool hasCreatedDynamicLink() {
     return preferences.getBool("Created Dynamic Link");
   }
@@ -244,6 +264,11 @@ abstract class LocalDataService {
 
   static Future<void> updateTwoWaySharing(bool state) async {
     await preferences.setBool("Two Way Sharing", state);
+  }
+
+  static Future<void> updateInjectionFlag(
+      String injectionName, bool state) async {
+    await preferences.setBool("INJECTION $injectionName Flag", state);
   }
 
   static Future<void> updateUsernameForPlatform(
@@ -346,5 +371,10 @@ abstract class LocalDataService {
 
   static Future<void> updateBio(String newBio) async {
     await preferences.setString("Bio", newBio);
+  }
+
+  static Future<void> updateSoshiPoints(int addedPoints) async {
+    int newSoshiPoints = LocalDataService.getSoshiPoints() + addedPoints;
+    await preferences.setInt("Soshi Points", newSoshiPoints);
   }
 }

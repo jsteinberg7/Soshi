@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:soshi/constants/utilities.dart';
 import 'package:soshi/screens/mainapp/profile.dart';
 import 'package:soshi/screens/mainapp/qrCode.dart';
+import 'package:soshi/screens/mainapp/rewards.dart';
 import 'package:soshi/services/dynamicLinks.dart';
 import 'package:soshi/services/url.dart';
 import '../../constants/widgets.dart';
@@ -49,6 +50,7 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
   }
 
   List<Widget> screens = [
+    Rewards(),
     QRScreen(),
     Profile(),
     FriendScreen()
@@ -90,6 +92,9 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
               ? Colors.white
               : Colors.grey[900],
           items: [
+            CustomNavigationBarItem(
+              icon: Icon(AntDesign.bank),
+            ),
             CustomNavigationBarItem(
               icon: Icon(AntDesign.qrcode),
             ),

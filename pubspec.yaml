@@ -63,10 +63,12 @@ dependencies:
   # keyboard_visibility: any
   flutter_keyboard_visibility: ^5.0.2
   device_display_brightness: ^0.0.6
-  introduction_screen: ^2.1.0
+  introduction_screen: ^3.0.2
   lottie: ^1.2.1
   flutter_launcher_icons:
   mobile_scanner: ^1.0.0
+
+  flutter_neumorphic: ^3.2.0
 
 dev_dependencies:
   flutter_test:

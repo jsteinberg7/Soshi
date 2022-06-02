@@ -524,15 +524,13 @@ class ProfileState extends State<Profile> {
 
     soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
     profilePlatforms = LocalDataService.getLocalProfilePlatforms();
-
     verifiedUsers = LocalDataService.getVerifiedUsersLocal();
-    print(verifiedUsers.toString());
+    //print(verifiedUsers.toString());
 
     isVerified = verifiedUsers.contains(soshiUsername);
 
     databaseService.updateVerifiedStatus(soshiUsername, isVerified);
     LocalDataService.updateVerifiedStatus(isVerified);
-    print(LocalDataService.getVerifiedStatus());
 
     // bioFocusNode = new FocusNode();
     // bioFocusNode.addListener(() {
@@ -618,6 +616,24 @@ class ProfileState extends State<Profile> {
                                       source: ImageSource.gallery,
                                       imageQuality: 20);
                               await dbService.cropAndUploadImage(pickedImage);
+
+                              // Checking if this is first time adding a profile pic
+                              // if it is, it gives Soshi points
+                              if (LocalDataService.getInjectionFlag(
+                                          "Profile Pic") ==
+                                      false ||
+                                  LocalDataService.getInjectionFlag(
+                                          "Profile Pic") ==
+                                      null) {
+                                LocalDataService.updateInjectionFlag(
+                                    "Profile Pic", true);
+                                dbService.updateInjectionSwitch(
+                                    soshiUsername, "Profile Pic", true);
+                                databaseService.updateSoshiPoints(
+                                    soshiUsername, 10);
+                                LocalDataService.updateSoshiPoints(10);
+                              }
+
                               refreshScreen();
                             },
                             child: Stack(
@@ -893,10 +909,23 @@ class _BioTextFieldState extends State<BioTextField> {
           autocorrect: true,
           controller: widget.importController,
           onSubmitted: (String bio) {
+            String soshiUsername =
+                LocalDataService.getLocalUsernameForPlatform("Soshi");
             DatabaseService tempDB = new DatabaseService();
             LocalDataService.updateBio(bio);
             tempDB.updateBio(
                 LocalDataService.getLocalUsernameForPlatform("Soshi"), bio);
+
+            // Checking if this is first time adding a bio
+            // if it is, it gives Soshi points
+            if (LocalDataService.getInjectionFlag("Bio") == false ||
+                LocalDataService.getInjectionFlag("Bio") == null) {
+              LocalDataService.updateInjectionFlag("Bio", true);
+              tempDB.updateInjectionSwitch(soshiUsername, "Bio", true);
+
+              LocalDataService.updateSoshiPoints(10);
+              tempDB.updateSoshiPoints(soshiUsername, 10);
+            }
 
             // bioFocusNode.unfocus();
             FocusScope.of(context).unfocus();
