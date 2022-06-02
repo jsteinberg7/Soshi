@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:convert';
 
@@ -18,12 +19,12 @@ import 'package:soshi/services/localData.dart';
 import 'package:vibration/vibration.dart';
 import 'package:soshi/constants/widgets.dart';
 
-class Rewards extends StatefulWidget {
+class BoltScreen extends StatefulWidget {
   @override
-  _RewardsState createState() => _RewardsState();
+  _BoltScreenState createState() => _BoltScreenState();
 }
 
-class _RewardsState extends State<Rewards> {
+class _BoltScreenState extends State<BoltScreen> {
   int friendsCount;
   int soshiPoints;
   int localSoshiPoints;
