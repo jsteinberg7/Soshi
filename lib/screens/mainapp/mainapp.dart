@@ -41,7 +41,7 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
       _timerLink = new Timer(
         const Duration(milliseconds: 1000),
         () async {
-          await DynamicLinkService.retrieveDynamicLink(context);
+          DynamicLinkService.retrieveDynamicLink(context);
         },
       );
     }
@@ -60,7 +60,7 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
     QRScreen(),
     Profile(),
     BoltScreen(),
-    FriendScreen()
+    FriendScreen(),
   ]; // list of screens (change through indexing)
 
   int currScreen = 1;
@@ -96,8 +96,8 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
                     friendSoshiUsername: friendSoshiUsername,
                     refreshScreen: () {});
                 if (!isFriendAdded && friendSoshiUsername != soshiUsername) {
-                  await LocalDataService.addFriend(
-                      friendsoshiUsername: friendSoshiUsername);
+                  // await LocalDataService.addFriend(
+                  //     friendsoshiUsername: friendSoshiUsername);
                   databaseService.addFriend(
                       thisSoshiUsername: databaseService.currSoshiUsername,
                       friendSoshiUsername: friendSoshiUsername);
