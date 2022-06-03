@@ -795,16 +795,16 @@ class Popups {
     double innerContainerSizeDivisor;
 
     if (visiblePlatforms.length >= 0 && visiblePlatforms.length <= 3) {
-      popupHeightDivisor = 2.4;
+      popupHeightDivisor = 2.2;
       innerContainerSizeDivisor = 8;
     } else if (visiblePlatforms.length > 3 && visiblePlatforms.length <= 6) {
-      popupHeightDivisor = 2.0;
+      popupHeightDivisor = 1.8;
       innerContainerSizeDivisor = 4.4;
     } else if (visiblePlatforms.length > 6 && visiblePlatforms.length <= 9) {
-      popupHeightDivisor = 1.6;
+      popupHeightDivisor = 1.5;
       innerContainerSizeDivisor = 2.9;
     } else {
-      popupHeightDivisor = 1.35;
+      popupHeightDivisor = 1.25;
       innerContainerSizeDivisor = 2.2;
     }
 
