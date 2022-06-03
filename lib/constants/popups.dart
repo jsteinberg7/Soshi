@@ -1324,7 +1324,7 @@ class Popups {
                   }),
                 )),
           );
-        }).then((_) => popup_live = false);
+        });
   }
 
   void usernameEmptyPopup(

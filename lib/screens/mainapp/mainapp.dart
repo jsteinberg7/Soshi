@@ -41,6 +41,7 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
       _timerLink = new Timer(
         const Duration(milliseconds: 1000),
         () async {
+          print(">> app cycle changed");
           DynamicLinkService.retrieveDynamicLink(context);
         },
       );
