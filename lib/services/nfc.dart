@@ -8,16 +8,21 @@ import 'package:nfc_manager/nfc_manager.dart';
 import 'localData.dart';
 
 class NFCWriter extends StatefulWidget {
+  double height, width;
+  NFCWriter(this.height, this.width);
+
   @override
   State<NFCWriter> createState() => _NFCWriterState();
 }
 
 class _NFCWriterState extends State<NFCWriter> {
   String displayText, animationUrl;
-
+  double height, width;
   @override
   void initState() {
     super.initState();
+    this.height = widget.height;
+    this.width = widget.width;
     displayText = "Scanning for tags...";
     animationUrl =
         "https://assets8.lottiefiles.com/packages/lf20_maxyrepx.json";
@@ -66,32 +71,53 @@ class _NFCWriterState extends State<NFCWriter> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(30.0),
-                topRight: Radius.circular(30.0))),
-        height: 250,
-        // color: Colors.white,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Container(
-              height: 150,
-              child: Lottie.network(
-                animationUrl,
-              ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Container(
+              width: width / 1.1,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(25.0))),
+              height: 250,
+              // color: Colors.white,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    height: 150,
+                    child: Lottie.network(
+                      animationUrl,
+                    ),
+                  ),
+                  Text(
+                    displayText,
+                    style: TextStyle(color: Colors.black, fontSize: 25.0),
+                  ),
+                ],
+              )),
+          SizedBox(
+            height: height / 50,
+          ),
+          Container(
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(15.0))),
+            height: height / 15,
+            width: width / 1.1,
+            child: Center(
+              child: GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text("Close",
+                      style: TextStyle(
+                          color: Colors.blue, fontSize: widget.width / 22))),
             ),
-            Text(
-              displayText,
-              style: TextStyle(color: Colors.black, fontSize: 25.0),
-            ),
-            GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Text("Close", style: TextStyle(color: Colors.blue)))
-          ],
-        ));
+          ),
+          SizedBox(height: height / 40)
+        ],
+      ),
+    );
   }
 }

@@ -356,10 +356,13 @@ class ProfileSettingsState extends State<ProfileSettings> {
                           child: Constants.makeBlueShadowButton(
                               "Activate Portal", Icons.tap_and_play, () async {
                             showModalBottomSheet(
+                                constraints: BoxConstraints(
+                                    minWidth: width / 1.1,
+                                    maxWidth: width / 1.1),
                                 backgroundColor: Colors.transparent,
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return NFCWriter();
+                                  return NFCWriter(height, width);
                                 });
                           }),
                         ),

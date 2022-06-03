@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:soshi/constants/utilities.dart';
+import 'package:soshi/screens/mainapp/friendsGroupsWrapper.dart';
 import 'package:soshi/screens/mainapp/profile.dart';
 import 'package:soshi/screens/mainapp/qrCode.dart';
 import 'package:soshi/services/dynamicLinks.dart';
@@ -51,7 +53,7 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
   List<Widget> screens = [
     QRScreen(),
     Profile(),
-    FriendScreen()
+    FriendsGroupsWrapper()
   ]; // list of screens (change through indexing)
 
   int currScreen = 1;
@@ -107,6 +109,7 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
           currentIndex: currScreen,
           onTap: (index) {
             setState(() {
+              HapticFeedback.lightImpact();
               pageController.jumpToPage(index);
               currScreen = index;
             });

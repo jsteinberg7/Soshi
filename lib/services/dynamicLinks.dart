@@ -33,5 +33,22 @@ abstract class DynamicLinkService {
     }
   }
 
-  ///createDynamicLink()
+  ///createDynamicLink(
+  static Future<void> createGroupDynamicLink(String id) async {
+    var links = FirebaseDynamicLinks.instance;
+    links
+        .buildLink(DynamicLinkParameters(uriPrefix: "https://soshi.app/group", 
+        longDynamicLink: Uri.parse("https://soshi.app/group/$id"),
+        link: Uri.parse("https://soshi.app/joingroup/$id"),
+        androidParameters: AndroidParameters(packageName: 'com.swoledevs.soshi'),
+        iosParameters: IOSParameters(bundleId: 'com.example.strippedsoshi'),
+        
+        
+        
+        ),
+        
+
+      
+        );
+  }
 }
