@@ -69,6 +69,8 @@ class _SMCardState extends State<SMCard> {
         platformName == "Facebook" ||
         platformName == "Personal") {
       hintText = "Link to Profile";
+    } else if (platformName == "Cryptowallet") {
+      hintText = "Wallet address";
     } else {
       hintText = "Username";
     }
@@ -256,6 +258,22 @@ class _SMCardState extends State<SMCard> {
                             Popups.showContactAddedPopup(
                                 context, width, firstName, lastName);
                           });
+                        } else if (platformName == "Cryptowallet") {
+                          Clipboard.setData(ClipboardData(
+                            text: LocalDataService.getLocalUsernameForPlatform(
+                                    "Cryptowallet")
+                                .toString(),
+                          ));
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: const Text(
+                              'Wallet address copied to clipboard!',
+                              textAlign: TextAlign.center,
+                            ),
+                          ));
+
+                          // snackbar or popup that says:
+                          // "First name + last name's wallet address has been copied to clipboard"
+
                         } else {
                           URL.launchURL(URL.getPlatformURL(
                               platform: platformName,
@@ -506,15 +524,13 @@ class ProfileState extends State<Profile> {
 
     soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
     profilePlatforms = LocalDataService.getLocalProfilePlatforms();
-
     verifiedUsers = LocalDataService.getVerifiedUsersLocal();
-    print(verifiedUsers.toString());
+    //print(verifiedUsers.toString());
 
     isVerified = verifiedUsers.contains(soshiUsername);
 
     databaseService.updateVerifiedStatus(soshiUsername, isVerified);
     LocalDataService.updateVerifiedStatus(isVerified);
-    print(LocalDataService.getVerifiedStatus());
 
     // bioFocusNode = new FocusNode();
     // bioFocusNode.addListener(() {
@@ -600,6 +616,24 @@ class ProfileState extends State<Profile> {
                                       source: ImageSource.gallery,
                                       imageQuality: 20);
                               await dbService.cropAndUploadImage(pickedImage);
+
+                              // Checking if this is first time adding a profile pic
+                              // if it is, it gives Soshi points
+                              if (LocalDataService.getInjectionFlag(
+                                          "Profile Pic") ==
+                                      false ||
+                                  LocalDataService.getInjectionFlag(
+                                          "Profile Pic") ==
+                                      null) {
+                                LocalDataService.updateInjectionFlag(
+                                    "Profile Pic", true);
+                                dbService.updateInjectionSwitch(
+                                    soshiUsername, "Profile Pic", true);
+                                databaseService.updateSoshiPoints(
+                                    soshiUsername, 10);
+                                LocalDataService.updateSoshiPoints(10);
+                              }
+
                               refreshScreen();
                             },
                             child: Stack(
@@ -875,10 +909,23 @@ class _BioTextFieldState extends State<BioTextField> {
           autocorrect: true,
           controller: widget.importController,
           onSubmitted: (String bio) {
+            String soshiUsername =
+                LocalDataService.getLocalUsernameForPlatform("Soshi");
             DatabaseService tempDB = new DatabaseService();
             LocalDataService.updateBio(bio);
             tempDB.updateBio(
                 LocalDataService.getLocalUsernameForPlatform("Soshi"), bio);
+
+            // Checking if this is first time adding a bio
+            // if it is, it gives Soshi points
+            if (LocalDataService.getInjectionFlag("Bio") == false ||
+                LocalDataService.getInjectionFlag("Bio") == null) {
+              LocalDataService.updateInjectionFlag("Bio", true);
+              tempDB.updateInjectionSwitch(soshiUsername, "Bio", true);
+
+              LocalDataService.updateSoshiPoints(10);
+              tempDB.updateSoshiPoints(soshiUsername, 10);
+            }
 
             // bioFocusNode.unfocus();
             FocusScope.of(context).unfocus();

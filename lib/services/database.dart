@@ -51,10 +51,12 @@ class DatabaseService {
       "Friends": <String>["soshi"],
       "Bio": "",
       "Verified": false,
+      "Soshi Points": 0,
       "Usernames": <String, String>{
         "Soshi": username,
         "Phone": phoneNumber,
         "Personal": null,
+        "Cryptowallet": null,
         "Instagram": null,
         "Snapchat": null,
         "Linkedin": null,
@@ -79,15 +81,17 @@ class DatabaseService {
         "Facebook": false,
         // "Reddit": false,
         "Tiktok": false,
-        "Youtube": null,
+        "Youtube": false,
         "Discord": false,
         "Email": false,
         "Venmo": false,
         "Spotify": false,
         "Personal": false,
+        "Cryptowallet": false
       },
       "Photo URL": "null",
       "Choose Platforms": <String>[
+        "Cryptowallet",
         "Email",
         "Personal",
         "Instagram",
@@ -100,9 +104,14 @@ class DatabaseService {
         "Spotify",
         "Facebook",
         "Discord",
+
         // "Reddit",
       ],
       "Profile Platforms": <String>["Phone"],
+      "INJECTION Soshi Points Flag": true,
+      "INJECTION Profile Pic Flag": false,
+      "INJECTION Bio Flag": false,
+      "INJECTION Passions Flag": false
     });
   }
 
@@ -622,5 +631,28 @@ class DatabaseService {
     await usersCollection
         .doc(currSoshiUsername)
         .update({"Two Way Sharing": state});
+  }
+
+  int getSoshiPoints(Map userData) {
+    return userData["Soshi Points"];
+  }
+
+  Future<void> updateSoshiPoints(String soshiUsername, int addedPoints) async {
+    int newSoshiPoints = LocalDataService.getSoshiPoints() + addedPoints;
+    await usersCollection
+        .doc(soshiUsername)
+        .update({"Soshi Points": newSoshiPoints});
+  }
+
+  Future<bool> getInjectionFlagStatus(
+      String injectionName, Map userData) async {
+    return userData["INJECTION $injectionName Flag"];
+  }
+
+  Future<void> updateInjectionSwitch(
+      String soshiUsername, String injectionName, bool state) async {
+    await usersCollection
+        .doc(soshiUsername)
+        .update({"INJECTION $injectionName Flag": state});
   }
 }

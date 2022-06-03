@@ -27,7 +27,8 @@ abstract class DynamicLinkService {
       //     ">> " + dynamicLink.link.toString().split("/").last.split("/").last);
       print(">> " + dynamicLink.android.toString().split("/").last);
       await Popups.showUserProfilePopupNew(context,
-          friendSoshiUsername: dynamicLink.android.toString().split("/").last,
+          friendSoshiUsername:
+              dynamicLink.link.toString().split("/").last.split("/").last,
           refreshScreen: () {});
       await Future.delayed(Duration(seconds: 3));
       // reset popup disabler after timer

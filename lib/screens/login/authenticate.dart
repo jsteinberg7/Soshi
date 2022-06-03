@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:soshi/constants/constants.dart';
 import 'package:soshi/constants/utilities.dart';
+import 'package:soshi/screens/login/onboarding.dart';
 import 'package:soshi/screens/login/register.dart';
 
 import '../../constants/widgets.dart';
@@ -32,11 +33,11 @@ class _AuthenticateState extends State<Authenticate> {
         // backgroundColor: Colors.white,
         appBar: PreferredSize(
             //Create "Beta" icon on left
-            preferredSize: Size(
-                Utilities.getWidth(context), Utilities.getHeight(context) / 16),
+            preferredSize: Size(Utilities.getWidth(context), Utilities.getHeight(context) / 16),
             child: SoshiAppBar()),
         body: isRegistering
             ? RegisterScreen(toggleScreen: toggleIsRegistering)
+            // ? Onboarding()
             : LoginScreen(toggleScreen: toggleIsRegistering, refresh: widget.refreshWrapper));
   }
 }
