@@ -63,7 +63,7 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
     FriendScreen(),
   ]; // list of screens (change through indexing)
 
-  int currScreen = 1;
+  int currScreen = 2;
 
   PageController pageController = new PageController(initialPage: 1);
 
