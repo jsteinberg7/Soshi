@@ -757,7 +757,6 @@ class Popups {
     DatabaseService databaseService = new DatabaseService(
         currSoshiUsernameIn: LocalDataService.getLocalUsername());
 
-    String userUsername = LocalDataService.getLocalUsername();
     Map userData = await databaseService.getUserFile(friendSoshiUsername);
 
     List<String> visiblePlatforms;

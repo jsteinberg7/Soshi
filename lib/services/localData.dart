@@ -122,9 +122,10 @@ abstract class LocalDataService {
     await preferences.setStringList("Recently Added Friends", []);
     await preferences.setBool(
         "Friends List Reformatted",
-        userData[
-            "Friends List Reformatted"]); // get friends list reformatted from db
-    if (preferences.getBool("Friends List Reformatted") == null) {
+        userData["Friends List Reformatted"] ??
+            false); // get friends list reformatted from db
+    if (preferences.getBool("Friends List Reformatted") == null ||
+        preferences.getBool("Friends List Reformatted") == false) {
       // reformat friends list if necessary
       await reformatFriendsList();
     }
