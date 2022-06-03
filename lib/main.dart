@@ -62,11 +62,10 @@ class _MyAppState extends State<MyApp> {
               cardColor: Colors.white,
               dividerColor: Color(0x1f6D42CE),
               focusColor: Color(0x1aF5E0C3),
-              textSelectionTheme:
-                  TextSelectionThemeData(cursorColor: Colors.cyan[500]),
+              textSelectionTheme: TextSelectionThemeData(cursorColor: Colors.cyan[500]),
               elevatedButtonTheme: ElevatedButtonThemeData(style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
+                backgroundColor:
+                    MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
                   return Colors.white;
                 }),
               )),
@@ -104,16 +103,15 @@ class _MyAppState extends State<MyApp> {
                   //   return TextStyle(color: Colors.white);
                   // }
 
-                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                      (Set<MaterialState> states) {
+                  backgroundColor:
+                      MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
                     return Colors.grey[900];
                   }),
-                  elevation: MaterialStateProperty.resolveWith<double>(
-                      (Set<MaterialState> states) {
+                  elevation: MaterialStateProperty.resolveWith<double>((Set<MaterialState> states) {
                     return 5.0;
                   }),
-                  foregroundColor: MaterialStateProperty.resolveWith<Color>(
-                      (Set<MaterialState> states) {
+                  foregroundColor:
+                      MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
                     return Colors.white;
                   }),
                 )),
@@ -166,8 +164,7 @@ void main() async {
   // print("Deep Link Params: " + linkData.utmParameters.toString())
   runApp(MyApp(linkData));
 
-  await LocalDataService.preferences
-      .setBool("hasLaunched", true); // user has launched app
+  await LocalDataService.preferences.setBool("hasLaunched", true); // user has launched app
 
   if (linkData != null) {
     print(linkData.utmParameters);
