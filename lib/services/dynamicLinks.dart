@@ -20,6 +20,10 @@ abstract class DynamicLinkService {
           // Popups.popup_live = false;
           FirebaseDynamicLinks.instance.onLink
               .listen((PendingDynamicLinkData dynamicLink) async {
+            try {
+              print(">> received deep link " + dynamicLink.toString());
+            } catch (e) {}
+
             await Popups.showUserProfilePopupNew(context,
                 friendSoshiUsername: "jason", refreshScreen: () {});
             await Future.delayed(Duration(seconds: 3));
