@@ -307,102 +307,165 @@ class _FriendScreenState extends State<FriendScreen> {
               // side: BorderSide(width: .5)
             ),
             trailing: IconButton(
-              icon: Icon(
-                Icons.more_vert_rounded,
-                size: 30,
-                // color: Colors.white,
-              ),
-              // color: Colors.black,
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(40.0))),
-                        // backgroundColor: Colors.blueGrey[900],
-                        title: Text(
-                          "Remove Friend",
-                          style: TextStyle(
-                              // color: Colors.cyan[600],
-                              fontWeight: FontWeight.bold),
-                        ),
-                        content: Text(
-                          ("Are you sure you want to remove " +
-                              friend.fullName +
-                              " as a friend?"),
-                          style: TextStyle(
-                            fontSize: 20,
-                            // color: Colors.cyan[700],
-                            //fontWeight: FontWeight.bold
-                          ),
-                        ),
-                        actions: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              TextButton(
-                                child: Text(
-                                  'Cancel',
-                                  style: TextStyle(
-                                      fontSize: 20, color: Colors.blue),
-                                ),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                              ),
-                              TextButton(
-                                child: Text(
-                                  'Remove',
-                                  style: TextStyle(
-                                      fontSize: 20, color: Colors.red),
-                                ),
-                                onPressed: () async {
-                                  List<String> newFriendsList =
-                                      await LocalDataService.removeFriend(
-                                          friendsoshiUsername: friend
-                                              .soshiUsername); // update local list
-                                  databaseService.overwriteFriendsList(
-                                      newFriendsList); // update cloud list
+                icon: Icon(
+                  Icons.more_vert_rounded,
+                  size: 30,
+                  // color: Colors.white,
+                ),
+                // color: Colors.black,
+                onPressed: () {
+                  showModalBottomSheet(
+                      isScrollControlled: true,
+                      constraints: BoxConstraints(
+                        minWidth: width / 1.1,
+                        maxWidth: width / 1.1,
+                      ),
+                      backgroundColor: Colors.transparent,
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Container(
+                          height: 200,
+                          color: Colors.transparent,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              // mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: ListTile(
+                                    title: Center(
+                                      child: Text(
+                                        "Remove friend",
+                                        style: TextStyle(
+                                            fontSize: 25, color: Colors.red),
+                                      ),
+                                    ),
+                                    onTap: () async {
+                                      List<String> newFriendsList =
+                                          await LocalDataService.removeFriend(
+                                              friendsoshiUsername: friend
+                                                  .soshiUsername); // update local list
+                                      databaseService.overwriteFriendsList(
+                                          newFriendsList); // update cloud list
 
-                                  refreshFriendScreen();
-                                  Navigator.pop(context);
-                                },
-                              ),
-                            ],
+                                      refreshFriendScreen();
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                ),
+                                Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: ListTile(
+                                    title: Center(
+                                      child: Text(
+                                        "Cancel",
+                                        style: TextStyle(
+                                            fontSize: 25, color: Colors.blue),
+                                      ),
+                                    ),
+                                    onTap: () => Navigator.pop(context),
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
-                        ],
-                      );
-                    });
-              },
-              // shape: RoundedRectangleBorder(
-              //     borderRadius: BorderRadius.circular(60.0)),
+                        );
+                      });
+                }
+                // showDialog(
+                //     context: context,
+                //     builder: (BuildContext context) {
+                //       return AlertDialog(
+                //         shape: RoundedRectangleBorder(
+                //             borderRadius:
+                //                 BorderRadius.all(Radius.circular(40.0))),
+                //         // backgroundColor: Colors.blueGrey[900],
+                //         title: Text(
+                //           "Remove Friend",
+                //           style: TextStyle(
+                //               // color: Colors.cyan[600],
+                //               fontWeight: FontWeight.bold),
+                //         ),
+                //         content: Text(
+                //           ("Are you sure you want to remove " +
+                //               friend.fullName +
+                //               " as a friend?"),
+                //           style: TextStyle(
+                //             fontSize: 20,
+                //             // color: Colors.cyan[700],
+                //             //fontWeight: FontWeight.bold
+                //           ),
+                //         ),
+                //         actions: <Widget>[
+                //           Row(
+                //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                //             children: <Widget>[
+                //               TextButton(
+                //                 child: Text(
+                //                   'Cancel',
+                //                   style: TextStyle(
+                //                       fontSize: 20, color: Colors.blue),
+                //                 ),
+                //                 onPressed: () {
+                //                   Navigator.pop(context);
+                //                 },
+                //               ),
+                //               TextButton(
+                //                 child: Text(
+                //                   'Remove',
+                //                   style: TextStyle(
+                //                       fontSize: 20, color: Colors.red),
+                //                 ),
+                // onPressed: () async {
+                //   List<String> newFriendsList =
+                //       await LocalDataService.removeFriend(
+                //           friendsoshiUsername: friend
+                //               .soshiUsername); // update local list
+                //   databaseService.overwriteFriendsList(
+                //       newFriendsList); // update cloud list
 
-              //itemBuilder: (BuildContext context) {
-              //return [
-              // PopupMenuItem(
-              //     child: IconButton(
-              //         icon: Icon(Icons.delete),
-              //         color: Colors.white,
-              //         iconSize: 40,
-              //         splashColor: Colors.cyan,
-              //         // style: ElevatedButton.styleFrom(
-              //         //     primary: Colors.cyan[800]),
-              //         // Text(
-              //         //   "Remove Friend",
-              //         //   style: TextStyle(color: Colors.black),
-              //         // ),
-              //         onPressed: () async {
-              //           Navigator.pop(context);
-              //           await LocalDataService.removeFriend(
-              //               friendsoshiUsername: friend.soshiUsername);
-              //           databaseService.removeFriend(friendsoshiUsername: friend.soshiUsername);
-              //           refreshFriendScreen();
-              //         }))
-              //   ];
-              // }
-            )),
+                //   refreshFriendScreen();
+                //   Navigator.pop(context);
+                // },
+                //               ),
+                //             ],
+                //           ),
+                //         ],
+                //       );
+                //     });
+                //},
+                // shape: RoundedRectangleBorder(
+                //     borderRadius: BorderRadius.circular(60.0)),
+
+                //itemBuilder: (BuildContext context) {
+                //return [
+                // PopupMenuItem(
+                //     child: IconButton(
+                //         icon: Icon(Icons.delete),
+                //         color: Colors.white,
+                //         iconSize: 40,
+                //         splashColor: Colors.cyan,
+                //         // style: ElevatedButton.styleFrom(
+                //         //     primary: Colors.cyan[800]),
+                //         // Text(
+                //         //   "Remove Friend",
+                //         //   style: TextStyle(color: Colors.black),
+                //         // ),
+                //         onPressed: () async {
+                //           Navigator.pop(context);
+                //           await LocalDataService.removeFriend(
+                //               friendsoshiUsername: friend.soshiUsername);
+                //           databaseService.removeFriend(friendsoshiUsername: friend.soshiUsername);
+                //           refreshFriendScreen();
+                //         }))
+                //   ];
+                // }
+                )),
       ),
     );
   }
