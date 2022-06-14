@@ -704,14 +704,69 @@ class DatabaseService {
     return adminList;
   }
 
+  /*
+  Promote member to admin
+  */
+  Future<void> promoteToAdmin(String id, String username) async {
+    List<String> newAdmin, newMembers;
+    Group groupData = await getGroupData(id);
+
+    newAdmin = await groupData.admin;
+    newMembers = await groupData.members;
+    newAdmin.add(username);
+    newMembers.remove(username);
+    await groupsCollection
+        .doc(id)
+        .update({"Admin": newAdmin, "Members": newMembers});
+  }
+
   Future<void> joinGroup(String id) async {
     await _addUserToGroupFile(
         id); // add username to group members list (in group doc)
     await _addGroupToUserFile(id); // add group to user doc
   }
 
+  /*
+  Removes {username} from group {id}
+  */
+  Future<void> leaveGroup(String id, String username,
+      {bool isAdmin = false}) async {
+    await _removeUserFromGroupFile(
+        id, username, isAdmin); // remove user from members (or admin) in group
+    await _removeGroupFromUserFile(
+        id, username); // remove group id from group list in user file
+  }
+
+  /*
+  Removes group {id} from groups list in user file
+  */
+  Future<void> _removeGroupFromUserFile(String id, String username) async {
+    // get copy of current groups list
+    List<dynamic> groupsList = await getGroups();
+    // remove from group from list
+    groupsList.remove(id);
+    return await usersCollection.doc(username).update({"Groups": groupsList});
+  }
+
+  Future<void> _removeUserFromGroupFile(
+      String id, String username, bool isAdmin) async {
+    // remove username from members (or admin) list
+    if (!isAdmin) {
+      List<dynamic> groupMembers =
+          await getGroupMembers(id); // get current group members
+      await groupMembers.remove(username);
+      return await groupsCollection.doc(id).update({"Members": groupMembers});
+    } else {
+      // remove from admin
+      List<dynamic> groupAdmin =
+          await getGroupAdmin(id); // get current group members
+      await groupAdmin.remove(username);
+      return await groupsCollection.doc(id).update({"Admin": groupAdmin});
+    }
+  }
+
   Future<void> _addGroupToUserFile(String id) async {
-    // get copy of current friends list
+    // get copy of current groups list
     List<dynamic> groupsList = await getGroups();
 
     // check to see if list already exists

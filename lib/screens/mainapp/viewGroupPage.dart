@@ -28,7 +28,7 @@ class _ViewGroupPageState extends State<ViewGroupPage> {
   DatabaseService databaseService;
   AsyncMemoizer memoizer;
   bool isAdmin;
-
+  List<Friend> membersList, adminList;
   @override
   void initState() {
     String username = LocalDataService.getLocalUsernameForPlatform("Soshi");
@@ -39,11 +39,28 @@ class _ViewGroupPageState extends State<ViewGroupPage> {
     super.initState();
   }
 
+  void refreshGroupPage({@required String type, Friend member}) {
+    setState(() {
+      String username = member.soshiUsername;
+      if (type == "leave") {
+        widget.group.members.remove(username);
+        membersList.remove(member);
+      } else if (type == "promote") {
+        widget.group.members.remove(username);
+        widget.group.admin.add(username);
+        membersList.remove(member);
+        adminList.add(member);
+      }
+    });
+  }
+
   Future<dynamic> generateGroupUsers() async {
     return this.memoizer.runOnce(() async {
       List<Friend> members =
           await databaseService.membersToFriends(group.members);
       List<Friend> admin = await databaseService.adminToFriends(group.admin);
+      membersList = members;
+      adminList = admin;
       return {"members": members, "admin": admin};
     });
   }
@@ -126,8 +143,11 @@ class _ViewGroupPageState extends State<ViewGroupPage> {
                       backgroundColor: Colors.transparent,
                       context: context,
                       builder: (context) {
-                        return MemberOptionsPopup(context, height, width,
-                            member: friend);
+                        return MemberOptionsPopup(
+                            context, height, width, databaseService,
+                            member: friend,
+                            id: group.id,
+                            refreshGroupScreen: refreshGroupPage);
                       });
                 },
                 // shape: RoundedRectangleBorder(
@@ -246,8 +266,10 @@ class _ViewGroupPageState extends State<ViewGroupPage> {
                 future: generateGroupUsers(),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
-                    List admin = snapshot.data["admin"];
-                    List members = snapshot.data["members"];
+                    // List admin = snapshot.data["admin"];
+                    // List members = snapshot.data["members"];
+                    List admin = adminList;
+                    List members = membersList;
                     return Column(
                       children: [
                         Align(
@@ -444,8 +466,14 @@ class MemberOptionsPopup extends StatefulWidget {
   BuildContext context;
   double height, width;
   Friend member;
-
-  MemberOptionsPopup(this.context, this.height, this.width, {this.member});
+  String id;
+  DatabaseService databaseService;
+  Function refreshGroupScreen;
+  MemberOptionsPopup(
+      this.context, this.height, this.width, this.databaseService,
+      {@required this.id,
+      @required this.member,
+      @required this.refreshGroupScreen});
 
   @override
   State<MemberOptionsPopup> createState() => _MemberOptionsPopupState();
@@ -482,7 +510,14 @@ class _MemberOptionsPopupState extends State<MemberOptionsPopup> {
                     InkWell(
 
                         // promote
-                        onTap: () {},
+                        onTap: () async {
+                          // promote member to admin
+                          widget.databaseService.promoteToAdmin(
+                              widget.id, widget.member.soshiUsername);
+                          widget.refreshGroupScreen(
+                              type: "promote", member: widget.member);
+                          Navigator.pop(context);
+                        },
                         child: Container(
                             width: widget.width,
                             child: Text("Promote",
@@ -491,7 +526,14 @@ class _MemberOptionsPopupState extends State<MemberOptionsPopup> {
                     Divider(color: Colors.grey),
                     InkWell(
                         // remove
-                        onTap: () {},
+                        onTap: () async {
+                          widget.databaseService.leaveGroup(
+                              widget.id, widget.member.soshiUsername);
+
+                          widget.refreshGroupScreen(
+                              type: "leave", member: widget.member);
+                          Navigator.pop(context);
+                        },
                         child: Container(
                             width: widget.width,
                             child: Text("Remove",
