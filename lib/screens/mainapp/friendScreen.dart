@@ -324,7 +324,7 @@ class _FriendScreenState extends State<FriendScreen> {
                       context: context,
                       builder: (BuildContext context) {
                         return Container(
-                          height: 200,
+                          height: height / 2.8,
                           color: Colors.transparent,
                           child: Center(
                             child: Column(
@@ -335,25 +335,85 @@ class _FriendScreenState extends State<FriendScreen> {
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20),
                                   ),
-                                  child: ListTile(
-                                    title: Center(
-                                      child: Text(
-                                        "Remove friend",
-                                        style: TextStyle(
-                                            fontSize: 25, color: Colors.red),
-                                      ),
-                                    ),
-                                    onTap: () async {
-                                      List<String> newFriendsList =
-                                          await LocalDataService.removeFriend(
-                                              friendsoshiUsername: friend
-                                                  .soshiUsername); // update local list
-                                      databaseService.overwriteFriendsList(
-                                          newFriendsList); // update cloud list
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      ListTile(
+                                        title: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.fromLTRB(
+                                                  0,
+                                                  height / 160,
+                                                  0,
+                                                  height / 100),
+                                              child: ProfilePic(
+                                                radius: width / 10,
+                                                url: friend.photoURL,
+                                              ),
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  "@" + friend.soshiUsername,
+                                                  style: TextStyle(
+                                                      color: Colors.grey[500],
+                                                      fontSize: width / 25,
+                                                      fontStyle:
+                                                          FontStyle.italic),
+                                                ),
+                                                SizedBox(
+                                                  width: width / 130,
+                                                ),
+                                                friend.isVerified == null ||
+                                                        friend.isVerified ==
+                                                            false
+                                                    ? Container()
+                                                    : Image.asset(
+                                                        "assets/images/Verified.png",
+                                                        scale: width / 21,
+                                                      )
+                                              ],
+                                            ),
+                                            Divider(
+                                              color: Theme.of(context)
+                                                          .brightness ==
+                                                      Brightness.light
+                                                  ? Colors.grey[500]
+                                                  : Colors.grey,
+                                            ),
+                                            ListTile(
+                                              title: Center(
+                                                child: Text(
+                                                  "Remove friend",
+                                                  style: TextStyle(
+                                                      fontSize: width / 20,
+                                                      color: Colors.red),
+                                                ),
+                                              ),
+                                              onTap: () async {
+                                                List<String> newFriendsList =
+                                                    await LocalDataService
+                                                        .removeFriend(
+                                                            friendsoshiUsername:
+                                                                friend
+                                                                    .soshiUsername); // update local list
+                                                databaseService
+                                                    .overwriteFriendsList(
+                                                        newFriendsList); // update cloud list
 
-                                      refreshFriendScreen();
-                                      Navigator.pop(context);
-                                    },
+                                                refreshFriendScreen();
+                                                Navigator.pop(context);
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                                 Card(
@@ -365,7 +425,8 @@ class _FriendScreenState extends State<FriendScreen> {
                                       child: Text(
                                         "Cancel",
                                         style: TextStyle(
-                                            fontSize: 25, color: Colors.blue),
+                                            fontSize: width / 20,
+                                            color: Colors.blue),
                                       ),
                                     ),
                                     onTap: () => Navigator.pop(context),
