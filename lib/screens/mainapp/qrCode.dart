@@ -334,6 +334,8 @@ class _QRScreenState extends State<QRScreen> {
                       },
                       child: QrImage(
                         errorCorrectionLevel: QrErrorCorrectLevel.M,
+                        embeddedImage: NetworkImage(
+                            LocalDataService.getLocalProfilePictureURL()),
                         // +
                         dataModuleStyle: QrDataModuleStyle(
                           dataModuleShape: QrDataModuleShape.circle,
@@ -390,42 +392,39 @@ class _QRScreenState extends State<QRScreen> {
                     // vibrate when QR code is successfully scanned
                     Vibration.vibrate();
                     try {
-                      String friendSoshiUsername = QRScanResult.split("/").last;
-                      Map friendData = await databaseService
-                          .getUserFile(friendSoshiUsername);
-                      bool isFriendAdded = await LocalDataService.isFriendAdded(
-                          friendSoshiUsername);
+                      if (QRScanResult.contains("https://soshi.app/group/")) {
+                        String groupId = QRScanResult.split("/").last;
+                        Popups.showJoinGroupPopup(context, groupId);
+                      } else {
+                        String friendSoshiUsername =
+                            QRScanResult.split("/").last;
+                        Map friendData = await databaseService
+                            .getUserFile(friendSoshiUsername);
+                        Friend friend =
+                            databaseService.userDataToFriend(friendData);
+                        bool isFriendAdded =
+                            await LocalDataService.isFriendAdded(
+                                friendSoshiUsername);
 
-                      Popups.showUserProfilePopupNew(context,
-                          friendSoshiUsername: friendSoshiUsername,
-                          refreshScreen: () {});
+                        Popups.showUserProfilePopupNew(context,
+                            friendSoshiUsername: friendSoshiUsername,
+                            refreshScreen: () {});
+                        if (!isFriendAdded &&
+                            friendSoshiUsername != soshiUsername) {
+                          List<String> newFriendsList =
+                              await LocalDataService.addFriend(friend: friend);
+                          databaseService.overwriteFriendsList(newFriendsList);
+                        }
 
-                      // if (!isFriendAdded &&  *Add friend without pressing "add friend"
-                      //     friendSoshiUsername != soshiUsername) {
-                      //   await LocalDataService.addFriend(
-                      //       friendsoshiUsername: friendSoshiUsername);
-                      //   databaseService.addFriend(
-                      //       thisSoshiUsername:
-                      //           databaseService.currSoshiUsername,
-                      //       friendSoshiUsername: friendSoshiUsername);
-                      // }
-                      //         Popups.showUserProfilePopupNew(context,
-                      //             friendSoshiUsername: friendSoshiUsername, refreshScreen: () {});
-                      //         if (!isFriendAdded && friendSoshiUsername != soshiUsername) {
-                      //           await LocalDataService.addFriend(friendsoshiUsername: friendSoshiUsername);
-                      //           databaseService.addFriend(
-                      //               thisSoshiUsername: databaseService.currSoshiUsername,
-                      //               friendSoshiUsername: friendSoshiUsername);
-                      //         }
+                        // bool friendHasTwoWaySharing = await databaseService.getTwoWaySharing(friendData);
+                        // if (friendHasTwoWaySharing == null || friendHasTwoWaySharing == true) {
+                        //   // if user has two way sharing on, add self to user's friends list
+                        //   databaseService.addFriend(thisSoshiUsername: friendSoshiUsername, friendSoshiUsername: databaseService.currSoshiUsername);
+                        // }
+                        //add friend right here
 
-                      //         // bool friendHasTwoWaySharing = await databaseService.getTwoWaySharing(friendData);
-                      //         // if (friendHasTwoWaySharing == null || friendHasTwoWaySharing == true) {
-                      //         //   // if user has two way sharing on, add self to user's friends list
-                      //         //   databaseService.addFriend(thisSoshiUsername: friendSoshiUsername, friendSoshiUsername: databaseService.currSoshiUsername);
-                      //         // }
-                      //         //add friend right here
-
-                      Analytics.logQRScan(QRScanResult, true, "qrCode.dart");
+                        Analytics.logQRScan(QRScanResult, true, "qrCode.dart");
+                      }
                     } catch (e) {
                       Analytics.logQRScan(QRScanResult, false, "qrCode.dart");
                       print(e);

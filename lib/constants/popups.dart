@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:soshi/constants/utilities.dart';
 import 'package:soshi/constants/widgets.dart';
 import 'package:soshi/screens/login/loading.dart';
 import 'package:soshi/services/analytics.dart';
@@ -15,6 +16,8 @@ import 'package:http/http.dart' as http;
 import 'package:soshi/services/url.dart';
 // import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import '../screens/mainapp/friendScreen.dart';
+import '../screens/mainapp/groupScreen.dart';
+import '../screens/mainapp/viewGroupPage.dart';
 import 'constants.dart';
 //import 'package:google_fonts/google_fonts.dart';
 
@@ -1519,6 +1522,22 @@ class Popups {
         });
   }
 
+  static void showJoinGroupPopup(BuildContext context, String groupId) async {
+    double width = Utilities.getWidth(context);
+    // get group details
+    DatabaseService databaseService = DatabaseService(
+        currSoshiUsernameIn: LocalDataService.getLocalUsername());
+
+    Group group = await databaseService.getGroupData(groupId);
+
+    showModalBottomSheet(
+        backgroundColor: Colors.transparent,
+        context: context,
+        builder: (context) {
+          return JoinGroupPopup(width, databaseService, group);
+        });
+  }
+
   static void displayNameErrorPopUp(String firstOrLast, BuildContext context) {
     showDialog(
         context: context,
@@ -1595,5 +1614,111 @@ class Popups {
             ],
           );
         });
+  }
+}
+
+class JoinGroupPopup extends StatefulWidget {
+  double width;
+  DatabaseService databaseService;
+  Group group;
+  JoinGroupPopup(this.width, this.databaseService, this.group);
+
+  @override
+  State<JoinGroupPopup> createState() => _JoinGroupPopupState();
+}
+
+class _JoinGroupPopupState extends State<JoinGroupPopup> {
+  Group group;
+  double width;
+  DatabaseService databaseService;
+  bool hasJoined;
+  bool isJoining;
+  String username;
+  @override
+  void initState() {
+    this.width = widget.width;
+    this.group = widget.group;
+    this.databaseService = widget.databaseService;
+    username = LocalDataService.getLocalUsername();
+    hasJoined =
+        group.members.contains(username) || group.admin.contains(username);
+    isJoining = false;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(30.0),
+                topRight: Radius.circular(30.0))),
+        height: 250,
+        // color: Colors.white,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Column(
+              children: [
+                Hero(
+                    tag: group.id,
+                    child: RectangularProfilePic(
+                        radius: width / 3, url: group.photoURL)),
+                Text(group.name),
+              ],
+            ),
+            ElevatedButton(
+                onPressed: () async {
+                  if (!isJoining) {
+                    if (hasJoined) {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return ViewGroupPage(
+                            group); // Returning the ResetPassword screen
+                      }));
+                    } else {
+                      HapticFeedback.mediumImpact();
+                      setState(() {
+                        isJoining = true;
+                      });
+                      await databaseService.joinGroup(group.id);
+                      setState(() {
+                        isJoining = false;
+                        hasJoined = true;
+                      });
+                    }
+                  }
+                },
+                child: Container(
+                    width: width / 3,
+                    child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: !isJoining
+                            ? Text(
+                                (hasJoined) ? "View Group" : "Join Group",
+                                style: TextStyle(
+                                    fontSize: 20.0,
+                                    color: Theme.of(context).brightness ==
+                                            Brightness.light
+                                        ? Colors.white
+                                        : Colors.black),
+                                textAlign: TextAlign.center,
+                              )
+                            : Center(child: CircularProgressIndicator()))),
+                style: ElevatedButton.styleFrom(
+                    primary: Theme.of(context).brightness != Brightness.light
+                        ? Colors.white
+                        : Colors.black,
+                    elevation: 8.0,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0)))),
+            GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Text("Close", style: TextStyle(color: Colors.blue)))
+          ],
+        ));
   }
 }

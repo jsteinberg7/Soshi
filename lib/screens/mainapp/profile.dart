@@ -525,7 +525,6 @@ class ProfileState extends State<Profile> {
     soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
     profilePlatforms = LocalDataService.getLocalProfilePlatforms();
     verifiedUsers = LocalDataService.getVerifiedUsersLocal();
-    //print(verifiedUsers.toString());
 
     isVerified = verifiedUsers.contains(soshiUsername);
 

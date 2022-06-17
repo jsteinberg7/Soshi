@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -64,6 +65,63 @@ class ProfilePic extends StatelessWidget {
     //       ),
     //     ),
     //   );
+  }
+}
+
+/* Widget to build the profile picture and check if they are null */
+class RectangularProfilePic extends StatelessWidget {
+  double customSize = 10.0;
+  String url = "";
+  bool defaultPic;
+  File file;
+  RectangularProfilePic(
+      {@required double radius,
+      @required String url,
+      bool defaultPic = false,
+      File file = null}) {
+    this.customSize = radius;
+    this.url = url;
+    this.defaultPic = defaultPic;
+    this.file = file;
+
+    // print("received url +" + url.toString());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 7,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+            // height: 110,
+            // width: 110,
+            height: customSize,
+            width: customSize,
+            child: (file == null)
+                ? ((url == "null" || url == null || url == "")
+                    ? Image.asset(
+                        (defaultPic)
+                            ? 'assets/images/misc/default_placeholder.png'
+                            : 'assets/images/SoshiLogos/soshi_icon.png',
+                        height: customSize,
+                        fit: BoxFit.cover,
+                      )
+                    : Image.network(
+                        url,
+                        height: customSize,
+                        fit: BoxFit.cover,
+                      ))
+                : (Image.file(
+                    file,
+                    height: customSize,
+                    fit: BoxFit.cover,
+                  ))),
+      ),
+    );
   }
 }
 
@@ -445,18 +503,25 @@ class _ReturnNumConnectionsState extends State<ReturnNumConnections> {
 class ShareButton extends StatelessWidget {
   double size;
   String soshiUsername;
+  String groupId;
 
-  ShareButton({this.size, this.soshiUsername});
+  ShareButton({this.size, this.soshiUsername, this.groupId});
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(shape: CircleBorder()),
       onPressed: () {
-        Share.share("https://soshi.app/" + soshiUsername,
-            subject: LocalDataService.getLocalFirstName() +
-                " " +
-                LocalDataService.getLocalLastName() +
-                "'s Soshi Contact Card");
+        if (groupId == null) {
+          Share.share("https://soshi.app/" + soshiUsername,
+              subject: LocalDataService.getLocalFirstName() +
+                  " " +
+                  LocalDataService.getLocalLastName() +
+                  "'s Soshi Contact Card");
+        } else {
+          Share.share(
+            "https://soshi.app/group/" + groupId,
+          );
+        }
       },
       child: Icon(Icons.share, size: size),
     );

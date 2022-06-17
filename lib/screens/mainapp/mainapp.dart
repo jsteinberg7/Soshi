@@ -4,10 +4,12 @@ import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.da
 import 'package:custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:soshi/constants/utilities.dart';
 import 'package:soshi/screens/mainapp/boltScreen.dart';
+import 'package:soshi/screens/mainapp/friendsGroupsWrapper.dart';
 import 'package:soshi/screens/mainapp/profile.dart';
 import 'package:soshi/screens/mainapp/qrCode.dart';
 import 'package:soshi/services/analytics.dart';
@@ -60,8 +62,7 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
   List<Widget> screens = [
     QRScreen(),
     Profile(),
-    // BoltScreen(),
-    FriendScreen(),
+    FriendsGroupsWrapper()
   ]; // list of screens (change through indexing)
 
   int currScreen = 2;
@@ -199,6 +200,7 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
           currentIndex: currScreen,
           onTap: (index) {
             setState(() {
+              HapticFeedback.lightImpact();
               pageController.jumpToPage(index);
               currScreen = index;
             });
