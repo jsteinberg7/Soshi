@@ -60,7 +60,7 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
   List<Widget> screens = [
     QRScreen(),
     Profile(),
-    BoltScreen(),
+    // BoltScreen(),
     FriendScreen(),
   ]; // list of screens (change through indexing)
 
@@ -76,52 +76,52 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
         new DatabaseService(currSoshiUsernameIn: soshiUsername);
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Color.fromARGB(255, 32, 199, 221),
-        //Floating action button on Scaffold
-        onPressed: () async {
-          //code to execute on button press
-          {
-            String QRScanResult = await Utilities.scanQR(mounted);
-            if (QRScanResult.length > 5) {
-              // vibrate when QR code is successfully scanned
-              Vibration.vibrate();
-              try {
-                String friendSoshiUsername = QRScanResult.split("/").last;
-                Map friendData =
-                    await databaseService.getUserFile(friendSoshiUsername);
-                bool isFriendAdded =
-                    await LocalDataService.isFriendAdded(friendSoshiUsername);
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: Color.fromARGB(255, 32, 199, 221),
+      //   //Floating action button on Scaffold
+      //   onPressed: () async {
+      //     //code to execute on button press
+      //     {
+      //       String QRScanResult = await Utilities.scanQR(mounted);
+      //       if (QRScanResult.length > 5) {
+      //         // vibrate when QR code is successfully scanned
+      //         Vibration.vibrate();
+      //         try {
+      //           String friendSoshiUsername = QRScanResult.split("/").last;
+      //           Map friendData =
+      //               await databaseService.getUserFile(friendSoshiUsername);
+      //           bool isFriendAdded =
+      //               await LocalDataService.isFriendAdded(friendSoshiUsername);
 
-                Popups.showUserProfilePopupNew(context,
-                    friendSoshiUsername: friendSoshiUsername,
-                    refreshScreen: () {});
-                if (!isFriendAdded && friendSoshiUsername != soshiUsername) {
-                  // await LocalDataService.addFriend(
-                  //     friendsoshiUsername: friendSoshiUsername);
-                  databaseService.addFriend(
-                      thisSoshiUsername: databaseService.currSoshiUsername,
-                      friendSoshiUsername: friendSoshiUsername);
-                }
+      //           Popups.showUserProfilePopupNew(context,
+      //               friendSoshiUsername: friendSoshiUsername,
+      //               refreshScreen: () {});
+      //           if (!isFriendAdded && friendSoshiUsername != soshiUsername) {
+      //             // await LocalDataService.addFriend(
+      //             //     friendsoshiUsername: friendSoshiUsername);
+      //             databaseService.addFriend(
+      //                 thisSoshiUsername: databaseService.currSoshiUsername,
+      //                 friendSoshiUsername: friendSoshiUsername);
+      //           }
 
-                // bool friendHasTwoWaySharing = await databaseService.getTwoWaySharing(friendData);
-                // if (friendHasTwoWaySharing == null || friendHasTwoWaySharing == true) {
-                //   // if user has two way sharing on, add self to user's friends list
-                //   databaseService.addFriend(thisSoshiUsername: friendSoshiUsername, friendSoshiUsername: databaseService.currSoshiUsername);
-                // }
-                //add friend right here
+      //           // bool friendHasTwoWaySharing = await databaseService.getTwoWaySharing(friendData);
+      //           // if (friendHasTwoWaySharing == null || friendHasTwoWaySharing == true) {
+      //           //   // if user has two way sharing on, add self to user's friends list
+      //           //   databaseService.addFriend(thisSoshiUsername: friendSoshiUsername, friendSoshiUsername: databaseService.currSoshiUsername);
+      //           // }
+      //           //add friend right here
 
-                Analytics.logQRScan(QRScanResult, true, "qrCode.dart");
-              } catch (e) {
-                Analytics.logQRScan(QRScanResult, false, "qrCode.dart");
-                print(e);
-              }
-            }
-          }
-        },
-        child: Icon(Icons.camera_alt_rounded), //icon inside button
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      //           Analytics.logQRScan(QRScanResult, true, "qrCode.dart");
+      //         } catch (e) {
+      //           Analytics.logQRScan(QRScanResult, false, "qrCode.dart");
+      //           print(e);
+      //         }
+      //       }
+      //     }
+      //   },
+      //   child: Icon(Icons.camera_alt_rounded), //icon inside button
+      // ),
+      //floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
       appBar: PreferredSize(
           //Create "Beta" icon on left
@@ -142,65 +142,69 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
         },
       ),
       // bottomNavigationBar: SriCustomBottomNavBar(),
-      bottomNavigationBar: AnimatedBottomNavigationBar(
-        iconSize: 30,
-        icons: [
-          Icons.qr_code,
-          Icons.person,
-          Icons.bolt_sharp,
-          Icons.list,
-        ],
-        backgroundColor: Colors.grey[800],
-        // height: 50,
-        inactiveColor: Colors.white,
-        activeColor: Colors.cyan,
-        activeIndex: currScreen,
-        gapLocation: GapLocation.center,
-        notchSmoothness: NotchSmoothness.softEdge,
-        // onTap: (index) => setState(() => _bottomNavIndex = index),
+      // bottomNavigationBar: AnimatedBottomNavigationBar(
+      //   iconSize: 30,
+      //   icons: [
+      //     Icons.qr_code,
+      //     Icons.person,
+      //     Icons.bolt_sharp,
+      //     Icons.list,
+      //   ],
+      //   backgroundColor: Colors.grey[800],
+      //   // height: 50,
+      //   inactiveColor: Colors.white,
+      //   activeColor: Colors.cyan,
+      //   activeIndex: currScreen,
+      //   gapLocation: GapLocation.center,
+      //   notchSmoothness: NotchSmoothness.softEdge,
+      //   // onTap: (index) => setState(() => _bottomNavIndex = index),
 
-        onTap: (index) {
-          setState(() {
-            // _bottomNavIndex = index
-            currScreen = index;
-          });
-        },
-        //other params
-      ),
-
-      // bottomNavigationBar: SizedBox(
-      //   height: Utilities.getHeight(context) / 12.5,
-      //   child: CustomNavigationBar(
-      //     iconSize: Utilities.getHeight(context) / 35,
-      //     selectedColor: Colors.cyan[300],
-      //     strokeColor: Colors.cyan[800],
-      //     unSelectedColor: Colors.grey[500],
-      //     backgroundColor:
-      //         Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.grey[900],
-      //     items: [
-      //       CustomNavigationBarItem(
-      //         icon: Icon(AntDesign.qrcode),
-      //       ),
-      //       CustomNavigationBarItem(
-      //         icon: Icon(
-      //           AntDesign.home,
-      //         ),
-      //       ),
-      //       CustomNavigationBarItem(
-      //         icon: Icon(
-      //           AntDesign.contacts,
-      //         ),
-      //       ),
-      //     ],
-      //     currentIndex: currScreen,
-      //     onTap: (index) {
-      //       setState(() {
-      //         pageController.jumpToPage(index);
-      //         currScreen = index;
-      //       });
-      //     },
-      //   ),
+      //   onTap: (index) {
+      //     setState(() {
+      //       // _bottomNavIndex = index
+      //       currScreen = index;
+      //     });
+      //   },
+      //   //other params
       // ),
+
+      bottomNavigationBar: SizedBox(
+        height: Utilities.getHeight(context) / 11,
+        child: CustomNavigationBar(
+          iconSize: 40,
+          selectedColor: Colors.cyan[300],
+          strokeColor: Colors.transparent,
+          unSelectedColor: Colors.grey[500],
+          backgroundColor: Theme.of(context).brightness == Brightness.light
+              ? Colors.white
+              : Colors.grey[900],
+          items: [
+            CustomNavigationBarItem(
+              icon: Icon(
+                AntDesign.qrcode,
+                size: 35,
+              ),
+            ),
+            CustomNavigationBarItem(
+                icon: ProfilePic(
+                    radius: 20,
+                    url: LocalDataService.getLocalProfilePictureURL())),
+            CustomNavigationBarItem(
+              icon: Icon(
+                AntDesign.contacts,
+                size: 35,
+              ),
+            ),
+          ],
+          currentIndex: currScreen,
+          onTap: (index) {
+            setState(() {
+              pageController.jumpToPage(index);
+              currScreen = index;
+            });
+          },
+        ),
+      ),
     );
   }
 }

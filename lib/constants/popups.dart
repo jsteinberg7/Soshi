@@ -1518,38 +1518,82 @@ class Popups {
           );
         });
   }
-}
 
-void displayNameErrorPopUp(String firstOrLast, BuildContext context) {
-  showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(40.0))),
-          // backgroundColor: Colors.blueGrey[900],
-          title: Text(
-            "Error",
-            style:
-                TextStyle(color: Colors.cyan[600], fontWeight: FontWeight.bold),
-          ),
-          content: Text(
-            ("$firstOrLast name must be between 1 and 12 characters"),
-            style: TextStyle(
-                //color: Colors.cyan[700],
-                fontWeight: FontWeight.bold),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text(
-                'Ok',
-                style: TextStyle(fontSize: 20),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+  static void displayNameErrorPopUp(String firstOrLast, BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(40.0))),
+            // backgroundColor: Colors.blueGrey[900],
+            title: Text(
+              "Error",
+              style: TextStyle(
+                  color: Colors.cyan[600], fontWeight: FontWeight.bold),
             ),
-          ],
-        );
-      });
+            content: Text(
+              ("$firstOrLast name must be between 1 and 12 characters"),
+              style: TextStyle(
+                //color: Colors.cyan[700],
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                  'Ok',
+                  style: TextStyle(fontSize: 20, color: Colors.blue),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  static void soshiPointsExplainedPopup(
+      BuildContext context, double width, double height) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(40.0))),
+            title: Text(
+              "Soshi bolts",
+              style: TextStyle(fontSize: 25),
+            ),
+            content: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text("You have " +
+                    LocalDataService.getSoshiPoints().toString() +
+                    " Soshi bolts."),
+                Text("Ways you can get more bolts:"),
+                Text("- adding new friends"),
+                Text("- adding a bio, profile picture, or passions"),
+                Text("- joining more groups"),
+                // Text(
+                //     "Who knows what you can get with these points in the future!")
+              ],
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                  'Ok',
+                  style: TextStyle(fontSize: 20),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  }
 }
