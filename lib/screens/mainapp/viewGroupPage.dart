@@ -196,12 +196,41 @@ class _ViewGroupPageState extends State<ViewGroupPage> {
                 padding: const EdgeInsets.only(top: 20.0),
                 child: Column(
                   children: [
-                    Hero(
-                        tag: group.id,
-                        child: RectangularProfilePic(
-                            radius: width / 3, url: group.photoURL)),
-                    SizedBox(height: height / 100),
-                    Text(group.name, style: TextStyle(fontSize: 20.0)),
+                    Text(group.name,
+                        style: TextStyle(
+                            fontSize: 25.0, fontWeight: FontWeight.bold)),
+                    SizedBox(height: height / 80),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.settings),
+                          onPressed: () {
+                            showModalBottomSheet(
+                                isScrollControlled: true,
+                                constraints: BoxConstraints(
+                                  minWidth: width / 1.1,
+                                  maxWidth: width / 1.1,
+                                ),
+                                backgroundColor: Colors.transparent,
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return GroupSettingsPopup(
+                                      context, height, width, databaseService,
+                                      id: group.id,
+                                      isAdmin: isAdmin,
+                                      refreshGroupScreen: refreshGroupPage);
+                                });
+                          },
+                        ),
+                        Hero(
+                            tag: group.id,
+                            child: RectangularProfilePic(
+                                radius: width / 3, url: group.photoURL)),
+                        IconButton(
+                            icon: Icon(Icons.ios_share), onPressed: () {})
+                      ],
+                    ),
                     Padding(
                       padding: const EdgeInsets.only(top: 10.0),
                       child: ElevatedButton(
@@ -539,6 +568,91 @@ class _MemberOptionsPopupState extends State<MemberOptionsPopup> {
                             child: Text("Remove",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(fontSize: width / 22)))),
+                  ],
+                ),
+              )),
+          SizedBox(
+            height: height / 50,
+          ),
+          Container(
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(15.0))),
+            height: height / 15,
+            width: width / 1.1,
+            child: Center(
+              child: GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text("Close",
+                      style: TextStyle(
+                          color: Colors.blue, fontSize: widget.width / 22))),
+            ),
+          ),
+          SizedBox(height: height / 50)
+        ],
+      ),
+    );
+  }
+}
+
+class GroupSettingsPopup extends StatefulWidget {
+  @override
+  State<GroupSettingsPopup> createState() => _GroupSettingsPopupState();
+
+  BuildContext context;
+  double height, width;
+  String id;
+  DatabaseService databaseService;
+  Function refreshGroupScreen;
+  bool isAdmin;
+
+  GroupSettingsPopup(
+      this.context, this.height, this.width, this.databaseService,
+      {@required this.id,
+      @required this.isAdmin,
+      @required this.refreshGroupScreen});
+}
+
+class _GroupSettingsPopupState extends State<GroupSettingsPopup> {
+  double height, width;
+
+  @override
+  Widget build(BuildContext context) {
+    width = widget.width;
+    height = widget.height;
+    return Container(
+      height: height / 2.25,
+      color: Colors.transparent,
+      child: Column(
+        children: [
+          Container(
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(25.0),
+                  )),
+              // height: width / 1.5,
+              width: width / 1.1,
+              // color: Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    widget.isAdmin ? Text("Edit Group") : Container(),
+                    Divider(),
+                    InkWell(
+                        onTap: () {
+                          widget.databaseService.leaveGroup(
+                              widget.id, LocalDataService.getLocalUsername(),
+                              isAdmin: widget.isAdmin);
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        },
+                        child: Text("Leave Group",
+                            style: TextStyle(color: Colors.red)))
                   ],
                 ),
               )),
