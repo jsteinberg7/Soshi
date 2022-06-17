@@ -192,104 +192,128 @@ class _ViewGroupPageState extends State<ViewGroupPage> {
         child: Center(
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 20.0),
-                child: Column(
-                  children: [
-                    Text(group.name,
-                        style: TextStyle(
-                            fontSize: 25.0, fontWeight: FontWeight.bold)),
-                    SizedBox(height: height / 80),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              Stack(
+                children: [
+                  Image.network(group.photoURL),
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Colors.grey[200].withAlpha(200),
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(35.0),
+                            bottomRight: Radius.circular(35.0))),
+                    child: Column(
                       children: [
-                        IconButton(
-                          icon: Icon(Icons.settings),
-                          onPressed: () {
-                            showModalBottomSheet(
-                                isScrollControlled: true,
-                                constraints: BoxConstraints(
-                                  minWidth: width / 1.1,
-                                  maxWidth: width / 1.1,
-                                ),
-                                backgroundColor: Colors.transparent,
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return GroupSettingsPopup(
-                                      context, height, width, databaseService,
-                                      id: group.id,
-                                      isAdmin: isAdmin,
-                                      refreshGroupScreen: refreshGroupPage);
-                                });
-                          },
+                        Padding(
+                          padding: const EdgeInsets.only(top: 20.0),
+                          child: Column(
+                            children: [
+                              Text(group.name,
+                                  style: TextStyle(
+                                      fontSize: 25.0,
+                                      fontWeight: FontWeight.bold)),
+                              SizedBox(height: height / 80),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  IconButton(
+                                    icon: Icon(Icons.settings),
+                                    onPressed: () {
+                                      showModalBottomSheet(
+                                          isScrollControlled: true,
+                                          constraints: BoxConstraints(
+                                            minWidth: width / 1.1,
+                                            maxWidth: width / 1.1,
+                                          ),
+                                          backgroundColor: Colors.transparent,
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return GroupSettingsPopup(context,
+                                                height, width, databaseService,
+                                                id: group.id,
+                                                isAdmin: isAdmin,
+                                                refreshGroupScreen:
+                                                    refreshGroupPage);
+                                          });
+                                    },
+                                  ),
+                                  Hero(
+                                      tag: group.id,
+                                      child: RectangularProfilePic(
+                                          radius: width / 3,
+                                          url: group.photoURL)),
+                                  IconButton(
+                                      icon: Icon(Icons.ios_share),
+                                      onPressed: () {})
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 10.0),
+                                child: ElevatedButton(
+                                    onPressed: () {
+                                      HapticFeedback.mediumImpact();
+                                      showModalBottomSheet(
+                                          isScrollControlled: true,
+                                          constraints: BoxConstraints(
+                                            minWidth: width / 1.1,
+                                            maxWidth: width / 1.1,
+                                          ),
+                                          backgroundColor: Colors.transparent,
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return ShareGroupPopup(
+                                                id: group.id,
+                                                height: height,
+                                                width: width);
+                                          });
+                                    },
+                                    child: Container(
+                                        width: width / 3.5,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                "Share",
+                                                style: TextStyle(
+                                                    color: Theme.of(context)
+                                                                .brightness ==
+                                                            Brightness.light
+                                                        ? Colors.white
+                                                        : Colors.black,
+                                                    fontSize: 20.0),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              Icon(
+                                                Icons.share,
+                                                color: Theme.of(context)
+                                                            .brightness ==
+                                                        Brightness.light
+                                                    ? Colors.white
+                                                    : Colors.black,
+                                              )
+                                            ],
+                                          ),
+                                        )),
+                                    style: ElevatedButton.styleFrom(
+                                        primary: Theme.of(context).brightness !=
+                                                Brightness.light
+                                            ? Colors.white
+                                            : Colors.black,
+                                        elevation: 8.0,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15.0)))),
+                              )
+                            ],
+                          ),
                         ),
-                        Hero(
-                            tag: group.id,
-                            child: RectangularProfilePic(
-                                radius: width / 3, url: group.photoURL)),
-                        IconButton(
-                            icon: Icon(Icons.ios_share), onPressed: () {})
                       ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10.0),
-                      child: ElevatedButton(
-                          onPressed: () {
-                            HapticFeedback.mediumImpact();
-                            showModalBottomSheet(
-                                isScrollControlled: true,
-                                constraints: BoxConstraints(
-                                  minWidth: width / 1.1,
-                                  maxWidth: width / 1.1,
-                                ),
-                                backgroundColor: Colors.transparent,
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return ShareGroupPopup(
-                                      id: group.id,
-                                      height: height,
-                                      width: width);
-                                });
-                          },
-                          child: Container(
-                              width: width / 3.5,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Share",
-                                      style: TextStyle(
-                                          color: Theme.of(context).brightness ==
-                                                  Brightness.light
-                                              ? Colors.white
-                                              : Colors.black,
-                                          fontSize: 20.0),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    Icon(
-                                      Icons.share,
-                                      color: Theme.of(context).brightness ==
-                                              Brightness.light
-                                          ? Colors.white
-                                          : Colors.black,
-                                    )
-                                  ],
-                                ),
-                              )),
-                          style: ElevatedButton.styleFrom(
-                              primary: Theme.of(context).brightness !=
-                                      Brightness.light
-                                  ? Colors.white
-                                  : Colors.black,
-                              elevation: 8.0,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.0)))),
-                    )
-                  ],
-                ),
+                  ),
+                ],
               ),
               FutureBuilder(
                 future: generateGroupUsers(),
@@ -626,6 +650,7 @@ class _GroupSettingsPopupState extends State<GroupSettingsPopup> {
       height: height / 2.25,
       color: Colors.transparent,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Container(
               decoration: BoxDecoration(
@@ -633,15 +658,18 @@ class _GroupSettingsPopupState extends State<GroupSettingsPopup> {
                   borderRadius: BorderRadius.all(
                     Radius.circular(25.0),
                   )),
-              // height: width / 1.5,
+              height: width / 3,
               width: width / 1.1,
               // color: Colors.white,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    widget.isAdmin ? Text("Edit Group") : Container(),
+                    widget.isAdmin
+                        ? Text("Edit Group",
+                            style: TextStyle(fontSize: widget.width / 22))
+                        : Container(),
                     Divider(),
                     InkWell(
                         onTap: () {
@@ -652,7 +680,9 @@ class _GroupSettingsPopupState extends State<GroupSettingsPopup> {
                           Navigator.pop(context);
                         },
                         child: Text("Leave Group",
-                            style: TextStyle(color: Colors.red)))
+                            style: TextStyle(
+                                color: Colors.red,
+                                fontSize: widget.width / 22)))
                   ],
                 ),
               )),
