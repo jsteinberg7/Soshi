@@ -36,6 +36,7 @@ class _MyAppState extends State<MyApp> {
             debugShowCheckedModeBanner: false,
             themeMode: ThemeMode.system,
             theme: ThemeData(
+              
               brightness: Brightness.light,
               backgroundColor: Colors.grey[50],
               primarySwatch: MaterialColor(
@@ -63,6 +64,7 @@ class _MyAppState extends State<MyApp> {
               cardColor: Colors.white,
               dividerColor: Color(0x1f6D42CE),
               focusColor: Color(0x1aF5E0C3),
+
               textSelectionTheme:
                   TextSelectionThemeData(cursorColor: Colors.cyan[500]),
               elevatedButtonTheme: ElevatedButtonThemeData(style: ButtonStyle(

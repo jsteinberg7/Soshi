@@ -701,7 +701,7 @@ class ProfileState extends State<Profile> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'Toggle',
+                        'Socials',
                         style: TextStyle(
                           color: Colors.grey,
                           letterSpacing: 2,

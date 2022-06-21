@@ -257,6 +257,7 @@ class _FriendScreenState extends State<FriendScreen>
     double height = Utilities.getHeight(context);
 
     return Container(
+      height: height / 9,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(10.0, 5, 30, 5),
         child: ListTile(
@@ -786,7 +787,7 @@ class _FriendScreenState extends State<FriendScreen>
                     child: AlphabetListScrollView(
                       strList: friendsListNames,
                       indexedHeight: (i) {
-                        return 102;
+                        return height / 7;
                       },
                       itemBuilder: (BuildContext context, int i) {
                         if (i >= formattedFriendsList.length) {
@@ -798,12 +799,12 @@ class _FriendScreenState extends State<FriendScreen>
                                 context: context,
                                 friend: formattedFriendsList[i],
                                 databaseService: databaseService),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(20, 0, 50, 0),
-                              child: Divider(
-                                color: Colors.grey[500],
-                              ),
-                            )
+                            // Padding(
+                            //   padding: const EdgeInsets.fromLTRB(20, 0, 50, 0),
+                            //   child: Divider(
+                            //     color: Colors.grey[500],
+                            //   ),
+                            // )
                           ],
                         );
                       },

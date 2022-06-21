@@ -97,7 +97,7 @@ class _GroupScreenState extends State<GroupScreen> {
                             prefixIcon: Icon(
                               Icons.search,
                             ),
-                            labelText: "Search for a group..."),
+                            labelText: "Search groups..."),
                       ),
                     ),
                   ),

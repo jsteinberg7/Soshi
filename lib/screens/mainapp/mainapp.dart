@@ -60,7 +60,7 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
   }
 
   List<Widget> screens = [
-    QRScreen(),
+    NewQRScreen(),
     Profile(),
     FriendsGroupsWrapper()
   ]; // list of screens (change through indexing)

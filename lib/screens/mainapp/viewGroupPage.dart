@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:async/async.dart';
+import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -13,6 +16,7 @@ import '../../services/database.dart';
 import '../../services/localData.dart';
 import 'friendScreen.dart';
 import 'groupScreen.dart';
+import 'package:flip_card/flip_card.dart';
 
 class ViewGroupPage extends StatefulWidget {
   @override
@@ -29,6 +33,7 @@ class _ViewGroupPageState extends State<ViewGroupPage> {
   AsyncMemoizer memoizer;
   bool isAdmin;
   List<Friend> membersList, adminList;
+  FlipCardController flipController;
   @override
   void initState() {
     String username = LocalDataService.getLocalUsernameForPlatform("Soshi");
@@ -36,18 +41,32 @@ class _ViewGroupPageState extends State<ViewGroupPage> {
     this.group = widget.group;
     this.memoizer = new AsyncMemoizer();
     isAdmin = group.admin.contains(username);
+    flipController = new FlipCardController();
     super.initState();
   }
 
-  void refreshGroupPage({@required String type, Friend member}) {
+  /* 
+  member param is required only for "promote" -- otherwise, use username 
+  username and isAdmin param required only for "leave"
+  */
+  void refreshGroupPage({
+    @required String type,
+    String username,
+    Friend member,
+    bool isAdmin = false,
+  }) {
     setState(() {
-      String username = member.soshiUsername;
       if (type == "leave") {
-        widget.group.members.remove(username);
-        membersList.remove(member);
+        if (!isAdmin) {
+          widget.group.members.remove(username);
+          membersList.removeWhere((m) => m.soshiUsername == username);
+        } else {
+          widget.group.admin.remove(username);
+          adminList.removeWhere((m) => m.soshiUsername == username);
+        }
       } else if (type == "promote") {
-        widget.group.members.remove(username);
-        widget.group.admin.add(username);
+        widget.group.members.remove(member);
+        widget.group.admin.add(member.soshiUsername);
         membersList.remove(member);
         adminList.add(member);
       }
@@ -185,146 +204,212 @@ class _ViewGroupPageState extends State<ViewGroupPage> {
     double height = Utilities.getHeight(context);
     double width = Utilities.getWidth(context);
     return Scaffold(
-      appBar: AppBar(),
+      // appBar: AppBar(),
       body: SingleChildScrollView(
           child: Container(
+        color: Colors.transparent,
         height: height,
         child: Center(
           child: Column(
             children: [
-              Stack(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(35.0),
-                        bottomRight: Radius.circular(35.0)),
-                    child: Image.network(
-                      group.photoURL,
-                      fit: BoxFit.fill,
-                      height: height / 3,
-                      width: width,
-                    ),
-                  ),
-                  Container(
-                    height: height / 3,
-                    decoration: BoxDecoration(
-                        color: Colors.grey[200].withAlpha(200),
+              Container(
+                color: Colors.white,
+                child: PhysicalModel(
+                  color: Colors.transparent,
+                  elevation: 3.0,
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(35.0),
+                      bottomRight: Radius.circular(35.0)),
+                  child: Stack(
+                    children: [
+                      ClipRRect(
                         borderRadius: BorderRadius.only(
                             bottomLeft: Radius.circular(35.0),
-                            bottomRight: Radius.circular(35.0))),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 20.0),
+                            bottomRight: Radius.circular(35.0)),
+                        child: ImageFiltered(
+                          imageFilter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                          child: Image.network(
+                            group.photoURL,
+                            fit: BoxFit.fill,
+                            height: height / 3.2,
+                            width: width,
+                          ),
+                        ),
+                      ),
+                      FlipCard(
+                        flipOnTouch: true,
+                        controller: flipController,
+                        direction: FlipDirection.HORIZONTAL,
+                        speed: 700,
+                        front: Container(
+                          height: height / 3.2,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200].withAlpha(150),
+                            borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(35.0),
+                                bottomRight: Radius.circular(35.0)),
+                          ),
                           child: Column(
                             children: [
-                              Text(group.name,
-                                  style: TextStyle(
-                                      fontSize: 25.0,
-                                      fontWeight: FontWeight.bold)),
-                              SizedBox(height: height / 80),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  IconButton(
-                                    icon: Icon(Icons.settings),
-                                    onPressed: () {
-                                      showModalBottomSheet(
-                                          isScrollControlled: true,
-                                          constraints: BoxConstraints(
-                                            minWidth: width / 1.1,
-                                            maxWidth: width / 1.1,
-                                          ),
-                                          backgroundColor: Colors.transparent,
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return GroupSettingsPopup(context,
-                                                height, width, databaseService,
-                                                id: group.id,
-                                                isAdmin: isAdmin,
-                                                refreshGroupScreen:
-                                                    refreshGroupPage);
-                                          });
-                                    },
-                                  ),
-                                  Hero(
-                                      tag: group.id,
-                                      child: RectangularProfilePic(
-                                          radius: width / 3,
-                                          url: group.photoURL)),
-                                  IconButton(
-                                      icon: Icon(Icons.ios_share),
-                                      onPressed: () {})
-                                ],
-                              ),
                               Padding(
-                                padding: const EdgeInsets.only(top: 10.0),
-                                child: ElevatedButton(
-                                    onPressed: () {
-                                      HapticFeedback.mediumImpact();
-                                      showModalBottomSheet(
-                                          isScrollControlled: true,
-                                          constraints: BoxConstraints(
-                                            minWidth: width / 1.1,
-                                            maxWidth: width / 1.1,
+                                padding: const EdgeInsets.only(top: 35.0),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        IconButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            icon:
+                                                Icon(Icons.arrow_back_ios_new)),
+                                        Text(group.name,
+                                            style: TextStyle(
+                                                fontSize: 25.0,
+                                                fontWeight: FontWeight.bold)),
+                                        IconButton(
+                                          icon: Icon(
+                                            Icons.arrow_back_ios_new,
+                                            color: Colors.transparent,
                                           ),
-                                          backgroundColor: Colors.transparent,
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return ShareGroupPopup(
-                                                id: group.id,
-                                                height: height,
-                                                width: width);
-                                          });
-                                    },
-                                    child: Container(
-                                        width: width / 3.5,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                "Share",
-                                                style: TextStyle(
-                                                    color: Theme.of(context)
-                                                                .brightness ==
-                                                            Brightness.light
-                                                        ? Colors.white
-                                                        : Colors.black,
-                                                    fontSize: 20.0),
-                                                textAlign: TextAlign.center,
-                                              ),
-                                              Icon(
-                                                Icons.share,
-                                                color: Theme.of(context)
-                                                            .brightness ==
-                                                        Brightness.light
-                                                    ? Colors.white
-                                                    : Colors.black,
-                                              )
-                                            ],
-                                          ),
-                                        )),
-                                    style: ElevatedButton.styleFrom(
-                                        primary: Theme.of(context).brightness !=
-                                                Brightness.light
-                                            ? Colors.white
-                                            : Colors.black,
-                                        elevation: 8.0,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(15.0)))),
-                              )
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        IconButton(
+                                          icon: Icon(Icons.settings_outlined,
+                                              size: 30),
+                                          onPressed: () {
+                                            showModalBottomSheet(
+                                                isScrollControlled: true,
+                                                constraints: BoxConstraints(
+                                                  minWidth: width / 1.1,
+                                                  maxWidth: width / 1.1,
+                                                ),
+                                                backgroundColor:
+                                                    Colors.transparent,
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return GroupSettingsPopup(
+                                                      context,
+                                                      height,
+                                                      width,
+                                                      databaseService,
+                                                      id: group.id,
+                                                      isAdmin: isAdmin,
+                                                      refreshGroupScreen:
+                                                          refreshGroupPage);
+                                                });
+                                          },
+                                        ),
+                                        Hero(
+                                            tag: group.id,
+                                            child: RectangularProfilePic(
+                                                radius: width / 3,
+                                                url: group.photoURL)),
+                                        IconButton(
+                                            icon: Icon(Icons.qr_code_rounded,
+                                                size: 30),
+                                            onPressed: () {
+                                              flipController.toggleCard();
+                                            })
+                                      ],
+                                    ),
+                                    // Padding(
+                                    //   padding: const EdgeInsets.only(top: 10.0),
+                                    //   child: ElevatedButton(
+                                    //       onPressed: () {
+                                    //         HapticFeedback.mediumImpact();
+                                    //         showModalBottomSheet(
+                                    //             isScrollControlled: true,
+                                    //             constraints: BoxConstraints(
+                                    //               minWidth: width / 1.1,
+                                    //               maxWidth: width / 1.1,
+                                    //             ),
+                                    //             backgroundColor:
+                                    //                 Colors.transparent,
+                                    //             context: context,
+                                    //             builder: (BuildContext context) {
+                                    //               return ShareGroupPopup(
+                                    //                   id: group.id,
+                                    //                   height: height,
+                                    //                   width: width);
+                                    //             });
+                                    //       },
+                                    //       child: Container(
+                                    //           width: width / 3.5,
+                                    //           child: Padding(
+                                    //             padding:
+                                    //                 const EdgeInsets.all(8.0),
+                                    //             child: Row(
+                                    //               mainAxisAlignment:
+                                    //                   MainAxisAlignment
+                                    //                       .spaceBetween,
+                                    //               children: [
+                                    //                 Text(
+                                    //                   "Share",
+                                    //                   style: TextStyle(
+                                    //                       color: Theme.of(context)
+                                    //                                   .brightness ==
+                                    //                               Brightness.light
+                                    //                           ? Colors.white
+                                    //                           : Colors.black,
+                                    //                       fontSize: 20.0),
+                                    //                   textAlign: TextAlign.center,
+                                    //                 ),
+                                    //                 Icon(
+                                    //                   Icons.share,
+                                    //                   color: Theme.of(context)
+                                    //                               .brightness ==
+                                    //                           Brightness.light
+                                    //                       ? Colors.white
+                                    //                       : Colors.black,
+                                    //                 )
+                                    //               ],
+                                    //             ),
+                                    //           )),
+                                    //       style: ElevatedButton.styleFrom(
+                                    //           primary:
+                                    //               Theme.of(context).brightness !=
+                                    //                       Brightness.light
+                                    //                   ? Colors.white
+                                    //                   : Colors.black,
+                                    //           elevation: 8.0,
+                                    //           shape: RoundedRectangleBorder(
+                                    //               borderRadius:
+                                    //                   BorderRadius.circular(
+                                    //                       15.0)))),
+                                    // )
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
                         ),
-                      ],
-                    ),
+                        back: Container(
+                            height: height / 3.2,
+                            width: width,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200].withAlpha(150),
+                              borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(35.0),
+                                  bottomRight: Radius.circular(35.0)),
+                            ),
+                            child: Center(
+                                child: QrImage(
+                              data: "https://soshi.app/group/${group.id}",
+                              size: 150,
+                            ))),
+                      )
+                    ],
                   ),
-                ],
+                ),
               ),
               FutureBuilder(
                 future: generateGroupUsers(),
@@ -339,7 +424,7 @@ class _ViewGroupPageState extends State<ViewGroupPage> {
                         Align(
                           child: Padding(
                             padding: const EdgeInsets.fromLTRB(
-                                10.0, 10.0, 10.0, 2.0),
+                                10.0, 20.0, 10.0, 2.0),
                             child: Text("Admin (${admin.length})"),
                           ),
                           alignment: Alignment.topLeft,
@@ -595,7 +680,9 @@ class _MemberOptionsPopupState extends State<MemberOptionsPopup> {
                               widget.id, widget.member.soshiUsername);
 
                           widget.refreshGroupScreen(
-                              type: "leave", member: widget.member);
+                            type: "leave",
+                            username: widget.member.soshiUsername,
+                          );
                           Navigator.pop(context);
                         },
                         child: Container(
@@ -669,7 +756,7 @@ class _GroupSettingsPopupState extends State<GroupSettingsPopup> {
                   borderRadius: BorderRadius.all(
                     Radius.circular(25.0),
                   )),
-              height: width / 3,
+              height: widget.isAdmin ? width / 3 : width / 6,
               width: width / 1.1,
               // color: Colors.white,
               child: Padding(
@@ -677,15 +764,20 @@ class _GroupSettingsPopupState extends State<GroupSettingsPopup> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    widget.isAdmin
-                        ? Text("Edit Group",
-                            style: TextStyle(fontSize: widget.width / 22))
-                        : Container(),
-                    Divider(),
+                    Visibility(
+                      visible: widget.isAdmin,
+                      child: Text("Edit Group",
+                          style: TextStyle(fontSize: widget.width / 22)),
+                    ),
+                    Visibility(visible: widget.isAdmin, child: Divider()),
                     InkWell(
                         onTap: () {
                           widget.databaseService.leaveGroup(
                               widget.id, LocalDataService.getLocalUsername(),
+                              isAdmin: widget.isAdmin);
+                          widget.refreshGroupScreen(
+                              type: "leave",
+                              username: LocalDataService.getLocalUsername(),
                               isAdmin: widget.isAdmin);
                           Navigator.pop(context);
                           Navigator.pop(context);
