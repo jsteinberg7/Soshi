@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:alphabet_list_scroll_view/alphabet_list_scroll_view.dart';
 import 'package:async/async.dart';
@@ -26,15 +27,16 @@ class Friend {
   bool isVerified;
   Map<String, dynamic> switches, usernames;
   Map<String, dynamic> enabledUsernames;
-  Friend(
-      {this.soshiUsername,
-      this.fullName,
-      this.photoURL,
-      this.isVerified,
-      this.switches,
-      this.usernames,
-      this.enabledUsernames // only use when coming from json
-      });
+
+  Friend({
+    this.soshiUsername,
+    this.fullName,
+    this.photoURL,
+    this.isVerified,
+    this.switches,
+    this.usernames,
+    this.enabledUsernames, // only use when coming from json
+  });
 
   // takes in a single json pertaining to a friend, returns Friend object
   static Friend jsonToFriend(String json) {
@@ -76,7 +78,8 @@ class FriendScreen extends StatefulWidget {
   _FriendScreenState createState() => _FriendScreenState();
 }
 
-class _FriendScreenState extends State<FriendScreen> {
+class _FriendScreenState extends State<FriendScreen>
+    with TickerProviderStateMixin {
   List recentFriendsList;
   List friendsList;
   List<Friend> formattedFriendsList = [];
@@ -86,15 +89,16 @@ class _FriendScreenState extends State<FriendScreen> {
   List<String> friendsListNames;
   TextEditingController searchController;
   AsyncMemoizer memoizer;
-  bool hideRecents;
+  bool hideRecents, isSearching;
   bool showKeyboard;
+
   @override
   void initState() {
     friendsListNames = LocalDataService.getLocalFriendsListNames();
     recentFriendsList = LocalDataService.getRecentlyAddedFriends();
     friendsList = LocalDataService.getLocalFriendsList();
     friendsListJson = LocalDataService.getLocalFriendsList();
-    showKeyboard = false;
+    showKeyboard = isSearching = false;
     hideRecents =
         (friendsList.length < 5); // hide recents if 5 or fewer total friends
 
@@ -106,6 +110,7 @@ class _FriendScreenState extends State<FriendScreen> {
       } else {
         // if empty, go back to full list
         setState(() {
+          isSearching = true;
           formattedFriendsList = List.from(formattedFriendsListOriginal);
         });
       }
@@ -256,7 +261,7 @@ class _FriendScreenState extends State<FriendScreen> {
         padding: const EdgeInsets.fromLTRB(10.0, 5, 30, 5),
         child: ListTile(
             onTap: () async {
-              Popups.showUserProfilePopupNew(context,
+              Popups.showUserProfileModal(context,
                   friendSoshiUsername: friend.soshiUsername,
                   refreshScreen: refreshFriendScreen,
                   friend: friend); // show friend popup when tile is pressed
@@ -650,155 +655,131 @@ class _FriendScreenState extends State<FriendScreen> {
     //         recentFriendsList = snapshot.data[0];
     //         friendsList = snapshot.data[1];
     return SingleChildScrollView(
-      child: Column(
-        children: <Widget>[
-          SizedBox(height: 10),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <
-              Widget>[
-            ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    // primary: Constants.buttonColorDark,
-                    shape: CircleBorder()),
-                onPressed: () async {
-                  String QRScanResult = await Utilities.scanQR(mounted);
-                  if (QRScanResult.length > 5) {
-                    // vibrate when QR code is successfully scanned
-                    Vibration.vibrate();
-                    try {
-                      String friendSoshiUsername = QRScanResult.split("/").last;
-                      Map friendData = await databaseService
-                          .getUserFile(friendSoshiUsername);
-                      Friend friend =
-                          databaseService.userDataToFriend(friendData);
-                      bool isFriendAdded = await LocalDataService.isFriendAdded(
-                          friendSoshiUsername);
+        child: Column(
+      children: <Widget>[
+        SizedBox(height: 10),
+        Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+          //   Padding(
+          //     padding: EdgeInsets.fromLTRB(10, 5, 0, 5),
+          //     child: ElevatedButton(
+          //         style: ElevatedButton.styleFrom(
+          //             // primary: Constants.buttonColorDark,
+          //             shape: CircleBorder()),
+          //         onPressed: () async {
+          //           String QRScanResult = await Utilities.scanQR(mounted);
+          //           if (QRScanResult.length > 5) {
+          //             // vibrate when QR code is successfully scanned
+          //             Vibration.vibrate();
+          //             try {
+          //               String friendSoshiUsername = QRScanResult.split("/").last;
+          //               Map friendData = await databaseService
+          //                   .getUserFile(friendSoshiUsername);
+          //               Friend friend =
+          //                   databaseService.userDataToFriend(friendData);
+          //               bool isFriendAdded = await LocalDataService.isFriendAdded(
+          //                   friendSoshiUsername);
 
-                      Popups.showUserProfilePopupNew(context,
-                          friendSoshiUsername: friendSoshiUsername,
-                          refreshScreen: () {});
-                      if (!isFriendAdded &&
-                          friendSoshiUsername !=
-                              databaseService.currSoshiUsername) {
-                        List<String> newFriendsList =
-                            await LocalDataService.addFriend(friend: friend);
+          //               Popups.showUserProfilePopupNew(context,
+          //                   friendSoshiUsername: friendSoshiUsername,
+          //                   refreshScreen: () {});
+          //               if (!isFriendAdded &&
+          //                   friendSoshiUsername !=
+          //                       databaseService.currSoshiUsername) {
+          //                 List<String> newFriendsList =
+          //                     await LocalDataService.addFriend(friend: friend);
 
-                        databaseService.overwriteFriendsList(newFriendsList);
-                        // update local lists
+          //                 databaseService.overwriteFriendsList(newFriendsList);
+          //                 // update local lists
 
-                        refreshFriendScreen();
-                        // databaseService.addFriend(
-                        //     thisSoshiUsername:
-                        //         databaseService.currSoshiUsername,
-                        //     friendSoshiUsername: friendSoshiUsername);
-                      }
+          //                 refreshFriendScreen();
+          //                 // databaseService.addFriend(
+          //                 //     thisSoshiUsername:
+          //                 //         databaseService.currSoshiUsername,
+          //                 //     friendSoshiUsername: friendSoshiUsername);
+          //               }
 
-                      // bool friendHasTwoWaySharing = await databaseService.getTwoWaySharing(friendData);
-                      // if (friendHasTwoWaySharing == null || friendHasTwoWaySharing == true) {
-                      //   // if user has two way sharing on, add self to user's friends list
-                      //   databaseService.addFriend(thisSoshiUsername: friendSoshiUsername, friendSoshiUsername: databaseService.currSoshiUsername);
-                      // }
-                      //add friend right here
+          //               // bool friendHasTwoWaySharing = await databaseService.getTwoWaySharing(friendData);
+          //               // if (friendHasTwoWaySharing == null || friendHasTwoWaySharing == true) {
+          //               //   // if user has two way sharing on, add self to user's friends list
+          //               //   databaseService.addFriend(thisSoshiUsername: friendSoshiUsername, friendSoshiUsername: databaseService.currSoshiUsername);
+          //               // }
+          //               //add friend right here
 
-                      Analytics.logQRScan(
-                          QRScanResult, true, "friendScreen.dart corner icon");
-                    } catch (e) {
-                      Analytics.logQRScan(
-                          QRScanResult, false, "friendScreen.dart corner icon");
-                      print(e);
-                    }
-                  }
-                },
-                child: Icon(Icons.qr_code_scanner_sharp,
-                    // color: Colors.cyan[300],
-                    size: width / 20)),
-            Column(
-              children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.emoji_people, // or Icons.poeple_round
-                      color: Colors.cyan,
-                      size: 30,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 3),
-                      child: Text(
-                        "Friends: " +
-                            LocalDataService.getFriendsListCount().toString(),
-                        //textAlign: TextAlign.center,
-                        style: TextStyle(
-                            // color: Colors.white,
-                            fontSize: 30.0,
-                            fontWeight: FontWeight.bold,
-                            fontStyle: FontStyle.italic),
-                      ),
-                    ),
-                  ],
-                ),
-                // Padding(
-                //   padding: const EdgeInsets.only(top: 3),
-                //   child: Text(
-                //     "Total: " +
-                //         LocalDataService.getFriendsListCount().toString(),
-                //     style: TextStyle(
-                //         // color: Colors.cyan[300]
-                //         ),
-                //   ),
-                // ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    elevation: 3,
-                    shadowColor: Colors.cyan,
-                    shape: new RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(30.0),
-                    ),
-                  ),
-                  onPressed: () {
-                    Popups.soshiPointsExplainedPopup(context, width, height);
-                  },
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Container(
-                        width: width / 18,
-                        child:
-                            Flex(direction: Axis.horizontal, children: <Widget>[
-                          Expanded(
-                              child: Image.asset(
-                            "assets/images/SoshiLogos/soshi_icon_circular.png",
-                          )),
-                        ]),
-                      ),
-                      SizedBox(
-                        width: 4,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 0),
-                        child: Text(
-                          LocalDataService.getSoshiPoints().toString(),
-                          style: TextStyle(fontSize: width / 22
-                              // color: Colors.cyan[300]
-                              ),
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-            ShareButton(
-              size: width / 20,
-              soshiUsername: LocalDataService.getLocalUsername(),
-            ),
-          ]),
-          // Padding(
-          //   padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-          //   child: Divider(
-          //     color: Colors.cyan,
+          //               Analytics.logQRScan(
+          //                   QRScanResult, true, "friendScreen.dart corner icon");
+          //             } catch (e) {
+          //               Analytics.logQRScan(
+          //                   QRScanResult, false, "friendScreen.dart corner icon");
+          //               print(e);
+          //             }
+          //           }
+          //         },
+          //         child: Icon(Icons.qr_code_scanner_sharp,
+          //             // color: Colors.cyan[300],
+          //             size: width / 20)),
           //   ),
-          // ),
-          Container(
-            child: formattedFriendsList.isNotEmpty
+          //   Padding(
+          //     padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+          //     child: Column(
+          //       children: [
+          //         Row(
+          //           children: [
+          //             Icon(
+          //               Icons.emoji_people, // or Icons.poeple_round
+          //               color: Colors.cyan,
+          //               size: 30,
+          //             ),
+          //             Padding(
+          //               padding: const EdgeInsets.only(left: 5),
+          //               child: Text(
+          //                 "Friends",
+          //                 //textAlign: TextAlign.center,
+          //                 style: TextStyle(
+          //                     // color: Colors.white,
+          //                     fontSize: 30.0,
+          //                     fontWeight: FontWeight.bold,
+          //                     fontStyle: FontStyle.italic),
+          //               ),
+          //             ),
+          //           ],
+          //         ),
+          //         Padding(
+          //           padding: const EdgeInsets.only(top: 3),
+          //           child: Text(
+          //             "Total: " +
+          //                 LocalDataService.getFriendsListCount().toString(),
+          //             style: TextStyle(
+          //                 // color: Colors.cyan[300]
+          //                 ),
+          //           ),
+          //         )
+          //       ],
+          //     ),
+          //   ),
+          //   Padding(
+          //       padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
+          //       child: ShareButton(
+          //         size: width / 20,
+          //         soshiUsername: LocalDataService.getLocalUsername(),
+          //       )
+          //       // AddedMeButton(
+          //       //   size: width / 20,
+          //       //   soshiUsername: LocalDataService.getLocalUsername(),
+          //       //   databaseService: databaseService,
+          //       // ),
+          //       ),
+        ]),
+        // Padding(
+        //   padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+        //   child: Divider(
+        //     color: Colors.cyan,
+        //     thickness: 1,
+        //   ),
+        // ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+          child: Container(
+            child: formattedFriendsList.isNotEmpty || isSearching
                 ? Container(
                     height: height,
                     width: width,
@@ -832,24 +813,40 @@ class _FriendScreenState extends State<FriendScreen> {
                         AlphabetScrollListHeader(
                             widgetList: [
                               Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: TextFormField(
-                                  controller: searchController,
-                                  decoration: InputDecoration(
-                                    hintText: 'Search "Jason"',
-                                    border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(15.0)),
-                                    prefixIcon: Icon(
-                                      Icons.search,
+                                padding: const EdgeInsets.fromLTRB(
+                                    16.0, 0, 16.0, 5.0),
+                                child: Container(
+                                  height: height / 18,
+                                  child: TextFormField(
+                                    controller: searchController,
+                                    decoration: InputDecoration(
+                                      hintText: 'Search \"${[
+                                        "Jason S",
+                                        "Yuvan",
+                                        "Kallie",
+                                        "Michelle",
+                                        "Sid Jagtap",
+                                        "Sri"
+                                      ][Random().nextInt(5)]}\"',
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(15.0)),
+                                      prefixIcon: Icon(
+                                        Icons.search,
+                                      ),
+                                      labelText:
+                                          "Search ${formattedFriendsList.length} " +
+                                              ((formattedFriendsList.length > 1)
+                                                  ? "friends..."
+                                                  : "friend..."),
                                     ),
-                                    labelText: "Search for a friend...",
                                   ),
                                 ),
                               )
                             ],
                             icon: Icon(Icons.search),
-                            indexedHeaderHeight: (index) => 80),
+                            indexedHeaderHeight: (index) =>
+                                5.0 + (height / 18)),
                         (formattedRecentsList.isNotEmpty && !hideRecents)
                             ? AlphabetScrollListHeader(
                                 widgetList: [
@@ -874,28 +871,28 @@ class _FriendScreenState extends State<FriendScreen> {
                                                     const EdgeInsets.fromLTRB(
                                                         20, 0, 20, 0),
                                                 child: Divider(
-                                                  color: Colors.red,
+                                                  color: (i ==
+                                                          formattedFriendsList
+                                                                  .length -
+                                                              1)
+                                                      ? Colors.red
+                                                      : Theme.of(context)
+                                                          .dividerColor,
                                                 ),
                                               )
                                             ],
                                           );
                                         }),
-                                    Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            16.0, 10.0, 16.0, 0.0),
-                                        child: Text("A-Z")),
+                                    // Padding(
+                                    //     padding: const EdgeInsets.fromLTRB(
+                                    //         16.0, 10.0, 16.0, 0.0),
+                                    //     child: Text("A-Z")),
+                                    Text("A-Z")
                                   ],
                                 icon: Icon(Icons.star),
-                                indexedHeaderHeight: (index) {
-                                  if (index == 0) {
-                                    return 30;
-                                  } else if (index ==
-                                      formattedRecentsList.length + 1) {
-                                    return 30;
-                                  } else {
-                                    return 102;
-                                  }
-                                })
+                                indexedHeaderHeight: (index) => (index == 1)
+                                    ? recentFriendsList.length * 102.0
+                                    : 32.0)
                             : AlphabetScrollListHeader(
                                 widgetList: [],
                                 icon: Icon(Icons.star),
@@ -956,15 +953,20 @@ class _FriendScreenState extends State<FriendScreen> {
                     ),
                   ),
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 5, 0, 20),
-            child: Constants.makeBlueShadowButton(
-                "Add new friends", Icons.person_add, () async {
-              String QRScanResult = await Utilities.scanQR(mounted);
-              if (QRScanResult.length > 5) {
-                // vibrate when QR code is successfully scanned
-                Vibration.vibrate();
-                try {
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 5, 0, 20),
+          child: Constants.makeBlueShadowButton(
+              "Add new friends", Icons.person_add, () async {
+            String QRScanResult = await Utilities.scanQR(mounted);
+            if (QRScanResult.length > 5) {
+              // vibrate when QR code is successfully scanned
+              Vibration.vibrate();
+              try {
+                if (QRScanResult.contains("https://soshi.app/group/")) {
+                  String groupId = QRScanResult.split("/").last;
+                  await Popups.showJoinGroupPopup(context, groupId);
+                } else {
                   String friendSoshiUsername = QRScanResult.split("/").last;
                   Map friendData =
                       await databaseService.getUserFile(friendSoshiUsername);
@@ -997,17 +999,17 @@ class _FriendScreenState extends State<FriendScreen> {
 
                   Analytics.logQRScan(
                       QRScanResult, true, "friendScreen.dart Add new friends");
-                } catch (e) {
-                  Analytics.logQRScan(
-                      QRScanResult, false, "friendScreen.dart Add new friends");
-                  print(e);
                 }
+              } catch (e) {
+                Analytics.logQRScan(
+                    QRScanResult, false, "friendScreen.dart Add new friends");
+                print(e);
               }
-            }),
-          )
-        ],
-      ),
-    );
+            }
+          }),
+        )
+      ],
+    ));
     //   }
     //   return Text("Error loading friends :("); // ensure screen is not null
     // });
@@ -1315,3 +1317,53 @@ class _FriendScreenState extends State<FriendScreen> {
 //     );
 //   }
 // }
+
+class SoshiPointsButton extends StatelessWidget {
+  double height, width;
+  SoshiPointsButton(this.height, this.width);
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      //decoration: BoxDecoration(border: Border.all(color: Colors.blueAccent)),
+      width: width / 4.1,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          elevation: 3,
+          shadowColor: Colors.cyan,
+          shape: new RoundedRectangleBorder(
+            borderRadius: new BorderRadius.circular(30.0),
+          ),
+        ),
+        onPressed: () {
+          Popups.soshiPointsExplainedPopup(context, width, height);
+        },
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Container(
+              width: width / 18,
+              child: Flex(direction: Axis.horizontal, children: <Widget>[
+                Expanded(
+                    child: Image.asset(
+                  "assets/images/SoshiLogos/soshi_icon_circular.png",
+                )),
+              ]),
+            ),
+            SizedBox(
+              width: 4,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 0),
+              child: Text(
+                LocalDataService.getSoshiPoints().toString(),
+                style: TextStyle(fontSize: width / 22
+                    // color: Colors.cyan[300]
+                    ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

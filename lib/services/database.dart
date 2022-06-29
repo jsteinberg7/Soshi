@@ -11,6 +11,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:sms_autofill/sms_autofill.dart';
+import 'package:soshi/screens/mainapp/groupScreen.dart';
 
 import '../screens/mainapp/friendScreen.dart';
 import 'contacts.dart';
@@ -32,7 +33,11 @@ class DatabaseService {
   CollectionReference usersCollection =
       FirebaseFirestore.instance.collection("users");
 
-  // store reference to all user files
+  // store reference to all group files
+  CollectionReference groupsCollection =
+      FirebaseFirestore.instance.collection("groups");
+
+  // store reference to all email-username link files
   CollectionReference emailToUsernameCollection =
       FirebaseFirestore.instance.collection("emailToUsername");
   /*
@@ -56,7 +61,7 @@ class DatabaseService {
         "Soshi": username,
         "Phone": phoneNumber,
         "Personal": null,
-        "Cryptowallet": null,
+        //"Cryptowallet": null,
         "Instagram": null,
         "Snapchat": null,
         "Linkedin": null,
@@ -87,11 +92,11 @@ class DatabaseService {
         "Venmo": false,
         "Spotify": false,
         "Personal": false,
-        "Cryptowallet": false
+        //"Cryptowallet": false
       },
       "Photo URL": "null",
       "Choose Platforms": <String>[
-        "Cryptowallet",
+        //"Cryptowallet",
         "Email",
         "Personal",
         "Instagram",
@@ -189,14 +194,25 @@ class DatabaseService {
   }
 
   // upload selected image to Firebse Storage, return URL
-  Future<void> uploadProfilePicture(File image) async {
+  Future<String> uploadProfilePicture(File image, {groupId = null}) async {
     FirebaseStorage firebaseStorage = FirebaseStorage.instance;
     // upload image
     File file = new File(image.path);
-    await firebaseStorage
+    if (groupId != null) {
+      await firebaseStorage
+          .ref()
+          .child("Profile Pictures/" + groupId)
+          .putFile(file);
+    } else {
+      await firebaseStorage
+          .ref()
+          .child("Profile Pictures/" + currSoshiUsername)
+          .putFile(file);
+    }
+    return await FirebaseStorage.instance
         .ref()
-        .child("Profile Pictures/" + currSoshiUsername)
-        .putFile(file);
+        .child("Profile Pictures/" + groupId)
+        .getDownloadURL();
   }
 
   // update profile picture URL (necessary on first profile pic change)
@@ -547,20 +563,28 @@ class DatabaseService {
     return currSoshiUsername;
   }
 
-  Future<void> cropAndUploadImage(PickedFile passedInImage) async {
+  Future<File> cropImage(String path,
+      {CropStyle cropStyle = CropStyle.circle}) async {
+    return (await ImageCropper().cropImage(
+        cropStyle: cropStyle,
+        sourcePath: path,
+        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+        maxHeight: 700,
+        maxWidth: 700,
+        compressFormat: ImageCompressFormat.jpg,
+        androidUiSettings: AndroidUiSettings(
+            toolbarColor: Colors.cyan, toolbarTitle: "Crop Image"),
+        iosUiSettings: IOSUiSettings(
+          title: "Crop Image",
+        )));
+  }
+
+  // for use with profile (not groups)
+  Future<void> cropAndUploadImage(
+    PickedFile passedInImage,
+  ) async {
     if (passedInImage != null) {
-      File croppedImage = (await ImageCropper().cropImage(
-          cropStyle: CropStyle.circle,
-          sourcePath: passedInImage.path,
-          aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
-          maxHeight: 700,
-          maxWidth: 700,
-          compressFormat: ImageCompressFormat.jpg,
-          androidUiSettings: AndroidUiSettings(
-              toolbarColor: Colors.cyan, toolbarTitle: "Crop Image"),
-          iosUiSettings: IOSUiSettings(
-            title: "Crop Image",
-          )));
+      File croppedImage = await cropImage(passedInImage.path);
 
       String currSoshiUsername =
           LocalDataService.getLocalUsernameForPlatform("Soshi");
@@ -654,5 +678,202 @@ class DatabaseService {
     await usersCollection
         .doc(soshiUsername)
         .update({"INJECTION $injectionName Flag": state});
+  }
+
+  /*
+  Create group file, add pointer to file in user file 
+  */
+  Future<void> createGroup(
+      {@required String id, @required String name, String photoURL}) async {
+    await groupsCollection.doc(id).set(<String, dynamic>{
+      "Name": name,
+      "Description": "",
+      "Admin": [
+        "${this.currSoshiUsername}"
+      ], // store separate list of members w/ elevated privileges
+      "Members": [], // do not include owner/admin in members
+      "Photo URL": photoURL ?? "null"
+    });
+
+    await _addGroupToUserFile(id); // add ref to user doc
+  }
+
+  /* Get list of groups for user */
+  Future<List<dynamic>> getGroups() async {
+    List<dynamic> groupsList;
+    await usersCollection
+        .doc(currSoshiUsername)
+        .get()
+        .then((DocumentSnapshot ds) {
+      Map data = ds.data();
+      groupsList = data["Groups"];
+    });
+    return groupsList;
+  }
+
+  /*
+  Return list of members in group
+  ** note ** Excludes admin
+  */
+  Future<List<dynamic>> getGroupMembers(String id) async {
+    List<dynamic> membersList;
+    await groupsCollection.doc(id).get().then((DocumentSnapshot ds) {
+      Map data = ds.data();
+      membersList = data["Members"];
+    });
+    return membersList;
+  }
+
+  /*
+  Return list of admin in group
+  */
+  Future<List<dynamic>> getGroupAdmin(String id) async {
+    List<dynamic> adminList;
+    await groupsCollection.doc(id).get().then((DocumentSnapshot ds) {
+      Map data = ds.data();
+      adminList = data["Admin"];
+    });
+    return adminList;
+  }
+
+  /*
+  Promote member to admin
+  */
+  Future<void> promoteToAdmin(String id, String username) async {
+    List<String> newAdmin, newMembers;
+    Group groupData = await getGroupData(id);
+
+    newAdmin = await groupData.admin;
+    newMembers = await groupData.members;
+    newAdmin.add(username);
+    newMembers.remove(username);
+    await groupsCollection
+        .doc(id)
+        .update({"Admin": newAdmin, "Members": newMembers});
+  }
+
+  Future<void> joinGroup(String id) async {
+    await _addUserToGroupFile(
+        id); // add username to group members list (in group doc)
+    await _addGroupToUserFile(id); // add group to user doc
+  }
+
+  /*
+  Removes {username} from group {id}
+  */
+  Future<void> leaveGroup(String id, String username,
+      {bool isAdmin = false}) async {
+    await _removeUserFromGroupFile(
+        id, username, isAdmin); // remove user from members (or admin) in group
+    await _removeGroupFromUserFile(
+        id, username); // remove group id from group list in user file
+  }
+
+  /*
+  Removes group {id} from groups list in user file
+  */
+  Future<void> _removeGroupFromUserFile(String id, String username) async {
+    // get copy of current groups list
+    List<dynamic> groupsList = await getGroups();
+    // remove from group from list
+    groupsList.remove(id);
+    return await usersCollection.doc(username).update({"Groups": groupsList});
+  }
+
+  Future<void> _removeUserFromGroupFile(
+      String id, String username, bool isAdmin) async {
+    // remove username from members (or admin) list
+    if (!isAdmin) {
+      List<dynamic> groupMembers =
+          await getGroupMembers(id); // get current group members
+      await groupMembers.remove(username);
+      return await groupsCollection.doc(id).update({"Members": groupMembers});
+    } else {
+      // remove from admin
+      List<dynamic> groupAdmin =
+          await getGroupAdmin(id); // get current group members
+      await groupAdmin.remove(username);
+      return await groupsCollection.doc(id).update({"Admin": groupAdmin});
+    }
+  }
+
+  Future<void> _addGroupToUserFile(String id) async {
+    // get copy of current groups list
+    List<dynamic> groupsList = await getGroups();
+
+    // check to see if list already exists
+    if (groupsList == null) {
+      // create new list
+      groupsList = [id];
+    } else {
+      // add new group to list
+      if (!groupsList.contains(id)) {
+        // ensure group isn't already added
+        groupsList.add(id);
+      }
+    }
+
+    await usersCollection.doc(currSoshiUsername).update({"Groups": groupsList});
+  }
+
+  Future<void> _addUserToGroupFile(id) async {
+    List<dynamic> groupMembers =
+        await getGroupMembers(id); // get current group members
+
+    // add new member to list (if not already in group)
+    if (!groupMembers.contains(currSoshiUsername)) {
+      // ensure friend isn't already added
+      groupMembers.add(currSoshiUsername);
+    }
+
+    await groupsCollection.doc(id).update({"Members": groupMembers});
+  }
+
+  Future<List<Group>> getGroupObjects() async {
+    List<dynamic> groupIds = await getGroups();
+    List<Group> groupObjList = [];
+    // iterate through ids (backwards to preserve chronological order), create Group object for each id
+    for (int i = groupIds.length - 1; i >= 0; i--) {
+      groupObjList.add(await getGroupData(groupIds[i]));
+    }
+    return groupObjList;
+  }
+
+  Future<Group> getGroupData(String id) async {
+    var groupData;
+    await groupsCollection.doc(id).get().then((DocumentSnapshot ds) {
+      groupData = ds.data();
+    });
+    return Group(
+        id: id,
+        name: groupData["Name"],
+        description: groupData["Description"],
+        photoURL: groupData["Photo URL"],
+        admin: groupData["Admin"],
+        members: groupData["Members"]);
+  }
+
+  /* Takes string list param, returns List of Friend objects from group members */
+  Future<List<Friend>> membersToFriends(List<dynamic> members) async {
+    List<Friend> membersAsFriends = [];
+    Friend currFriend;
+    for (String username in members) {
+      // iterate through members, convert to Friend(s)
+      currFriend = userDataToFriend(await getUserFile(username));
+      membersAsFriends.add(currFriend);
+    }
+    return membersAsFriends;
+  }
+
+  /* Takes string list param, returns List of Friend objects from group members */
+  Future<List<Friend>> adminToFriends(List<dynamic> admin) async {
+    List<Friend> adminAsFriends = [];
+    Friend currFriend;
+    for (String username in admin) {
+      // iterate through members, convert to Friend(s)
+      currFriend = userDataToFriend(await getUserFile(username));
+      adminAsFriends.add(currFriend);
+    }
+    return adminAsFriends;
   }
 }

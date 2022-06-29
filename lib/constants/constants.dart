@@ -193,7 +193,7 @@ abstract class Constants {
     "Contact",
     "Personal",
     "Youtube",
-    "Cryptowallet"
+    //"Cryptowallet"
   ];
   /* Instructions for injecting/adding new platforms: 
     1. Add to addedPlatforms (above)
