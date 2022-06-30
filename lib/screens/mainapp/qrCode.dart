@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:glassmorphism/glassmorphism.dart';
 import 'package:soshi/constants/constants.dart';
 
 import 'package:soshi/constants/popups.dart';
@@ -455,36 +456,136 @@ class _NewQRScreenState extends State<NewQRScreen> {
         child: Stack(
           children: [
             Container(
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(20.0))),
-                height: height / 2,
-                width: width / 1.2,
+                color: Colors.transparent,
+                height: height / 1.7,
+                width: width / 1.2),
+            Positioned(
+              top: width / 9,
+              child: GlassmorphicContainer(
+                  borderRadius: 50,
+                  blur: 10,
+                  alignment: Alignment.bottomCenter,
+                  border: 2,
+                  linearGradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Color(0xFFffffff).withOpacity(0.9),
+                        Color(0xFFFFFFFF).withOpacity(0.1),
+                      ],
+                      stops: [
+                        0.1,
+                        1,
+                      ]),
+                  borderGradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xFFffffff).withOpacity(0.5),
+                      Color((0xFFFFFFFF)).withOpacity(0.5),
+                    ],
+                  ),
+
+                  // child: Container(
+                  //     decoration: BoxDecoration(
+                  //         color: Colors.white,
+                  //         borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                  height: height / 2,
+                  width: width / 1.2,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 40.0),
+                        child: Container(
+                          padding: EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20.0)),
+                          width: width / 1.6,
+                          height: width / 1.6,
+                          child: QrImage(
+                              size: width / 2,
+                              dataModuleStyle: QrDataModuleStyle(
+                                  dataModuleShape: QrDataModuleShape.circle,
+                                  color: Colors.black),
+                              data:
+                                  "https://soshi.app/${LocalDataService.getLocalUsername()}"),
+                        ),
+                      ),
+                      Text("Share this with your friends!")
+                    ],
+                  )),
+            ),
+            Positioned(
+                top: 0,
+                left: (width / 2) - (width / 5),
+                // right: width / 2 - (width - ((width / 1.2) / 2)),
                 child: Column(
                   children: [
-                    QrImage(
-                        size: width / 2,
-                        dataModuleStyle: QrDataModuleStyle(
-                            dataModuleShape: QrDataModuleShape.circle,
-                            color: Colors.black),
-                        data:
-                            "https://soshi.app/${LocalDataService.getLocalUsername()}"),
-                    Text("Share this with your friends!")
+                    ProfilePic(
+                        url: LocalDataService.getLocalProfilePictureURL(),
+                        radius: width / 10),
+                    Text(LocalDataService.getLocalFirstName() +
+                        " " +
+                        LocalDataService.getLocalLastName()),
                   ],
-                )),
-            Positioned(
-                top: -1 * height / 20,
-                left: width / 2 - (width - ((width / 1.2) / 2)),
-                // right: width / 2 - (width - ((width / 1.2) / 2)),
-                child: ProfilePic(
-                    url: LocalDataService.getLocalProfilePictureURL(),
-                    radius: width / 10))
+                ))
           ],
         ),
-      )
+      ),
+      ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              primary: Colors.transparent,
+              fixedSize: Size(
+                width / 3,
+                height / 10,
+              ),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0))),
+          onPressed: () {},
+          child: GlassmorphicContainer(
+            height: height / 10,
+            width: width / 3,
+            borderRadius: 10,
+            blur: 10,
+            alignment: Alignment.bottomCenter,
+            border: 2,
+            linearGradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Color(0xFFffffff).withOpacity(0.9),
+                  Color(0xFFFFFFFF).withOpacity(0.1),
+                ],
+                stops: [
+                  0.1,
+                  1,
+                ]),
+            borderGradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color(0xFFffffff).withOpacity(0.5),
+                Color((0xFFFFFFFF)).withOpacity(0.5),
+              ],
+            ),
+          ))
     ]));
   }
 }
+
+List<Color> colorList = [
+  // Colors.red,
+  // Colors.blue,
+  // Colors.green,
+  // Colors.yellow
+  Colors.black,
+  Colors.cyan[100],
+  // Colors.cyan[500]!,
+  Colors.cyan[900],
+  Colors.white
+];
 
 class AnimatedGradient extends StatefulWidget {
   Widget child;
@@ -495,18 +596,6 @@ class AnimatedGradient extends StatefulWidget {
 }
 
 class _AnimatedGradientState extends State<AnimatedGradient> {
-  List<Color> colorList = [
-    // Colors.red,
-    // Colors.blue,
-    // Colors.green,
-    // Colors.yellow
-    Colors.black,
-    Colors.cyan[100],
-    // Colors.cyan[500]!,
-    Colors.cyan[900],
-    Colors.white
-  ];
-
   List<Alignment> alignmentList = [
     Alignment.bottomLeft,
     Alignment.bottomRight,

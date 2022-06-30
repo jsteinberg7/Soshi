@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:custom_navigation_bar/custom_navigation_bar.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:nfc_manager/nfc_manager.dart';
 import 'package:soshi/constants/utilities.dart';
 import 'package:soshi/screens/mainapp/boltScreen.dart';
 import 'package:soshi/screens/mainapp/friendsGroupsWrapper.dart';
@@ -35,27 +37,40 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    print(">> calling from init");
+    DynamicLinkService.retrieveDynamicLink(context);
+    // Check availability
+
+// Start Session
+
+    NfcManager.instance.startSession(
+      onDiscovered: (NfcTag tag) async {
+        var link = AsciiCodec()
+            .decode(Ndef.from(tag).cachedMessage.records.last.payload);
+        String username = link.toString().split("/").last;
+
+        try {
+          await Popups.showUserProfilePopupNew(context,
+              friendSoshiUsername: username, refreshScreen: () {});
+        } catch (e) {
+          print(e);
+        }
+
+      },
+    );
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _timerLink = new Timer(
-        const Duration(milliseconds: 1000),
-        () async {
-          print(">> app cycle changed");
-          DynamicLinkService.retrieveDynamicLink(context);
-        },
-      );
+      print(">> calling from lifecycle change");
+      DynamicLinkService.retrieveDynamicLink(context);
     }
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    if (_timerLink != null) {
-      _timerLink.cancel();
-    }
     super.dispose();
   }
 

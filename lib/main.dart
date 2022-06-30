@@ -36,7 +36,6 @@ class _MyAppState extends State<MyApp> {
             debugShowCheckedModeBanner: false,
             themeMode: ThemeMode.system,
             theme: ThemeData(
-              
               brightness: Brightness.light,
               backgroundColor: Colors.grey[50],
               primarySwatch: MaterialColor(

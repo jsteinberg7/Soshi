@@ -869,55 +869,57 @@ class SoshiAppBar extends StatelessWidget {
       ),
       leadingWidth: 100,
       actions: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-          child: ElevatedButton(
-            onPressed: () {
-              URL.launchURL("sms:" + "5713351885");
-            },
-            style: ElevatedButton.styleFrom(
-                // primary: Theme.of(context).primaryColor,
-                //shadowColor: Colors.grey[900],
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(15.0)))),
-            child: Row(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Send",
-                        style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1)),
-                    Text("feedback!",
-                        style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1)),
-                  ],
-                ),
-                // Icon(
-                //   Icons.feedback,
-                //   color: Colors.cyan[300],
-                //   size: 10,
-                // ),
-              ],
-            ),
+        // Padding(
+        //   padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+        //   child: ElevatedButton(
+        //     onPressed: () {
+        //       URL.launchURL("sms:" + "5713351885");
+        //     },
+        //     style: ElevatedButton.styleFrom(
+        //         // primary: Theme.of(context).primaryColor,
+        //         //shadowColor: Colors.grey[900],
+        //         shape: RoundedRectangleBorder(
+        //             borderRadius: BorderRadius.all(Radius.circular(15.0)))),
+        //     child: Container(
+        //       child: Row(
+        //         children: [
+        //           Column(
+        //             crossAxisAlignment: CrossAxisAlignment.center,
+        //             mainAxisAlignment: MainAxisAlignment.center,
+        //             children: [
+        //               Text("Send",
+        //                   style: TextStyle(
+        //                       fontSize: 10,
+        //                       fontWeight: FontWeight.bold,
+        //                       letterSpacing: 1)),
+        //               Text("feedback!",
+        //                   style: TextStyle(
+        //                       fontSize: 10,
+        //                       fontWeight: FontWeight.bold,
+        //                       letterSpacing: 1)),
+        //             ],
+        //           ),
+        //           // Icon(
+        //           //   Icons.feedback,
+        //           //   color: Colors.cyan[300],
+        //           //   size: 10,
+        //           // ),
+        //         ],
+        //       ),
+        //     ),
 
-            // Icon(Icons.person_rounded,
-            //     color: Colors.cyan[300], size: 10.0),
-          ),
-        ),
+        //     // Icon(Icons.person_rounded,
+        //     //     color: Colors.cyan[300], size: 10.0),
+        //   ),
+        // ),
       ],
-      elevation: 5,
+      elevation: 0,
       shadowColor: Colors.cyan,
       title: Image.asset(
         Theme.of(context).brightness == Brightness.light
             ? "assets/images/SoshiLogos/soshi_logo_black.png"
             : "assets/images/SoshiLogos/soshi_logo.png",
-        height: Utilities.getHeight(context) / 22,
+        height: Utilities.getHeight(context) / 25,
       ),
       backgroundColor: Theme.of(context).brightness == Brightness.light
           ? Theme.of(context).appBarTheme.backgroundColor

@@ -79,6 +79,7 @@ dependencies:
 
   flutter_neumorphic: ^3.2.0
   flip_card: ^0.6.0
+  glassmorphism: ^3.0.0
   
 
 dev_dependencies:
