@@ -13,6 +13,7 @@ import 'package:soshi/services/localData.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:soshi/services/nfc.dart';
 import 'package:soshi/services/url.dart';
 import 'constants.dart';
 
@@ -41,9 +42,9 @@ class ProfilePic extends StatelessWidget {
         placeHolder: (b, c) {
           return Image.asset('assets/images/SoshiLogos/soshi_icon.png');
         },
-        borderColor: Colors.black,
-        borderWidth: radius / 20,
-        elevation: 5,
+        // borderColor: Colors.black,
+        // borderWidth: radius / 20,
+        elevation: 0,
         radius: radius,
       ),
     );
@@ -182,6 +183,26 @@ class SignOutButton extends StatelessWidget {
                 ),
               ],
             );
+          });
+    });
+  }
+}
+
+class ActivatePortalButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+
+    return Constants.makeBlueShadowButton("Activate Portal", Icons.tap_and_play,
+        () async {
+      showModalBottomSheet(
+          constraints:
+              BoxConstraints(minWidth: width / 1.1, maxWidth: width / 1.1),
+          backgroundColor: Colors.transparent,
+          context: context,
+          builder: (BuildContext context) {
+            return NFCWriter(height, width);
           });
     });
   }
@@ -513,14 +534,14 @@ class ShareButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(shape: CircleBorder()),
       onPressed: () {
         if (groupId == null) {
-          Share.share("https://soshi.app/" + soshiUsername,
+          Share.share("https://soshi.app/deeplink/user/" + soshiUsername,
               subject: LocalDataService.getLocalFirstName() +
                   " " +
                   LocalDataService.getLocalLastName() +
                   "'s Soshi Contact Card");
         } else {
           Share.share(
-            "https://soshi.app/group/" + groupId,
+            "https://soshi.app/deeplink/group/" + groupId,
           );
         }
       },
@@ -921,9 +942,7 @@ class SoshiAppBar extends StatelessWidget {
             : "assets/images/SoshiLogos/soshi_logo.png",
         height: Utilities.getHeight(context) / 25,
       ),
-      backgroundColor: Theme.of(context).brightness == Brightness.light
-          ? Theme.of(context).appBarTheme.backgroundColor
-          : Colors.grey[900],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       centerTitle: true,
     );
   }

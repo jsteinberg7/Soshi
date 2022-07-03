@@ -40,6 +40,32 @@ abstract class DynamicLinkService {
   //   }
   // }
 
+  // create deep link for user
+  static Future<void> createDeepLink(String username) async {
+    await FirebaseDynamicLinks.instance.buildShortLink(DynamicLinkParameters(
+        // longDynamicLink: Uri.parse("https://soshi.app/deeplink/user/$username"),
+        link: Uri.parse(
+          "https://soshi.app/$username",
+        ),
+        uriPrefix: "https://soshi.app/deeplink/user",
+        androidParameters: const AndroidParameters(
+          packageName: "com.swoledevs.soshi",
+          minimumVersion: 30,
+        ),
+        iosParameters: const IOSParameters(
+          bundleId: "com.swoledevs.soshi",
+          appStoreId: "1595515750",
+          minimumVersion: "11.0.0",
+        ),
+        socialMetaTagParameters: SocialMetaTagParameters(
+          title: "Example of a Dynamic Link",
+          imageUrl: Uri.parse(
+              "https://is1-ssl.mzstatic.com/image/thumb/Purple126/v4/4c/d0/83/4cd083e4-ae76-7061-a794-1e0120ddbf93/AppIcon-0-0-1x_U007emarketing-0-0-0-7-0-0-sRGB-0-0-0-GLES2_U002c0-512MB-85-220-0-0.png/1200x630wa.png"),
+        ),
+        navigationInfoParameters:
+            NavigationInfoParameters(forcedRedirectEnabled: true)));
+  }
+
   static Future<void> retrieveDynamicLink(BuildContext context) async {
     int i = 0;
     // print(">> method call");
@@ -78,7 +104,7 @@ abstract class DynamicLinkService {
   ///createDynamicLink(
   static Future<void> createGroupDynamicLink(String id) async {
     var links = FirebaseDynamicLinks.instance;
-    links.buildLink(
+    links.buildShortLink(
       DynamicLinkParameters(
         uriPrefix: "https://soshi.app/group",
         longDynamicLink: Uri.parse("https://soshi.app/group/$id"),

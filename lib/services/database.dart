@@ -15,6 +15,7 @@ import 'package:soshi/screens/mainapp/groupScreen.dart';
 
 import '../screens/mainapp/friendScreen.dart';
 import 'contacts.dart';
+import 'dynamicLinks.dart';
 import 'localData.dart';
 
 /*
@@ -51,7 +52,7 @@ class DatabaseService {
         .doc(email)
         .set(<String, dynamic>{"soshiUsername": username});
     String phoneNumber = await SmsAutoFill().hint;
-    return await usersCollection.doc(currSoshiUsername).set(<String, dynamic>{
+    await usersCollection.doc(currSoshiUsername).set(<String, dynamic>{
       "Name": {"First": first, "Last": last},
       "Friends": <String>["soshi"],
       "Bio": "",
@@ -61,7 +62,7 @@ class DatabaseService {
         "Soshi": username,
         "Phone": phoneNumber,
         "Personal": null,
-        "Cryptowallet": null,
+        //"Cryptowallet": null,
         "Instagram": null,
         "Snapchat": null,
         "Linkedin": null,
@@ -92,11 +93,11 @@ class DatabaseService {
         "Venmo": false,
         "Spotify": false,
         "Personal": false,
-        "Cryptowallet": false
+        //"Cryptowallet": false
       },
       "Photo URL": "null",
       "Choose Platforms": <String>[
-        "Cryptowallet",
+        //"Cryptowallet",
         "Email",
         "Personal",
         "Instagram",
@@ -116,8 +117,10 @@ class DatabaseService {
       "INJECTION Soshi Points Flag": true,
       "INJECTION Profile Pic Flag": false,
       "INJECTION Bio Flag": false,
-      "INJECTION Passions Flag": false
+      "INJECTION Passions Flag": false,
+      "Groups": []
     });
+    await DynamicLinkService.createDeepLink(username);
   }
 
   /*
@@ -203,16 +206,20 @@ class DatabaseService {
           .ref()
           .child("Profile Pictures/" + groupId)
           .putFile(file);
+      return await FirebaseStorage.instance
+          .ref()
+          .child("Profile Pictures/" + groupId)
+          .getDownloadURL();
     } else {
       await firebaseStorage
           .ref()
           .child("Profile Pictures/" + currSoshiUsername)
           .putFile(file);
+      return await FirebaseStorage.instance
+          .ref()
+          .child("Profile Pictures/" + currSoshiUsername)
+          .getDownloadURL();
     }
-    return await FirebaseStorage.instance
-        .ref()
-        .child("Profile Pictures/" + groupId)
-        .getDownloadURL();
   }
 
   // update profile picture URL (necessary on first profile pic change)
@@ -678,7 +685,8 @@ class DatabaseService {
     await usersCollection
         .doc(soshiUsername)
         .update({"INJECTION $injectionName Flag": state});
-      }
+  }
+
   /*
   Create group file, add pointer to file in user file 
   */

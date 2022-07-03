@@ -55,7 +55,6 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
         } catch (e) {
           print(e);
         }
-
       },
     );
   }
@@ -144,7 +143,7 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
           preferredSize: Size(
               Utilities.getWidth(context), Utilities.getHeight(context) / 16),
           child: SoshiAppBar()),
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       // backgroundColor: Colors.white,
 
       // {Changed color}
@@ -191,9 +190,7 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
           selectedColor: Colors.cyan[300],
           strokeColor: Colors.transparent,
           unSelectedColor: Colors.grey[500],
-          backgroundColor: Theme.of(context).brightness == Brightness.light
-              ? Colors.white
-              : Colors.grey[900],
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           items: [
             CustomNavigationBarItem(
               icon: Icon(

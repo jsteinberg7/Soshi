@@ -34,9 +34,9 @@ class _MyAppState extends State<MyApp> {
         value: AuthService().user,
         child: MaterialApp(
             debugShowCheckedModeBanner: false,
-            themeMode: ThemeMode.system,
+            // themeMode: ThemeMode.dark,
             theme: ThemeData(
-              brightness: Brightness.light,
+              brightness: Theme.of(context).brightness,
               backgroundColor: Colors.grey[50],
               primarySwatch: MaterialColor(
                 0xFFE7E7E7,

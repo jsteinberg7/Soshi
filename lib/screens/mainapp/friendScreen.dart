@@ -262,7 +262,7 @@ class _FriendScreenState extends State<FriendScreen>
         padding: const EdgeInsets.fromLTRB(10.0, 5, 30, 5),
         child: ListTile(
             onTap: () async {
-              Popups.showUserProfilePopupNew(context,
+              Popups.showUserProfileModal(context,
                   friendSoshiUsername: friend.soshiUsername,
                   refreshScreen: refreshFriendScreen,
                   friend: friend); // show friend popup when tile is pressed
@@ -964,7 +964,7 @@ class _FriendScreenState extends State<FriendScreen>
               // vibrate when QR code is successfully scanned
               Vibration.vibrate();
               try {
-                if (QRScanResult.contains("https://soshi.app/group/")) {
+                if (QRScanResult.contains("https://soshi.app/deeplink/group")) {
                   String groupId = QRScanResult.split("/").last;
                   await Popups.showJoinGroupPopup(context, groupId);
                 } else {
@@ -1324,42 +1324,47 @@ class SoshiPointsButton extends StatelessWidget {
   SoshiPointsButton(this.height, this.width);
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        elevation: 3,
-        shadowColor: Colors.cyan,
-        shape: new RoundedRectangleBorder(
-          borderRadius: new BorderRadius.circular(30.0),
+    return Container(
+      //decoration: BoxDecoration(border: Border.all(color: Colors.blueAccent)),
+      width: width / 4.1,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          elevation: .5,
+          // shadowColor: Colors.cyan,
+          shape: new RoundedRectangleBorder(
+            borderRadius: new BorderRadius.circular(30.0),
+          ),
         ),
-      ),
-      onPressed: () {
-        Popups.soshiPointsExplainedPopup(context, width, height);
-      },
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Container(
-            width: width / 18,
-            child: Flex(direction: Axis.horizontal, children: <Widget>[
-              Expanded(
-                  child: Image.asset(
-                "assets/images/SoshiLogos/soshi_icon_circular.png",
-              )),
-            ]),
-          ),
-          SizedBox(
-            width: 4,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 0),
-            child: Text(
-              LocalDataService.getSoshiPoints().toString(),
-              style: TextStyle(fontSize: width / 22
-                  // color: Colors.cyan[300]
-                  ),
+        onPressed: () {
+          Popups.soshiPointsExplainedPopup(context, width, height);
+        },
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Container(
+              width: width / 18,
+              child: Flex(direction: Axis.horizontal, children: <Widget>[
+                Expanded(
+                  child: Icon(CupertinoIcons.bolt,
+                      size: width / 20, color: Colors.grey),
+                ),
+              ]),
             ),
-          ),
-        ],
+            SizedBox(
+              width: 4,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 0),
+              child: Text(
+                LocalDataService.getSoshiPoints().toString(),
+                style: TextStyle(
+                    fontSize: width / 25,
+                    // color: Colors.cyan[300]
+                    color: Colors.grey),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

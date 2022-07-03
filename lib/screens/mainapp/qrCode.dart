@@ -13,6 +13,7 @@ import 'package:soshi/constants/constants.dart';
 import 'package:soshi/constants/popups.dart';
 import 'package:soshi/constants/utilities.dart';
 import 'package:soshi/constants/widgets.dart';
+import 'package:soshi/screens/mainapp/profile.dart';
 import 'package:soshi/services/analytics.dart';
 import 'package:soshi/services/database.dart';
 import 'package:provider/provider.dart';
@@ -164,7 +165,7 @@ class _QRScreenState extends State<QRScreen> {
                                           //SizedBox(width: width / 40),
                                           GestureDetector(
                                             onTap: () {
-                                              Popups.showUserProfilePopupNew(
+                                              Popups.showUserProfileModal(
                                                   context,
                                                   friendSoshiUsername:
                                                       soshiUsername,
@@ -334,7 +335,9 @@ class _QRScreenState extends State<QRScreen> {
                         Analytics.logCopyLinkToClipboard();
                       },
                       child: QrImage(
-                        errorCorrectionLevel: QrErrorCorrectLevel.M,
+                        backgroundColor: Colors.white,
+                        errorCorrectionLevel: QrErrorCorrectLevel.H,
+
                         embeddedImage: NetworkImage(
                             LocalDataService.getLocalProfilePictureURL()),
                         // +
@@ -432,7 +435,7 @@ class _QRScreenState extends State<QRScreen> {
                     }
                   }
                 },
-              )
+              ),
             ]),
           )),
     );
@@ -449,129 +452,125 @@ class _NewQRScreenState extends State<NewQRScreen> {
   Widget build(BuildContext context) {
     double height = Utilities.getHeight(context);
     double width = Utilities.getWidth(context);
-    return AnimatedGradient(
-        child: Column(children: [
-      Padding(
-        padding: const EdgeInsets.only(top: 50.0),
-        child: Stack(
-          children: [
-            Container(
-                color: Colors.transparent,
-                height: height / 1.7,
-                width: width / 1.2),
-            Positioned(
-              top: width / 9,
-              child: GlassmorphicContainer(
-                  borderRadius: 50,
-                  blur: 10,
-                  alignment: Alignment.bottomCenter,
-                  border: 2,
-                  linearGradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Color(0xFFffffff).withOpacity(0.9),
-                        Color(0xFFFFFFFF).withOpacity(0.1),
-                      ],
-                      stops: [
-                        0.1,
-                        1,
-                      ]),
-                  borderGradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Color(0xFFffffff).withOpacity(0.5),
-                      Color((0xFFFFFFFF)).withOpacity(0.5),
-                    ],
-                  ),
-
-                  // child: Container(
-                  //     decoration: BoxDecoration(
-                  //         color: Colors.white,
-                  //         borderRadius: BorderRadius.all(Radius.circular(20.0))),
-                  height: height / 2,
-                  width: width / 1.2,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+      PhysicalModel(
+        color: Colors.white,
+        elevation: 10.0,
+        borderRadius: BorderRadius.circular(25.0),
+        child: Container(
+            height: height / 2,
+            width: width / 1.2,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Column(
+                  children: [
+                    Text(
+                        LocalDataService.getLocalFirstName() +
+                            " " +
+                            LocalDataService.getLocalLastName(),
+                        style: TextStyle(
+                            fontSize: width / 15, fontWeight: FontWeight.bold)),
+                    Text(
+                      "@" + LocalDataService.getLocalUsername(),
+                      style: TextStyle(
+                          color: Colors.grey[500],
+                          fontSize: width / 25,
+                          fontStyle: FontStyle.italic),
+                    )
+                  ],
+                ),
+                Container(
+                  height: width / 1.6,
+                  width: width / 1.6,
+                  child: Stack(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 40.0),
+                      Container(
+                          height: height,
+                          width: width,
+                          child: Image.asset(
+                            "assets/images/misc/qr_lines.png",
+                          )),
+                      QrImage(
+                          size: width / 1.75,
+                          dataModuleStyle: QrDataModuleStyle(
+                              dataModuleShape: QrDataModuleShape.circle,
+                              color: Colors.black),
+                          data:
+                              "https://soshi.app/deeplink/user/${LocalDataService.getLocalUsername()}"),
+                      Positioned(
+                        bottom: width / 4.5,
+                        right: width / 4.5,
                         child: Container(
-                          padding: EdgeInsets.all(8.0),
+                          height: width / 9,
+                          width: width / 9,
                           decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(20.0)),
-                          width: width / 1.6,
-                          height: width / 1.6,
-                          child: QrImage(
-                              size: width / 2,
-                              dataModuleStyle: QrDataModuleStyle(
-                                  dataModuleShape: QrDataModuleShape.circle,
-                                  color: Colors.black),
-                              data:
-                                  "https://soshi.app/${LocalDataService.getLocalUsername()}"),
+                            color: Colors.white,
+                            //  shape: BoxShape.circle
+                          ),
+                          child: ClipOval(
+                            child: Container(
+                              height: width / 10,
+                              width: width / 10,
+                              child: ProfilePic(
+                                  radius: width / 10,
+                                  url: LocalDataService
+                                      .getLocalProfilePictureURL()),
+                            ),
+                          ),
                         ),
                       ),
-                      Text("Share this with your friends!")
                     ],
-                  )),
-            ),
-            Positioned(
-                top: 0,
-                left: (width / 2) - (width / 5),
-                // right: width / 2 - (width - ((width / 1.2) / 2)),
-                child: Column(
-                  children: [
-                    ProfilePic(
-                        url: LocalDataService.getLocalProfilePictureURL(),
-                        radius: width / 10),
-                    Text(LocalDataService.getLocalFirstName() +
-                        " " +
-                        LocalDataService.getLocalLastName()),
-                  ],
-                ))
-          ],
-        ),
+                  ),
+                ),
+                Text("Share this with others to instantly connect.",
+                    style: TextStyle(fontSize: width / 30))
+              ],
+            )),
       ),
       ElevatedButton(
-          style: ElevatedButton.styleFrom(
-              primary: Colors.transparent,
-              fixedSize: Size(
-                width / 3,
-                height / 10,
-              ),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0))),
-          onPressed: () {},
-          child: GlassmorphicContainer(
-            height: height / 10,
-            width: width / 3,
-            borderRadius: 10,
-            blur: 10,
-            alignment: Alignment.bottomCenter,
-            border: 2,
-            linearGradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFFffffff).withOpacity(0.9),
-                  Color(0xFFFFFFFF).withOpacity(0.1),
+        onPressed: () {},
+        child: Container(
+            height: height / 25,
+            width: width / 2,
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    "Scan",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: "Montserrat",
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20),
+                  ),
+                  // SizedBox(width: 15),
+                  // ClipRRect(
+                  //   borderRadius: BorderRadius.all(Radius.circular(10)),
+                  //   child: Image.asset(
+                  //     "assets/images/SoshiLogos/soshi_icon.png",
+                  //   ),
+                  // ),
+                  // SizedBox(width: 10),
+                  // Icon(
+                  //   Icons.chevron_right,
+                  //   size: 30,
+                  // )
                 ],
-                stops: [
-                  0.1,
-                  1,
-                ]),
-            borderGradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Color(0xFFffffff).withOpacity(0.5),
-                Color((0xFFFFFFFF)).withOpacity(0.5),
-              ],
-            ),
-          ))
-    ]));
+              ),
+            )),
+        style: ElevatedButton.styleFrom(
+          primary: Colors.black,
+          // side: BorderSide(color: Colors.cyan[400]!, width: 2),
+          elevation: 10,
+          padding: const EdgeInsets.all(15.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+        ),
+      )
+    ]);
   }
 }
 

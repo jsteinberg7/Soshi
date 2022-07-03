@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:async/async.dart';
-import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,7 +16,7 @@ import '../../services/database.dart';
 import '../../services/localData.dart';
 import 'friendScreen.dart';
 import 'groupScreen.dart';
-import 'package:flip_card/flip_card.dart';
+
 import 'package:glassmorphism/glassmorphism.dart';
 
 class ViewGroupPage extends StatefulWidget {
@@ -218,201 +217,197 @@ class _ViewGroupPageState extends State<ViewGroupPage> {
                 top: 0,
                 left: 0,
                 right: 0,
-                child: Container(
-                  color: Colors.white,
-                  child: Stack(
-                    children: [
-                      Image.network(
-                        group.photoURL,
-                        fit: BoxFit.fill,
-                        height: height / 3.2,
-                        width: width,
-                      ),
-                      GlassmorphicContainer(
-                        height: height / 3,
-                        width: width,
-                        borderRadius: 0,
-                        blur: 10,
-                        alignment: Alignment.bottomCenter,
-                        border: 2,
-                        linearGradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Color(0xFFffffff).withOpacity(0.2),
-                              Color(0xFFFFFFFF).withOpacity(0.1),
-                            ],
-                            stops: [
-                              0.1,
-                              1,
-                            ]),
-                        borderGradient: LinearGradient(
+                child: Stack(
+                  children: [
+                    Image.network(
+                      group.photoURL,
+                      fit: BoxFit.fill,
+                      height: height / 3.2,
+                      width: width,
+                    ),
+                    GlassmorphicContainer(
+                      height: height / 3,
+                      width: width,
+                      borderRadius: 0,
+                      blur: 10,
+                      alignment: Alignment.bottomCenter,
+                      border: 2,
+                      linearGradient: LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [
-                            Color(0xFFffffff).withOpacity(0.5),
-                            Color((0xFFFFFFFF)).withOpacity(0.5),
+                            Color(0xFFffffff).withOpacity(0.2),
+                            Color(0xFFFFFFFF).withOpacity(0.1),
                           ],
-                        ),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 35.0),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      IconButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          icon: Icon(Icons.arrow_back_ios_new)),
-                                      Text(group.name,
-                                          style: TextStyle(
-                                              fontSize: 25.0,
-                                              fontWeight: FontWeight.bold)),
-                                      IconButton(
-                                        icon: Icon(
-                                          Icons.arrow_back_ios_new,
-                                          color: Colors.transparent,
-                                        ),
+                          stops: [
+                            0.1,
+                            1,
+                          ]),
+                      borderGradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Color(0xFFffffff).withOpacity(0.5),
+                          Color((0xFFFFFFFF)).withOpacity(0.5),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 35.0),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    IconButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        icon: Icon(Icons.arrow_back_ios_new)),
+                                    Text(group.name,
+                                        style: TextStyle(
+                                            fontSize: 25.0,
+                                            fontWeight: FontWeight.bold)),
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.arrow_back_ios_new,
+                                        color: Colors.transparent,
                                       ),
-                                    ],
-                                  ),
-                                  Row(
-                                    key: ValueKey<int>(1),
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      IconButton(
-                                        icon: Icon(Icons.settings_outlined,
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  key: ValueKey<int>(1),
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.settings_outlined,
+                                          size: 30),
+                                      onPressed: () {
+                                        showModalBottomSheet(
+                                            isScrollControlled: true,
+                                            constraints: BoxConstraints(
+                                              minWidth: width / 1.1,
+                                              maxWidth: width / 1.1,
+                                            ),
+                                            backgroundColor: Colors.transparent,
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return GroupSettingsPopup(
+                                                  context,
+                                                  height,
+                                                  width,
+                                                  databaseService,
+                                                  id: group.id,
+                                                  isAdmin: isAdmin,
+                                                  refreshGroupScreen:
+                                                      refreshGroupPage);
+                                            });
+                                      },
+                                    ),
+                                    Hero(
+                                        tag: group.id,
+                                        child: SizedBox(
+                                          width: width / 2.25,
+                                          height: height / 5.5,
+                                          child: AnimatedSwitcher(
+                                            duration:
+                                                Duration(milliseconds: 500),
+                                            child: showQrCode
+                                                ? QrImage(
+                                                    data:
+                                                        "https://soshi.app/group/${group.id}",
+                                                    size: 100)
+                                                : RectangularProfilePic(
+                                                    radius: width / 3,
+                                                    url: group.photoURL),
+                                          ),
+                                        )),
+                                    IconButton(
+                                        icon: Icon(Icons.qr_code_rounded,
                                             size: 30),
                                         onPressed: () {
-                                          showModalBottomSheet(
-                                              isScrollControlled: true,
-                                              constraints: BoxConstraints(
-                                                minWidth: width / 1.1,
-                                                maxWidth: width / 1.1,
-                                              ),
-                                              backgroundColor:
-                                                  Colors.transparent,
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return GroupSettingsPopup(
-                                                    context,
-                                                    height,
-                                                    width,
-                                                    databaseService,
-                                                    id: group.id,
-                                                    isAdmin: isAdmin,
-                                                    refreshGroupScreen:
-                                                        refreshGroupPage);
-                                              });
-                                        },
-                                      ),
-                                      Hero(
-                                          tag: group.id,
-                                          child: SizedBox(
-                                            width: width / 2.25,
-                                            height: height / 5.5,
-                                            child: AnimatedSwitcher(
-                                              duration:
-                                                  Duration(milliseconds: 500),
-                                              child: showQrCode
-                                                  ? QrImage(
-                                                      data:
-                                                          "https://soshi.app/group/${group.id}",
-                                                      size: 100)
-                                                  : RectangularProfilePic(
-                                                      radius: width / 3,
-                                                      url: group.photoURL),
-                                            ),
-                                          )),
-                                      IconButton(
-                                          icon: Icon(Icons.qr_code_rounded,
-                                              size: 30),
-                                          onPressed: () {
-                                            setState(() {
-                                              showQrCode = !showQrCode;
-                                            });
-                                          })
-                                    ],
-                                  ),
-                                  // Padding(
-                                  //   padding: const EdgeInsets.only(top: 10.0),
-                                  //   child: ElevatedButton(
-                                  //       onPressed: () {
-                                  //         HapticFeedback.mediumImpact();
-                                  //         showModalBottomSheet(
-                                  //             isScrollControlled: true,
-                                  //             constraints: BoxConstraints(
-                                  //               minWidth: width / 1.1,
-                                  //               maxWidth: width / 1.1,
-                                  //             ),
-                                  //             backgroundColor:
-                                  //                 Colors.transparent,
-                                  //             context: context,
-                                  //             builder: (BuildContext context) {
-                                  //               return ShareGroupPopup(
-                                  //                   id: group.id,
-                                  //                   height: height,
-                                  //                   width: width);
-                                  //             });
-                                  //       },
-                                  //       child: Container(
-                                  //           width: width / 3.5,
-                                  //           child: Padding(
-                                  //             padding:
-                                  //                 const EdgeInsets.all(8.0),
-                                  //             child: Row(
-                                  //               mainAxisAlignment:
-                                  //                   MainAxisAlignment
-                                  //                       .spaceBetween,
-                                  //               children: [
-                                  //                 Text(
-                                  //                   "Share",
-                                  //                   style: TextStyle(
-                                  //                       color: Theme.of(context)
-                                  //                                   .brightness ==
-                                  //                               Brightness.light
-                                  //                           ? Colors.white
-                                  //                           : Colors.black,
-                                  //                       fontSize: 20.0),
-                                  //                   textAlign: TextAlign.center,
-                                  //                 ),
-                                  //                 Icon(
-                                  //                   Icons.share,
-                                  //                   color: Theme.of(context)
-                                  //                               .brightness ==
-                                  //                           Brightness.light
-                                  //                       ? Colors.white
-                                  //                       : Colors.black,
-                                  //                 )
-                                  //               ],
-                                  //             ),
-                                  //           )),
-                                  //       style: ElevatedButton.styleFrom(
-                                  //           primary:
-                                  //               Theme.of(context).brightness !=
-                                  //                       Brightness.light
-                                  //                   ? Colors.white
-                                  //                   : Colors.black,
-                                  //           elevation: 8.0,
-                                  //           shape: RoundedRectangleBorder(
-                                  //               borderRadius:
-                                  //                   BorderRadius.circular(
-                                  //                       15.0)))),
-                                  // )
-                                ],
-                              ),
+                                          setState(() {
+                                            showQrCode = !showQrCode;
+                                          });
+                                        })
+                                  ],
+                                ),
+                                // Padding(
+                                //   padding: const EdgeInsets.only(top: 10.0),
+                                //   child: ElevatedButton(
+                                //       onPressed: () {
+                                //         HapticFeedback.mediumImpact();
+                                //         showModalBottomSheet(
+                                //             isScrollControlled: true,
+                                //             constraints: BoxConstraints(
+                                //               minWidth: width / 1.1,
+                                //               maxWidth: width / 1.1,
+                                //             ),
+                                //             backgroundColor:
+                                //                 Colors.transparent,
+                                //             context: context,
+                                //             builder: (BuildContext context) {
+                                //               return ShareGroupPopup(
+                                //                   id: group.id,
+                                //                   height: height,
+                                //                   width: width);
+                                //             });
+                                //       },
+                                //       child: Container(
+                                //           width: width / 3.5,
+                                //           child: Padding(
+                                //             padding:
+                                //                 const EdgeInsets.all(8.0),
+                                //             child: Row(
+                                //               mainAxisAlignment:
+                                //                   MainAxisAlignment
+                                //                       .spaceBetween,
+                                //               children: [
+                                //                 Text(
+                                //                   "Share",
+                                //                   style: TextStyle(
+                                //                       color: Theme.of(context)
+                                //                                   .brightness ==
+                                //                               Brightness.light
+                                //                           ? Colors.white
+                                //                           : Colors.black,
+                                //                       fontSize: 20.0),
+                                //                   textAlign: TextAlign.center,
+                                //                 ),
+                                //                 Icon(
+                                //                   Icons.share,
+                                //                   color: Theme.of(context)
+                                //                               .brightness ==
+                                //                           Brightness.light
+                                //                       ? Colors.white
+                                //                       : Colors.black,
+                                //                 )
+                                //               ],
+                                //             ),
+                                //           )),
+                                //       style: ElevatedButton.styleFrom(
+                                //           primary:
+                                //               Theme.of(context).brightness !=
+                                //                       Brightness.light
+                                //                   ? Colors.white
+                                //                   : Colors.black,
+                                //           elevation: 8.0,
+                                //           shape: RoundedRectangleBorder(
+                                //               borderRadius:
+                                //                   BorderRadius.circular(
+                                //                       15.0)))),
+                                // )
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
               Positioned(
