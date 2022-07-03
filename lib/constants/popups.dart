@@ -334,14 +334,14 @@ class Popups {
         platformName == "Venmo" ||
         platformName == "Twitter" ||
         platformName == "Tiktok" ||
-        platformName == "Discord" ||
-        platformName == "Spotify") {
+        platformName == "Discord") {
       hintText = "Username";
       indicator = "@";
     } else {
       if (platformName == "Facebook" ||
           platformName == "Linkedin" ||
-          platformName == "Personal") {
+          platformName == "Personal" ||
+          platformName == "Spotify") {
         hintText = "Link To Profile";
         indicator = "https://";
       } else if (platformName == "Phone") {
@@ -1766,14 +1766,14 @@ class Popups {
                                   ? Text(
                                       "Friend",
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold,
+                                          //fontWeight: FontWeight.bold,
                                           fontSize: width / 25,
                                           letterSpacing: 1.2),
                                     )
                                   : Text(
                                       "Friends",
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold,
+                                          //fontWeight: FontWeight.bold,
                                           fontSize: width / 25,
                                           letterSpacing: 1.2),
                                     )
@@ -1791,12 +1791,12 @@ class Popups {
                                   ? Text("Group",
                                       style: TextStyle(
                                           fontSize: width / 25,
-                                          fontWeight: FontWeight.bold,
+                                          //fontWeight: FontWeight.bold,
                                           letterSpacing: 1.2))
                                   : Text("Groups",
                                       style: TextStyle(
                                           fontSize: width / 25,
-                                          fontWeight: FontWeight.bold,
+                                          //fontWeight: FontWeight.bold,
                                           letterSpacing: 1.2))
                             ]),
                           ],
@@ -1926,7 +1926,7 @@ class Popups {
                               EdgeInsets.fromLTRB(width / 20, 0, width / 20, 0),
                           child: GridView.builder(
                             physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
+                            shrinkWrap: false,
                             itemBuilder: (BuildContext context, int i) {
                               return Padding(
                                   padding:

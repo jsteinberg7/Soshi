@@ -64,6 +64,9 @@ abstract class URL {
     } else if (platform == "Email") {
       return 'mailto:' + username;
     } else if (platform == "Spotify") {
+      if (username.contains("https://www.")) {
+        return username;
+      }
       return "https://open.spotify.com/user/" + username;
     } else if (platform == "Venmo") {
       if (Platform.isIOS) {
