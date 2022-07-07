@@ -270,7 +270,7 @@ class _EditHandlesState extends State<EditHandles> {
                       shrinkWrap: true,
                       itemBuilder: (BuildContext context, int index) {
                         return Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
                           child: SMCard(
                               platformName: profilePlatforms[index],
                               soshiUsername: soshiUsername,
@@ -280,8 +280,7 @@ class _EditHandlesState extends State<EditHandles> {
                       itemCount: profilePlatforms.length,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 1,
-                        childAspectRatio: 4,
-                        // crossAxisSpacing: width / 20
+                        childAspectRatio: 3.35,
                       ),
                     ),
             ),
@@ -327,10 +326,12 @@ class _SMCardState extends State<SMCard> {
       indicator = "#";
     } else if (platformName == "Linkedin" ||
         platformName == "Facebook" ||
-        platformName == "Personal" ||
         platformName == "Spotify" ||
         platformName == "Youtube") {
       hintText = "Link to Profile";
+      indicator = "URL";
+    } else if (platformName == "Personal") {
+      hintText = "Link";
       indicator = "URL";
     } else if (platformName == "Cryptowallet") {
       hintText = "Wallet address";
@@ -372,7 +373,11 @@ class _SMCardState extends State<SMCard> {
           //     ? Colors.white
           //     : Colors.grey[850],
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(50),
+                  bottomLeft: Radius.circular(50),
+                  topRight: Radius.circular(20),
+                  bottomRight: Radius.circular(20)),
               side:
                   // (isSwitched == true)
                   // ?
@@ -380,240 +385,260 @@ class _SMCardState extends State<SMCard> {
 
                   // :
                   BorderSide.none),
-          elevation: 5,
+          elevation: 2,
 
           // color: Colors.grey[850],
 
           //Colors.grey[850],
           child: Container(
-              height: height / 11,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    IconButton(
-                      splashRadius: Utilities.getWidth(context) / 25,
-                      icon: Image.asset(
-                        'assets/images/SMLogos/' + platformName + 'Logo.png',
-                      ),
-                      onPressed: () async {
-                        if (platformName == "Contact") {
-                          double width = Utilities.getWidth(context);
-                          String firstName =
-                              LocalDataService.getLocalFirstName();
-                          String lastName = LocalDataService.getLocalLastName();
-                          String photoUrl =
-                              LocalDataService.getLocalProfilePictureURL();
-                          Uint8List profilePicBytes;
-                          try {
-                            // try to load profile pic from url
-                            await http
-                                .get(Uri.parse(photoUrl))
-                                .then((http.Response response) {
-                              profilePicBytes = response.bodyBytes;
-                            });
-                          } catch (e) {
-                            // if url is invalid, use default profile pic
-                            ByteData data = await rootBundle.load(
-                                "assets/images/SoshiLogos/soshi_icon.png");
-                            profilePicBytes = data.buffer.asUint8List();
-                          }
-                          Contact contact = new Contact(
-                              givenName: firstName,
-                              familyName: lastName,
-                              emails: [
-                                Item(
-                                  label: "Email",
-                                  value: LocalDataService
-                                      .getLocalUsernameForPlatform("Email"),
-                                ),
-                              ],
-                              phones: [
-                                Item(
-                                    label: "Cell",
-                                    value: LocalDataService
-                                        .getLocalUsernameForPlatform("Phone")),
-                              ],
-                              avatar: profilePicBytes);
-                          await askPermissions(context);
-                          ContactsService.addContact(contact)
-                              .then((dynamic success) {
-                            Popups.showContactAddedPopup(
-                                context, width, firstName, lastName);
-                          });
-                        } else if (platformName == "Cryptowallet") {
-                          Clipboard.setData(ClipboardData(
-                            text: LocalDataService.getLocalUsernameForPlatform(
-                                    "Cryptowallet")
-                                .toString(),
-                          ));
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: const Text(
-                              'Wallet address copied to clipboard!',
-                              textAlign: TextAlign.center,
-                            ),
-                          ));
-
-                          // snackbar or popup that says:
-                          // "First name + last name's wallet address has been copied to clipboard"
-
-                        } else {
-                          URL.launchURL(URL.getPlatformURL(
-                              platform: platformName,
-                              username:
-                                  LocalDataService.getLocalUsernameForPlatform(
-                                      platformName)));
-                        }
-                      },
-                      iconSize: 60,
-                    ),
-                    SizedBox(
-                      width: 5,
-                    ),
-                    platformName != "Contact"
-                        ? Text(indicator,
-                            style: TextStyle(
-                                fontSize: width / 25, color: Colors.grey))
-                        : Text(
-                            "  ",
+              //height: height / 14.5,
+              child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              IconButton(
+                splashRadius: Utilities.getWidth(context) / 25,
+                icon: CircleAvatar(
+                    minRadius: width / 10.5,
+                    maxRadius: width / 10.5,
+                    backgroundImage: AssetImage(
+                      'assets/images/SMLogos/' + platformName + 'Logo.png',
+                    )),
+                onPressed: () async {
+                  if (platformName == "Contact") {
+                    double width = Utilities.getWidth(context);
+                    String firstName = LocalDataService.getLocalFirstName();
+                    String lastName = LocalDataService.getLocalLastName();
+                    String photoUrl =
+                        LocalDataService.getLocalProfilePictureURL();
+                    Uint8List profilePicBytes;
+                    try {
+                      // try to load profile pic from url
+                      await http
+                          .get(Uri.parse(photoUrl))
+                          .then((http.Response response) {
+                        profilePicBytes = response.bodyBytes;
+                      });
+                    } catch (e) {
+                      // if url is invalid, use default profile pic
+                      ByteData data = await rootBundle
+                          .load("assets/images/SoshiLogos/soshi_icon.png");
+                      profilePicBytes = data.buffer.asUint8List();
+                    }
+                    Contact contact = new Contact(
+                        givenName: firstName,
+                        familyName: lastName,
+                        emails: [
+                          Item(
+                            label: "Email",
+                            value: LocalDataService.getLocalUsernameForPlatform(
+                                "Email"),
                           ),
-                    platformName != "Contact"
-                        ? Padding(
-                            padding: EdgeInsets.fromLTRB(
-                                0, height / 45, 0, height / 45),
-                            child: VerticalDivider(
-                                thickness: 1.5, color: Colors.grey),
-                          )
-                        : Container(),
-                    Container(
-                      child: Expanded(
-                          child: platformName != "Contact"
-                              ? TextField(
-                                  style: TextStyle(
-                                      fontSize: width / 20, letterSpacing: 1.3),
-                                  scribbleEnabled: true,
-                                  cursorColor: Colors.blue,
-                                  decoration: InputDecoration(
-                                      hintText: hintText,
-                                      hintStyle: TextStyle(color: Colors.grey),
-                                      border: InputBorder.none,
-                                      counterText: ""),
-                                  controller: usernameController,
-                                  maxLines: 1,
-                                  onSubmitted: (String username) async {
-                                    LocalDataService.updateUsernameForPlatform(
-                                        platform: platformName,
-                                        username: username);
-                                    databaseService.updateUsernameForPlatform(
-                                        platform: platformName,
-                                        username: username);
-                                  },
-                                )
-                              : TextField(
-                                  style: TextStyle(fontSize: width / 20),
-                                  decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      counterText: ""),
-                                  controller: usernameController,
-                                  maxLines: 1,
-                                  readOnly:
-                                      true, // so user cant edit their vcf link
-                                )),
+                        ],
+                        phones: [
+                          Item(
+                              label: "Cell",
+                              value:
+                                  LocalDataService.getLocalUsernameForPlatform(
+                                      "Phone")),
+                        ],
+                        avatar: profilePicBytes);
+                    await askPermissions(context);
+                    ContactsService.addContact(contact).then((dynamic success) {
+                      Popups.showContactAddedPopup(
+                          context, width, firstName, lastName);
+                    });
+                  } else if (platformName == "Cryptowallet") {
+                    Clipboard.setData(ClipboardData(
+                      text: LocalDataService.getLocalUsernameForPlatform(
+                              "Cryptowallet")
+                          .toString(),
+                    ));
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: const Text(
+                        'Wallet address copied to clipboard!',
+                        textAlign: TextAlign.center,
+                      ),
+                    ));
+
+                    // snackbar or popup that says:
+                    // "First name + last name's wallet address has been copied to clipboard"
+
+                  } else {
+                    URL.launchURL(URL.getPlatformURL(
+                        platform: platformName,
+                        username: LocalDataService.getLocalUsernameForPlatform(
+                            platformName)));
+                  }
+                },
+                iconSize: 75,
+              ),
+              // SizedBox(
+              //   width: width / 5,
+              // ),
+              platformName != "Contact"
+                  ? Text(indicator,
+                      style:
+                          TextStyle(fontSize: width / 25, color: Colors.grey))
+                  : Text(
+                      "  ",
                     ),
-                  ],
-                ),
-              )),
+              platformName != "Contact"
+                  ? Padding(
+                      padding:
+                          EdgeInsets.fromLTRB(0, height / 35, 0, height / 35),
+                      child:
+                          VerticalDivider(thickness: 1.5, color: Colors.grey),
+                    )
+                  : Container(),
+
+              Container(
+                child: Expanded(
+                    child: platformName != "Contact"
+                        ? TextField(
+                            style: TextStyle(
+                                fontSize: width / 20, letterSpacing: 1.3),
+                            scribbleEnabled: true,
+                            cursorColor: Colors.blue,
+                            decoration: InputDecoration(
+                                hintText: hintText,
+                                hintStyle: TextStyle(color: Colors.grey),
+                                border: InputBorder.none,
+                                counterText: ""),
+                            controller: usernameController,
+                            maxLines: 1,
+                            onSubmitted: (String username) async {
+                              // LocalDataService.updateUsernameForPlatform(
+                              //     platform: platformName,
+                              //     username: username);
+                              // databaseService.updateUsernameForPlatform(
+                              //     platform: platformName,
+                              //     username: username);
+                            },
+                          )
+                        : TextField(
+                            style: TextStyle(fontSize: width / 20),
+                            decoration: InputDecoration(
+                                border: InputBorder.none, counterText: ""),
+                            controller: usernameController,
+                            maxLines: 1,
+                            readOnly: true, // so user cant edit their vcf link
+                          )),
+              ),
+            ],
+          )),
         ),
         Positioned(
             width: width / .55,
-            height: height / 35,
+            height: height / 30,
             child: ElevatedButton(
               style: ButtonStyle(
                 shape: MaterialStateProperty.all(CircleBorder()),
                 // backgroundColor: MaterialStateProperty.all(Colors.black)
               ),
               onPressed: () {
-                showDialog(
+                showModalBottomSheet(
+                    isScrollControlled: true,
+                    constraints: BoxConstraints(
+                      minWidth: width / 1.1,
+                      maxWidth: width / 1.1,
+                    ),
+                    backgroundColor: Colors.transparent,
                     context: context,
                     builder: (BuildContext context) {
-                      return AlertDialog(
-                        shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(40.0))),
-                        // backgroundColor: Colors.blueGrey[900],
-                        title: Text(
-                          "Remove Platform",
-                          style: TextStyle(
-                              // color: Colors.cyan[600],
-                              fontWeight: FontWeight.bold),
-                        ),
-                        content: Text(
-                          ("Are you sure you want to remove " +
-                              platformName +
-                              " from your profile?"),
-                          style: TextStyle(
-                            fontSize: 20,
-                            // color: Colors.cyan[700],
-                            // fontWeight: FontWeight.bold
-                          ),
-                        ),
-                        actions: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      return Container(
+                        height: height / 5,
+                        color: Colors.transparent,
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            // mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
-                              TextButton(
-                                child: Text(
-                                  'Cancel',
-                                  style: TextStyle(
-                                      fontSize: 20, color: Colors.red),
+                              Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
                                 ),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                              ),
-                              TextButton(
-                                child: Text(
-                                  'Remove',
-                                  style: TextStyle(
-                                      fontSize: 20, color: Colors.blue),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    ListTile(
+                                      title: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          ListTile(
+                                            title: Center(
+                                              child: Text(
+                                                "Remove " + platformName,
+                                                style: TextStyle(
+                                                    fontSize: width / 20,
+                                                    color: Colors.red),
+                                              ),
+                                            ),
+                                            onTap: () async {
+                                              if (!LocalDataService
+                                                      .getLocalChoosePlatforms()
+                                                  .contains(platformName)) {
+                                                Navigator.pop(context);
+
+                                                await LocalDataService
+                                                    .removePlatformsFromProfile(
+                                                        platformName);
+                                                LocalDataService
+                                                    .addToChoosePlatforms(
+                                                        platformName);
+
+                                                LocalDataService
+                                                    .updateSwitchForPlatform(
+                                                        platform: platformName,
+                                                        state: false);
+                                                databaseService
+                                                    .updatePlatformSwitch(
+                                                        platform: platformName,
+                                                        state: false);
+                                                databaseService
+                                                    .removePlatformFromProfile(
+                                                        platformName);
+                                                databaseService
+                                                    .addToChoosePlatforms(
+                                                        platformName);
+                                                print(LocalDataService
+                                                        .getLocalProfilePlatforms()
+                                                    .toString());
+                                                widget.refreshScreen();
+                                              } else {
+                                                Navigator.pop(context);
+                                                await LocalDataService
+                                                    .removePlatformsFromProfile(
+                                                        platformName);
+                                                widget.refreshScreen();
+                                              }
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                onPressed: () async {
-                                  if (!LocalDataService
-                                          .getLocalChoosePlatforms()
-                                      .contains(platformName)) {
-                                    Navigator.pop(context);
-
-                                    await LocalDataService
-                                        .removePlatformsFromProfile(
-                                            platformName);
-                                    LocalDataService.addToChoosePlatforms(
-                                        platformName);
-
-                                    LocalDataService.updateSwitchForPlatform(
-                                        platform: platformName, state: false);
-                                    databaseService.updatePlatformSwitch(
-                                        platform: platformName, state: false);
-                                    databaseService.removePlatformFromProfile(
-                                        platformName);
-                                    databaseService
-                                        .addToChoosePlatforms(platformName);
-                                    print(LocalDataService
-                                            .getLocalProfilePlatforms()
-                                        .toString());
-                                    widget.refreshScreen();
-                                  } else {
-                                    Navigator.pop(context);
-                                    await LocalDataService
-                                        .removePlatformsFromProfile(
-                                            platformName);
-                                    widget.refreshScreen();
-                                  }
-                                },
                               ),
+                              Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: ListTile(
+                                  title: Center(
+                                    child: Text(
+                                      "Cancel",
+                                      style: TextStyle(
+                                          fontSize: width / 20,
+                                          color: Colors.blue),
+                                    ),
+                                  ),
+                                  onTap: () => Navigator.pop(context),
+                                ),
+                              )
                             ],
                           ),
-                        ],
+                        ),
                       );
                     });
               },
@@ -627,7 +652,7 @@ class _SMCardState extends State<SMCard> {
             ? Positioned(
                 width: width / .8,
                 height: height / 30,
-                top: height / 30,
+                top: height / 27,
                 child: ElevatedButton(
                   style: ButtonStyle(
                       // backgroundColor: Theme.of(context).brightness ==
@@ -648,7 +673,7 @@ class _SMCardState extends State<SMCard> {
                     // color: Colors.white,
                   ),
                 ))
-            : Container()
+            : Container(),
       ],
     );
   }

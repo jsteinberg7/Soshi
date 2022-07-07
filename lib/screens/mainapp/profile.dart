@@ -1,4 +1,6 @@
 //import 'dart:html';
+// ignore_for_file: must_be_immutable
+
 import 'dart:typed_data';
 import 'dart:ui';
 
@@ -264,6 +266,102 @@ class _SMTileState extends State<SMTile> {
                       }),
                 ]),
           ),
+        )
+      ],
+    );
+
+    // double width = Utilities.getWidth(context);
+    // text controller for username box
+  }
+}
+
+/*
+A social media card used in the profile (one card per platform)
+*/
+
+class AddPlatformsTile extends StatefulWidget {
+  String platformName, soshiUsername;
+  Function() refreshScreen; // callback used to refresh screen
+  AddPlatformsTile(
+      {String platformName, String soshiUsername, Function refreshScreen}) {
+    this.platformName = platformName;
+    this.soshiUsername = soshiUsername;
+    this.refreshScreen = refreshScreen;
+  }
+
+  @override
+  _AddPlatformsTileState createState() => _AddPlatformsTileState();
+}
+
+class _AddPlatformsTileState extends State<AddPlatformsTile> {
+  refreshScreen() {
+    setState(() {
+      profilePlatforms = LocalDataService.getLocalProfilePlatforms();
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double height = Utilities.getHeight(context);
+    double width = Utilities.getWidth(context);
+    return Stack(
+      children: [
+        GestureDetector(
+          onTap: () async {
+            if (Constants.originalPlatforms.length +
+                    Constants.addedPlatforms.length >
+                LocalDataService.getLocalChoosePlatforms().length +
+                    LocalDataService.getLocalProfilePlatforms().length) {
+              // check which platforms need to be added
+              for (String platform in Constants.addedPlatforms) {
+                if (!LocalDataService.getLocalProfilePlatforms()
+                        .contains(platform) &&
+                    !LocalDataService.getLocalChoosePlatforms()
+                        .contains(platform)) {
+                  await LocalDataService.addToChoosePlatforms(
+                      platform); // add new platform to choose platforms
+                  await LocalDataService.updateSwitchForPlatform(
+                      platform: platform,
+                      state:
+                          false); // create switch for platform in and initialize to false
+                  if (LocalDataService.getLocalUsernameForPlatform(platform) ==
+                      null) {
+                    await LocalDataService.updateUsernameForPlatform(
+                        platform: platform,
+                        username:
+                            ""); // create username mapping for platform if absent
+                  }
+                }
+              }
+            }
+            await Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return Scaffold(
+                  body: ChooseSocials(
+                refreshFunction: refreshScreen,
+              ));
+            }));
+          },
+          child: Card(
+              //semanticContainer: true,
+              elevation: 5,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              child: Container(
+                  height: height / .5,
+                  width: width / 3,
+                  child: Center(
+                    child: Icon(
+                      CupertinoIcons.add,
+                      size: width / 8,
+                      color: Colors.green,
+                    ),
+                  ))),
         )
       ],
     );
@@ -590,72 +688,28 @@ class ProfileState extends State<Profile> {
                   ],
                 ),
                 Container(
-                  child: (profilePlatforms == null ||
-                          profilePlatforms.isEmpty == true)
-                      ? Column(
-                          children: <Widget>[
-                            SizedBox(height: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  "Add your platforms!",
-                                  style: TextStyle(
-                                    color: Colors.cyan[300],
-                                    fontSize: 25,
-                                    fontStyle: FontStyle.italic,
-                                    letterSpacing: 3.0,
-                                    //fontWeight: FontWeight.bold
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.arrow_downward_rounded,
-                                  size: 30,
-                                  color: Colors.cyan[100],
-                                ),
-                                Icon(
-                                  Icons.arrow_downward_rounded,
-                                  size: 30,
-                                  color: Colors.cyan[300],
-                                ),
-                                Icon(
-                                  Icons.arrow_downward_rounded,
-                                  size: 30,
-                                  color: Colors.cyan[700],
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 5),
-                          ],
-                        )
-                      : GridView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                              child: SMTile(
+                  child: GridView.builder(
+                    // add an extra tile with the "+" that can be used always to add morem platforms
+
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                          child: index != profilePlatforms.length
+                              ? SMTile(
                                   platformName: profilePlatforms[index],
                                   soshiUsername: soshiUsername,
-                                  refreshScreen: refreshScreen),
-                            );
-                          },
-                          itemCount: profilePlatforms.length,
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 3,
-                                  childAspectRatio: .8,
-                                  crossAxisSpacing: width / 40),
-                        ),
+                                  refreshScreen: refreshScreen)
+                              : AddPlatformsTile(refreshScreen: refreshScreen));
+                    },
+                    itemCount: profilePlatforms.length + 1,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        childAspectRatio: .8,
+                        crossAxisSpacing: width / 40),
+                  ),
                 ),
-                SizedBox(height: height / 40),
-                SizedBox(height: height / 40),
               ],
             ),
           )),

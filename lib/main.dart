@@ -1,7 +1,6 @@
 import 'dart:async';
 //import 'dart:html';
 
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +35,7 @@ class _MyAppState extends State<MyApp> {
         value: AuthService().user,
         child: MaterialApp(
             debugShowCheckedModeBanner: false,
-            themeMode: ThemeMode.system,
+            themeMode: ThemeMode.dark,
             theme: ThemeData(
               brightness: Brightness.light,
               backgroundColor: Colors.grey[50],
