@@ -262,7 +262,7 @@ class _FriendScreenState extends State<FriendScreen>
         padding: const EdgeInsets.fromLTRB(10.0, 5, 30, 5),
         child: ListTile(
             onTap: () async {
-              Popups.showUserProfileModal(context,
+              Popups.showUserProfilePage(context,
                   friendSoshiUsername: friend.soshiUsername,
                   refreshScreen: refreshFriendScreen,
                   friend: friend); // show friend popup when tile is pressed

@@ -165,7 +165,7 @@ class _QRScreenState extends State<QRScreen> {
                                           //SizedBox(width: width / 40),
                                           GestureDetector(
                                             onTap: () {
-                                              Popups.showUserProfileModal(
+                                              Popups.showUserProfilePage(
                                                   context,
                                                   friendSoshiUsername:
                                                       soshiUsername,
@@ -463,67 +463,109 @@ class _NewQRScreenState extends State<NewQRScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Column(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Text(
-                        LocalDataService.getLocalFirstName() +
-                            " " +
-                            LocalDataService.getLocalLastName(),
-                        style: TextStyle(
-                            fontSize: width / 15, fontWeight: FontWeight.bold)),
-                    Text(
-                      "@" + LocalDataService.getLocalUsername(),
-                      style: TextStyle(
-                          color: Colors.grey[500],
-                          fontSize: width / 25,
-                          fontStyle: FontStyle.italic),
+                    IconButton(
+                        icon: Icon(Icons.ios_share_rounded,
+                            color: Colors.transparent),
+                        onPressed: () => {}),
+                    Column(
+                      children: [
+                        Text(
+                            LocalDataService.getLocalFirstName() +
+                                " " +
+                                LocalDataService.getLocalLastName(),
+                            style: TextStyle(
+                                fontSize: width / 15,
+                                fontWeight: FontWeight.bold)),
+                        Text(
+                          "@" + LocalDataService.getLocalUsername(),
+                          style: TextStyle(
+                              color: Colors.grey[500],
+                              fontSize: width / 25,
+                              fontStyle: FontStyle.italic),
+                        )
+                      ],
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.ios_share_rounded),
+                      onPressed: () => Share.share(
+                          "https://soshi.app/deeplink/user/${LocalDataService.getLocalUsername()}"),
                     )
                   ],
                 ),
-                Container(
-                  height: width / 1.6,
-                  width: width / 1.6,
-                  child: Stack(
-                    children: [
-                      Container(
-                          height: height,
-                          width: width,
-                          child: Image.asset(
-                            "assets/images/misc/qr_lines.png",
-                          )),
-                      QrImage(
-                          size: width / 1.75,
-                          dataModuleStyle: QrDataModuleStyle(
-                              dataModuleShape: QrDataModuleShape.circle,
-                              color: Colors.black),
-                          data:
-                              "https://soshi.app/deeplink/user/${LocalDataService.getLocalUsername()}"),
-                      Positioned(
-                        bottom: width / 4.5,
-                        right: width / 4.5,
-                        child: Container(
-                          height: width / 9,
-                          width: width / 9,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            //  shape: BoxShape.circle
+                PhysicalModel(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(25.0),
+                  // elevation: 5,
+                  child: Container(
+                    height: width / 1.6,
+                    width: width / 1.6,
+                    child: Stack(
+                      alignment: AlignmentDirectional.center,
+                      children: [
+                        // Container(
+                        //     height: height,
+                        //     width: width,
+                        //     child: Image.asset(
+                        //       "assets/images/misc/qr_lines.png",
+                        //     )),
+                        GestureDetector(
+                          onTap: () {
+                            Clipboard.setData(ClipboardData(
+                              text: "https://soshi.app/" +
+                                  LocalDataService.getLocalUsernameForPlatform(
+                                          "Soshi")
+                                      .toString(),
+                            ));
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: const Text(
+                                'Copied link to clipboard :)',
+                                textAlign: TextAlign.center,
+                              ),
+                            ));
+                            Analytics.logCopyLinkToClipboard();
+                          },
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(40.0),
+                            child: QrImage(
+                                size: width / 1.75,
+                                dataModuleStyle: QrDataModuleStyle(
+                                    dataModuleShape: QrDataModuleShape.circle,
+                                    color: Colors.black),
+                                data:
+                                    "https://soshi.app/deeplink/user/${LocalDataService.getLocalUsername()}"),
                           ),
-                          child: ClipOval(
-                            child: Container(
-                              height: width / 10,
-                              width: width / 10,
-                              child: ProfilePic(
-                                  radius: width / 10,
-                                  url: LocalDataService
-                                      .getLocalProfilePictureURL()),
+                        ),
+                        Align(
+                          // bottom: width / 4.5,
+                          // right: width / 20,
+                          child: Container(
+                            height: width / 10,
+                            width: width / 10,
+                            decoration: BoxDecoration(
+                                color: Colors.white, shape: BoxShape.circle),
+                            child: ClipOval(
+                              child: Container(
+                                height: width / 10,
+                                width: width / 10,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(3.0),
+                                  child: ProfilePic(
+                                      radius: width / 10,
+                                      url: LocalDataService
+                                          .getLocalProfilePictureURL()),
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-                Text("Share this with others to instantly connect.",
+                Text("Share with others to instantly connect.",
                     style: TextStyle(fontSize: width / 30))
               ],
             )),
