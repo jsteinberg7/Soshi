@@ -75,6 +75,11 @@ class DatabaseService {
         "Discord": null,
         "Email": email,
         "Contact": null,
+        "AppleMusic": null,
+        "CashApp": null,
+        "Vsco": null,
+        "OnlyFans": null,
+        "BeReal": null
       },
       "Two Way Sharing": true,
       "Switches": <String, bool>{
@@ -92,21 +97,32 @@ class DatabaseService {
         "Venmo": false,
         "Spotify": false,
         "Personal": false,
+        "AppleMusic": false,
+        "CashApp": false,
+        "Vsco": false,
+        "OnlyFans": false,
+        "BeReal": false
+
         //"Cryptowallet": false
       },
       "Photo URL": "null",
       "Choose Platforms": <String>[
         //"Cryptowallet",
-        "Email",
         "Personal",
         "Instagram",
         "Snapchat",
         "Venmo",
+        "CashApp",
         "Twitter",
+        "Vsco",
         "Tiktok",
         "Linkedin",
+        "BeReal",
         "Youtube",
         "Spotify",
+        "AppleMusic",
+        "OnlyFans",
+        "Email",
         "Facebook",
         "Discord",
 

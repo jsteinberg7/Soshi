@@ -223,48 +223,6 @@ class _EditHandlesState extends State<EditHandles> {
               child: (profilePlatforms == null ||
                       profilePlatforms.isEmpty == true)
                   ? Container()
-                  // Column(
-                  //     children: <Widget>[
-                  //       SizedBox(height: 10),
-                  //       Row(
-                  //         mainAxisAlignment: MainAxisAlignment.center,
-                  //         children: <Widget>[
-                  //           Text(
-                  //             "Add your platforms!",
-                  //             style: TextStyle(
-                  //               color: Colors.cyan[300],
-                  //               fontSize: 25,
-                  //               fontStyle: FontStyle.italic,
-                  //               letterSpacing: 3.0,
-                  //               //fontWeight: FontWeight.bold
-                  //             ),
-                  //           ),
-                  //         ],
-                  //       ),
-                  //       SizedBox(height: 10),
-                  //       Row(
-                  //         mainAxisAlignment: MainAxisAlignment.center,
-                  //         children: [
-                  //           Icon(
-                  //             Icons.arrow_downward_rounded,
-                  //             size: 30,
-                  //             color: Colors.cyan[100],
-                  //           ),
-                  //           Icon(
-                  //             Icons.arrow_downward_rounded,
-                  //             size: 30,
-                  //             color: Colors.cyan[300],
-                  //           ),
-                  //           Icon(
-                  //             Icons.arrow_downward_rounded,
-                  //             size: 30,
-                  //             color: Colors.cyan[700],
-                  //           ),
-                  //         ],
-                  //       ),
-                  //       SizedBox(height: 5),
-                  //     ],
-                  //   )
                   : GridView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
@@ -327,7 +285,8 @@ class _SMCardState extends State<SMCard> {
     } else if (platformName == "Linkedin" ||
         platformName == "Facebook" ||
         platformName == "Spotify" ||
-        platformName == "Youtube") {
+        platformName == "Youtube" ||
+        platformName == "AppleMusic") {
       hintText = "Link to Profile";
       indicator = "URL";
     } else if (platformName == "Personal") {
@@ -396,7 +355,6 @@ class _SMCardState extends State<SMCard> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               IconButton(
-                splashRadius: Utilities.getWidth(context) / 25,
                 icon: CircleAvatar(
                     minRadius: width / 10.5,
                     maxRadius: width / 10.5,
@@ -507,12 +465,12 @@ class _SMCardState extends State<SMCard> {
                             controller: usernameController,
                             maxLines: 1,
                             onSubmitted: (String username) async {
-                              // LocalDataService.updateUsernameForPlatform(
-                              //     platform: platformName,
-                              //     username: username);
-                              // databaseService.updateUsernameForPlatform(
-                              //     platform: platformName,
-                              //     username: username);
+                              LocalDataService.updateUsernameForPlatform(
+                                  //for testing rn
+                                  platform: platformName,
+                                  username: username);
+                              databaseService.updateUsernameForPlatform(
+                                  platform: platformName, username: username);
                             },
                           )
                         : TextField(

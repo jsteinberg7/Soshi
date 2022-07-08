@@ -1320,12 +1320,23 @@ class _FriendScreenState extends State<FriendScreen>
 
 class SoshiPointsButton extends StatelessWidget {
   double height, width;
+  int soshiPointsCurr;
+  double soshiPointsButtonWidth;
   SoshiPointsButton(this.height, this.width);
+
   @override
   Widget build(BuildContext context) {
+    soshiPointsCurr = LocalDataService.getSoshiPoints();
+    soshiPointsCurr < 10
+        ? soshiPointsButtonWidth = 5.7
+        : soshiPointsCurr < 100
+            ? soshiPointsButtonWidth = 4.85
+            : soshiPointsCurr < 1000
+                ? soshiPointsButtonWidth = 4.25
+                : soshiPointsButtonWidth = 3.7;
     return Container(
       //decoration: BoxDecoration(border: Border.all(color: Colors.blueAccent)),
-      width: width / 4.1,
+      width: width / soshiPointsButtonWidth,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           elevation: 3,
@@ -1355,7 +1366,7 @@ class SoshiPointsButton extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(top: 0),
               child: Text(
-                LocalDataService.getSoshiPoints().toString(),
+                soshiPointsCurr.toString(),
                 style: TextStyle(fontSize: width / 22
                     // color: Colors.cyan[300]
                     ),

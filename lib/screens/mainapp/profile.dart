@@ -254,6 +254,18 @@ class _SMTileState extends State<SMTile> {
                         setState(() {
                           isSwitched = value;
                         });
+
+                        if (LocalDataService.getLocalUsernameForPlatform(
+                                    platformName) ==
+                                null ||
+                            LocalDataService.getLocalUsernameForPlatform(
+                                    platformName) ==
+                                "") {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return EditHandles(); // Returning the edit Socials screen
+                          }));
+                        }
                         LocalDataService.updateSwitchForPlatform(
                             platform: platformName, state: value);
                         databaseService.updatePlatformSwitch(
@@ -516,19 +528,21 @@ class ProfileState extends State<Profile> {
                       IconButton(onPressed: () {}, icon: Icon(Icons.share)),
                       Padding(
                         padding:
-                            EdgeInsets.fromLTRB(width / 10, 0, width / 10, 0),
+                            EdgeInsets.fromLTRB(width / 40, 0, width / 40, 0),
                         child: Column(
                           children: [
                             Container(
-                              width: width / 2,
-                              child: AutoSizeText(
-                                LocalDataService.getLocalFirstName() +
-                                    " " +
-                                    LocalDataService.getLocalLastName(),
-                                maxLines: 1,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: width / 16,
+                              width: width / 1.5,
+                              child: Center(
+                                child: AutoSizeText(
+                                  LocalDataService.getLocalFirstName() +
+                                      " " +
+                                      LocalDataService.getLocalLastName(),
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: width / 16,
+                                  ),
                                 ),
                               ),
                             ),
