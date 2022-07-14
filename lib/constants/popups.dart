@@ -335,14 +335,14 @@ class Popups {
         platformName == "Venmo" ||
         platformName == "Twitter" ||
         platformName == "Tiktok" ||
-        platformName == "Discord" ||
-        platformName == "Spotify") {
+        platformName == "Discord") {
       hintText = "Username";
       indicator = "@";
     } else {
       if (platformName == "Facebook" ||
           platformName == "Linkedin" ||
-          platformName == "Personal") {
+          platformName == "Personal" ||
+          platformName == "Spotify") {
         hintText = "Link To Profile";
         indicator = "https://";
       } else if (platformName == "Phone") {

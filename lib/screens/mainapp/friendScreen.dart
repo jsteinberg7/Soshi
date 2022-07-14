@@ -261,12 +261,12 @@ class _FriendScreenState extends State<FriendScreen>
       child: Padding(
         padding: const EdgeInsets.fromLTRB(10.0, 5, 30, 5),
         child: ListTile(
-            onTap: () async {
-              Popups.showUserProfilePage(context,
-                  friendSoshiUsername: friend.soshiUsername,
-                  refreshScreen: refreshFriendScreen,
-                  friend: friend); // show friend popup when tile is pressed
-            },
+            // onTap: () async {
+            //   Popups.showUserProfilePage(context,
+            //       friendSoshiUsername: friend.soshiUsername,
+            //       refreshScreen: refreshFriendScreen,
+            //       friend: friend); // show friend popup when tile is pressed
+            // },
             leading: ProfilePic(radius: width / 14, url: friend.photoURL),
             title: Column(
               children: <Widget>[

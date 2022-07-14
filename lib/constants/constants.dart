@@ -193,6 +193,12 @@ abstract class Constants {
     "Contact",
     "Personal",
     "Youtube",
+    // "Vsco",
+    // "Apple Music"
+    // "Cashapp",
+    // "Soundcloud"
+    // "Bereal",
+    // "Onlyfans"
     //"Cryptowallet"
   ];
   /* Instructions for injecting/adding new platforms: 

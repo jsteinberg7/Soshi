@@ -164,13 +164,13 @@ class _QRScreenState extends State<QRScreen> {
                                         children: [
                                           //SizedBox(width: width / 40),
                                           GestureDetector(
-                                            onTap: () {
-                                              Popups.showUserProfilePage(
-                                                  context,
-                                                  friendSoshiUsername:
-                                                      soshiUsername,
-                                                  refreshScreen: () {});
-                                            },
+                                            // onTap: () {
+                                            //   Popups.showUserProfilePage(
+                                            //       context,
+                                            //       friendSoshiUsername:
+                                            //           soshiUsername,
+                                            //       refreshScreen: () {});
+                                            // },
                                             child: Container(
                                               decoration: BoxDecoration(
                                                   boxShadow: [
@@ -350,7 +350,7 @@ class _QRScreenState extends State<QRScreen> {
                                 .toString(),
                         size: width / 1.35,
                         padding: EdgeInsets.all(20.0),
-                        foregroundColor: Colors.black,
+                        // foregroundColor: Colors.black,
                       ),
                     ),
                   ),
@@ -570,45 +570,57 @@ class _NewQRScreenState extends State<NewQRScreen> {
               ],
             )),
       ),
-      ElevatedButton(
-        onPressed: () {},
-        child: Container(
-            height: height / 25,
-            width: width / 2,
-            child: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text(
-                    "Scan",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: "Montserrat",
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20),
-                  ),
-                  // SizedBox(width: 15),
-                  // ClipRRect(
-                  //   borderRadius: BorderRadius.all(Radius.circular(10)),
-                  //   child: Image.asset(
-                  //     "assets/images/SoshiLogos/soshi_icon.png",
-                  //   ),
-                  // ),
-                  // SizedBox(width: 10),
-                  // Icon(
-                  //   Icons.chevron_right,
-                  //   size: 30,
-                  // )
-                ],
-              ),
-            )),
-        style: ElevatedButton.styleFrom(
-          primary: Colors.black,
-          // side: BorderSide(color: Colors.cyan[400]!, width: 2),
-          elevation: 10,
-          padding: const EdgeInsets.all(15.0),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
+      Container(
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.cyanAccent,
+                Color.fromARGB(255, 0, 225, 255),
+                Color.fromARGB(255, 1, 123, 139),
+              ]),
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        child: ElevatedButton(
+          onPressed: () {},
+          child: Container(
+              height: height / 25,
+              width: width / 2,
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(
+                      "Scan",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: "Montserrat",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20),
+                    ),
+                    // SizedBox(width: 15),
+                    // ClipRRect(
+                    //   borderRadius: BorderRadius.all(Radius.circular(10)),
+                    //   child: Image.asset(
+                    //     "assets/images/SoshiLogos/soshi_icon.png",
+                    //   ),
+                    // ),
+                    // SizedBox(width: 10),
+                    // Icon(
+                    //   Icons.chevron_right,
+                    //   size: 30,
+                    // )
+                  ],
+                ),
+              )),
+          style: ElevatedButton.styleFrom(
+            primary: Colors.transparent,
+            elevation: 10,
+            padding: const EdgeInsets.all(15.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
           ),
         ),
       )
