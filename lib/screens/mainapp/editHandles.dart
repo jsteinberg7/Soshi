@@ -80,6 +80,19 @@ class _EditHandlesState extends State<EditHandles> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            // loop throgh all profilePlatforms
+            // check if LocalDataservice.getusernameForPlatform(platform) equals the userNameController.text for each of the profile platforms
+            // if ALL match, then pop
+            // if even ONE doesn't match throw popup saying "Save changes, ..."
+            // Then in that popup, if they say "Save" --> same function for onpressed of "Done"
+            // if they say "Discard" --> just pop
+
+            Navigator.of(context).pop();
+          },
+          icon: Icon(CupertinoIcons.back),
+        ),
         actions: [
           Padding(
             padding: EdgeInsets.only(right: width / 150),
@@ -453,6 +466,13 @@ class _SMCardState extends State<SMCard> {
                 child: Expanded(
                     child: platformName != "Contact"
                         ? TextField(
+                            keyboardType: platformName == "Phone"
+                                ? TextInputType.numberWithOptions(
+                                    decimal: true, signed: true)
+                                : TextInputType.text,
+                            inputFormatters: platformName == "Phone"
+                                ? [FilteringTextInputFormatter.digitsOnly]
+                                : null,
                             style: TextStyle(
                                 fontSize: width / 20, letterSpacing: 1.3),
                             scribbleEnabled: true,

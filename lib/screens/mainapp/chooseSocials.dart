@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:soshi/screens/login/loading.dart';
@@ -148,6 +149,13 @@ class _ChooseSocialsState extends State<ChooseSocials> {
     List<String> choosePlatforms = LocalDataService.getLocalChoosePlatforms();
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: Icon(CupertinoIcons.back),
+        ),
+
         actions: [
           Padding(
             padding: EdgeInsets.only(right: width / 150),

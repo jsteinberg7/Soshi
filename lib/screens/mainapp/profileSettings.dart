@@ -81,6 +81,13 @@ class ProfileSettingsState extends State<ProfileSettings> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: Icon(CupertinoIcons.back),
+        ),
+
         actions: [
           Padding(
             padding: EdgeInsets.only(right: width / 150),
@@ -223,6 +230,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                       ),
                       Expanded(
                         child: TextField(
+                          // keyboardType: TextInputType.datetime,
                           decoration: InputDecoration(
                               border: InputBorder.none, counterText: ""),
                           controller: firstNameController,
@@ -346,12 +354,14 @@ class ProfileSettingsState extends State<ProfileSettings> {
                       ),
                       Expanded(
                         child: TextField(
+                          // keyboardType: TextInputType.,
+                          textInputAction: TextInputAction.done,
                           decoration: InputDecoration(
                             border: InputBorder.none,
                           ),
                           controller: bioController,
-                          maxLines: 2,
-                          maxLength: 40,
+                          maxLines: 3,
+                          maxLength: 80,
                           //maxLengthEnforcement: MaxLengthEnforcement.none,
                           onSubmitted: (String bio) {
                             LocalDataService.updateBio(bio);
