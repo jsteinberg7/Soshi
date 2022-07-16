@@ -118,8 +118,7 @@ class _EditHandlesState extends State<EditHandles> {
             ),
           )
         ],
-        elevation: 10,
-        shadowColor: Colors.cyan,
+        elevation: 0,
         title: Text(
           "My Platforms",
           style: TextStyle(
@@ -494,7 +493,6 @@ class _SMCardState extends State<SMCard> {
                             },
                           )
                         : TextField(
-                          
                             style: TextStyle(fontSize: width / 20),
                             decoration: InputDecoration(
                                 border: InputBorder.none, counterText: ""),

@@ -666,124 +666,6 @@ class _FriendScreenState extends State<FriendScreen>
         child: Column(
       children: <Widget>[
         SizedBox(height: 10),
-        Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-          //   Padding(
-          //     padding: EdgeInsets.fromLTRB(10, 5, 0, 5),
-          //     child: ElevatedButton(
-          //         style: ElevatedButton.styleFrom(
-          //             // primary: Constants.buttonColorDark,
-          //             shape: CircleBorder()),
-          //         onPressed: () async {
-          //           String QRScanResult = await Utilities.scanQR(mounted);
-          //           if (QRScanResult.length > 5) {
-          //             // vibrate when QR code is successfully scanned
-          //             Vibration.vibrate();
-          //             try {
-          //               String friendSoshiUsername = QRScanResult.split("/").last;
-          //               Map friendData = await databaseService
-          //                   .getUserFile(friendSoshiUsername);
-          //               Friend friend =
-          //                   databaseService.userDataToFriend(friendData);
-          //               bool isFriendAdded = await LocalDataService.isFriendAdded(
-          //                   friendSoshiUsername);
-
-          //               Popups.showUserProfilePopupNew(context,
-          //                   friendSoshiUsername: friendSoshiUsername,
-          //                   refreshScreen: () {});
-          //               if (!isFriendAdded &&
-          //                   friendSoshiUsername !=
-          //                       databaseService.currSoshiUsername) {
-          //                 List<String> newFriendsList =
-          //                     await LocalDataService.addFriend(friend: friend);
-
-          //                 databaseService.overwriteFriendsList(newFriendsList);
-          //                 // update local lists
-
-          //                 refreshFriendScreen();
-          //                 // databaseService.addFriend(
-          //                 //     thisSoshiUsername:
-          //                 //         databaseService.currSoshiUsername,
-          //                 //     friendSoshiUsername: friendSoshiUsername);
-          //               }
-
-          //               // bool friendHasTwoWaySharing = await databaseService.getTwoWaySharing(friendData);
-          //               // if (friendHasTwoWaySharing == null || friendHasTwoWaySharing == true) {
-          //               //   // if user has two way sharing on, add self to user's friends list
-          //               //   databaseService.addFriend(thisSoshiUsername: friendSoshiUsername, friendSoshiUsername: databaseService.currSoshiUsername);
-          //               // }
-          //               //add friend right here
-
-          //               Analytics.logQRScan(
-          //                   QRScanResult, true, "friendScreen.dart corner icon");
-          //             } catch (e) {
-          //               Analytics.logQRScan(
-          //                   QRScanResult, false, "friendScreen.dart corner icon");
-          //               print(e);
-          //             }
-          //           }
-          //         },
-          //         child: Icon(Icons.qr_code_scanner_sharp,
-          //             // color: Colors.cyan[300],
-          //             size: width / 20)),
-          //   ),
-          //   Padding(
-          //     padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-          //     child: Column(
-          //       children: [
-          //         Row(
-          //           children: [
-          //             Icon(
-          //               Icons.emoji_people, // or Icons.poeple_round
-          //               color: Colors.cyan,
-          //               size: 30,
-          //             ),
-          //             Padding(
-          //               padding: const EdgeInsets.only(left: 5),
-          //               child: Text(
-          //                 "Friends",
-          //                 //textAlign: TextAlign.center,
-          //                 style: TextStyle(
-          //                     // color: Colors.white,
-          //                     fontSize: 30.0,
-          //                     fontWeight: FontWeight.bold,
-          //                     fontStyle: FontStyle.italic),
-          //               ),
-          //             ),
-          //           ],
-          //         ),
-          //         Padding(
-          //           padding: const EdgeInsets.only(top: 3),
-          //           child: Text(
-          //             "Total: " +
-          //                 LocalDataService.getFriendsListCount().toString(),
-          //             style: TextStyle(
-          //                 // color: Colors.cyan[300]
-          //                 ),
-          //           ),
-          //         )
-          //       ],
-          //     ),
-          //   ),
-          //   Padding(
-          //       padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
-          //       child: ShareButton(
-          //         size: width / 20,
-          //         soshiUsername: LocalDataService.getLocalUsername(),
-          //       )
-          //       // AddedMeButton(
-          //       //   size: width / 20,
-          //       //   soshiUsername: LocalDataService.getLocalUsername(),
-          //       //   databaseService: databaseService,
-          //       // ),
-          //       ),
-        ]),
-        // Padding(
-        //   padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-        //   child: Divider(
-        //     color: Colors.cyan,
-        //     thickness: 1,
-        //   ),
-        // ),
         Padding(
           padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
           child: Container(
@@ -836,32 +718,57 @@ class _FriendScreenState extends State<FriendScreen>
                           visible: formattedRecentsList.isNotEmpty,
                           child: Container(
                             height: width / 3.5,
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(50, 8, 50, 8),
-                              child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: formattedRecentsList.length,
-                                  itemBuilder: (BuildContext context, int i) {
-                                    return Column(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(4.0),
-                                          child: ProfilePic(
-                                              radius: width / 14,
-                                              url: formattedRecentsList[i]
-                                                  .photoURL),
+                            child: Center(
+                              child: SizedBox(
+                                width: width / 1.2,
+                                child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: List.generate(
+                                        formattedRecentsList.length, (i) {
+                                      return Padding(
+                                        padding: EdgeInsets.all(width / 30),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(context,
+                                                MaterialPageRoute(
+                                                    builder: (context) {
+                                              Friend friend =
+                                                  formattedRecentsList[i];
+                                              return ViewProfilePage(
+                                                  friendSoshiUsername:
+                                                      friend.soshiUsername,
+                                                  refreshScreen:
+                                                      refreshFriendScreen,
+                                                  friend:
+                                                      friend); // show friend popup when tile is pressed
+                                            }));
+                                          },
+                                          child: Column(
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(4.0),
+                                                child: ProfilePic(
+                                                    radius: width / 14,
+                                                    url: formattedRecentsList[i]
+                                                        .photoURL),
+                                              ),
+                                              Text(
+                                                  "@" +
+                                                      formattedRecentsList[i]
+                                                          .soshiUsername,
+                                                  style: TextStyle(
+                                                      color: Colors.grey[500],
+                                                      fontSize: 14,
+                                                      fontStyle:
+                                                          FontStyle.italic))
+                                            ],
+                                          ),
                                         ),
-                                        Text(
-                                            "@" +
-                                                formattedRecentsList[i]
-                                                    .soshiUsername,
-                                            style: TextStyle(
-                                                color: Colors.grey[500],
-                                                fontSize: 14,
-                                                fontStyle: FontStyle.italic))
-                                      ],
-                                    );
-                                  }),
+                                      );
+                                    })),
+                              ),
                             ),
                           ),
                         ),
@@ -869,10 +776,10 @@ class _FriendScreenState extends State<FriendScreen>
                             padding:
                                 const EdgeInsets.fromLTRB(16.0, 3.0, 16.0, 0.0),
                             child: Text("A-Z")),
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: formattedFriendsList.length,
-                            itemBuilder: (BuildContext context, int i) {
+                        Column(
+                          children: List.generate(
+                            formattedFriendsList.length,
+                            (i) {
                               if (i >= formattedFriendsList.length) {
                                 return Container();
                               }

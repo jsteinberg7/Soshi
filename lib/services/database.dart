@@ -408,6 +408,10 @@ class DatabaseService {
     return userData["Switches"];
   }
 
+  List<String> getPassions(Map userData) {
+    return userData["Passions"] ?? [];
+  }
+
   // return list of enabled user switches
   List<String> getEnabledPlatformsList(Map userData) {
     Map<String, dynamic> platformsMap = getUserSwitches(userData);

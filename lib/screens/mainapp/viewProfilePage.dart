@@ -83,6 +83,12 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
               String numFriendsString = numfriends.toString();
               String numGroupsString = "15";
               bool isContactEnabled;
+              // List<String> passionsList = databaseService.getPassions(userData);
+              List<String> passionsList = [
+                "Ice Hockey",
+                "Entrepreneurship",
+                "Fitness"
+              ];
 
               List<String> visiblePlatforms;
               Map usernames;
@@ -275,18 +281,22 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                 Padding(
                                     padding: EdgeInsets.fromLTRB(width / 6,
                                         height / 70, width / 6, height / 80),
-                                    child: Container(
-                                        child: //Padding(
-                                            //padding: EdgeInsets.fromLTRB(width / 5, 0, width / 5, 0),
-                                            //child:
-                                            (bio != null)
-                                                ? Text(bio,
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                        fontSize: width / 25
-                                                        // color: Colors.grey[300],
-                                                        ))
-                                                : Container())
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                          child: //Padding(
+                                              //padding: EdgeInsets.fromLTRB(width / 5, 0, width / 5, 0),
+                                              //child:
+                                              (bio != null)
+                                                  ? Text(bio,
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                          fontSize: width / 25
+                                                          // color: Colors.grey[300],
+                                                          ))
+                                                  : Container()),
+                                    )
                                     //),
                                     ),
                                 NeumorphicButton(
@@ -422,6 +432,19 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                   fontSize: width / 20),
                             ),
                           ),
+                          Center(
+                            child: SizedBox(
+                              width: width / 1.1,
+                              child: Wrap(
+                                alignment: WrapAlignment.center,
+                                spacing: width / 35,
+                                children:
+                                    List.generate(passionsList.length, (i) {
+                                  return PassionBubble(passionsList[i]);
+                                }),
+                              ),
+                            ),
+                          ),
                           Padding(
                             padding: EdgeInsets.fromLTRB(width / 15,
                                 height / 30, width / 25, width / 30),
@@ -445,7 +468,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                   )
                                 : SizedBox(
                                     // height: height / 3.5,
-                                    width: width / 1.2,
+                                    width: width / 1.1,
                                     // child: GridView.builder(
                                     //   physics:
                                     //       const NeverScrollableScrollPhysics(),
@@ -473,6 +496,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                     // ),
                                     child: Wrap(
                                       alignment: WrapAlignment.center,
+                                      spacing: width / 40,
                                       children: List.generate(
                                           visiblePlatforms.length, (i) {
                                         return Popups.createSMButton(

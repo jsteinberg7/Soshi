@@ -128,8 +128,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
             ),
           )
         ],
-        // elevation: 10,
-        // shadowColor: Colors.cyan,
+        elevation: 0,
         title: Text(
           "Edit Profile",
           style: TextStyle(

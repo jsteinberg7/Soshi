@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:share/share.dart';
 import 'package:soshi/constants/popups.dart';
 import 'package:soshi/constants/utilities.dart';
@@ -42,8 +43,8 @@ class ProfilePic extends StatelessWidget {
         placeHolder: (b, c) {
           return Image.asset('assets/images/misc/default_pic.png');
         },
-        // borderColor: Colors.black,
-        // borderWidth: radius / 20,
+        borderColor: Colors.black,
+        borderWidth: radius / 40,
         elevation: 0,
         radius: radius,
       ),
@@ -881,6 +882,7 @@ class _CircularProfileAvatarState extends State<CircularProfileAvatar> {
 class SoshiAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
     return AppBar(
       systemOverlayStyle: SystemUiOverlayStyle(
         // Status bar color
@@ -891,61 +893,81 @@ class SoshiAppBar extends StatelessWidget {
         statusBarBrightness: Brightness.light, // For iOS (dark icons)
       ),
       leadingWidth: 100,
-      actions: [
-        // Padding(
-        //   padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-        //   child: ElevatedButton(
-        //     onPressed: () {
-        //       URL.launchURL("sms:" + "5713351885");
-        //     },
-        //     style: ElevatedButton.styleFrom(
-        //         // primary: Theme.of(context).primaryColor,
-        //         //shadowColor: Colors.grey[900],
-        //         shape: RoundedRectangleBorder(
-        //             borderRadius: BorderRadius.all(Radius.circular(15.0)))),
-        //     child: Container(
-        //       child: Row(
-        //         children: [
-        //           Column(
-        //             crossAxisAlignment: CrossAxisAlignment.center,
-        //             mainAxisAlignment: MainAxisAlignment.center,
-        //             children: [
-        //               Text("Send",
-        //                   style: TextStyle(
-        //                       fontSize: 10,
-        //                       fontWeight: FontWeight.bold,
-        //                       letterSpacing: 1)),
-        //               Text("feedback!",
-        //                   style: TextStyle(
-        //                       fontSize: 10,
-        //                       fontWeight: FontWeight.bold,
-        //                       letterSpacing: 1)),
-        //             ],
-        //           ),
-        //           // Icon(
-        //           //   Icons.feedback,
-        //           //   color: Colors.cyan[300],
-        //           //   size: 10,
-        //           // ),
-        //         ],
-        //       ),
-        //     ),
+      // actions: [
+      //   Padding(
+      //     padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+      //     child: ElevatedButton(
+      //       onPressed: () {
+      //         URL.launchURL("sms:" + "5713351885");
+      //       },
+      //       style: ElevatedButton.styleFrom(
+      //           // primary: Theme.of(context).primaryColor,
+      //           //shadowColor: Colors.grey[900],
+      //           shape: RoundedRectangleBorder(
+      //               borderRadius: BorderRadius.all(Radius.circular(15.0)))),
+      //       child: Row(
+      //         children: [
+      //           Column(
+      //             crossAxisAlignment: CrossAxisAlignment.center,
+      //             mainAxisAlignment: MainAxisAlignment.center,
+      //             children: [
+      //               Text("Send",
+      //                   style: TextStyle(
+      //                       fontSize: 10,
+      //                       fontWeight: FontWeight.bold,
+      //                       letterSpacing: 1)),
+      //               Text("feedback!",
+      //                   style: TextStyle(
+      //                       fontSize: 10,
+      //                       fontWeight: FontWeight.bold,
+      //                       letterSpacing: 1)),
+      //             ],
+      //           ),
+      //           // Icon(
+      //           //   Icons.feedback,
+      //           //   color: Colors.cyan[300],
+      //           //   size: 10,
+      //           // ),
+      //         ],
+      //       ),
 
-        //     // Icon(Icons.person_rounded,
-        //     //     color: Colors.cyan[300], size: 10.0),
-        //   ),
-        // ),
-      ],
-      elevation: 0,
+      //       // Icon(Icons.person_rounded,
+      //       //     color: Colors.cyan[300], size: 10.0),
+      //     ),
+      //   ),
+      // ],
+      elevation: 5,
       shadowColor: Colors.cyan,
-      title: Image.asset(
-        Theme.of(context).brightness == Brightness.light
-            ? "assets/images/SoshiLogos/soshi_logo_black.png"
-            : "assets/images/SoshiLogos/soshi_logo.png",
-        height: Utilities.getHeight(context) / 25,
+      title: Padding(
+        padding: EdgeInsets.zero,
+        child: Image.asset(
+          "assets/images/SoshiLogos/SoshiBubbleLogo.png",
+          // Theme.of(context).brightness == Brightness.light
+          //     ? "assets/images/SoshiLogos/soshi_logo_black.png"
+          //     : "assets/images/SoshiLogos/soshi_logo.png",
+
+          height: Utilities.getHeight(context) / 17,
+        ),
       ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       centerTitle: true,
     );
+  }
+}
+
+class PassionBubble extends StatelessWidget {
+  String passion;
+
+  PassionBubble(this.passion);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        decoration: BoxDecoration(
+            border: Border.all(), borderRadius: BorderRadius.circular(20.0)),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(passion),
+        ));
   }
 }

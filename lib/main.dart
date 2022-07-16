@@ -36,7 +36,7 @@ class _MyAppState extends State<MyApp> {
         value: AuthService().user,
         child: MaterialApp(
             debugShowCheckedModeBanner: false,
-            themeMode: ThemeMode.system,
+            themeMode: ThemeMode.light,
             theme: ThemeData(
               pageTransitionsTheme: PageTransitionsTheme(builders: {
                 TargetPlatform.android: CupertinoPageTransitionsBuilder(),
