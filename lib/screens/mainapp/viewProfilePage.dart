@@ -6,6 +6,7 @@ import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:soshi/screens/login/loading.dart';
 import 'package:vibration/vibration.dart';
@@ -288,48 +289,56 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                                 : Container())
                                     //),
                                     ),
-                                ElevatedButton(
-                                  onPressed: () async {},
-                                  child: Container(
-                                      height: height / 40,
-                                      width: width / 3,
-                                      child: Center(
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            Text(
-                                              "Add Friend",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontFamily: "Montserrat",
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: width / 25),
+                                NeumorphicButton(
+                                    onPressed: () async {},
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(2.0),
+                                      child: Container(
+                                          height: height / 40,
+                                          width: width / 3,
+                                          child: Center(
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Text(
+                                                  "Add Friend",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontFamily: "Montserrat",
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: width / 25),
+                                                ),
+                                                // SizedBox(width: 15),
+                                                // ClipRRect(
+                                                //   borderRadius: BorderRadius.all(Radius.circular(10)),
+                                                //   child: Image.asset(
+                                                //     "assets/images/SoshiLogos/soshi_icon.png",
+                                                //   ),
+                                                // ),
+                                                // SizedBox(width: 10),
+                                                // Icon(
+                                                //   Icons.chevron_right,
+                                                //   size: 30,
+                                                // )
+                                              ],
                                             ),
-                                            // SizedBox(width: 15),
-                                            // ClipRRect(
-                                            //   borderRadius: BorderRadius.all(Radius.circular(10)),
-                                            //   child: Image.asset(
-                                            //     "assets/images/SoshiLogos/soshi_icon.png",
-                                            //   ),
-                                            // ),
-                                            // SizedBox(width: 10),
-                                            // Icon(
-                                            //   Icons.chevron_right,
-                                            //   size: 30,
-                                            // )
-                                          ],
-                                        ),
-                                      )),
-                                  style: ElevatedButton.styleFrom(
-                                    primary: Colors.black,
-                                    elevation: 10,
-                                    padding: const EdgeInsets.all(15.0),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20.0),
+                                          )),
                                     ),
-                                  ),
-                                ),
+                                    style: NeumorphicStyle(
+                                        color: Colors.black,
+                                        boxShape: NeumorphicBoxShape.roundRect(
+                                            BorderRadius.circular(20.0)))
+                                    // ElevatedButton.styleFrom(
+                                    //   primary: Colors.black,
+                                    //   elevation: 10,
+                                    //   padding: const EdgeInsets.all(15.0),
+                                    //   shape: RoundedRectangleBorder(
+                                    //     borderRadius: BorderRadius.circular(20.0),
+                                    //   ),
+                                    // ),
+                                    ),
                               ],
                             ),
                           ),
@@ -404,8 +413,18 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: EdgeInsets.fromLTRB(
-                                width / 15, height / 30, width / 25, 0),
+                            padding: EdgeInsets.fromLTRB(width / 15,
+                                height / 30, width / 25, width / 30),
+                            child: Text(
+                              "Passions",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: width / 20),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(width / 15,
+                                height / 30, width / 25, width / 30),
                             child: Text(
                               "Socials",
                               style: TextStyle(
@@ -425,34 +444,46 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                     ),
                                   )
                                 : SizedBox(
-                                    height: height / 3.5,
-                                    width: width / 1.25,
-                                    child: GridView.builder(
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      shrinkWrap: true,
-                                      itemBuilder:
-                                          (BuildContext context, int i) {
-                                        return Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                0, 0, 0, 10),
-                                            child: Popups.createSMButton(
-                                                soshiUsername:
-                                                    friendSoshiUsername,
-                                                platform: visiblePlatforms[i],
-                                                username: usernames[
-                                                    visiblePlatforms[i]],
-                                                size: width / 15,
-                                                context: context));
-                                      },
-                                      itemCount: visiblePlatforms.length,
-                                      gridDelegate:
-                                          SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisCount: 4,
-                                              childAspectRatio: .9,
-                                              crossAxisSpacing: width / 60),
-                                    ),
-                                  ),
+                                    // height: height / 3.5,
+                                    width: width / 1.2,
+                                    // child: GridView.builder(
+                                    //   physics:
+                                    //       const NeverScrollableScrollPhysics(),
+                                    //   shrinkWrap: true,
+                                    //   itemBuilder:
+                                    //       (BuildContext context, int i) {
+                                    //     return Padding(
+                                    //         padding: const EdgeInsets.fromLTRB(
+                                    //             0, 0, 0, 10),
+                                    //         child: Popups.createSMButton(
+                                    //             soshiUsername:
+                                    //                 friendSoshiUsername,
+                                    //             platform: visiblePlatforms[i],
+                                    //             username: usernames[
+                                    //                 visiblePlatforms[i]],
+                                    //             size: width / 15,
+                                    //             context: context));
+                                    //   },
+                                    //   itemCount: visiblePlatforms.length,
+                                    //   gridDelegate:
+                                    //       SliverGridDelegateWithFixedCrossAxisCount(
+                                    //           crossAxisCount: 4,
+                                    //           childAspectRatio: .9,
+                                    //           crossAxisSpacing: width / 60),
+                                    // ),
+                                    child: Wrap(
+                                      alignment: WrapAlignment.center,
+                                      children: List.generate(
+                                          visiblePlatforms.length, (i) {
+                                        return Popups.createSMButton(
+                                            soshiUsername: friendSoshiUsername,
+                                            platform: visiblePlatforms[i],
+                                            username:
+                                                usernames[visiblePlatforms[i]],
+                                            size: width / 7,
+                                            context: context);
+                                      }),
+                                    )),
                           ),
                           Padding(
                             padding: EdgeInsets.fromLTRB(
@@ -499,7 +530,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                     } catch (e) {
                                       // if url is invalid, use default profile pic
                                       ByteData data = await rootBundle.load(
-                                          "assets/images/SoshiLogos/soshi_icon.png");
+                                          "assets/images/misc/default_pic.png");
                                       profilePicBytes =
                                           data.buffer.asUint8List();
                                     }

@@ -3,6 +3,7 @@ A wrapper a around friendScreen and groupScreen
 */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:soshi/screens/mainapp/friendScreen.dart';
 import 'package:soshi/screens/mainapp/groupScreen.dart';
 
@@ -60,27 +61,6 @@ class _FriendsGroupsWrapperState extends State<FriendsGroupsWrapper> {
                   },
                   groupValue: currPage,
                 ),
-                // child: TabBar(
-                //   indicator: BoxDecoration(
-                //       // color: Colors.grey[400],
-                //       borderRadius: BorderRadius.circular(10.0)),
-                //   controller: tabController,
-                //   unselectedLabelColor:
-                //       Theme.of(context).primaryTextTheme.bodyMedium.color,
-                //   labelColor: Colors.red,
-                //   tabs: [
-                //     Tab(
-                //       iconMargin: EdgeInsets.zero,
-                //       text: "Friends",
-                //       icon: Icon(Icons.person),
-                //     ),
-                //     Tab(
-                //       text: "Groups",
-                //       icon: Icon(Icons.group),
-                //       iconMargin: EdgeInsets.zero,
-                //     ),
-                //   ],
-                // ),
               ),
               Container(
                 height: height / 1.25,

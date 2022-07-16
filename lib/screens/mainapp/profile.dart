@@ -13,6 +13,7 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -158,135 +159,143 @@ class _SMTileState extends State<SMTile> {
       "Personal"
     ];
 
-    return Stack(
-      children: [
-        Card(
-          //semanticContainer: true,
-          elevation: 5,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          child: Container(
-            height: height / 6.5,
-            width: width / 3,
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  IconButton(
-                    splashRadius: Utilities.getWidth(context) / 25,
-                    icon: Image.asset(
-                      'assets/images/SMLogos/' + platformName + 'Logo.png',
-                    ),
-                    onPressed: () async {
-                      if (platformName == "Contact") {
-                        double width = Utilities.getWidth(context);
-                        String firstName = LocalDataService.getLocalFirstName();
-                        String lastName = LocalDataService.getLocalLastName();
-                        String photoUrl =
-                            LocalDataService.getLocalProfilePictureURL();
-                        Uint8List profilePicBytes;
-                        try {
-                          // try to load profile pic from url
-                          await http
-                              .get(Uri.parse(photoUrl))
-                              .then((http.Response response) {
-                            profilePicBytes = response.bodyBytes;
-                          });
-                        } catch (e) {
-                          // if url is invalid, use default profile pic
-                          ByteData data = await rootBundle
-                              .load("assets/images/SoshiLogos/soshi_icon.png");
-                          profilePicBytes = data.buffer.asUint8List();
-                        }
-                        Contact contact = new Contact(
-                            givenName: firstName,
-                            familyName: lastName,
-                            emails: [
-                              Item(
-                                label: "Email",
-                                value: LocalDataService
-                                    .getLocalUsernameForPlatform("Email"),
-                              ),
-                            ],
-                            phones: [
-                              Item(
-                                  label: "Cell",
-                                  value: LocalDataService
-                                      .getLocalUsernameForPlatform("Phone")),
-                            ],
-                            avatar: profilePicBytes);
-                        await askPermissions(context);
-                        ContactsService.addContact(contact)
-                            .then((dynamic success) {
-                          Popups.showContactAddedPopup(
-                              context, width, firstName, lastName);
-                        });
-                      } else if (platformName == "Cryptowallet") {
-                        Clipboard.setData(ClipboardData(
-                          text: LocalDataService.getLocalUsernameForPlatform(
-                                  "Cryptowallet")
-                              .toString(),
-                        ));
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: const Text(
-                            'Wallet address copied to clipboard!',
-                            textAlign: TextAlign.center,
-                          ),
-                        ));
-
-                        // snackbar or popup that says:
-                        // "First name + last name's wallet address has been copied to clipboard"
-
-                      } else {
-                        URL.launchURL(URL.getPlatformURL(
-                            platform: platformName,
-                            username:
-                                LocalDataService.getLocalUsernameForPlatform(
-                                    platformName)));
-                      }
-                    },
-                    iconSize: 60.0,
+    return Neumorphic(
+      style: NeumorphicStyle(
+          depth: 2,
+          color: Colors.white,
+          shape: NeumorphicShape.concave,
+          boxShape: NeumorphicBoxShape.roundRect(
+            BorderRadius.circular(20.0),
+          )),
+      child: Card(
+        //semanticContainer: true,
+        elevation: 0,
+        // shape: RoundedRectangleBorder(
+        //   borderRadius: BorderRadius.circular(15.0),
+        // ),
+        child: Container(
+          height: height / 6.5,
+          width: width / 3,
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                IconButton(
+                  splashRadius: Utilities.getWidth(context) / 25,
+                  icon: Image.asset(
+                    'assets/images/SMLogos/' + platformName + 'Logo.png',
                   ),
-                  CupertinoSwitch(
-                      value: isSwitched,
-                      activeColor:
-                          Theme.of(context).brightness == Brightness.light
-                              ? Colors.black
-                              : Colors.white,
-                      onChanged: (bool value) {
-                        setState(() {
-                          isSwitched = value;
+                  onPressed: () async {
+                    if (platformName == "Contact") {
+                      double width = Utilities.getWidth(context);
+                      String firstName = LocalDataService.getLocalFirstName();
+                      String lastName = LocalDataService.getLocalLastName();
+                      String photoUrl =
+                          LocalDataService.getLocalProfilePictureURL();
+                      Uint8List profilePicBytes;
+                      try {
+                        // try to load profile pic from url
+                        await http
+                            .get(Uri.parse(photoUrl))
+                            .then((http.Response response) {
+                          profilePicBytes = response.bodyBytes;
                         });
+                      } catch (e) {
+                        // if url is invalid, use default profile pic
+                        ByteData data = await rootBundle
+                            .load("assets/images/SoshiLogos/soshi_icon.png");
+                        profilePicBytes = data.buffer.asUint8List();
+                      }
+                      Contact contact = new Contact(
+                          givenName: firstName,
+                          familyName: lastName,
+                          emails: [
+                            Item(
+                              label: "Email",
+                              value:
+                                  LocalDataService.getLocalUsernameForPlatform(
+                                      "Email"),
+                            ),
+                          ],
+                          phones: [
+                            Item(
+                                label: "Cell",
+                                value: LocalDataService
+                                    .getLocalUsernameForPlatform("Phone")),
+                          ],
+                          avatar: profilePicBytes);
+                      await askPermissions(context);
+                      ContactsService.addContact(contact)
+                          .then((dynamic success) {
+                        Popups.showContactAddedPopup(
+                            context, width, firstName, lastName);
+                      });
+                    } else if (platformName == "Cryptowallet") {
+                      Clipboard.setData(ClipboardData(
+                        text: LocalDataService.getLocalUsernameForPlatform(
+                                "Cryptowallet")
+                            .toString(),
+                      ));
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: const Text(
+                          'Wallet address copied to clipboard!',
+                          textAlign: TextAlign.center,
+                        ),
+                      ));
 
-                        if (LocalDataService.getLocalUsernameForPlatform(
-                                    platformName) ==
-                                null ||
-                            LocalDataService.getLocalUsernameForPlatform(
-                                    platformName) ==
-                                "") {
-                          Popups.editUsernamePopup(
-                              context, soshiUsername, platformName, width);
+                      // snackbar or popup that says:
+                      // "First name + last name's wallet address has been copied to clipboard"
 
-                          // Navigator.push(context,
-                          //     MaterialPageRoute(builder: (context) {
-                          //   return EditHandles(); // Returning the edit Socials screen
-                          // }));
-                        }
-                        LocalDataService.updateSwitchForPlatform(
-                            platform: platformName, state: value);
-                        databaseService.updatePlatformSwitch(
-                            platform: platformName, state: value);
+                    } else {
+                      URL.launchURL(URL.getPlatformURL(
+                          platform: platformName,
+                          username:
+                              LocalDataService.getLocalUsernameForPlatform(
+                                  platformName)));
+                    }
+                  },
+                  iconSize: 60.0,
+                ),
+                CupertinoSwitch(
+                    value: isSwitched,
+                    activeColor:
+                        Theme.of(context).brightness == Brightness.light
+                            ? Colors.black
+                            : Colors.white,
+                    onChanged: (bool value) {
+                      setState(() {
+                        isSwitched = value;
+                      });
 
-                        if (LocalDataService.getFirstSwitchTap()) {
-                          LocalDataService.updateFirstSwitchTap(false);
-                          Popups.platformSwitchesExplained(context);
-                        }
-                      }),
-                ]),
-          ),
-        )
-      ],
+                      HapticFeedback.lightImpact();
+
+                      if (LocalDataService.getLocalUsernameForPlatform(
+                                  platformName) ==
+                              null ||
+                          LocalDataService.getLocalUsernameForPlatform(
+                                  platformName) ==
+                              "") {
+                        Popups.editUsernamePopup(
+                            context, soshiUsername, platformName, width);
+
+                        // Navigator.push(context,
+                        //     MaterialPageRoute(builder: (context) {
+                        //   return EditHandles(); // Returning the edit Socials screen
+                        // }));
+                      }
+                      LocalDataService.updateSwitchForPlatform(
+                          platform: platformName, state: value);
+                      databaseService.updatePlatformSwitch(
+                          platform: platformName, state: value);
+
+                      if (LocalDataService.getFirstSwitchTap()) {
+                        LocalDataService.updateFirstSwitchTap(false);
+                        Popups.platformSwitchesExplained(context);
+                      }
+                    }),
+              ]),
+        ),
+      ),
     );
 
     // double width = Utilities.getWidth(context);
@@ -780,7 +789,7 @@ class ProfileState extends State<Profile> {
                     shrinkWrap: true,
                     itemBuilder: (BuildContext context, int index) {
                       return Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                          padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
                           child: index != profilePlatforms.length
                               ? SMTile(
                                   platformName: profilePlatforms[index],

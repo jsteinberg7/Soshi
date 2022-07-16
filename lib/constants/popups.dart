@@ -34,8 +34,7 @@ class Popups {
       String username,
       double size = 70.0,
       BuildContext context}) {
-    return Container(
-        child: IconButton(
+    return IconButton(
       // splashColor: Colors.cyan[300],
       splashRadius: 55.0,
       icon: Image.asset(
@@ -69,8 +68,8 @@ class Popups {
             });
           } catch (e) {
             // if url is invalid, use default profile pic
-            ByteData data = await rootBundle
-                .load("assets/images/SoshiLogos/soshi_icon.png");
+            ByteData data =
+                await rootBundle.load("assets/images/misc/default_pic.png");
             profilePicBytes = data.buffer.asUint8List();
           }
           Contact newContact = new Contact(
@@ -118,7 +117,7 @@ class Popups {
         }
       },
       iconSize: size,
-    ));
+    );
   }
 
   static void platformSwitchesExplained(BuildContext context) {
@@ -998,15 +997,10 @@ class Popups {
                           width: width,
                           padding: EdgeInsets.only(top: 10.0),
                           child: (visiblePlatforms.length > 0)
-                              ? GridView.builder(
-                                  padding: EdgeInsets.zero,
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 3),
-                                  scrollDirection: Axis.vertical,
-                                  itemBuilder: (BuildContext context, int i) {
-                                    if (i == visiblePlatforms.length) {}
-
+                              ? Wrap(
+                                  alignment: WrapAlignment.spaceEvenly,
+                                  children: List.generate(
+                                      visiblePlatforms.length, (i) {
                                     return createSMButton(
                                         soshiUsername: friendSoshiUsername,
                                         platform: visiblePlatforms[i],
@@ -1014,9 +1008,28 @@ class Popups {
                                             usernames[visiblePlatforms[i]],
                                         size: width / 5,
                                         context: context);
-                                  },
-                                  itemCount: visiblePlatforms.length,
+                                  }),
                                 )
+
+                              // GridView.builder(
+                              //     padding: EdgeInsets.zero,
+                              //     gridDelegate:
+                              //         SliverGridDelegateWithFixedCrossAxisCount(
+                              //             crossAxisCount: 3),
+                              //     scrollDirection: Axis.vertical,
+                              //     itemBuilder: (BuildContext context, int i) {
+                              //       if (i == visiblePlatforms.length) {}
+
+                              //       return createSMButton(
+                              //           soshiUsername: friendSoshiUsername,
+                              //           platform: visiblePlatforms[i],
+                              //           username:
+                              //               usernames[visiblePlatforms[i]],
+                              //           size: width / 5,
+                              //           context: context);
+                              //     },
+                              //     itemCount: visiblePlatforms.length,
+                              //   )
                               : Center(
                                   child: Padding(
                                     padding: const EdgeInsets.all(15),

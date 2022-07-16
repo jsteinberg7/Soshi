@@ -392,7 +392,7 @@ class _SMCardState extends State<SMCard> {
                     } catch (e) {
                       // if url is invalid, use default profile pic
                       ByteData data = await rootBundle
-                          .load("assets/images/SoshiLogos/soshi_icon.png");
+                          .load("assets/images/misc/default_pic.png");
                       profilePicBytes = data.buffer.asUint8List();
                     }
                     Contact contact = new Contact(

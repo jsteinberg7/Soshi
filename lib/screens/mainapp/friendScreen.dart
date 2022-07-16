@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
 import 'package:soshi/constants/utilities.dart';
 import 'package:soshi/constants/widgets.dart';
@@ -798,23 +799,29 @@ class _FriendScreenState extends State<FriendScreen>
                               const EdgeInsets.fromLTRB(25.0, 0, 25.0, 10.0),
                           child: Container(
                             height: height / 18,
-                            child: CupertinoSearchTextField(
-                              controller: searchController,
-                              placeholder:
-                                  "Search ${formattedFriendsList.length} " +
-                                      ((formattedFriendsList.length > 1)
-                                          ? "friends..."
-                                          : "friend..."),
-                              // placeholder: 'Search \"${[
-                              //   "Jason S",
-                              //   "Yuvan",
-                              //   "Kallie",
-                              //   "Michelle",
-                              //   "Sid Jagtap",
-                              //   "Sri"
-                              // ][Random().nextInt(5)]}\"',
+                            child: Neumorphic(
+                              style: NeumorphicStyle(
+                                  color: Colors.white,
+                                  depth: 1,
+                                  shape: NeumorphicShape.concave),
+                              child: CupertinoSearchTextField(
+                                controller: searchController,
+                                placeholder:
+                                    "Search ${formattedFriendsList.length} " +
+                                        ((formattedFriendsList.length > 1)
+                                            ? "friends..."
+                                            : "friend..."),
+                                // placeholder: 'Search \"${[
+                                //   "Jason S",
+                                //   "Yuvan",
+                                //   "Kallie",
+                                //   "Michelle",
+                                //   "Sid Jagtap",
+                                //   "Sri"
+                                // ][Random().nextInt(5)]}\"',
 
-                              //     ),
+                                //     ),
+                              ),
                             ),
                           ),
                         ),
@@ -898,60 +905,63 @@ class _FriendScreenState extends State<FriendScreen>
                   ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(0, 5, 0, 20),
-          child: Constants.makeBlueShadowButton(
-              "Add new friends", Icons.person_add, () async {
-            String QRScanResult = await Utilities.scanQR(mounted);
-            if (QRScanResult.length > 5) {
-              // vibrate when QR code is successfully scanned
-              Vibration.vibrate();
-              try {
-                if (QRScanResult.contains("https://soshi.app/deeplink/group")) {
-                  String groupId = QRScanResult.split("/").last;
-                  await Popups.showJoinGroupPopup(context, groupId);
-                } else {
-                  String friendSoshiUsername = QRScanResult.split("/").last;
-                  Map friendData =
-                      await databaseService.getUserFile(friendSoshiUsername);
-                  Friend friend = databaseService.userDataToFriend(friendData);
-                  bool isFriendAdded =
-                      await LocalDataService.isFriendAdded(friendSoshiUsername);
+        // Padding(
+        //   padding: const EdgeInsets.fromLTRB(0, 5, 0, 20),
+        //   child: Constants.makeBlueShadowButton(
+        //       "Add new friends", Icons.person_add, () async {
+        //     String QRScanResult = await Utilities.scanQR(mounted);
+        //     if (QRScanResult.length > 5) {
+        //       // vibrate when QR code is successfully scanned
+        //       Vibration.vibrate();
+        //       try {
+        //         if (QRScanResult.contains("https://soshi.app/deeplink/group")) {
+        //           String groupId = QRScanResult.split("/").last;
+        //           await Popups.showJoinGroupPopup(context, groupId);
+        //         } else {
+        //           String friendSoshiUsername = QRScanResult.split("/").last;
+        //           Map friendData =
+        //               await databaseService.getUserFile(friendSoshiUsername);
+        //           Friend friend = databaseService.userDataToFriend(friendData);
+        //           bool isFriendAdded =
+        //               await LocalDataService.isFriendAdded(friendSoshiUsername);
 
-                  Popups.showUserProfilePopupNew(context,
-                      friendSoshiUsername: friendSoshiUsername,
-                      refreshScreen: () {});
-                  if (!isFriendAdded &&
-                      friendSoshiUsername !=
-                          databaseService.currSoshiUsername) {
-                    List<String> newFriendsList =
-                        await LocalDataService.addFriend(friend: friend);
-                    refreshFriendScreen();
-                    // databaseService.addFriend(
-                    //     thisSoshiUsername:
-                    //         databaseService.currSoshiUsername,
-                    //     friendSoshiUsername: friendSoshiUsername);
-                    databaseService.overwriteFriendsList(newFriendsList);
-                  }
+        //           Navigator.push(context, MaterialPageRoute(builder: (context) {
+        //             return ViewProfilePage(
+        //               friendSoshiUsername: friend.soshiUsername,
+        //               refreshScreen: () {},
+        //             ); // show friend popup when tile is pressed
+        //           }));
+        //           if (!isFriendAdded &&
+        //               friendSoshiUsername !=
+        //                   databaseService.currSoshiUsername) {
+        //             List<String> newFriendsList =
+        //                 await LocalDataService.addFriend(friend: friend);
+        //             refreshFriendScreen();
+        //             // databaseService.addFriend(
+        //             //     thisSoshiUsername:
+        //             //         databaseService.currSoshiUsername,
+        //             //     friendSoshiUsername: friendSoshiUsername);
+        //             databaseService.overwriteFriendsList(newFriendsList);
+        //           }
 
-                  // bool friendHasTwoWaySharing = await databaseService.getTwoWaySharing(friendData);
-                  // if (friendHasTwoWaySharing == null || friendHasTwoWaySharing == true) {
-                  //   // if user has two way sharing on, add self to user's friends list
-                  //   databaseService.addFriend(thisSoshiUsername: friendSoshiUsername, friendSoshiUsername: databaseService.currSoshiUsername);
-                  // }
-                  //add friend right here
+        //           // bool friendHasTwoWaySharing = await databaseService.getTwoWaySharing(friendData);
+        //           // if (friendHasTwoWaySharing == null || friendHasTwoWaySharing == true) {
+        //           //   // if user has two way sharing on, add self to user's friends list
+        //           //   databaseService.addFriend(thisSoshiUsername: friendSoshiUsername, friendSoshiUsername: databaseService.currSoshiUsername);
+        //           // }
+        //           //add friend right here
 
-                  Analytics.logQRScan(
-                      QRScanResult, true, "friendScreen.dart Add new friends");
-                }
-              } catch (e) {
-                Analytics.logQRScan(
-                    QRScanResult, false, "friendScreen.dart Add new friends");
-                print(e);
-              }
-            }
-          }),
-        )
+        //           Analytics.logQRScan(
+        //               QRScanResult, true, "friendScreen.dart Add new friends");
+        //         }
+        //       } catch (e) {
+        //         Analytics.logQRScan(
+        //             QRScanResult, false, "friendScreen.dart Add new friends");
+        //         print(e);
+        //       }
+        //     }
+        //   }),
+        // )
       ],
     ));
     //   }

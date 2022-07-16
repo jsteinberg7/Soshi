@@ -40,7 +40,7 @@ class ProfilePic extends StatelessWidget {
       child: CircularProfileAvatar(
         url,
         placeHolder: (b, c) {
-          return Image.asset('assets/images/SoshiLogos/soshi_icon.png');
+          return Image.asset('assets/images/misc/default_pic.png');
         },
         // borderColor: Colors.black,
         // borderWidth: radius / 20,
@@ -840,10 +840,12 @@ class _CircularProfileAvatarState extends State<CircularProfileAvatar> {
     );
   }
 
-  Widget profileImage() {
+  Widget profileImage({bool circular = true}) {
     return widget.cacheImage
         ? ClipRRect(
-            borderRadius: BorderRadius.circular(widget.radius),
+            borderRadius: circular
+                ? BorderRadius.circular(widget.radius)
+                : BorderRadius.zero,
             child: ((widget.imageUrl != null) &&
                     widget.imageUrl != "null" &&
                     widget.imageUrl != null)
@@ -858,7 +860,7 @@ class _CircularProfileAvatarState extends State<CircularProfileAvatar> {
                         widget.animateFromOldImageOnUrlChange ?? false,
                   )
                 : Image.asset(
-                    'assets/images/SoshiLogos/soshi_icon.png',
+                    'assets/images/misc/default_pic.png',
                     fit: widget.imageFit,
                   ),
           )
@@ -870,7 +872,7 @@ class _CircularProfileAvatarState extends State<CircularProfileAvatar> {
                     fit: widget.imageFit,
                   )
                 : Image.asset(
-                    'assets/images/SoshiLogos/soshi_icon.png',
+                    'assets/images/misc/default_pic.png',
                     fit: widget.imageFit,
                   ));
   }

@@ -33,9 +33,20 @@ class MainApp extends StatefulWidget {
 
 class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
   Timer _timerLink;
+  List<Widget> screens;
   @override
   void initState() {
     super.initState();
+    screens = [
+      FractionallySizedBox(
+          widthFactor: 1 / pageController.viewportFraction,
+          child: NewQRScreen()),
+      FractionallySizedBox(
+          widthFactor: 1 / pageController.viewportFraction, child: Profile()),
+      FractionallySizedBox(
+          widthFactor: 1 / pageController.viewportFraction,
+          child: FriendsGroupsWrapper()),
+    ]; // list of screens (change through indexing)
     WidgetsBinding.instance.addObserver(this);
     print(">> calling from init");
     DynamicLinkService.retrieveDynamicLink(context);
@@ -73,15 +84,10 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  List<Widget> screens = [
-    NewQRScreen(),
-    Profile(),
-    FriendsGroupsWrapper()
-  ]; // list of screens (change through indexing)
-
   int currScreen = 2;
 
-  PageController pageController = new PageController(initialPage: 1);
+  PageController pageController =
+      new PageController(initialPage: 1, viewportFraction: 1.1);
 
   @override
   Widget build(BuildContext context) {
@@ -156,6 +162,7 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
       // backgroundColor: Colors.white,
 
       // {Changed color}
+
       body: PageView(
         children: screens,
         controller: pageController,
@@ -192,45 +199,47 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
       //   //other params
       // ),
 
-      bottomNavigationBar: SizedBox(
-        height: Utilities.getHeight(context) / 11,
-        child: CustomNavigationBar(
-          scaleCurve: Curves.fastLinearToSlowEaseIn,
-          scaleFactor: .05,
-          elevation: 5,
-          iconSize: Utilities.getWidth(context) / 10,
-          selectedColor: Theme.of(context).brightness == Brightness.light
-              ? Colors.black
-              : Colors.white,
-          strokeColor: Colors.transparent,
-          unSelectedColor: Colors.grey,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          items: [
-            CustomNavigationBarItem(
-              icon: Icon(
-                AntDesign.qrcode,
-                size: 35,
+      bottomNavigationBar: SafeArea(
+        child: SizedBox(
+          height: Utilities.getHeight(context) / 11,
+          child: CustomNavigationBar(
+            scaleCurve: Curves.fastLinearToSlowEaseIn,
+            scaleFactor: .05,
+            elevation: 5,
+            iconSize: Utilities.getWidth(context) / 10,
+            selectedColor: Theme.of(context).brightness == Brightness.light
+                ? Colors.black
+                : Colors.white,
+            strokeColor: Colors.transparent,
+            unSelectedColor: Colors.grey,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            items: [
+              CustomNavigationBarItem(
+                icon: Icon(
+                  AntDesign.qrcode,
+                  size: 35,
+                ),
               ),
-            ),
-            CustomNavigationBarItem(
-                icon: ProfilePic(
-                    radius: 20,
-                    url: LocalDataService.getLocalProfilePictureURL())),
-            CustomNavigationBarItem(
-              icon: Icon(
-                AntDesign.contacts,
-                size: 35,
+              CustomNavigationBarItem(
+                  icon: ProfilePic(
+                      radius: 20,
+                      url: LocalDataService.getLocalProfilePictureURL())),
+              CustomNavigationBarItem(
+                icon: Icon(
+                  AntDesign.contacts,
+                  size: 35,
+                ),
               ),
-            ),
-          ],
-          currentIndex: currScreen,
-          onTap: (index) {
-            setState(() {
-              HapticFeedback.lightImpact();
-              pageController.jumpToPage(index);
-              currScreen = index;
-            });
-          },
+            ],
+            currentIndex: currScreen,
+            onTap: (index) {
+              setState(() {
+                HapticFeedback.lightImpact();
+                pageController.jumpToPage(index);
+                currScreen = index;
+              });
+            },
+          ),
         ),
       ),
     );
