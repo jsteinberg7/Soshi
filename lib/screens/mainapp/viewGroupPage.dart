@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:async/async.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -13,6 +16,8 @@ import '../../services/database.dart';
 import '../../services/localData.dart';
 import 'friendScreen.dart';
 import 'groupScreen.dart';
+
+import 'package:glassmorphism/glassmorphism.dart';
 
 class ViewGroupPage extends StatefulWidget {
   @override
@@ -29,6 +34,7 @@ class _ViewGroupPageState extends State<ViewGroupPage> {
   AsyncMemoizer memoizer;
   bool isAdmin;
   List<Friend> membersList, adminList;
+  bool showQrCode;
   @override
   void initState() {
     String username = LocalDataService.getLocalUsernameForPlatform("Soshi");
@@ -36,18 +42,32 @@ class _ViewGroupPageState extends State<ViewGroupPage> {
     this.group = widget.group;
     this.memoizer = new AsyncMemoizer();
     isAdmin = group.admin.contains(username);
+    showQrCode = false;
     super.initState();
   }
 
-  void refreshGroupPage({@required String type, Friend member}) {
+  /* 
+  member param is required only for "promote" -- otherwise, use username 
+  username and isAdmin param required only for "leave"
+  */
+  void refreshGroupPage({
+    @required String type,
+    String username,
+    Friend member,
+    bool isAdmin = false,
+  }) {
     setState(() {
-      String username = member.soshiUsername;
       if (type == "leave") {
-        widget.group.members.remove(username);
-        membersList.remove(member);
+        if (!isAdmin) {
+          widget.group.members.remove(username);
+          membersList.removeWhere((m) => m.soshiUsername == username);
+        } else {
+          widget.group.admin.remove(username);
+          adminList.removeWhere((m) => m.soshiUsername == username);
+        }
       } else if (type == "promote") {
-        widget.group.members.remove(username);
-        widget.group.admin.add(username);
+        widget.group.members.remove(member);
+        widget.group.admin.add(member.soshiUsername);
         membersList.remove(member);
         adminList.add(member);
       }
@@ -89,7 +109,7 @@ class _ViewGroupPageState extends State<ViewGroupPage> {
                 overflow: TextOverflow.fade,
                 style: TextStyle(
                     // color: Colors.cyan[600],
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w600,
                     fontSize: 20)),
             SizedBox(height: height / 170),
             Row(
@@ -126,7 +146,7 @@ class _ViewGroupPageState extends State<ViewGroupPage> {
           // side: BorderSide(width: .5)
         ),
         trailing: !adminPrivileges
-            ? Icon(Icons.arrow_forward_ios, size: 20)
+            ? IconButton(icon: Icon(Icons.arrow_forward_ios))
             : IconButton(
                 icon: Icon(
                   Icons.more_vert_rounded,
@@ -185,219 +205,312 @@ class _ViewGroupPageState extends State<ViewGroupPage> {
     double height = Utilities.getHeight(context);
     double width = Utilities.getWidth(context);
     return Scaffold(
-      appBar: AppBar(),
+      // appBar: AppBar(),
       body: SingleChildScrollView(
           child: Container(
+        color: Colors.transparent,
         height: height,
         child: Center(
-          child: Column(
+          child: Stack(
             children: [
-              Stack(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(35.0),
-                        bottomRight: Radius.circular(35.0)),
-                    child: Image.network(
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: Stack(
+                  children: [
+                    Image.network(
                       group.photoURL,
                       fit: BoxFit.fill,
-                      height: height / 3,
+                      height: height / 3.2,
                       width: width,
                     ),
-                  ),
-                  Container(
-                    height: height / 3,
-                    decoration: BoxDecoration(
-                        color: Colors.grey[200].withAlpha(200),
-                        borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(35.0),
-                            bottomRight: Radius.circular(35.0))),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 20.0),
-                          child: Column(
-                            children: [
-                              Text(group.name,
-                                  style: TextStyle(
-                                      fontSize: 25.0,
-                                      fontWeight: FontWeight.bold)),
-                              SizedBox(height: height / 80),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  IconButton(
-                                    icon: Icon(Icons.settings),
-                                    onPressed: () {
-                                      showModalBottomSheet(
-                                          isScrollControlled: true,
-                                          constraints: BoxConstraints(
-                                            minWidth: width / 1.1,
-                                            maxWidth: width / 1.1,
-                                          ),
-                                          backgroundColor: Colors.transparent,
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return GroupSettingsPopup(context,
-                                                height, width, databaseService,
-                                                id: group.id,
-                                                isAdmin: isAdmin,
-                                                refreshGroupScreen:
-                                                    refreshGroupPage);
-                                          });
-                                    },
-                                  ),
-                                  Hero(
-                                      tag: group.id,
-                                      child: RectangularProfilePic(
-                                          radius: width / 3,
-                                          url: group.photoURL)),
-                                  IconButton(
-                                      icon: Icon(Icons.ios_share),
-                                      onPressed: () {})
-                                ],
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 10.0),
-                                child: ElevatedButton(
-                                    onPressed: () {
-                                      HapticFeedback.mediumImpact();
-                                      showModalBottomSheet(
-                                          isScrollControlled: true,
-                                          constraints: BoxConstraints(
-                                            minWidth: width / 1.1,
-                                            maxWidth: width / 1.1,
-                                          ),
-                                          backgroundColor: Colors.transparent,
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return ShareGroupPopup(
-                                                id: group.id,
-                                                height: height,
-                                                width: width);
-                                          });
-                                    },
-                                    child: Container(
-                                        width: width / 3.5,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                "Share",
-                                                style: TextStyle(
-                                                    color: Theme.of(context)
-                                                                .brightness ==
-                                                            Brightness.light
-                                                        ? Colors.white
-                                                        : Colors.black,
-                                                    fontSize: 20.0),
-                                                textAlign: TextAlign.center,
-                                              ),
-                                              Icon(
-                                                Icons.share,
-                                                color: Theme.of(context)
-                                                            .brightness ==
-                                                        Brightness.light
-                                                    ? Colors.white
-                                                    : Colors.black,
-                                              )
-                                            ],
-                                          ),
-                                        )),
-                                    style: ElevatedButton.styleFrom(
-                                        primary: Theme.of(context).brightness !=
-                                                Brightness.light
-                                            ? Colors.white
-                                            : Colors.black,
-                                        elevation: 8.0,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(15.0)))),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              FutureBuilder(
-                future: generateGroupUsers(),
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    // List admin = snapshot.data["admin"];
-                    // List members = snapshot.data["members"];
-                    List admin = adminList;
-                    List members = membersList;
-                    return Column(
-                      children: [
-                        Align(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(
-                                10.0, 10.0, 10.0, 2.0),
-                            child: Text("Admin (${admin.length})"),
-                          ),
-                          alignment: Alignment.topLeft,
-                        ),
-                        Container(
-                          child: ListView.builder(
-                            padding: EdgeInsets.all(0),
-                            shrinkWrap: true,
-                            itemCount: admin.length,
-                            itemBuilder: (BuildContext context, int i) {
-                              return createFriendTile(
-                                  context: context,
-                                  friend: admin[i],
-                                  databaseService: databaseService,
-                                  adminPrivileges: false);
-                            },
-                          ),
-                        ),
-                        Divider(),
-                        Align(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(
-                                10.0, 10.0, 10.0, 2.0),
-                            child: Text("Members (${members.length})"),
-                          ),
-                          alignment: Alignment.topLeft,
-                        ),
-                        Container(
-                          child: ListView.builder(
-                            padding: EdgeInsets.all(0),
-                            shrinkWrap: true,
-                            itemCount: members.length,
-                            itemBuilder: (BuildContext context, int i) {
-                              return createFriendTile(
-                                  context: context,
-                                  friend: members[i],
-                                  databaseService: databaseService,
-                                  adminPrivileges: isAdmin);
-                            },
-                          ),
-                        ),
-                      ],
-                    );
-                  } else if (snapshot.connectionState ==
-                      ConnectionState.waiting) {
-                    return Container(
-                      height: height / 2,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Center(child: CircularProgressIndicator()),
+                    GlassmorphicContainer(
+                      height: height / 3,
+                      width: width,
+                      borderRadius: 0,
+                      blur: 10,
+                      alignment: Alignment.bottomCenter,
+                      border: 2,
+                      linearGradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Color(0xFFffffff).withOpacity(0.2),
+                            Color(0xFFFFFFFF).withOpacity(0.1),
+                          ],
+                          stops: [
+                            0.1,
+                            1,
+                          ]),
+                      borderGradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Color(0xFFffffff).withOpacity(0.5),
+                          Color((0xFFFFFFFF)).withOpacity(0.5),
                         ],
                       ),
-                    );
-                  } else {
-                    return Center(child: Text("Error loading members :("));
-                  }
-                },
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 35.0),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    IconButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        icon: Icon(Icons.arrow_back_ios_new)),
+                                    Text(group.name,
+                                        style: TextStyle(
+                                            fontSize: 25.0,
+                                            fontWeight: FontWeight.bold)),
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.arrow_back_ios_new,
+                                        color: Colors.transparent,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  key: ValueKey<int>(1),
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.settings_outlined,
+                                          size: 30),
+                                      onPressed: () {
+                                        showModalBottomSheet(
+                                            isScrollControlled: true,
+                                            constraints: BoxConstraints(
+                                              minWidth: width / 1.1,
+                                              maxWidth: width / 1.1,
+                                            ),
+                                            backgroundColor: Colors.transparent,
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return GroupSettingsPopup(
+                                                  context,
+                                                  height,
+                                                  width,
+                                                  databaseService,
+                                                  id: group.id,
+                                                  isAdmin: isAdmin,
+                                                  refreshGroupScreen:
+                                                      refreshGroupPage);
+                                            });
+                                      },
+                                    ),
+                                    Hero(
+                                        tag: group.id,
+                                        child: SizedBox(
+                                          width: width / 2.25,
+                                          height: height / 5.5,
+                                          child: AnimatedSwitcher(
+                                            duration:
+                                                Duration(milliseconds: 500),
+                                            child: showQrCode
+                                                ? QrImage(
+                                                    data:
+                                                        "https://soshi.app/group/${group.id}",
+                                                    size: 100)
+                                                : RectangularProfilePic(
+                                                    radius: width / 3,
+                                                    url: group.photoURL),
+                                          ),
+                                        )),
+                                    IconButton(
+                                        icon: Icon(Icons.qr_code_rounded,
+                                            size: 30),
+                                        onPressed: () {
+                                          setState(() {
+                                            showQrCode = !showQrCode;
+                                          });
+                                        })
+                                  ],
+                                ),
+                                // Padding(
+                                //   padding: const EdgeInsets.only(top: 10.0),
+                                //   child: ElevatedButton(
+                                //       onPressed: () {
+                                //         HapticFeedback.mediumImpact();
+                                //         showModalBottomSheet(
+                                //             isScrollControlled: true,
+                                //             constraints: BoxConstraints(
+                                //               minWidth: width / 1.1,
+                                //               maxWidth: width / 1.1,
+                                //             ),
+                                //             backgroundColor:
+                                //                 Colors.transparent,
+                                //             context: context,
+                                //             builder: (BuildContext context) {
+                                //               return ShareGroupPopup(
+                                //                   id: group.id,
+                                //                   height: height,
+                                //                   width: width);
+                                //             });
+                                //       },
+                                //       child: Container(
+                                //           width: width / 3.5,
+                                //           child: Padding(
+                                //             padding:
+                                //                 const EdgeInsets.all(8.0),
+                                //             child: Row(
+                                //               mainAxisAlignment:
+                                //                   MainAxisAlignment
+                                //                       .spaceBetween,
+                                //               children: [
+                                //                 Text(
+                                //                   "Share",
+                                //                   style: TextStyle(
+                                //                       color: Theme.of(context)
+                                //                                   .brightness ==
+                                //                               Brightness.light
+                                //                           ? Colors.white
+                                //                           : Colors.black,
+                                //                       fontSize: 20.0),
+                                //                   textAlign: TextAlign.center,
+                                //                 ),
+                                //                 Icon(
+                                //                   Icons.share,
+                                //                   color: Theme.of(context)
+                                //                               .brightness ==
+                                //                           Brightness.light
+                                //                       ? Colors.white
+                                //                       : Colors.black,
+                                //                 )
+                                //               ],
+                                //             ),
+                                //           )),
+                                //       style: ElevatedButton.styleFrom(
+                                //           primary:
+                                //               Theme.of(context).brightness !=
+                                //                       Brightness.light
+                                //                   ? Colors.white
+                                //                   : Colors.black,
+                                //           elevation: 8.0,
+                                //           shape: RoundedRectangleBorder(
+                                //               borderRadius:
+                                //                   BorderRadius.circular(
+                                //                       15.0)))),
+                                // )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Positioned(
+                top: height / 3.25,
+                left: 0,
+                right: 0,
+                child: Container(
+                  padding: EdgeInsets.all(8.0),
+                  height: (height / 3) * 2,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(40.0),
+                          topRight: Radius.circular(40.0))),
+                  child: FutureBuilder(
+                    future: generateGroupUsers(),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        // List admin = snapshot.data["admin"];
+                        // List members = snapshot.data["members"];
+                        List admin = adminList;
+                        List members = membersList;
+                        return Column(
+                          children: [
+                            Align(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
+                                child: Text(
+                                  "People",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: width / 17),
+                                ),
+                              ),
+                              alignment: Alignment.topCenter,
+                            ),
+                            Divider(),
+                            Align(
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    10.0, 5.0, 10.0, 2.0),
+                                child: Text("Admin (${admin.length})"),
+                              ),
+                              alignment: Alignment.topLeft,
+                            ),
+                            Container(
+                              child: ListView.builder(
+                                padding: EdgeInsets.all(0),
+                                shrinkWrap: true,
+                                itemCount: admin.length,
+                                itemBuilder: (BuildContext context, int i) {
+                                  return createFriendTile(
+                                      context: context,
+                                      friend: admin[i],
+                                      databaseService: databaseService,
+                                      adminPrivileges: false);
+                                },
+                              ),
+                            ),
+                            Divider(),
+                            Align(
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    10.0, 10.0, 10.0, 2.0),
+                                child: Text("Members (${members.length})"),
+                              ),
+                              alignment: Alignment.topLeft,
+                            ),
+                            Container(
+                              child: ListView.builder(
+                                padding: EdgeInsets.all(0),
+                                shrinkWrap: true,
+                                itemCount: members.length,
+                                itemBuilder: (BuildContext context, int i) {
+                                  return createFriendTile(
+                                      context: context,
+                                      friend: members[i],
+                                      databaseService: databaseService,
+                                      adminPrivileges: isAdmin);
+                                },
+                              ),
+                            ),
+                          ],
+                        );
+                      } else if (snapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return Container(
+                          height: height / 2,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Center(child: CircularProgressIndicator()),
+                            ],
+                          ),
+                        );
+                      } else {
+                        return Center(child: Text("Error loading members :("));
+                      }
+                    },
+                  ),
+                ),
               ),
             ],
           ),
@@ -544,89 +657,47 @@ class MemberOptionsPopup extends StatefulWidget {
 }
 
 class _MemberOptionsPopupState extends State<MemberOptionsPopup> {
-  double height, width;
   @override
   Widget build(BuildContext context) {
-    width = widget.width;
-    height = widget.height;
-    return Container(
-      height: height / 2.25,
-      color: Colors.transparent,
-      child: Column(
-        children: [
-          Container(
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(25.0),
-                  )),
-              height: width / 1.5,
-              // color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ProfilePic(
-                        radius: widget.width / 10, url: widget.member.photoURL),
-                    Text("@" + widget.member.soshiUsername),
-                    Divider(color: Colors.grey),
-                    InkWell(
+    return CupertinoActionSheet(
+      // title: SizedBox(
+      //   height: widget.width / 8,
+      //   width: widget.width / 8,
+      //   child: ProfilePic(
+      //       radius: widget.width / 16, url: this.widget.member.photoURL),
+      // ),
+      title: Text(widget.member.fullName),
+      message: Text("@" + widget.member.soshiUsername),
+      actions: <CupertinoActionSheetAction>[
+        CupertinoActionSheetAction(
+          onPressed: () async {
+            // promote member to admin
+            widget.databaseService
+                .promoteToAdmin(widget.id, widget.member.soshiUsername);
+            widget.refreshGroupScreen(type: "promote", member: widget.member);
+            Navigator.pop(context);
+          },
+          child: Text("Promote", style: TextStyle(color: Colors.blue)),
+        ),
+        CupertinoActionSheetAction(
+          onPressed: () async {
+            widget.databaseService
+                .leaveGroup(widget.id, widget.member.soshiUsername);
 
-                        // promote
-                        onTap: () async {
-                          // promote member to admin
-                          widget.databaseService.promoteToAdmin(
-                              widget.id, widget.member.soshiUsername);
-                          widget.refreshGroupScreen(
-                              type: "promote", member: widget.member);
-                          Navigator.pop(context);
-                        },
-                        child: Container(
-                            width: widget.width,
-                            child: Text("Promote",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: width / 22)))),
-                    Divider(color: Colors.grey),
-                    InkWell(
-                        // remove
-                        onTap: () async {
-                          widget.databaseService.leaveGroup(
-                              widget.id, widget.member.soshiUsername);
-
-                          widget.refreshGroupScreen(
-                              type: "leave", member: widget.member);
-                          Navigator.pop(context);
-                        },
-                        child: Container(
-                            width: widget.width,
-                            child: Text("Remove",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: width / 22)))),
-                  ],
-                ),
-              )),
-          SizedBox(
-            height: height / 50,
-          ),
-          Container(
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(15.0))),
-            height: height / 15,
-            width: width / 1.1,
-            child: Center(
-              child: GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text("Close",
-                      style: TextStyle(
-                          color: Colors.blue, fontSize: widget.width / 22))),
-            ),
-          ),
-          SizedBox(height: height / 50)
-        ],
+            widget.refreshGroupScreen(
+              type: "leave",
+              username: widget.member.soshiUsername,
+            );
+            Navigator.pop(context);
+          },
+          child: Text("Remove", style: TextStyle(color: Colors.red)),
+        ),
+      ],
+      cancelButton: CupertinoActionSheetAction(
+        onPressed: () async {
+          Navigator.pop(context);
+        },
+        child: Text("Close", style: TextStyle(color: Colors.blue)),
       ),
     );
   }
@@ -657,68 +728,35 @@ class _GroupSettingsPopupState extends State<GroupSettingsPopup> {
   Widget build(BuildContext context) {
     width = widget.width;
     height = widget.height;
-    return Container(
-      height: height / 2.25,
-      color: Colors.transparent,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Container(
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(25.0),
-                  )),
-              height: width / 3,
-              width: width / 1.1,
-              // color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    widget.isAdmin
-                        ? Text("Edit Group",
-                            style: TextStyle(fontSize: widget.width / 22))
-                        : Container(),
-                    Divider(),
-                    InkWell(
-                        onTap: () {
-                          widget.databaseService.leaveGroup(
-                              widget.id, LocalDataService.getLocalUsername(),
-                              isAdmin: widget.isAdmin);
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                        },
-                        child: Text("Leave Group",
-                            style: TextStyle(
-                                color: Colors.red,
-                                fontSize: widget.width / 22)))
-                  ],
-                ),
-              )),
-          SizedBox(
-            height: height / 50,
-          ),
-          Container(
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(15.0))),
-            height: height / 15,
-            width: width / 1.1,
-            child: Center(
-              child: GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text("Close",
-                      style: TextStyle(
-                          color: Colors.blue, fontSize: widget.width / 22))),
-            ),
-          ),
-          SizedBox(height: height / 50)
-        ],
+    return CupertinoActionSheet(
+      title: Text(
+        "Group Options",
       ),
+      actions: [
+        CupertinoActionSheetAction(
+          onPressed: () {},
+          child: Text("Edit Group", style: TextStyle(color: Colors.blue)),
+        ),
+        CupertinoActionSheetAction(
+          onPressed: () {
+            widget.databaseService.leaveGroup(
+                widget.id, LocalDataService.getLocalUsername(),
+                isAdmin: widget.isAdmin);
+            widget.refreshGroupScreen(
+                type: "leave",
+                username: LocalDataService.getLocalUsername(),
+                isAdmin: widget.isAdmin);
+            Navigator.pop(context);
+            Navigator.pop(context);
+          },
+          child: Text("Leave Group", style: TextStyle(color: Colors.red)),
+        ),
+      ],
+      cancelButton: CupertinoActionSheetAction(
+          onPressed: () async {
+            Navigator.pop(context);
+          },
+          child: Text("Close", style: TextStyle(color: Colors.blue))),
     );
   }
 }

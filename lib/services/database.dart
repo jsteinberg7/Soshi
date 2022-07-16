@@ -15,6 +15,7 @@ import 'package:soshi/screens/mainapp/groupScreen.dart';
 
 import '../screens/mainapp/friendScreen.dart';
 import 'contacts.dart';
+import 'dynamicLinks.dart';
 import 'localData.dart';
 
 /*
@@ -51,7 +52,7 @@ class DatabaseService {
         .doc(email)
         .set(<String, dynamic>{"soshiUsername": username});
     String phoneNumber = await SmsAutoFill().hint;
-    return await usersCollection.doc(currSoshiUsername).set(<String, dynamic>{
+    await usersCollection.doc(currSoshiUsername).set(<String, dynamic>{
       "Name": {"First": first, "Last": last},
       "Friends": <String>["soshi"],
       "Bio": "",
@@ -132,8 +133,10 @@ class DatabaseService {
       "INJECTION Soshi Points Flag": true,
       "INJECTION Profile Pic Flag": false,
       "INJECTION Bio Flag": false,
-      "INJECTION Passions Flag": false
+      "INJECTION Passions Flag": false,
+      "Groups": []
     });
+    await DynamicLinkService.createDeepLink(username);
   }
 
   /*
@@ -219,16 +222,20 @@ class DatabaseService {
           .ref()
           .child("Profile Pictures/" + groupId)
           .putFile(file);
+      return await FirebaseStorage.instance
+          .ref()
+          .child("Profile Pictures/" + groupId)
+          .getDownloadURL();
     } else {
       await firebaseStorage
           .ref()
           .child("Profile Pictures/" + currSoshiUsername)
           .putFile(file);
+      return await FirebaseStorage.instance
+          .ref()
+          .child("Profile Pictures/" + currSoshiUsername)
+          .getDownloadURL();
     }
-    return await FirebaseStorage.instance
-        .ref()
-        .child("Profile Pictures/" + groupId)
-        .getDownloadURL();
   }
 
   // update profile picture URL (necessary on first profile pic change)
@@ -388,14 +395,12 @@ class DatabaseService {
   Methods pertaining to getting user data
   */
 
-  Future<Map> getUserFile(String currSoshiUsername) {
-    return usersCollection
-        .doc(currSoshiUsername)
-        .get()
-        .then((DocumentSnapshot ds) {
-      Map data = ds.data();
-      return data;
+  Future<Map> getUserFile(String username) async {
+    dynamic data;
+    await usersCollection.doc(username).get().then((DocumentSnapshot ds) {
+      data = ds.data();
     });
+    return data;
   }
 
   // pass in currSoshiUsername, return map of user switches (platform visibility)
@@ -404,7 +409,7 @@ class DatabaseService {
   }
 
   // return list of enabled user switches
-  Future<List<String>> getEnabledPlatformsList(Map userData) async {
+  List<String> getEnabledPlatformsList(Map userData) {
     Map<String, dynamic> platformsMap = getUserSwitches(userData);
 
     List<String> enabledPlatformsList = [];

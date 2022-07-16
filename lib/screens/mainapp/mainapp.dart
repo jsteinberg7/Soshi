@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:custom_navigation_bar/custom_navigation_bar.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:nfc_manager/nfc_manager.dart';
 import 'package:soshi/constants/utilities.dart';
 import 'package:soshi/screens/mainapp/boltScreen.dart';
 import 'package:soshi/screens/mainapp/friendsGroupsWrapper.dart';
@@ -35,32 +37,44 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    print(">> calling from init");
+    DynamicLinkService.retrieveDynamicLink(context);
+    // Check availability
+
+// Start Session
+
+    NfcManager.instance.startSession(
+      onDiscovered: (NfcTag tag) async {
+        var link = AsciiCodec()
+            .decode(Ndef.from(tag).cachedMessage.records.last.payload);
+        String username = link.toString().split("/").last;
+
+        try {
+          await Popups.showUserProfilePopupNew(context,
+              friendSoshiUsername: username, refreshScreen: () {});
+        } catch (e) {
+          print(e);
+        }
+      },
+    );
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _timerLink = new Timer(
-        const Duration(milliseconds: 1000),
-        () async {
-          print(">> app cycle changed");
-          DynamicLinkService.retrieveDynamicLink(context);
-        },
-      );
+      print(">> calling from lifecycle change");
+      DynamicLinkService.retrieveDynamicLink(context);
     }
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    if (_timerLink != null) {
-      _timerLink.cancel();
-    }
     super.dispose();
   }
 
   List<Widget> screens = [
-    QRScreen(),
+    NewQRScreen(),
     Profile(),
     FriendsGroupsWrapper()
   ]; // list of screens (change through indexing)
@@ -124,12 +138,21 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
       // ),
       //floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
-      appBar: PreferredSize(
-          //Create "Beta" icon on left
-          preferredSize: Size(
-              Utilities.getWidth(context), Utilities.getHeight(context) / 16),
-          child: SoshiAppBar()),
-      backgroundColor: Theme.of(context).backgroundColor,
+      // appBar: (currScreen != 1)
+      //     ? PreferredSize(
+      //         //Create "Beta" icon on left
+      //         preferredSize: Size(Utilities.getWidth(context),
+      //             Utilities.getHeight(context) / 20),
+      //         child: SoshiAppBar())
+      //     : PreferredSize(
+      //         //Create "Beta" icon on left
+      //         preferredSize: Size(Utilities.getWidth(context),
+      //             Utilities.getHeight(context) / 20),
+      //         child: Container(
+      //           color: Colors.transparent,
+      //         )),
+
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       // backgroundColor: Colors.white,
 
       // {Changed color}
@@ -172,13 +195,16 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
       bottomNavigationBar: SizedBox(
         height: Utilities.getHeight(context) / 11,
         child: CustomNavigationBar(
-          iconSize: 40,
-          selectedColor: Colors.cyan[300],
+          scaleCurve: Curves.fastLinearToSlowEaseIn,
+          scaleFactor: .05,
+          elevation: 5,
+          iconSize: Utilities.getWidth(context) / 10,
+          selectedColor: Theme.of(context).brightness == Brightness.light
+              ? Colors.black
+              : Colors.white,
           strokeColor: Colors.transparent,
-          unSelectedColor: Colors.grey[500],
-          backgroundColor: Theme.of(context).brightness == Brightness.light
-              ? Colors.white
-              : Colors.grey[900],
+          unSelectedColor: Colors.grey,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           items: [
             CustomNavigationBarItem(
               icon: Icon(

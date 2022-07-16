@@ -118,8 +118,7 @@ class _EditHandlesState extends State<EditHandles> {
             ),
           )
         ],
-        elevation: 10,
-        shadowColor: Colors.cyan,
+        elevation: 0,
         title: Text(
           "My Platforms",
           style: TextStyle(
@@ -475,7 +474,7 @@ class _SMCardState extends State<SMCard> {
                                 : null,
                             style: TextStyle(
                                 fontSize: width / 20, letterSpacing: 1.3),
-                            scribbleEnabled: true,
+                            // scribbleEnabled: true,
                             cursorColor: Colors.blue,
                             decoration: InputDecoration(
                                 hintText: hintText,

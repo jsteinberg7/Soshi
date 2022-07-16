@@ -404,6 +404,10 @@ abstract class LocalDataService {
     return sortedFriendsList;
   }
 
+  static Future overwriteFriendSocials(Friend oldFriend, Friend) {
+    
+  }
+
   static Future<void> addToRecentFriends({@required Friend friend}) async {
     List<String> recentlyAddedFriends = getRecentlyAddedFriends();
     String json = friend.toJson();

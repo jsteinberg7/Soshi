@@ -31,13 +31,19 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle(statusBarColor: Colors.transparent));
     return StreamProvider<User>.value(
         value: AuthService().user,
         child: MaterialApp(
             debugShowCheckedModeBanner: false,
             themeMode: ThemeMode.light,
             theme: ThemeData(
-              brightness: Brightness.light,
+              pageTransitionsTheme: PageTransitionsTheme(builders: {
+                TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+                TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+              }),
+              brightness: Theme.of(context).brightness,
               backgroundColor: Colors.grey[50],
               primarySwatch: MaterialColor(
                 0xFFE7E7E7,
@@ -64,6 +70,7 @@ class _MyAppState extends State<MyApp> {
               cardColor: Colors.white,
               dividerColor: Color(0x1f6D42CE),
               focusColor: Color(0x1aF5E0C3),
+
               textSelectionTheme:
                   TextSelectionThemeData(cursorColor: Colors.cyan[500]),
               elevatedButtonTheme: ElevatedButtonThemeData(style: ButtonStyle(
@@ -75,6 +82,10 @@ class _MyAppState extends State<MyApp> {
               // , buttonTheme: ButtonTheme()
             ),
             darkTheme: ThemeData(
+                pageTransitionsTheme: PageTransitionsTheme(builders: {
+                  TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+                  TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+                }),
                 brightness: Brightness.dark,
                 backgroundColor: Colors.grey[850],
                 primarySwatch: MaterialColor(
@@ -96,7 +107,7 @@ class _MyAppState extends State<MyApp> {
                 primaryColorLight: Color(0x1a311F06),
                 primaryColorDark: Colors.black,
                 canvasColor: Colors.grey[850],
-                scaffoldBackgroundColor: Colors.grey[250],
+                scaffoldBackgroundColor: Colors.grey[900],
                 bottomAppBarColor: Color(0xff6D42CE),
                 cardColor: Colors.grey[900],
                 dividerColor: Color(0x1f6D42CE),

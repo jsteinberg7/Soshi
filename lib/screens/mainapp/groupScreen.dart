@@ -18,6 +18,13 @@ import '../../constants/popups.dart';
 import '../../services/database.dart';
 import 'friendScreen.dart';
 
+class GroupScreenComingSoon extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(child: Center(child: Text("Coming Soon!")));
+  }
+}
+
 class GroupScreen extends StatefulWidget {
   @override
   State<GroupScreen> createState() => _GroupScreenState();
@@ -97,7 +104,7 @@ class _GroupScreenState extends State<GroupScreen> {
                             prefixIcon: Icon(
                               Icons.search,
                             ),
-                            labelText: "Search for a group..."),
+                            labelText: "Search groups..."),
                       ),
                     ),
                   ),

@@ -39,11 +39,17 @@
             <intent-filter>
             <action android:name="android.nfc.action.NDEF_DISCOVERED" />
             <category android:name="android.intent.category.DEFAULT" />
+            <data android:host="soshi.app" android:scheme="http"/>
+            <data android:host="soshi.app" android:scheme="https"/>
+            </intent-filter>
+            <!-- <intent-filter>
+            <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+            <category android:name="android.intent.category.DEFAULT" />
             <data
                 android:scheme="https"
-                android:host="soshi.app"
+                android:host="strippedsoshi.page.link"
                 />
-            </intent-filter>
+            </intent-filter> -->
         </activity>
         <activity
         android:name="com.yalantis.ucrop.UCropActivity"

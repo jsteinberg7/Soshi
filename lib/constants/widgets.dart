@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:share/share.dart';
 import 'package:soshi/constants/popups.dart';
 import 'package:soshi/constants/utilities.dart';
@@ -31,10 +32,10 @@ class ProfilePic extends StatelessWidget {
     return Container(
       decoration: new BoxDecoration(
         shape: BoxShape.circle,
-        border: new Border.all(
-          color: Colors.cyanAccent,
-          width: radius / 30,
-        ),
+        // border: new Border.all(
+        //   color: Colors.cyanAccent,
+        //   width: radius / 30,
+        // ),
       ),
       child: CircularProfileAvatar(
         url,
@@ -42,8 +43,8 @@ class ProfilePic extends StatelessWidget {
           return Image.asset('assets/images/SoshiLogos/soshi_icon.png');
         },
         borderColor: Colors.black,
-        borderWidth: radius / 20,
-        elevation: 5,
+        borderWidth: radius / 40,
+        elevation: 0,
         radius: radius,
       ),
     );
@@ -533,14 +534,14 @@ class ShareButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(shape: CircleBorder()),
       onPressed: () {
         if (groupId == null) {
-          Share.share("https://soshi.app/" + soshiUsername,
+          Share.share("https://soshi.app/deeplink/user/" + soshiUsername,
               subject: LocalDataService.getLocalFirstName() +
                   " " +
                   LocalDataService.getLocalLastName() +
                   "'s Soshi Contact Card");
         } else {
           Share.share(
-            "https://soshi.app/group/" + groupId,
+            "https://soshi.app/deeplink/group/" + groupId,
           );
         }
       },
@@ -880,6 +881,14 @@ class SoshiAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     return AppBar(
+      systemOverlayStyle: SystemUiOverlayStyle(
+        // Status bar color
+        statusBarColor: Colors.transparent,
+
+        // Status bar brightness (optional)
+        statusBarIconBrightness: Brightness.dark, // For Android (dark icons)
+        statusBarBrightness: Brightness.light, // For iOS (dark icons)
+      ),
       leadingWidth: 100,
       // actions: [
       //   Padding(
@@ -937,9 +946,7 @@ class SoshiAppBar extends StatelessWidget {
           height: Utilities.getHeight(context) / 17,
         ),
       ),
-      backgroundColor: Theme.of(context).brightness == Brightness.light
-          ? Theme.of(context).appBarTheme.backgroundColor
-          : Colors.grey[900],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       centerTitle: true,
     );
   }

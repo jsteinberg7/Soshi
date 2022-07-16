@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "976498646691",
+    "firebase_url": "https://soshi-bc9ec-default-rtdb.firebaseio.com",
     "project_id": "soshi-bc9ec",
     "storage_bucket": "soshi-bc9ec.appspot.com"
   },
@@ -37,6 +38,13 @@
             {
               "client_id": "976498646691-o5muina40lmred03rhn0geaaetqepe7v.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "976498646691-qdrqf4o0lhsdu2m8s3q38av3coo9umlq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.strippedsoshi"
+              }
             }
           ]
         }
