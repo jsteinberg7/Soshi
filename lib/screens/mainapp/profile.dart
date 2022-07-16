@@ -265,10 +265,13 @@ class _SMTileState extends State<SMTile> {
                             LocalDataService.getLocalUsernameForPlatform(
                                     platformName) ==
                                 "") {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return EditHandles(); // Returning the edit Socials screen
-                          }));
+                          Popups.editUsernamePopup(
+                              context, soshiUsername, platformName, width);
+
+                          // Navigator.push(context,
+                          //     MaterialPageRoute(builder: (context) {
+                          //   return EditHandles(); // Returning the edit Socials screen
+                          // }));
                         }
                         LocalDataService.updateSwitchForPlatform(
                             platform: platformName, state: value);
@@ -494,18 +497,22 @@ class ProfileState extends State<Profile> {
 
     String bio = LocalDataService.getBio();
     if (bio == null || bio == "") {
-      bioSpacing = 300;
+      bioSpacing = 90;
       soshiPointsButtonSpacing = 1000;
       containerSize = 3.3;
     } else {
       bioChars = bio.length;
 
       if (bioChars <= 25) {
-        bioSpacing = 75;
+        bioSpacing = 50;
         soshiPointsButtonSpacing = 100;
         containerSize = 3.2;
+      } else if (bioChars > 25 && bioChars <= 50) {
+        bioSpacing = 80;
+        soshiPointsButtonSpacing = 150;
+        containerSize = 3.2;
       } else {
-        bioSpacing = 75;
+        bioSpacing = 90;
         soshiPointsButtonSpacing = 1000;
         containerSize = 3.1;
       }
@@ -631,9 +638,7 @@ class ProfileState extends State<Profile> {
                                       icon: Icon(Icons.edit)),
                                 ],
                               ),
-                              SizedBox(
-                                height: height / 150,
-                              ),
+
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,

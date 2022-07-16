@@ -335,14 +335,19 @@ class Popups {
         platformName == "Venmo" ||
         platformName == "Twitter" ||
         platformName == "Tiktok" ||
-        platformName == "Discord") {
+        platformName == "Discord" ||
+        platformName == "BeReal" ||
+        platformName == "CashApp" ||
+        platformName == "Vsco" ||
+        platformName == "OnlyFans") {
       hintText = "Username";
       indicator = "@";
     } else {
       if (platformName == "Facebook" ||
           platformName == "Linkedin" ||
           platformName == "Personal" ||
-          platformName == "Spotify") {
+          platformName == "Spotify" ||
+          platformName == "AppleMusic") {
         hintText = "Link To Profile";
         indicator = "https://";
       } else if (platformName == "Phone") {
@@ -365,7 +370,7 @@ class Popups {
         builder: (BuildContext context) {
           return AlertDialog(
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(40.0))),
+                borderRadius: BorderRadius.all(Radius.circular(30.0))),
             // backgroundColor: Colors.blueGrey[900],
             title: Text(
               platformName.contains("Cryptowallet")
@@ -378,13 +383,12 @@ class Popups {
             // ),
             content: Row(
               children: [
-                Text(
-                  indicator,
-                  style: TextStyle(
+                Text(indicator,
+                    style: TextStyle(
                       // color: Colors.white,
                       fontSize: width / 20,
-                      fontWeight: FontWeight.bold),
-                ),
+                      //fontWeight: FontWeight.bold
+                    )),
                 SizedBox(width: width / 40),
                 Expanded(
                   child: TextField(
@@ -394,9 +398,10 @@ class Popups {
                     autocorrect: false,
                     controller: usernameController,
                     style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: width / 20,
-                        color: Colors.cyan[300]),
+                      //fontWeight: FontWeight.bold,
+                      fontSize: width / 20,
+                      //color: Colors.cyan[300]
+                    ),
                     onSubmitted: (String inputText) {
                       LocalDataService.updateUsernameForPlatform(
                           platform: platformName, username: inputText);
@@ -405,72 +410,89 @@ class Popups {
                       Navigator.pop(context);
                     },
                     decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
+                      // enabledBorder: OutlineInputBorder(
+                      //   borderSide: BorderSide(
 
-                            // color: Colors.grey[600],
-                            ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.cyan[300],
-                        ),
-                      ),
-                      filled: true,
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      label: Text(platformName.contains("Cryptowallet")
-                          ? hintText
-                          : indicator),
-                      labelStyle: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        //color: Colors.black
+                      //       // color: Colors.grey[600],
+                      //       ),
+                      // ),
+                      // focusedBorder: OutlineInputBorder(
+                      //   borderSide: BorderSide(
+                      //     color: Colors.cyan[300],
+                      //   ),
+                      // ),
+                      filled: false,
+                      //floatingLabelBehavior: FloatingLabelBehavior.never,
+                      // label: Text(platformName.contains("Cryptowallet")
+                      //     ? hintText
+                      //     : indicator),
+                      // labelStyle: TextStyle(
+                      //   fontSize: 15,
+                      //   //color: Colors.black
 
-                        // \\\color: Colors.grey[400]),
-                      ),
+                      //   // \\\color: Colors.grey[400]),
+                      // ),
                       // fillColor: Colors.grey[850],
                       hintText: hintText,
                       hintStyle: TextStyle(
-                          color: Colors.grey[500],
-                          fontSize: 20,
-                          letterSpacing: 2,
-                          fontWeight: FontWeight.bold),
+                        color: Colors.grey[500],
+                        fontSize: width / 20,
+                      ),
                     ),
                   ),
                 ),
               ],
             ),
             actions: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  TextButton(
-                    child: Text(
-                      'Cancel',
-                      style: TextStyle(fontSize: width / 20, color: Colors.red),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+              Padding(
+                padding: EdgeInsets.only(right: width / 50),
+                child: TextButton(
+                  child: Text(
+                    'Done',
+                    style: TextStyle(fontSize: width / 20, color: Colors.blue),
                   ),
-                  TextButton(
-                    child: Text(
-                      'Done',
-                      style:
-                          TextStyle(fontSize: width / 20, color: Colors.blue),
-                    ),
-                    onPressed: () async {
-                      LocalDataService.updateUsernameForPlatform(
-                          platform: platformName,
-                          username: usernameController.text);
-                      databaseService.updateUsernameForPlatform(
-                          platform: platformName,
-                          username: usernameController.text);
-                      Navigator.pop(context);
-                    },
-                  ),
-                ],
+                  onPressed: () async {
+                    LocalDataService.updateUsernameForPlatform(
+                        platform: platformName,
+                        username: usernameController.text);
+                    databaseService.updateUsernameForPlatform(
+                        platform: platformName,
+                        username: usernameController.text);
+                    Navigator.pop(context);
+                  },
+                ),
               ),
+
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              //   children: <Widget>[
+              //     TextButton(
+              //       child: Text(
+              //         'Cancel',
+              //         style: TextStyle(fontSize: width / 20, color: Colors.red),
+              //       ),
+              //       onPressed: () {
+              //         Navigator.pop(context);
+              //       },
+              //     ),
+              //     TextButton(
+              //       child: Text(
+              //         'Done',
+              //         style:
+              //             TextStyle(fontSize: width / 20, color: Colors.blue),
+              //       ),
+              //       onPressed: () async {
+              //         LocalDataService.updateUsernameForPlatform(
+              //             platform: platformName,
+              //             username: usernameController.text);
+              //         databaseService.updateUsernameForPlatform(
+              //             platform: platformName,
+              //             username: usernameController.text);
+              //         Navigator.pop(context);
+              //       },
+              //     ),
+              //   ],
+              // ),
             ],
           );
         });
