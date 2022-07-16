@@ -39,6 +39,10 @@ class _MyAppState extends State<MyApp> {
             debugShowCheckedModeBanner: false,
             themeMode: ThemeMode.system,
             theme: ThemeData(
+              pageTransitionsTheme: PageTransitionsTheme(builders: {
+                TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+                TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+              }),
               brightness: Theme.of(context).brightness,
               backgroundColor: Colors.grey[50],
               primarySwatch: MaterialColor(
@@ -78,6 +82,10 @@ class _MyAppState extends State<MyApp> {
               // , buttonTheme: ButtonTheme()
             ),
             darkTheme: ThemeData(
+                pageTransitionsTheme: PageTransitionsTheme(builders: {
+                  TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+                  TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+                }),
                 brightness: Brightness.dark,
                 backgroundColor: Colors.grey[850],
                 primarySwatch: MaterialColor(

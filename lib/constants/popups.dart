@@ -157,42 +157,42 @@ class Popups {
         });
   }
 
-  static void twoWarSharingExplained(
-      BuildContext context, double width, double height) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(40.0))),
-            //backgroundColor: Colors.blueGrey[900],
-            title: Text(
-              "2 way sharing!",
-              style: TextStyle(
-                  // color: Colors.cyan[600],
-                  fontWeight: FontWeight.bold),
-            ),
-            content: Text(
-              ("When this switch is enabled, this means that when you share your QR code, you are added as a friend on their account AND they are added as a friend on yours!"),
-              style: TextStyle(
-                  fontSize: 20,
-                  // color: Colors.cyan[700],
-                  fontWeight: FontWeight.bold),
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: Text(
-                  'Ok',
-                  style: TextStyle(fontSize: 20, color: Colors.blue),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        });
-  }
+  // static void twoWarSharingExplained(
+  //     BuildContext context, double width, double height) {
+  //   showDialog(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return AlertDialog(
+  //           shape: RoundedRectangleBorder(
+  //               borderRadius: BorderRadius.all(Radius.circular(40.0))),
+  //           //backgroundColor: Colors.blueGrey[900],
+  //           title: Text(
+  //             "2 way sharing!",
+  //             style: TextStyle(
+  //                 // color: Colors.cyan[600],
+  //                 fontWeight: FontWeight.bold),
+  //           ),
+  //           content: Text(
+  //             ("When this switch is enabled, this means that when you share your QR code, you are added as a friend on their account AND they are added as a friend on yours!"),
+  //             style: TextStyle(
+  //                 fontSize: 20,
+  //                 // color: Colors.cyan[700],
+  //                 fontWeight: FontWeight.bold),
+  //           ),
+  //           actions: <Widget>[
+  //             TextButton(
+  //               child: Text(
+  //                 'Ok',
+  //                 style: TextStyle(fontSize: 20, color: Colors.blue),
+  //               ),
+  //               onPressed: () {
+  //                 Navigator.of(context).pop();
+  //               },
+  //             ),
+  //           ],
+  //         );
+  //       });
+  // }
 
   static void contactCardExplainedPopup(
       BuildContext context, double width, double height) {

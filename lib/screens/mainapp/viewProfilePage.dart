@@ -233,8 +233,15 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                                   letterSpacing: 1.2),
                                             )
                                     ]),
-                                    ProfilePic(
-                                        radius: 60, url: profilePhotoURL),
+                                    Hero(
+                                      tag: "Profile Pic",
+                                      child: ProfilePic(
+                                          radius: width / 7,
+                                          url: profilePhotoURL),
+                                    ),
+                                    Container(
+                                      color: Colors.red,
+                                    ),
                                     Column(children: [
                                       Text(
                                         soshiPoints == null
@@ -274,6 +281,48 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                                 : Container())
                                     //),
                                     ),
+                                ElevatedButton(
+                                  onPressed: () async {},
+                                  child: Container(
+                                      height: height / 40,
+                                      width: width / 3,
+                                      child: Center(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Text(
+                                              "Add Friend",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontFamily: "Montserrat",
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: width / 25),
+                                            ),
+                                            // SizedBox(width: 15),
+                                            // ClipRRect(
+                                            //   borderRadius: BorderRadius.all(Radius.circular(10)),
+                                            //   child: Image.asset(
+                                            //     "assets/images/SoshiLogos/soshi_icon.png",
+                                            //   ),
+                                            // ),
+                                            // SizedBox(width: 10),
+                                            // Icon(
+                                            //   Icons.chevron_right,
+                                            //   size: 30,
+                                            // )
+                                          ],
+                                        ),
+                                      )),
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.black,
+                                    elevation: 10,
+                                    padding: const EdgeInsets.all(15.0),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20.0),
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                           ),

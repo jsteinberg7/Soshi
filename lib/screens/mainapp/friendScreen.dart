@@ -270,7 +270,9 @@ class _FriendScreenState extends State<FriendScreen>
                     friend: friend); // show friend popup when tile is pressed
               }));
             },
-            leading: ProfilePic(radius: width / 14, url: friend.photoURL),
+            leading: Hero(
+                tag: "Profile Pic",
+                child: ProfilePic(radius: width / 14, url: friend.photoURL)),
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -796,28 +798,23 @@ class _FriendScreenState extends State<FriendScreen>
                               const EdgeInsets.fromLTRB(16.0, 0, 16.0, 5.0),
                           child: Container(
                             height: height / 18,
-                            child: TextFormField(
+                            child: CupertinoSearchTextField(
                               controller: searchController,
-                              decoration: InputDecoration(
-                                hintText: 'Search \"${[
-                                  "Jason S",
-                                  "Yuvan",
-                                  "Kallie",
-                                  "Michelle",
-                                  "Sid Jagtap",
-                                  "Sri"
-                                ][Random().nextInt(5)]}\"',
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(15.0)),
-                                prefixIcon: Icon(
-                                  Icons.search,
-                                ),
-                                labelText:
-                                    "Search ${formattedFriendsList.length} " +
-                                        ((formattedFriendsList.length > 1)
-                                            ? "friends..."
-                                            : "friend..."),
-                              ),
+                              placeholder:
+                                  "Search ${formattedFriendsList.length} " +
+                                      ((formattedFriendsList.length > 1)
+                                          ? "friends..."
+                                          : "friend..."),
+                              // placeholder: 'Search \"${[
+                              //   "Jason S",
+                              //   "Yuvan",
+                              //   "Kallie",
+                              //   "Michelle",
+                              //   "Sid Jagtap",
+                              //   "Sri"
+                              // ][Random().nextInt(5)]}\"',
+
+                              //     ),
                             ),
                           ),
                         ),
