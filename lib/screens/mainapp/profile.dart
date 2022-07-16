@@ -487,34 +487,103 @@ class ProfileState extends State<Profile> {
 
     /* This is the dynamic sizing based on how long the bio is */
     double containerSize;
-    double soshiPointsButtonSpacing;
+    double passionsSpacing;
     int bioChars;
     double bioSpacing;
 
     String bio = LocalDataService.getBio();
     if (bio == null || bio == "") {
       bioSpacing = 90;
-      soshiPointsButtonSpacing = 1000;
+      passionsSpacing = 1000;
       containerSize = 3.6;
     } else {
       bioChars = bio.length;
 
       if (bioChars <= 25) {
         bioSpacing = 50;
-        soshiPointsButtonSpacing = 100;
+        passionsSpacing = 100;
         containerSize = 3.2;
       } else if (bioChars > 25 && bioChars <= 50) {
         bioSpacing = 80;
-        soshiPointsButtonSpacing = 150;
+        passionsSpacing = 150;
         containerSize = 3.2;
       } else {
         bioSpacing = 90;
-        soshiPointsButtonSpacing = 1000;
+        passionsSpacing = 1000;
         containerSize = 3.1;
       }
     }
+    bool soshiPointsInjection =
+        LocalDataService.getInjectionFlag("Soshi Points");
 
-    profileBioController.text = LocalDataService.getBio();
+    if (soshiPointsInjection == false || soshiPointsInjection == null) {
+      LocalDataService.updateInjectionFlag("Soshi Points", true);
+      databaseService.updateInjectionSwitch(
+          soshiUsername, "Soshi Points", true);
+
+      int numFriends = LocalDataService.getFriendsListCount();
+      LocalDataService.updateSoshiPoints(numFriends * 8);
+
+      databaseService.updateSoshiPoints(soshiUsername, (numFriends * 8));
+    }
+
+    bool profilePicFlagInjection =
+        LocalDataService.getInjectionFlag("Profile Pic");
+    print(profilePicFlagInjection.toString());
+
+    if (profilePicFlagInjection == false || profilePicFlagInjection == null) {
+      if (LocalDataService.getLocalProfilePictureURL() != "null") {
+        LocalDataService.updateInjectionFlag("Profile Pic", true);
+        databaseService.updateInjectionSwitch(
+            soshiUsername, "Profile Pic", true);
+        LocalDataService.updateSoshiPoints(10);
+
+        databaseService.updateSoshiPoints(soshiUsername, 10);
+      } else {
+        LocalDataService.updateInjectionFlag("Profile Pic", false);
+        databaseService.updateInjectionSwitch(
+            soshiUsername, "Profile Pic", false);
+      }
+    }
+
+    bool bioFlagInjection = LocalDataService.getInjectionFlag("Bio");
+    if (bioFlagInjection == false || bioFlagInjection == null) {
+      if (LocalDataService.getBio() != "" ||
+          LocalDataService.getBio() != null) {
+        LocalDataService.updateInjectionFlag("Bio", true);
+        databaseService.updateInjectionSwitch(soshiUsername, "Bio", true);
+        LocalDataService.updateSoshiPoints(10);
+
+        databaseService.updateSoshiPoints(soshiUsername, 10);
+      } else {
+        LocalDataService.updateInjectionFlag("Bio", false);
+        databaseService.updateInjectionSwitch(soshiUsername, "Bio", false);
+      }
+    }
+
+    // For now, just injecting false passions flag field
+    LocalDataService.updateInjectionFlag("Passions", false);
+    databaseService.updateInjectionSwitch(soshiUsername, "Passions", false);
+
+    //       bool passionsFlagInjection =
+    //     LocalDataService.getLocalStateForInjectionFlag("Passions");
+    // if (passionsFlagInjection == false || passionsFlagInjection == null) {
+    //   if (LocalDataService.getPassions() != empty) {
+    //     LocalDataService.updateSwitchForInjection(
+    //         injection: "Passions", state: true);
+    //     databaseService.updateInjectionSwitch(injection: "Passions", state: true);
+    //   } else {
+    //     LocalDataService.updateSwitchForInjection(
+    //         injection: "Passions", state: false);
+    //     databaseService.updateInjectionSwitch(injection: "Passions", state: false);
+    //   }
+    // }
+
+    // this ^ is just a check
+
+    // so make sure when passions is done, the flag is updated and points are
+    // given in passions.dart
+
     return SingleChildScrollView(
       child: Container(
           child: Column(
@@ -532,7 +601,11 @@ class ProfileState extends State<Profile> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                      IconButton(onPressed: () {}, icon: Icon(Icons.share)),
+                      IconButton(
+                          onPressed: () {},
+                          splashRadius: 1,
+                          iconSize: width / 15,
+                          icon: Icon(CupertinoIcons.gear)),
                       Padding(
                         padding:
                             EdgeInsets.fromLTRB(width / 40, 0, width / 40, 0),
@@ -572,16 +645,18 @@ class ProfileState extends State<Profile> {
                         ),
                       ),
                       IconButton(
-                          onPressed: () {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
-                              return Scaffold(
-                                  body: ProfileSettings(
-                                      soshiUsername: soshiUsername,
-                                      refreshProfile: refreshScreen));
-                            }));
-                          },
-                          icon: Icon(Icons.edit)),
+                        onPressed: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return Scaffold(
+                                body: ProfileSettings(
+                                    soshiUsername: soshiUsername,
+                                    refreshProfile: refreshScreen));
+                          }));
+                        },
+                        icon: Icon(CupertinoIcons.pen),
+                        iconSize: width / 15,
+                      ),
                     ],
                   ),
                   SizedBox(
@@ -608,24 +683,35 @@ class ProfileState extends State<Profile> {
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     letterSpacing: 1.2,
-                                    fontSize: width / 25))
+                                    fontSize: width / 25)),
+                        SizedBox(
+                          height: height / 40,
+                        )
                       ]),
                       ProfilePic(
                           radius: 55,
                           url: LocalDataService.getLocalProfilePictureURL()),
                       Column(children: [
-                        Text(LocalDataService.getFriendsListCount().toString(),
+                        Text(LocalDataService.getSoshiPoints().toString(),
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 letterSpacing: 1.2,
                                 fontSize: width / 25)),
-                        LocalDataService.getFriendsListCount() == 1
-                            ? Text("Group",
+                        LocalDataService.getSoshiPoints() == 1
+                            ? Text("Bolt",
                                 style: TextStyle(
                                     letterSpacing: 1.2, fontSize: width / 25))
-                            : Text("Groups",
+                            : Text("Bolts",
                                 style: TextStyle(
-                                    letterSpacing: 1.2, fontSize: width / 25))
+                                    letterSpacing: 1.2, fontSize: width / 25)),
+                        IconButton(
+                            padding: EdgeInsets.zero,
+                            constraints: BoxConstraints(),
+                            onPressed: () {
+                              print("Soshi points info");
+                            },
+                            splashRadius: 1,
+                            icon: Icon(CupertinoIcons.info))
                       ]),
                     ],
                   ),
@@ -635,7 +721,7 @@ class ProfileState extends State<Profile> {
                           width / 5,
                           height / bioSpacing,
                           width / 5,
-                          height / soshiPointsButtonSpacing),
+                          height / passionsSpacing),
                       child: bio == "" || bio == null
                           ? Container()
                           : Container(
@@ -652,7 +738,7 @@ class ProfileState extends State<Profile> {
                             )
                       //),
                       ),
-                  SoshiPointsButton(height, width),
+                  // SoshiPointsButton(height, width),
                 ],
               ),
             ),
@@ -696,7 +782,8 @@ class ProfileState extends State<Profile> {
                           fontWeight: FontWeight.bold, fontSize: width / 17),
                     ),
                     IconButton(
-                      icon: Icon(CupertinoIcons.list_bullet),
+                      icon: Icon(CupertinoIcons.pencil_ellipsis_rectangle),
+                      iconSize: width / 15,
                       onPressed: () {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
