@@ -454,7 +454,9 @@ class _NewQRScreenState extends State<NewQRScreen> {
     double width = Utilities.getWidth(context);
     return Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
       PhysicalModel(
-        color: Colors.white,
+        color: Theme.of(context).brightness == Brightness.light
+            ? Colors.white
+            : Colors.black,
         elevation: 10.0,
         borderRadius: BorderRadius.circular(25.0),
         child: Container(
@@ -566,7 +568,16 @@ class _NewQRScreenState extends State<NewQRScreen> {
                   ),
                 ),
                 Text("Share with others to instantly connect.",
-                    style: TextStyle(fontSize: width / 30))
+                    style: TextStyle(fontSize: width / 30)),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Image.asset(
+                    Theme.of(context).brightness == Brightness.light
+                        ? "assets/images/SoshiLogos/soshi_logo_black.png"
+                        : "assets/images/SoshiLogos/soshi_logo.png",
+                    height: Utilities.getHeight(context) / 35,
+                  ),
+                ),
               ],
             )),
       ),
@@ -594,7 +605,6 @@ class _NewQRScreenState extends State<NewQRScreen> {
                     Text(
                       "Scan",
                       style: TextStyle(
-                          color: Colors.white,
                           fontFamily: "Montserrat",
                           fontWeight: FontWeight.bold,
                           fontSize: 20),
@@ -615,7 +625,7 @@ class _NewQRScreenState extends State<NewQRScreen> {
                 ),
               )),
           style: ElevatedButton.styleFrom(
-            primary: Colors.transparent,
+            primary: Colors.white,
             elevation: 10,
             padding: const EdgeInsets.all(15.0),
             shape: RoundedRectangleBorder(
@@ -625,66 +635,5 @@ class _NewQRScreenState extends State<NewQRScreen> {
         ),
       )
     ]);
-  }
-}
-
-List<Color> colorList = [
-  // Colors.red,
-  // Colors.blue,
-  // Colors.green,
-  // Colors.yellow
-  Colors.black,
-  Colors.cyan[100],
-  // Colors.cyan[500]!,
-  Colors.cyan[900],
-  Colors.white
-];
-
-class AnimatedGradient extends StatefulWidget {
-  Widget child;
-
-  AnimatedGradient({this.child});
-  @override
-  _AnimatedGradientState createState() => _AnimatedGradientState();
-}
-
-class _AnimatedGradientState extends State<AnimatedGradient> {
-  List<Alignment> alignmentList = [
-    Alignment.bottomLeft,
-    Alignment.bottomRight,
-    Alignment.topRight,
-    Alignment.topLeft,
-  ];
-  int index = 0;
-  Color bottomColor = Colors.black;
-  Color topColor = Colors.white;
-  Alignment begin = Alignment.bottomLeft;
-  Alignment end = Alignment.topRight;
-
-  @override
-  Widget build(BuildContext context) {
-    Future.delayed(const Duration(milliseconds: 10), () {
-      setState(() {
-        bottomColor = Colors.cyan;
-      });
-    });
-    return AnimatedContainer(
-      duration: Duration(seconds: 5),
-      onEnd: () {
-        setState(() {
-          index = index + 1;
-          // animate the color
-          bottomColor = colorList[index % colorList.length];
-          topColor = colorList[(index + 1) % colorList.length];
-          //// animate the alignment
-          begin = alignmentList[index % alignmentList.length];
-          end = alignmentList[(index + 2) % alignmentList.length];
-        });
-      },
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-              begin: begin, end: end, colors: [bottomColor, topColor])),
-      child: widget.child,
-    );
   }
 }

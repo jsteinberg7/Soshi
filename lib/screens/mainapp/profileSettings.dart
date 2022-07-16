@@ -420,10 +420,10 @@ class ProfileSettingsState extends State<ProfileSettings> {
                   SizedBox(
                     height: height / 15,
                   ),
-                  ActivatePortalButton(),
-                  SizedBox(
-                    height: height / 30,
-                  ),
+                  // ActivatePortalButton(),
+                  // SizedBox(
+                  //   height: height / 30,
+                  // ),
 
                   SignOutButton()
 

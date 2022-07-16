@@ -138,11 +138,20 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
       // ),
       //floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
-      appBar: PreferredSize(
-          //Create "Beta" icon on left
-          preferredSize: Size(
-              Utilities.getWidth(context), Utilities.getHeight(context) / 16),
-          child: SoshiAppBar()),
+      // appBar: (currScreen != 1)
+      //     ? PreferredSize(
+      //         //Create "Beta" icon on left
+      //         preferredSize: Size(Utilities.getWidth(context),
+      //             Utilities.getHeight(context) / 20),
+      //         child: SoshiAppBar())
+      //     : PreferredSize(
+      //         //Create "Beta" icon on left
+      //         preferredSize: Size(Utilities.getWidth(context),
+      //             Utilities.getHeight(context) / 20),
+      //         child: Container(
+      //           color: Colors.transparent,
+      //         )),
+
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       // backgroundColor: Colors.white,
 

@@ -35,7 +35,7 @@ class _MyAppState extends State<MyApp> {
         value: AuthService().user,
         child: MaterialApp(
             debugShowCheckedModeBanner: false,
-            // themeMode: ThemeMode.dark,
+            themeMode: ThemeMode.system,
             theme: ThemeData(
               brightness: Theme.of(context).brightness,
               backgroundColor: Colors.grey[50],
@@ -97,7 +97,7 @@ class _MyAppState extends State<MyApp> {
                 primaryColorLight: Color(0x1a311F06),
                 primaryColorDark: Colors.black,
                 canvasColor: Colors.grey[850],
-                scaffoldBackgroundColor: Colors.grey[250],
+                scaffoldBackgroundColor: Colors.grey[900],
                 bottomAppBarColor: Color(0xff6D42CE),
                 cardColor: Colors.grey[900],
                 dividerColor: Color(0x1f6D42CE),

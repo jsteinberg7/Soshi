@@ -76,6 +76,11 @@ class DatabaseService {
         "Discord": null,
         "Email": email,
         "Contact": null,
+        "AppleMusic": null,
+        "CashApp": null,
+        "Vsco": null,
+        "OnlyFans": null,
+        "BeReal": null
       },
       "Two Way Sharing": true,
       "Switches": <String, bool>{
@@ -93,21 +98,32 @@ class DatabaseService {
         "Venmo": false,
         "Spotify": false,
         "Personal": false,
+        "AppleMusic": false,
+        "CashApp": false,
+        "Vsco": false,
+        "OnlyFans": false,
+        "BeReal": false
+
         //"Cryptowallet": false
       },
       "Photo URL": "null",
       "Choose Platforms": <String>[
         //"Cryptowallet",
-        "Email",
         "Personal",
         "Instagram",
         "Snapchat",
         "Venmo",
+        "CashApp",
         "Twitter",
+        "Vsco",
         "Tiktok",
         "Linkedin",
+        "BeReal",
         "Youtube",
         "Spotify",
+        "AppleMusic",
+        "OnlyFans",
+        "Email",
         "Facebook",
         "Discord",
 
@@ -379,14 +395,12 @@ class DatabaseService {
   Methods pertaining to getting user data
   */
 
-  Future<Map> getUserFile(String currSoshiUsername) {
-    return usersCollection
-        .doc(currSoshiUsername)
-        .get()
-        .then((DocumentSnapshot ds) {
-      Map data = ds.data();
-      return data;
+  Future<Map> getUserFile(String username) async {
+    dynamic data;
+    await usersCollection.doc(username).get().then((DocumentSnapshot ds) {
+      data = ds.data();
     });
+    return data;
   }
 
   // pass in currSoshiUsername, return map of user switches (platform visibility)
@@ -395,7 +409,7 @@ class DatabaseService {
   }
 
   // return list of enabled user switches
-  Future<List<String>> getEnabledPlatformsList(Map userData) async {
+  List<String> getEnabledPlatformsList(Map userData) {
     Map<String, dynamic> platformsMap = getUserSwitches(userData);
 
     List<String> enabledPlatformsList = [];
