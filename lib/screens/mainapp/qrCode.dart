@@ -680,7 +680,9 @@ class _NewQRScreenState extends State<NewQRScreen> {
                   ),
                 )),
             style: ElevatedButton.styleFrom(
-              primary: Colors.white,
+              primary: Theme.of(context).brightness == Brightness.light
+                  ? Colors.white
+                  : Colors.black,
               elevation: 10,
               padding: const EdgeInsets.all(15.0),
               shape: RoundedRectangleBorder(

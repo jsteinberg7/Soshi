@@ -195,10 +195,15 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
       bottomNavigationBar: SizedBox(
         height: Utilities.getHeight(context) / 11,
         child: CustomNavigationBar(
-          iconSize: 40,
-          selectedColor: Colors.cyan[300],
+          scaleCurve: Curves.fastLinearToSlowEaseIn,
+          scaleFactor: .05,
+          elevation: 5,
+          iconSize: Utilities.getWidth(context) / 10,
+          selectedColor: Theme.of(context).brightness == Brightness.light
+              ? Colors.black
+              : Colors.white,
           strokeColor: Colors.transparent,
-          unSelectedColor: Colors.grey[500],
+          unSelectedColor: Colors.grey,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           items: [
             CustomNavigationBarItem(
