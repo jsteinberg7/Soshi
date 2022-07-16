@@ -117,12 +117,12 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                 ? friend.photoURL
                                 : "https://img.freepik.com/free-photo/abstract-luxury-plain-blur-grey-black-gradient-used-as-background-studio-wall-display-your-products_1258-58170.jpg?w=2000"),
                             fit: BoxFit.fill,
-                            height: height / 2.2,
+                            height: height / 2,
                             width: width,
                           ),
                         ),
                         GlassmorphicContainer(
-                          height: height / 2.2,
+                          height: height / 2,
                           width: width,
                           borderRadius: 25.0,
                           blur: 10,
@@ -212,55 +212,62 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    Column(children: [
-                                      Text(
-                                        numFriendsString.toString(),
-                                        style: TextStyle(
-                                            fontSize: width / 25,
-                                            letterSpacing: 1.2),
-                                      ),
-                                      numFriendsString == "1"
-                                          ? Text(
-                                              "Friend",
-                                              style: TextStyle(
-                                                  fontSize: width / 25,
-                                                  letterSpacing: 1.2),
-                                            )
-                                          : Text(
-                                              "Friends",
-                                              style: TextStyle(
-                                                  fontSize: width / 25,
-                                                  letterSpacing: 1.2),
-                                            )
-                                    ]),
+                                    SizedBox(
+                                      width: width / 4,
+                                      child: Column(children: [
+                                        Text(
+                                          numFriendsString.toString(),
+                                          style: TextStyle(
+                                              fontSize: width / 25,
+                                              letterSpacing: 1.2),
+                                        ),
+                                        numFriendsString == "1"
+                                            ? Text(
+                                                "Friend",
+                                                style: TextStyle(
+                                                    fontSize: width / 25,
+                                                    letterSpacing: 1.2),
+                                              )
+                                            : Text(
+                                                "Friends",
+                                                style: TextStyle(
+                                                    fontSize: width / 25,
+                                                    letterSpacing: 1.2),
+                                              )
+                                      ]),
+                                    ),
                                     Hero(
                                       tag: "Profile Pic",
                                       child: ProfilePic(
                                           radius: width / 7,
                                           url: profilePhotoURL),
+                                      // child: Text(
+                                      //   "c",
+                                      //   textAlign: TextAlign.center,
+                                      // )
                                     ),
-                                    Container(
-                                      color: Colors.red,
+                                    SizedBox(
+                                      width: width / 4,
+                                      child: Column(children: [
+                                        Text(
+                                          soshiPoints == null
+                                              ? "0"
+                                              : soshiPoints.toString(),
+                                          style: TextStyle(
+                                              fontSize: width / 25,
+                                              letterSpacing: 1.2),
+                                        ),
+                                        soshiPoints.toString() == "1"
+                                            ? Text("Bolt",
+                                                style: TextStyle(
+                                                    fontSize: width / 25,
+                                                    letterSpacing: 1.2))
+                                            : Text("Bolts",
+                                                style: TextStyle(
+                                                    fontSize: width / 25,
+                                                    letterSpacing: 1.2))
+                                      ]),
                                     ),
-                                    Column(children: [
-                                      Text(
-                                        soshiPoints == null
-                                            ? "0"
-                                            : soshiPoints.toString(),
-                                        style: TextStyle(
-                                            fontSize: width / 25,
-                                            letterSpacing: 1.2),
-                                      ),
-                                      soshiPoints.toString() == "1"
-                                          ? Text("Bolt",
-                                              style: TextStyle(
-                                                  fontSize: width / 25,
-                                                  letterSpacing: 1.2))
-                                          : Text("Bolts",
-                                              style: TextStyle(
-                                                  fontSize: width / 25,
-                                                  letterSpacing: 1.2))
-                                    ]),
                                   ],
                                 ),
                                 //SizedBox(height: height / 1),
@@ -384,7 +391,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                   //   ),
                   // ]),
                   Positioned(
-                    top: height / 2.6,
+                    top: height / 2.2,
                     left: 0,
                     right: 0,
                     child: Container(
