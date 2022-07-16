@@ -262,7 +262,7 @@ class _FriendScreenState extends State<FriendScreen>
       child: Padding(
         padding: const EdgeInsets.fromLTRB(10.0, 5, 30, 5),
         child: ListTile(
-            onTap: () async {
+            onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return ViewProfilePage(
                     friendSoshiUsername: friend.soshiUsername,
@@ -830,19 +830,35 @@ class _FriendScreenState extends State<FriendScreen>
                         ),
                         Visibility(
                           visible: formattedRecentsList.isNotEmpty,
-                          child: Expanded(
-                            child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: formattedRecentsList.length,
-                                itemBuilder: (BuildContext context, int i) {
-                                  return Column(
-                                    children: [
-                                      ProfilePic(
-                                          radius: width / 25,
-                                          url: formattedRecentsList[i].photoURL)
-                                    ],
-                                  );
-                                }),
+                          child: Container(
+                            height: width / 3.5,
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(50, 8, 50, 8),
+                              child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: formattedRecentsList.length,
+                                  itemBuilder: (BuildContext context, int i) {
+                                    return Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(4.0),
+                                          child: ProfilePic(
+                                              radius: width / 14,
+                                              url: formattedRecentsList[i]
+                                                  .photoURL),
+                                        ),
+                                        Text(
+                                            "@" +
+                                                formattedRecentsList[i]
+                                                    .soshiUsername,
+                                            style: TextStyle(
+                                                color: Colors.grey[500],
+                                                fontSize: 14,
+                                                fontStyle: FontStyle.italic))
+                                      ],
+                                    );
+                                  }),
+                            ),
                           ),
                         ),
                         Padding(
