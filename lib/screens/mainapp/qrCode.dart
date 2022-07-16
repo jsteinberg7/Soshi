@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import 'package:soshi/constants/constants.dart';
 
@@ -456,12 +457,14 @@ class _NewQRScreenState extends State<NewQRScreen> {
     return SafeArea(
       child:
           Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-        PhysicalModel(
-          color: Theme.of(context).brightness == Brightness.light
-              ? Colors.white
-              : Colors.black,
-          elevation: 10.0,
-          borderRadius: BorderRadius.circular(25.0),
+        Neumorphic(
+          style: NeumorphicStyle(
+              color: Theme.of(context).brightness == Brightness.light
+                  ? Colors.white
+                  : Colors.black,
+              boxShape: NeumorphicBoxShape.roundRect(
+                BorderRadius.circular(25.0),
+              )),
           child: Container(
               height: height / 2,
               width: width / 1.2,
@@ -586,19 +589,7 @@ class _NewQRScreenState extends State<NewQRScreen> {
                 ],
               )),
         ),
-        Container(
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.cyanAccent,
-                  Color.fromARGB(255, 0, 225, 255),
-                  Color.fromARGB(255, 1, 123, 139),
-                ]),
-            borderRadius: BorderRadius.circular(20.0),
-          ),
-          child: ElevatedButton(
+        NeumorphicButton(
             onPressed: () async {
               String username = LocalDataService.getLocalUsername();
               DatabaseService databaseService =
@@ -679,18 +670,23 @@ class _NewQRScreenState extends State<NewQRScreen> {
                     ],
                   ),
                 )),
-            style: ElevatedButton.styleFrom(
-              primary: Theme.of(context).brightness == Brightness.light
-                  ? Colors.white
-                  : Colors.black,
-              elevation: 10,
-              padding: const EdgeInsets.all(15.0),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-            ),
-          ),
-        )
+            // style: ElevatedButton.styleFrom(
+            // primary: Theme.of(context).brightness == Brightness.light
+            //     ? Colors.white
+            //     : Colors.black,
+            //   elevation: 10,
+            //   padding: const EdgeInsets.all(15.0),
+            //   shape: RoundedRectangleBorder(
+            //     borderRadius: BorderRadius.circular(20.0),
+            //   ),
+            // ),
+            style: NeumorphicStyle(
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.white
+                    : Colors.black,
+                shape: NeumorphicShape.concave,
+                boxShape:
+                    NeumorphicBoxShape.roundRect(BorderRadius.circular(15.0))))
       ]),
     );
   }

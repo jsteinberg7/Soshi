@@ -795,7 +795,7 @@ class _FriendScreenState extends State<FriendScreen>
                       children: [
                         Padding(
                           padding:
-                              const EdgeInsets.fromLTRB(16.0, 0, 16.0, 5.0),
+                              const EdgeInsets.fromLTRB(25.0, 0, 25.0, 10.0),
                           child: Container(
                             height: height / 18,
                             child: CupertinoSearchTextField(
@@ -859,8 +859,8 @@ class _FriendScreenState extends State<FriendScreen>
                           ),
                         ),
                         Padding(
-                            padding: const EdgeInsets.fromLTRB(
-                                16.0, 10.0, 16.0, 0.0),
+                            padding:
+                                const EdgeInsets.fromLTRB(16.0, 3.0, 16.0, 0.0),
                             child: Text("A-Z")),
                         Expanded(
                           child: ListView.builder(
