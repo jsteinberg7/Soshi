@@ -1,29 +1,19 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:custom_navigation_bar/custom_navigation_bar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'package:soshi/constants/utilities.dart';
-import 'package:soshi/screens/mainapp/boltScreen.dart';
 import 'package:soshi/screens/mainapp/friendsGroupsWrapper.dart';
 import 'package:soshi/screens/mainapp/profile.dart';
 import 'package:soshi/screens/mainapp/qrCode.dart';
-import 'package:soshi/services/analytics.dart';
 import 'package:soshi/services/database.dart';
 import 'package:soshi/services/dynamicLinks.dart';
 import 'package:soshi/services/localData.dart';
-import 'package:soshi/services/url.dart';
-import 'package:vibration/vibration.dart';
 import '../../constants/popups.dart';
 import '../../constants/widgets.dart';
-import 'friendScreen.dart';
-import 'package:soshi/constants/constants.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
 class MainApp extends StatefulWidget {
@@ -38,14 +28,10 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     screens = [
+      FractionallySizedBox(widthFactor: 1 / pageController.viewportFraction, child: NewQRScreen()),
+      FractionallySizedBox(widthFactor: 1 / pageController.viewportFraction, child: Profile()),
       FractionallySizedBox(
-          widthFactor: 1 / pageController.viewportFraction,
-          child: NewQRScreen()),
-      FractionallySizedBox(
-          widthFactor: 1 / pageController.viewportFraction, child: Profile()),
-      FractionallySizedBox(
-          widthFactor: 1 / pageController.viewportFraction,
-          child: FriendsGroupsWrapper()),
+          widthFactor: 1 / pageController.viewportFraction, child: FriendsGroupsWrapper()),
     ]; // list of screens (change through indexing)
     WidgetsBinding.instance.addObserver(this);
     print(">> calling from init");
@@ -56,8 +42,7 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
 
     NfcManager.instance.startSession(
       onDiscovered: (NfcTag tag) async {
-        var link = AsciiCodec()
-            .decode(Ndef.from(tag).cachedMessage.records.last.payload);
+        var link = AsciiCodec().decode(Ndef.from(tag).cachedMessage.records.last.payload);
         String username = link.toString().split("/").last;
 
         try {
@@ -84,21 +69,9 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
     super.dispose();
   }
 
-<<<<<<< HEAD
-  List<Widget> screens = [
-    QRScreen(),
-    Profile(),
-    BoltScreen(),
-    FriendScreen(),
-  ]; // list of screens (change through indexing)
-
-  int currScreen = 1;
-=======
   int currScreen = 2;
->>>>>>> 4008aa9dce3422bb71b981b7c37f7c12223f0395
 
-  PageController pageController =
-      new PageController(initialPage: 1, viewportFraction: 1.1);
+  PageController pageController = new PageController(initialPage: 1, viewportFraction: 1.1);
 
   @override
   Widget build(BuildContext context) {
@@ -106,32 +79,6 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
     DatabaseService databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
 
     return Scaffold(
-<<<<<<< HEAD
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Color.fromARGB(255, 32, 199, 221),
-        //Floating action button on Scaffold
-        onPressed: () async {
-          //code to execute on button press
-          {
-            String QRScanResult = await Utilities.scanQR(mounted);
-            if (QRScanResult.length > 5) {
-              // vibrate when QR code is successfully scanned
-              Vibration.vibrate();
-              try {
-                String friendSoshiUsername = QRScanResult.split("/").last;
-                Map friendData = await databaseService.getUserFile(friendSoshiUsername);
-                bool isFriendAdded = await LocalDataService.isFriendAdded(friendSoshiUsername);
-
-                Popups.showUserProfilePopupNew(context,
-                    friendSoshiUsername: friendSoshiUsername, refreshScreen: () {});
-                if (!isFriendAdded && friendSoshiUsername != soshiUsername) {
-                  // await LocalDataService.addFriend(
-                  //     friendsoshiUsername: friendSoshiUsername);
-                  databaseService.addFriend(
-                      thisSoshiUsername: databaseService.currSoshiUsername,
-                      friendSoshiUsername: friendSoshiUsername);
-                }
-=======
       // floatingActionButton: FloatingActionButton(
       //   backgroundColor: Color.fromARGB(255, 32, 199, 221),
       //   //Floating action button on Scaffold
@@ -159,7 +106,6 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
       //                 thisSoshiUsername: databaseService.currSoshiUsername,
       //                 friendSoshiUsername: friendSoshiUsername);
       //           }
->>>>>>> 4008aa9dce3422bb71b981b7c37f7c12223f0395
 
       //           // bool friendHasTwoWaySharing = await databaseService.getTwoWaySharing(friendData);
       //           // if (friendHasTwoWaySharing == null || friendHasTwoWaySharing == true) {
@@ -180,13 +126,6 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
       // ),
       //floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
-<<<<<<< HEAD
-      appBar: PreferredSize(
-          //Create "Beta" icon on left
-          preferredSize: Size(Utilities.getWidth(context), Utilities.getHeight(context) / 16),
-          child: SoshiAppBar()),
-      backgroundColor: Theme.of(context).backgroundColor,
-=======
       // appBar: (currScreen != 1)
       //     ? PreferredSize(
       //         //Create "Beta" icon on left
@@ -202,7 +141,6 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
       //         )),
 
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
->>>>>>> 4008aa9dce3422bb71b981b7c37f7c12223f0395
       // backgroundColor: Colors.white,
 
       // {Changed color}
@@ -218,37 +156,6 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
         },
       ),
       // bottomNavigationBar: SriCustomBottomNavBar(),
-<<<<<<< HEAD
-      bottomNavigationBar: AnimatedBottomNavigationBar(
-        iconSize: 30,
-        icons: [
-          Icons.qr_code,
-          Icons.person,
-          Icons.bolt_sharp,
-          Icons.list,
-        ],
-        backgroundColor: Colors.grey[800],
-        // height: 50,
-        inactiveColor: Colors.white,
-        activeColor: Colors.cyan,
-        activeIndex: currScreen,
-        gapLocation: GapLocation.center,
-        notchSmoothness: NotchSmoothness.softEdge,
-        // onTap: (index) => setState(() => _bottomNavIndex = index),
-
-        onTap: (index) async {
-          // setState(() {
-          //   // _bottomNavIndex = index
-          //   currScreen = index;
-          // });
-
-          print("onTap (bottom Nav Bar) ${index}");
-
-          await pageController.animateToPage(index,
-              duration: Duration(microseconds: 500), curve: Curves.easeInOut);
-        },
-        //other params
-=======
       // bottomNavigationBar: AnimatedBottomNavigationBar(
       //   iconSize: 30,
       //   icons: [
@@ -283,9 +190,8 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
             scaleFactor: .05,
             elevation: 5,
             iconSize: Utilities.getWidth(context) / 10,
-            selectedColor: Theme.of(context).brightness == Brightness.light
-                ? Colors.black
-                : Colors.white,
+            selectedColor:
+                Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
             strokeColor: Colors.transparent,
             unSelectedColor: Colors.grey,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -297,9 +203,7 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
                 ),
               ),
               CustomNavigationBarItem(
-                  icon: ProfilePic(
-                      radius: 20,
-                      url: LocalDataService.getLocalProfilePictureURL())),
+                  icon: ProfilePic(radius: 20, url: LocalDataService.getLocalProfilePictureURL())),
               CustomNavigationBarItem(
                 icon: Icon(
                   AntDesign.contacts,
@@ -317,7 +221,6 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
             },
           ),
         ),
->>>>>>> 4008aa9dce3422bb71b981b7c37f7c12223f0395
       ),
     );
   }
