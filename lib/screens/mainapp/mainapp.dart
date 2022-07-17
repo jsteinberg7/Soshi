@@ -26,6 +26,8 @@ import 'friendScreen.dart';
 import 'package:soshi/constants/constants.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
+import 'generalSettings.dart';
+
 class MainApp extends StatefulWidget {
   @override
   _MainAppState createState() => _MainAppState();
@@ -84,7 +86,7 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  int currScreen = 2;
+  int currScreen = 1;
 
   PageController pageController =
       new PageController(initialPage: 1, viewportFraction: 1.1);
@@ -157,7 +159,9 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
       //         child: Container(
       //           color: Colors.transparent,
       //         )),
-
+      drawer: Drawer(
+        child: GeneralSettings(),
+      ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       // backgroundColor: Colors.white,
 

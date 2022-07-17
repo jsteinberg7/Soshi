@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:soshi/screens/login/loading.dart';
+import 'package:soshi/screens/mainapp/editHandles.dart';
 import 'package:vibration/vibration.dart';
 
 import '../../../constants/popups.dart';
@@ -117,21 +118,18 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                     right: 0,
                     child: Stack(
                       children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(25.0),
-                          child: Image.network(
-                            (friend.photoURL != "null"
-                                ? friend.photoURL
-                                : "https://img.freepik.com/free-photo/abstract-luxury-plain-blur-grey-black-gradient-used-as-background-studio-wall-display-your-products_1258-58170.jpg?w=2000"),
-                            fit: BoxFit.fill,
-                            height: height / 2,
-                            width: width,
-                          ),
+                        Image.network(
+                          (friend.photoURL != "null"
+                              ? friend.photoURL
+                              : "https://img.freepik.com/free-photo/abstract-luxury-plain-blur-grey-black-gradient-used-as-background-studio-wall-display-your-products_1258-58170.jpg?w=2000"),
+                          fit: BoxFit.fill,
+                          height: height / 2,
+                          width: width,
                         ),
                         GlassmorphicContainer(
                           height: height / 2,
                           width: width,
-                          borderRadius: 25.0,
+                          borderRadius: 0,
                           blur: 10,
                           alignment: Alignment.bottomCenter,
                           border: 2,
@@ -139,8 +137,16 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                               colors: [
-                                Color(0xFFffffff).withOpacity(0.8),
-                                Color(0xFFFFFFFF).withOpacity(0.4),
+                                (Theme.of(context).brightness ==
+                                            Brightness.light
+                                        ? Colors.white
+                                        : Colors.black)
+                                    .withOpacity(0.8),
+                                (Theme.of(context).brightness ==
+                                            Brightness.light
+                                        ? Colors.white
+                                        : Colors.black)
+                                    .withOpacity(0.4),
                               ],
                               stops: [
                                 0.1,
@@ -150,8 +156,14 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                             colors: [
-                              Color(0xFFffffff).withOpacity(0.5),
-                              Color((0xFFFFFFFF)).withOpacity(0.5),
+                              (Theme.of(context).brightness == Brightness.light
+                                      ? Colors.white
+                                      : Colors.black)
+                                  .withOpacity(0.5),
+                              (Theme.of(context).brightness == Brightness.light
+                                      ? Colors.white
+                                      : Colors.black)
+                                  .withOpacity(0.5),
                             ],
                           ),
                           child: Padding(
@@ -244,7 +256,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                       ]),
                                     ),
                                     Hero(
-                                      tag: "Profile Pic",
+                                      tag: friendSoshiUsername,
                                       child: ProfilePic(
                                           radius: width / 7,
                                           url: profilePhotoURL),
@@ -287,15 +299,15 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                           child: //Padding(
                                               //padding: EdgeInsets.fromLTRB(width / 5, 0, width / 5, 0),
                                               //child:
-                                              (bio != null)
-                                                  ? Text(bio,
+                                              Visibility(
+                                                  visible: bio != null,
+                                                  child: Text(bio ?? "",
                                                       textAlign:
                                                           TextAlign.center,
                                                       style: TextStyle(
                                                           fontSize: width / 25
                                                           // color: Colors.grey[300],
-                                                          ))
-                                                  : Container()),
+                                                          )))),
                                     )
                                     //),
                                     ),
@@ -337,6 +349,8 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                           )),
                                     ),
                                     style: NeumorphicStyle(
+                                        shadowDarkColor: Colors.black12,
+                                        shadowLightColor: Colors.black12,
                                         color: Colors.black,
                                         boxShape: NeumorphicBoxShape.roundRect(
                                             BorderRadius.circular(20.0)))
@@ -422,27 +436,35 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(width / 15,
-                                height / 30, width / 25, width / 30),
-                            child: Text(
-                              "Passions",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: width / 20),
-                            ),
-                          ),
-                          Center(
-                            child: SizedBox(
-                              width: width / 1.1,
-                              child: Wrap(
-                                alignment: WrapAlignment.center,
-                                spacing: width / 35,
-                                children:
-                                    List.generate(passionsList.length, (i) {
-                                  return PassionBubble(passionsList[i]);
-                                }),
-                              ),
+                          Visibility(
+                            visible: passionsList.isNotEmpty,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.fromLTRB(width / 15,
+                                      height / 30, width / 25, width / 30),
+                                  child: Text(
+                                    "Passions",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: width / 20),
+                                  ),
+                                ),
+                                Center(
+                                  child: SizedBox(
+                                    width: width / 1.1,
+                                    child: Wrap(
+                                      alignment: WrapAlignment.center,
+                                      spacing: width / 35,
+                                      children: List.generate(
+                                          passionsList.length, (i) {
+                                        return PassionBubble(passionsList[i]);
+                                      }),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                           Padding(
@@ -514,8 +536,8 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                 0, height / 30, 0, height / 20),
                             child: Center(
                               child: Visibility(
-                                // visible: isContactEnabled,
-                                visible: false,
+                                visible: isContactEnabled,
+                                // visible: false,
                                 child: ElevatedButton(
                                   onPressed: () async {
                                     DialogBuilder(context)

@@ -532,342 +532,383 @@ class ProfileState extends State<Profile> {
     profileBioController.text = LocalDataService.getBio();
     return SingleChildScrollView(
       child: Container(
-          child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Stack(
+          height: height * 2,
+          child: Stack(
             children: [
-              Container(
-                width: width,
-                height: height / 3,
-                child: Image.network(
-                    (LocalDataService.getLocalProfilePictureURL() != "null"
-                        ? LocalDataService.getLocalProfilePictureURL()
-                        : "https://img.freepik.com/free-photo/abstract-luxury-plain-blur-grey-black-gradient-used-as-background-studio-wall-display-your-products_1258-58170.jpg?w=2000"),
-                    fit: BoxFit.fill),
-              ),
-              GlassmorphicContainer(
-                height: height / containerSize,
-                width: width,
-                borderRadius: 0,
-                blur: 5,
-                alignment: Alignment.bottomCenter,
-                border: 2,
-                linearGradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      (Theme.of(context).brightness == Brightness.light
-                              ? Colors.white
-                              : Colors.black)
-                          .withOpacity(0.8),
-                      (Theme.of(context).brightness == Brightness.light
-                              ? Colors.white
-                              : Colors.black)
-                          .withOpacity(0.4),
-                    ],
-                    stops: [
-                      0.1,
-                      1,
-                    ]),
-                borderGradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    (Theme.of(context).brightness == Brightness.light
-                            ? Colors.white
-                            : Colors.black)
-                        .withOpacity(0.5),
-                    (Theme.of(context).brightness == Brightness.light
-                            ? Colors.white
-                            : Colors.black)
-                        .withOpacity(0.5),
-                  ],
-                ),
-              ),
-              Container(
-                child: Column(
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: Stack(
                   children: [
-                    SafeArea(
-                      child: Container(
-                        // color: Colors.green,
-                        height: height / containerSize,
-                        width: width,
-                        child: Padding(
-                          padding: EdgeInsets.fromLTRB(
-                              width / 40, width / 40, width / 40, 0),
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: <Widget>[
-                                  IconButton(
-                                      onPressed: () {
-                                        Navigator.push(context,
-                                            MaterialPageRoute(
-                                                builder: (context) {
-                                          return Scaffold(
-                                              body: GeneralSettings());
-                                        }));
-                                      },
-                                      icon: Icon(CupertinoIcons.gear_alt)),
-                                  Column(
-                                    children: [
-                                      Container(
-                                        width: width / 1.5,
-                                        child: Center(
-                                          child: AutoSizeText(
-                                            LocalDataService
-                                                    .getLocalFirstName() +
-                                                " " +
-                                                LocalDataService
-                                                    .getLocalLastName(),
-                                            maxLines: 1,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: width / 16,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          Text(
-                                              "@" +
-                                                  LocalDataService
-                                                      .getLocalUsername(),
-                                              style: TextStyle(
-                                                  letterSpacing: 1.5)),
-                                          SizedBox(
-                                            width: 2,
-                                          ),
-                                          isVerified == null ||
-                                                  isVerified == false
-                                              ? Container()
-                                              : Image.asset(
-                                                  "assets/images/Verified.png",
-                                                  scale: width / 20,
-                                                )
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                  IconButton(
-                                      onPressed: () {
-                                        Navigator.push(context,
-                                            MaterialPageRoute(
-                                                builder: (context) {
-                                          return Scaffold(
-                                              body: ProfileSettings(
-                                                  soshiUsername: soshiUsername,
-                                                  refreshProfile:
-                                                      refreshScreen));
-                                        }));
-                                      },
-                                      icon: Icon(CupertinoIcons.pen)),
-                                ],
-                              ),
-                              SizedBox(
-                                height: height / 100,
-                              ),
-
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  SizedBox(
-                                    width: width / 4,
-                                    child: Column(children: [
-                                      Text(
-                                          LocalDataService.getFriendsListCount()
-                                              .toString(),
-                                          style: TextStyle(
-                                              letterSpacing: 1.2,
-                                              fontSize: width / 25)),
-                                      LocalDataService.getFriendsListCount() ==
-                                              1
-                                          ? Text(
-                                              "Friend",
-                                              style: TextStyle(
-                                                  //fontWeight: FontWeight.bold,
-                                                  letterSpacing: 1.2,
-                                                  fontSize: width / 25),
-                                            )
-                                          : Text("Friends",
-                                              style: TextStyle(
-                                                  letterSpacing: 1.2,
-                                                  fontSize: width / 25)),
-                                    ]),
-                                  ),
-                                  ProfilePic(
-                                      radius: 55,
-                                      url: LocalDataService
-                                          .getLocalProfilePictureURL()),
-                                  SizedBox(
-                                    width: width / 4,
-                                    child: Column(children: [
-                                      Text(
-                                          LocalDataService.getSoshiPoints()
-                                              .toString(),
-                                          style: TextStyle(
-                                              letterSpacing: 1.2,
-                                              fontSize: width / 25)),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          LocalDataService.getSoshiPoints() == 1
-                                              ? Text("Bolt",
-                                                  style: TextStyle(
-                                                      letterSpacing: 1.2,
-                                                      fontSize: width / 25))
-                                              : Text("Bolts",
-                                                  style: TextStyle(
-                                                      letterSpacing: 1.2,
-                                                      fontSize: width / 25)),
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(left: 2),
-                                            child: IconButton(
-                                              onPressed: () {
-                                                Popups
-                                                    .soshiPointsExplainedPopup(
-                                                        context, width, height);
-                                              },
-                                              padding: EdgeInsets.zero,
-                                              constraints: BoxConstraints(
-                                                  maxHeight: width / 28,
-                                                  maxWidth: width / 28,
-                                                  minHeight: 0,
-                                                  minWidth: 0),
-                                              icon: Icon(
-                                                  CupertinoIcons.info_circle,
-                                                  size: width / 28),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ]),
-                                  ),
-                                ],
-                              ),
-                              //SizedBox(height: height / 1),
-                              Padding(
-                                  padding: EdgeInsets.fromLTRB(
-                                      width / 5,
-                                      height / bioSpacing,
-                                      width / 5,
-                                      height / 50),
-                                  child: bio == "" || bio == null
-                                      ? Container()
-                                      : Container(
-                                          child: //Padding(
-                                              //padding: EdgeInsets.fromLTRB(width / 5, 0, width / 5, 0),
-                                              //child:
-                                              AutoSizeText(
-                                            LocalDataService.getBio(),
-                                            maxLines: 3,
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        )
-                                  //),
-                                  ),
-                              Text("Passions")
-                              //SoshiPointsButton(height, width),
-                            ],
-                          ),
-                        ),
+                    Container(
+                      width: width,
+                      // height: height / containerSize,
+                      height: height / 2.3,
+                      child: Image.network(
+                          (LocalDataService.getLocalProfilePictureURL() !=
+                                  "null"
+                              ? LocalDataService.getLocalProfilePictureURL()
+                              : "https://img.freepik.com/free-photo/abstract-luxury-plain-blur-grey-black-gradient-used-as-background-studio-wall-display-your-products_1258-58170.jpg?w=2000"),
+                          fit: BoxFit.fill),
+                    ),
+                    GlassmorphicContainer(
+                      // height: height / containerSize,
+                      height: height / 2.3,
+                      width: width,
+                      borderRadius: 0,
+                      blur: 5,
+                      alignment: Alignment.bottomCenter,
+                      border: 2,
+                      linearGradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            (Theme.of(context).brightness == Brightness.light
+                                    ? Colors.white
+                                    : Colors.black)
+                                .withOpacity(0.8),
+                            (Theme.of(context).brightness == Brightness.light
+                                    ? Colors.white
+                                    : Colors.black)
+                                .withOpacity(0.4),
+                          ],
+                          stops: [
+                            0.1,
+                            1,
+                          ]),
+                      borderGradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          (Theme.of(context).brightness == Brightness.light
+                                  ? Colors.white
+                                  : Colors.black)
+                              .withOpacity(0.5),
+                          (Theme.of(context).brightness == Brightness.light
+                                  ? Colors.white
+                                  : Colors.black)
+                              .withOpacity(0.5),
+                        ],
                       ),
                     ),
-                    // Padding(
-                    //   padding:
-                    //       EdgeInsets.fromLTRB(width / 25, 0, width / 25, 0),
-                    // ),
+                    Container(
+                      child: Column(
+                        children: [
+                          SafeArea(
+                            child: Container(
+                              // color: Colors.green,
+                              height: height / containerSize,
+                              width: width,
+                              child: Padding(
+                                padding: EdgeInsets.fromLTRB(
+                                    width / 40, width / 40, width / 40, 0),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: <Widget>[
+                                        IconButton(
+                                            onPressed: () {
+                                              Scaffold.of(context).openDrawer();
+                                              // Navigator.push(context,
+                                              //     MaterialPageRoute(
+                                              //         builder: (context) {
+                                              //   return Scaffold(
+                                              //       body: GeneralSettings());
+                                              // }));
+                                            },
+                                            icon:
+                                                Icon(CupertinoIcons.gear_alt)),
+                                        Column(
+                                          children: [
+                                            Container(
+                                              width: width / 1.5,
+                                              child: Center(
+                                                child: AutoSizeText(
+                                                  LocalDataService
+                                                          .getLocalFirstName() +
+                                                      " " +
+                                                      LocalDataService
+                                                          .getLocalLastName(),
+                                                  maxLines: 1,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: width / 16,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                    "@" +
+                                                        LocalDataService
+                                                            .getLocalUsername(),
+                                                    style: TextStyle(
+                                                        letterSpacing: 1.5)),
+                                                SizedBox(
+                                                  width: 2,
+                                                ),
+                                                isVerified == null ||
+                                                        isVerified == false
+                                                    ? Container()
+                                                    : Image.asset(
+                                                        "assets/images/Verified.png",
+                                                        scale: width / 20,
+                                                      )
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                        IconButton(
+                                            onPressed: () {
+                                              Navigator.push(context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) {
+                                                return Scaffold(
+                                                    body: ProfileSettings(
+                                                        soshiUsername:
+                                                            soshiUsername,
+                                                        refreshProfile:
+                                                            refreshScreen));
+                                              }));
+                                            },
+                                            icon: Icon(CupertinoIcons.pen)),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: height / 100,
+                                    ),
+
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        SizedBox(
+                                          width: width / 4,
+                                          child: Column(children: [
+                                            Text(
+                                                LocalDataService
+                                                        .getFriendsListCount()
+                                                    .toString(),
+                                                style: TextStyle(
+                                                    letterSpacing: 1.2,
+                                                    fontSize: width / 25)),
+                                            LocalDataService
+                                                        .getFriendsListCount() ==
+                                                    1
+                                                ? Text(
+                                                    "Friend",
+                                                    style: TextStyle(
+                                                        //fontWeight: FontWeight.bold,
+                                                        letterSpacing: 1.2,
+                                                        fontSize: width / 25),
+                                                  )
+                                                : Text("Friends",
+                                                    style: TextStyle(
+                                                        letterSpacing: 1.2,
+                                                        fontSize: width / 25)),
+                                          ]),
+                                        ),
+                                        ProfilePic(
+                                            radius: 55,
+                                            url: LocalDataService
+                                                .getLocalProfilePictureURL()),
+                                        SizedBox(
+                                          width: width / 4,
+                                          child: Column(children: [
+                                            Text(
+                                                LocalDataService
+                                                        .getSoshiPoints()
+                                                    .toString(),
+                                                style: TextStyle(
+                                                    letterSpacing: 1.2,
+                                                    fontSize: width / 25)),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                LocalDataService
+                                                            .getSoshiPoints() ==
+                                                        1
+                                                    ? Text("Bolt",
+                                                        style: TextStyle(
+                                                            letterSpacing: 1.2,
+                                                            fontSize:
+                                                                width / 25))
+                                                    : Text("Bolts",
+                                                        style: TextStyle(
+                                                            letterSpacing: 1.2,
+                                                            fontSize:
+                                                                width / 25)),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 2),
+                                                  child: IconButton(
+                                                    onPressed: () {
+                                                      Popups
+                                                          .soshiPointsExplainedPopup(
+                                                              context,
+                                                              width,
+                                                              height);
+                                                    },
+                                                    padding: EdgeInsets.zero,
+                                                    constraints: BoxConstraints(
+                                                        maxHeight: width / 28,
+                                                        maxWidth: width / 28,
+                                                        minHeight: 0,
+                                                        minWidth: 0),
+                                                    icon: Icon(
+                                                        CupertinoIcons
+                                                            .info_circle,
+                                                        size: width / 28),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ]),
+                                        ),
+                                      ],
+                                    ),
+                                    //SizedBox(height: height / 1),
+                                    Padding(
+                                        padding: EdgeInsets.fromLTRB(
+                                            width / 5,
+                                            height / bioSpacing,
+                                            width / 5,
+                                            height / 50),
+                                        child: bio == "" || bio == null
+                                            ? Container()
+                                            : Container(
+                                                child: //Padding(
+                                                    //padding: EdgeInsets.fromLTRB(width / 5, 0, width / 5, 0),
+                                                    //child:
+                                                    AutoSizeText(
+                                                  LocalDataService.getBio(),
+                                                  maxLines: 3,
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              )
+                                        //),
+                                        ),
+
+                                    //SoshiPointsButton(height, width),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          // Padding(
+                          //   padding:
+                          //       EdgeInsets.fromLTRB(width / 25, 0, width / 25, 0),
+                          // ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
-            ],
-          ),
 
-          // Stack(
-          //   children: [
-          //     Padding(
-          //       padding: EdgeInsets.fromLTRB(width / 30, 0, width / 30, 0),
-          //       child: Divider(
-          //         color: Colors.white,
-          //       ),
-          //     ),
-          //     Row(
-          //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          //       children: [
-          //         Container(
-          //           child: Text("Hello"),
-          //         )
-          //       ],
-          //     )
-          //   ],
-          // ),
-          Container(
-              child: Padding(
-            padding: EdgeInsets.fromLTRB(width / 35, 0, width / 35, 0),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Socials",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: width / 17),
-                    ),
-                    IconButton(
-                      icon: Icon(CupertinoIcons.pencil_ellipsis_rectangle),
-                      onPressed: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return Scaffold(
-                              body: EditHandles(
-                            soshiUsername: soshiUsername,
-                          ));
-                        }));
-                      },
-                    )
-                  ],
-                ),
-                Container(
-                  // color: Colors.red,
-                  child: Align(
-                    alignment: Alignment.topCenter,
-                    child: GridView.builder(
-                      // add an extra tile with the "+" that can be used always to add morem platforms
-                      padding: EdgeInsets.zero,
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Padding(
-                            padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                            child: index != profilePlatforms.length
-                                ? SMTile(
-                                    platformName: profilePlatforms[index],
-                                    soshiUsername: soshiUsername,
-                                    refreshScreen: refreshScreen)
-                                : AddPlatformsTile(
-                                    refreshScreen: refreshScreen));
-                      },
-                      itemCount: profilePlatforms.length + 1,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          childAspectRatio: .8,
-                          crossAxisSpacing: width / 40),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              // Stack(
+              //   children: [
+              //     Padding(
+              //       padding: EdgeInsets.fromLTRB(width / 30, 0, width / 30, 0),
+              //       child: Divider(
+              //         color: Colors.white,
+              //       ),
+              //     ),
+              //     Row(
+              //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              //       children: [
+              //         Container(
+              //           child: Text("Hello"),
+              //         )
+              //       ],
+              //     )
+              //   ],
+              // ),
+              Positioned(
+                left: 0,
+                right: 0,
+                top: height / 2.5,
+                child: Container(
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20.0),
+                            topRight: Radius.circular(20.0))),
+                    child: Padding(
+                      padding:
+                          EdgeInsets.fromLTRB(width / 35, 0, width / 35, 0),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(left: width / 40),
+                                child: Text(
+                                  "Socials",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: width / 17),
+                                ),
+                              ),
+                              IconButton(
+                                icon: Icon(
+                                    CupertinoIcons.pencil_ellipsis_rectangle),
+                                onPressed: () {
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    return Scaffold(
+                                        body: EditHandles(
+                                      soshiUsername: soshiUsername,
+                                    ));
+                                  }));
+                                },
+                              )
+                            ],
+                          ),
+                          Container(
+                            // color: Colors.red,
+                            child: Align(
+                              alignment: Alignment.topCenter,
+                              child: GridView.builder(
+                                // add an extra tile with the "+" that can be used always to add morem platforms
+                                padding: EdgeInsets.zero,
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Padding(
+                                      padding:
+                                          const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                                      child: index != profilePlatforms.length
+                                          ? SMTile(
+                                              platformName:
+                                                  profilePlatforms[index],
+                                              soshiUsername: soshiUsername,
+                                              refreshScreen: refreshScreen)
+                                          : AddPlatformsTile(
+                                              refreshScreen: refreshScreen));
+                                },
+                                itemCount: profilePlatforms.length + 1,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3,
+                                        childAspectRatio: .8,
+                                        crossAxisSpacing: width / 40),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )),
+              ),
+            ],
           )),
-        ],
-      )),
     );
 
     // return SingleChildScrollView(

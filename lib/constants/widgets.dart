@@ -128,67 +128,6 @@ class RectangularProfilePic extends StatelessWidget {
   }
 }
 
-class SignOutButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Constants.makeRedShadowButton("Sign out", Icons.logout_outlined, () {
-      AuthService authService = new AuthService();
-
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(40.0))),
-              // backgroundColor: Colors.blueGrey[900],
-              title: Text(
-                "Sign Out",
-                style: TextStyle(
-                  // color: Colors.cyan[600],
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              content: Text(
-                ("Are you sure you want to sign out?"),
-                style: TextStyle(
-                  fontSize: 20,
-                  // color: Colors.cyan[700],
-                  // fontWeight: FontWeight.bold
-                ),
-              ),
-              actions: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    TextButton(
-                      child: Text(
-                        'No',
-                        style: TextStyle(fontSize: 20, color: Colors.red),
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                    TextButton(
-                      child: Text(
-                        'Yes',
-                        style: TextStyle(fontSize: 20, color: Colors.blue),
-                      ),
-                      onPressed: () async {
-                        await authService.signOut();
-                        Navigator.pop(context); // close popup
-                        Navigator.pop(context); // pop to login screen
-                      },
-                    ),
-                  ],
-                ),
-              ],
-            );
-          });
-    });
-  }
-}
-
 class ActivatePortalButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -964,7 +903,12 @@ class PassionBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
-            border: Border.all(), borderRadius: BorderRadius.circular(20.0)),
+            border: Border.all(
+              color: Theme.of(context).brightness == Brightness.light
+                  ? Colors.black
+                  : Colors.white,
+            ),
+            borderRadius: BorderRadius.circular(20.0)),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(passion),

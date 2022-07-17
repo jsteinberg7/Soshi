@@ -483,12 +483,16 @@ class _NewQRScreenState extends State<NewQRScreen> {
                 //   height: Utilities.getHeight(context) / 15,
                 // ),
                 //SizedBox(height: height / 70),
-                PhysicalModel(
-                  color: Theme.of(context).brightness == Brightness.light
-                      ? Colors.white
-                      : Colors.black,
-                  elevation: 10.0,
-                  borderRadius: BorderRadius.circular(25.0),
+                Neumorphic(
+                  style: NeumorphicStyle(
+                      depth: 2,
+                      shape: NeumorphicShape.concave,
+                      color: Theme.of(context).brightness == Brightness.light
+                          ? Colors.white
+                          : Colors.black26,
+                      boxShape: NeumorphicBoxShape.roundRect(
+                        BorderRadius.circular(25.0),
+                      )),
                   child: Container(
                       height: height / 2,
                       width: width / 1.2,
@@ -618,18 +622,7 @@ class _NewQRScreenState extends State<NewQRScreen> {
                 ),
                 //SizedBox(height: height / 11),
                 Container(
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Colors.cyanAccent,
-                          Color.fromARGB(255, 0, 225, 255),
-                          Color.fromARGB(255, 1, 123, 139),
-                        ]),
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  child: ElevatedButton(
+                  child: NeumorphicButton(
                     onPressed: () async {
                       String username = LocalDataService.getLocalUsername();
                       DatabaseService databaseService =
@@ -703,31 +696,18 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                     fontWeight: FontWeight.bold,
                                     fontSize: 20),
                               ),
-                              // SizedBox(width: 15),
-                              // ClipRRect(
-                              //   borderRadius: BorderRadius.all(Radius.circular(10)),
-                              //   child: Image.asset(
-                              //     "assets/images/SoshiLogos/soshi_icon.png",
-                              //   ),
-                              // ),
-                              // SizedBox(width: 10),
-                              // Icon(
-                              //   Icons.chevron_right,
-                              //   size: 30,
-                              // )
                             ],
                           ),
                         )),
-                    style: ElevatedButton.styleFrom(
-                      primary: Theme.of(context).brightness == Brightness.light
-                          ? Colors.white
-                          : Colors.black,
-                      elevation: 10,
-                      padding: const EdgeInsets.all(15.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                    ),
+                    style: NeumorphicStyle(
+                        depth: 2,
+                        shape: NeumorphicShape.convex,
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? Colors.white
+                            : Colors.black26,
+                        boxShape: NeumorphicBoxShape.roundRect(
+                          BorderRadius.circular(20.0),
+                        )),
                   ),
                 )
               ]),

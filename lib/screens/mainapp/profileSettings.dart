@@ -434,7 +434,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                   //   height: height / 30,
                   // ),
 
-                  SignOutButton()
+        
 
                   // Center(
                   //   child: ProfilePic(
