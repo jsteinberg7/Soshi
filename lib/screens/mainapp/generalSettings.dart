@@ -127,7 +127,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                       isVerified == null || isVerified == false
                           ? Container()
                           : Image.asset(
-                              "assets/images/Verified.png",
+                              "assets/images/misc/verified.png",
                               scale: width / 20,
                             )
                     ],

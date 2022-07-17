@@ -1,29 +1,19 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:custom_navigation_bar/custom_navigation_bar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'package:soshi/constants/utilities.dart';
-import 'package:soshi/screens/mainapp/boltScreen.dart';
 import 'package:soshi/screens/mainapp/friendsGroupsWrapper.dart';
 import 'package:soshi/screens/mainapp/profile.dart';
 import 'package:soshi/screens/mainapp/qrCode.dart';
-import 'package:soshi/services/analytics.dart';
 import 'package:soshi/services/database.dart';
 import 'package:soshi/services/dynamicLinks.dart';
 import 'package:soshi/services/localData.dart';
-import 'package:soshi/services/url.dart';
-import 'package:vibration/vibration.dart';
 import '../../constants/popups.dart';
 import '../../constants/widgets.dart';
-import 'friendScreen.dart';
-import 'package:soshi/constants/constants.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
 import 'generalSettings.dart';
@@ -172,6 +162,7 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
         controller: pageController,
         onPageChanged: (index) {
           setState(() {
+            print("changinc current screen information");
             currScreen = index;
           });
         },
@@ -203,104 +194,47 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
       //   //other params
       // ),
 
-      bottomNavigationBar: SafeArea(
-        child: SizedBox(
-          height: Utilities.getHeight(context) / 11,
-          child: CustomNavigationBar(
-            scaleCurve: Curves.fastLinearToSlowEaseIn,
-            scaleFactor: .05,
-            elevation: 5,
-            iconSize: Utilities.getWidth(context) / 10,
-            selectedColor: Theme.of(context).brightness == Brightness.light
-                ? Colors.black
-                : Colors.white,
-            strokeColor: Colors.transparent,
-            unSelectedColor: Colors.grey,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            items: [
-              CustomNavigationBarItem(
-                icon: Icon(
-                  AntDesign.qrcode,
-                  size: 35,
-                ),
+      bottomNavigationBar: SizedBox(
+        height: Utilities.getHeight(context) / 11,
+        child: CustomNavigationBar(
+          scaleCurve: Curves.fastLinearToSlowEaseIn,
+          scaleFactor: .05,
+          elevation: 5,
+          iconSize: Utilities.getWidth(context) / 10,
+          selectedColor: Theme.of(context).brightness == Brightness.light
+              ? Colors.black
+              : Colors.white,
+          strokeColor: Colors.transparent,
+          unSelectedColor: Colors.grey,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          items: [
+            CustomNavigationBarItem(
+              icon: Icon(
+                AntDesign.qrcode,
+                size: 35,
               ),
-              CustomNavigationBarItem(
-                  icon: ProfilePic(
-                      radius: 20,
-                      url: LocalDataService.getLocalProfilePictureURL())),
-              CustomNavigationBarItem(
-                icon: Icon(
-                  AntDesign.contacts,
-                  size: 35,
-                ),
+            ),
+            CustomNavigationBarItem(
+                icon: ProfilePic(
+                    radius: 25,
+                    url: LocalDataService.getLocalProfilePictureURL())),
+            CustomNavigationBarItem(
+              icon: Icon(
+                AntDesign.contacts,
+                size: 35,
               ),
-            ],
-            currentIndex: currScreen,
-            onTap: (index) {
-              setState(() {
-                HapticFeedback.lightImpact();
-                pageController.jumpToPage(index);
-                currScreen = index;
-              });
-            },
-          ),
+            ),
+          ],
+          currentIndex: currScreen,
+          onTap: (index) {
+            setState(() {
+              HapticFeedback.lightImpact();
+              pageController.jumpToPage(index);
+              currScreen = index;
+            });
+          },
         ),
       ),
     );
   }
 }
-
-// class SriCustomBottomNavBar extends StatefulWidget {
-//   @override
-//   _SriCustomBottomNavBarState createState() => _SriCustomBottomNavBarState();
-// }
-
-// class _SriCustomBottomNavBarState extends State<SriCustomBottomNavBar> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return BottomAppBar(
-//       //bottom navigation bar on scaffold
-//       color: Colors.redAccent,
-//       shape: CircularNotchedRectangle(), //shape of notch
-//       notchMargin: 5, //notche margin between floating button and bottom appbar
-//       child: Row(
-//         //children inside bottom appbar
-//         mainAxisSize: MainAxisSize.max,
-//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//         children: <Widget>[
-//           IconButton(
-//             icon: Icon(AntDesign.qrcode),
-//             onPressed: () {},
-//           ),
-//           IconButton(
-//             icon: Icon(
-//               Feather.award,
-//               color: Colors.white,
-//             ),
-//             onPressed: () {},
-//           ),
-//           IconButton(
-//             icon: Icon(
-//               FeatherIcons.users,
-//               color: Colors.white,
-//             ),
-//             onPressed: () {},
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-// class FixedCameraIconNav extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return FloatingActionButton(
-//       //Floating action button on Scaffold
-//       onPressed: () {
-//         //code to execute on button press
-//       },
-//       child: Icon(Icons.send), //icon inside button
-//     );
-//   }
-// }

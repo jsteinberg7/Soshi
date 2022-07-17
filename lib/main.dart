@@ -1,6 +1,3 @@
-import 'dart:async';
-//import 'dart:html';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
@@ -8,10 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:soshi/services/analytics.dart';
-import 'package:soshi/services/database.dart';
-import 'package:soshi/services/dynamicLinks.dart';
 import 'package:soshi/services/localData.dart';
-import 'constants/themes.dart';
 import 'services/auth.dart';
 import 'package:soshi/screens/wrapper.dart';
 import 'package:flutter/services.dart';
@@ -38,6 +32,8 @@ class _MyAppState extends State<MyApp> {
             debugShowCheckedModeBanner: false,
             themeMode: ThemeMode.system,
             theme: ThemeData(
+              fontFamily: "Montserrat",
+
               pageTransitionsTheme: PageTransitionsTheme(builders: {
                 TargetPlatform.android: CupertinoPageTransitionsBuilder(),
                 TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
@@ -69,7 +65,6 @@ class _MyAppState extends State<MyApp> {
               cardColor: Colors.white,
               dividerColor: Color(0x1f6D42CE),
               focusColor: Color(0x1aF5E0C3),
-
               textSelectionTheme:
                   TextSelectionThemeData(cursorColor: Colors.cyan[500]),
               elevatedButtonTheme: ElevatedButtonThemeData(style: ButtonStyle(
@@ -81,6 +76,7 @@ class _MyAppState extends State<MyApp> {
               // , buttonTheme: ButtonTheme()
             ),
             darkTheme: ThemeData(
+                fontFamily: "Montserrat",
                 pageTransitionsTheme: PageTransitionsTheme(builders: {
                   TargetPlatform.android: CupertinoPageTransitionsBuilder(),
                   TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),

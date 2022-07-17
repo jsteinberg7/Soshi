@@ -129,7 +129,7 @@ import 'friendScreen.dart';
 //                                       isVerified == null || isVerified == false
 //                                           ? Container()
 //                                           : Image.asset(
-//                                               "assets/images/Verified.png",
+//                                               "assets/images/misc/verified.png",
 //                                               scale: width / 20,
 //                                             )
 //                                     ],
@@ -486,6 +486,8 @@ class _NewQRScreenState extends State<NewQRScreen> {
                 Neumorphic(
                   style: NeumorphicStyle(
                       depth: 2,
+                      //shadowDarkColor: Colors.cyan,
+                      //shadowLightColor: Colors.cyan,
                       shape: NeumorphicShape.concave,
                       color: Theme.of(context).brightness == Brightness.light
                           ? Colors.white
@@ -700,6 +702,8 @@ class _NewQRScreenState extends State<NewQRScreen> {
                           ),
                         )),
                     style: NeumorphicStyle(
+                        shadowLightColor: Colors.cyan,
+                        //shadowDarkColor: Colors.cyan,
                         depth: 2,
                         shape: NeumorphicShape.convex,
                         color: Theme.of(context).brightness == Brightness.light

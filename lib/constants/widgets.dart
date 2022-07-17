@@ -11,12 +11,11 @@ import 'package:share/share.dart';
 import 'package:soshi/constants/popups.dart';
 import 'package:soshi/constants/utilities.dart';
 import 'package:soshi/services/analytics.dart';
+import 'package:soshi/screens/login/newIntroFlowSri.dart';
 import 'package:soshi/services/auth.dart';
 import 'package:soshi/services/database.dart';
 import 'package:soshi/services/localData.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:soshi/services/nfc.dart';
 import 'package:soshi/services/url.dart';
 import '../screens/login/loading.dart';
@@ -131,6 +130,75 @@ class RectangularProfilePic extends StatelessWidget {
                   ))),
       ),
     );
+  }
+}
+
+class SignOutButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Constants.makeRedShadowButton("Sign out", Icons.logout_outlined, () {
+      AuthService authService = new AuthService();
+
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(40.0))),
+              // backgroundColor: Colors.blueGrey[900],
+              title: Text(
+                "Sign Out",
+                style: TextStyle(
+                  // color: Colors.cyan[600],
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              content: Text(
+                ("Are you sure you want to sign out?"),
+                style: TextStyle(
+                  fontSize: 20,
+                  // color: Colors.cyan[700],
+                  // fontWeight: FontWeight.bold
+                ),
+              ),
+              actions: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    TextButton(
+                      child: Text(
+                        'No',
+                        style: TextStyle(fontSize: 20, color: Colors.red),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                    TextButton(
+                      child: Text(
+                        'Yes',
+                        style: TextStyle(fontSize: 20, color: Colors.blue),
+                      ),
+                      onPressed: () async {
+                        await authService.signOut();
+                        Navigator.pop(context); // close popup
+                        // Navigator.pop(context); // pop to login screen
+                        //        Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(builder: (context) => MainApp()),
+                        // );
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: ((context) => NewIntroFlow())));
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            );
+          });
+    });
   }
 }
 

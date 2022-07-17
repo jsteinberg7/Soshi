@@ -1,11 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:soshi/screens/login/onboarding.dart';
-import 'package:soshi/services/localData.dart';
+import 'package:soshi/screens/login/newIntroFlowSri.dart';
+import 'package:soshi/screens/mainapp/mainapp.dart';
 import 'login/authenticate.dart';
-import 'login/loginscreen.dart';
-import 'mainapp/mainapp.dart';
 
 /*
 Wrapper is the top widget of the app and shows either:
@@ -34,14 +32,14 @@ class _WrapperState extends State<Wrapper> {
     final user = Provider.of<User>(context); // get current user
 
     if (user != null) {
-      // precacheImage(NetworkImage(LocalDataService.getLocalProfilePictureURL()),
-      //     context); // precache profile picture
+      //[!] Uncomment this to test onboarding screen with hot-reload
       return MainApp();
+      // return NewIntroFlow();
     } else {
       if (!widget.firstLaunch) {
         return Authenticate(refresh: refreshApp);
       } else {
-        return Onboarding(refresh: refreshApp,);
+        return NewIntroFlow();
       }
     }
   }

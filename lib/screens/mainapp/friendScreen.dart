@@ -1,27 +1,15 @@
 import 'dart:convert';
-import 'dart:math';
 
-import 'package:alphabet_list_scroll_view/alphabet_list_scroll_view.dart';
 import 'package:async/async.dart';
-import 'package:azlistview/azlistview.dart';
-import 'package:device_display_brightness/device_display_brightness.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
 import 'package:soshi/constants/utilities.dart';
 import 'package:soshi/constants/widgets.dart';
 import 'package:soshi/constants/popups.dart';
-import 'package:soshi/screens/login/loading.dart';
 import 'package:soshi/screens/mainapp/viewProfilePage.dart';
-import 'package:soshi/services/analytics.dart';
 import 'package:soshi/services/database.dart';
-import 'package:soshi/constants/constants.dart';
 import 'package:soshi/services/localData.dart';
-import 'package:vibration/vibration.dart';
-import 'package:soshi/constants/widgets.dart';
 
 /* Stores information for individual friend/connection */
 class Friend {
@@ -251,6 +239,298 @@ class _FriendScreenState extends State<FriendScreen>
   //     return [formattedRecentFriends, formattedFriendsList];
   //   });
   // }
+
+  /* Creates a single "friend tile" (an element of the ListView of Friends) */
+  Widget createFriendTile(
+      {BuildContext context, Friend friend, DatabaseService databaseService}) {
+    double width = Utilities.getWidth(context);
+    double height = Utilities.getHeight(context);
+
+    return Container(
+      height: height / 9,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(10.0, 5, 30, 5),
+        child: ListTile(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return ViewProfilePage(
+                    friendSoshiUsername: friend.soshiUsername,
+                    refreshScreen: refreshFriendScreen,
+                    friend: friend); // show friend popup when tile is pressed
+              }));
+            },
+            leading: Hero(
+                tag: "Profile Pic",
+                child: ProfilePic(radius: width / 14, url: friend.photoURL)),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(friend.fullName,
+                    maxLines: 1,
+                    softWrap: false,
+                    overflow: TextOverflow.fade,
+                    style: TextStyle(
+                        // color: Colors.cyan[600],
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18)),
+                SizedBox(height: height / 170),
+                Row(
+                  // mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "@" + friend.soshiUsername,
+                      style: TextStyle(
+                          color: Colors.grey[500],
+                          fontSize: 14,
+                          fontStyle: FontStyle.italic),
+                    ),
+                    SizedBox(
+                      width: width / 150,
+                    ),
+                    friend.isVerified == null || friend.isVerified == false
+                        ? Container()
+                        : Image.asset(
+                            "assets/images/misc/verified.png",
+                            scale: width / 20,
+                          )
+                  ],
+                ),
+              ],
+            ),
+            tileColor: Theme.of(context).brightness == Brightness.light
+                ? Colors.grey[50]
+                : Colors.grey[850],
+
+            // selectedTileColor: Constants.buttonColorLight,
+            contentPadding: EdgeInsets.all(10.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+              // side: BorderSide(width: .5)
+            ),
+            trailing: IconButton(
+                icon: Icon(
+                  Icons.more_horiz_rounded,
+                  size: 30,
+                  // color: Colors.white,
+                ),
+                // color: Colors.black,
+                onPressed: () {
+                  showModalBottomSheet(
+                      isScrollControlled: true,
+                      constraints: BoxConstraints(
+                        minWidth: width / 1.1,
+                        maxWidth: width / 1.1,
+                      ),
+                      backgroundColor: Colors.transparent,
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Container(
+                          height: height / 2.8,
+                          color: Colors.transparent,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              // mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      ListTile(
+                                        title: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.fromLTRB(
+                                                  0,
+                                                  height / 160,
+                                                  0,
+                                                  height / 100),
+                                              child: ProfilePic(
+                                                radius: width / 10,
+                                                url: friend.photoURL,
+                                              ),
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  "@" + friend.soshiUsername,
+                                                  style: TextStyle(
+                                                      color: Colors.grey[500],
+                                                      fontSize: width / 25,
+                                                      fontStyle:
+                                                          FontStyle.italic),
+                                                ),
+                                                SizedBox(
+                                                  width: width / 130,
+                                                ),
+                                                friend.isVerified == null ||
+                                                        friend.isVerified ==
+                                                            false
+                                                    ? Container()
+                                                    : Image.asset(
+                                                        "assets/images/misc/verified.png",
+                                                        scale: width / 21,
+                                                      )
+                                              ],
+                                            ),
+                                            Divider(
+                                              color: Theme.of(context)
+                                                          .brightness ==
+                                                      Brightness.light
+                                                  ? Colors.grey[500]
+                                                  : Colors.grey,
+                                            ),
+                                            ListTile(
+                                              title: Center(
+                                                child: Text(
+                                                  "Remove friend",
+                                                  style: TextStyle(
+                                                      fontSize: width / 20,
+                                                      color: Colors.red),
+                                                ),
+                                              ),
+                                              onTap: () async {
+                                                List<String> newFriendsList =
+                                                    await LocalDataService
+                                                        .removeFriend(
+                                                            friendsoshiUsername:
+                                                                friend
+                                                                    .soshiUsername); // update local list
+                                                databaseService
+                                                    .overwriteFriendsList(
+                                                        newFriendsList); // update cloud list
+
+                                                refreshFriendScreen();
+                                                Navigator.pop(context);
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: ListTile(
+                                    title: Center(
+                                      child: Text(
+                                        "Cancel",
+                                        style: TextStyle(
+                                            fontSize: width / 20,
+                                            color: Colors.blue),
+                                      ),
+                                    ),
+                                    onTap: () => Navigator.pop(context),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                      });
+                }
+                // showDialog(
+                //     context: context,
+                //     builder: (BuildContext context) {
+                //       return AlertDialog(
+                //         shape: RoundedRectangleBorder(
+                //             borderRadius:
+                //                 BorderRadius.all(Radius.circular(40.0))),
+                //         // backgroundColor: Colors.blueGrey[900],
+                //         title: Text(
+                //           "Remove Friend",
+                //           style: TextStyle(
+                //               // color: Colors.cyan[600],
+                //               fontWeight: FontWeight.bold),
+                //         ),
+                //         content: Text(
+                //           ("Are you sure you want to remove " +
+                //               friend.fullName +
+                //               " as a friend?"),
+                //           style: TextStyle(
+                //             fontSize: 20,
+                //             // color: Colors.cyan[700],
+                //             //fontWeight: FontWeight.bold
+                //           ),
+                //         ),
+                //         actions: <Widget>[
+                //           Row(
+                //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                //             children: <Widget>[
+                //               TextButton(
+                //                 child: Text(
+                //                   'Cancel',
+                //                   style: TextStyle(
+                //                       fontSize: 20, color: Colors.blue),
+                //                 ),
+                //                 onPressed: () {
+                //                   Navigator.pop(context);
+                //                 },
+                //               ),
+                //               TextButton(
+                //                 child: Text(
+                //                   'Remove',
+                //                   style: TextStyle(
+                //                       fontSize: 20, color: Colors.red),
+                //                 ),
+                // onPressed: () async {
+                //   List<String> newFriendsList =
+                //       await LocalDataService.removeFriend(
+                //           friendsoshiUsername: friend
+                //               .soshiUsername); // update local list
+                //   databaseService.overwriteFriendsList(
+                //       newFriendsList); // update cloud list
+
+                //   refreshFriendScreen();
+                //   Navigator.pop(context);
+                // },
+                //               ),
+                //             ],
+                //           ),
+                //         ],
+                //       );
+                //     });
+                //},
+                // shape: RoundedRectangleBorder(
+                //     borderRadius: BorderRadius.circular(60.0)),
+
+                //itemBuilder: (BuildContext context) {
+                //return [
+                // PopupMenuItem(
+                //     child: IconButton(
+                //         icon: Icon(Icons.delete),
+                //         color: Colors.white,
+                //         iconSize: 40,
+                //         splashColor: Colors.cyan,
+                //         // style: ElevatedButton.styleFrom(
+                //         //     primary: Colors.cyan[800]),
+                //         // Text(
+                //         //   "Remove Friend",
+                //         //   style: TextStyle(color: Colors.black),
+                //         // ),
+                //         onPressed: () async {
+                //           Navigator.pop(context);
+                //           await LocalDataService.removeFriend(
+                //               friendsoshiUsername: friend.soshiUsername);
+                //           databaseService.removeFriend(friendsoshiUsername: friend.soshiUsername);
+                //           refreshFriendScreen();
+                //         }))
+                //   ];
+                // }
+                )),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -997,7 +1277,7 @@ class FriendTile extends StatelessWidget {
                   friend.isVerified == null || friend.isVerified == false
                       ? Container()
                       : Image.asset(
-                          "assets/images/Verified.png",
+                          "assets/images/misc/verified.png",
                           scale: width / 20,
                         )
                 ],
@@ -1076,7 +1356,7 @@ class FriendTile extends StatelessWidget {
                                                       friend.isVerified == false
                                                   ? Container()
                                                   : Image.asset(
-                                                      "assets/images/Verified.png",
+                                                      "assets/images/misc/verified.png",
                                                       scale: width / 21,
                                                     )
                                             ],

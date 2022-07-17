@@ -163,6 +163,7 @@ class _SMTileState extends State<SMTile> {
     return Neumorphic(
       style: NeumorphicStyle(
           depth: 1,
+          shadowLightColor: Colors.cyan[300],
           color: Theme.of(context).cardColor,
           shape: NeumorphicShape.concave,
           boxShape: NeumorphicBoxShape.roundRect(
@@ -409,7 +410,7 @@ class Profile extends StatefulWidget {
 class ProfileState extends State<Profile> {
   refreshScreen() {
     setState(() {
-      profilePlatforms = LocalDataService.getLocalProfilePlatforms();
+      //profilePlatforms = LocalDataService.getLocalProfilePlatforms();
     });
   }
 
@@ -497,6 +498,72 @@ class ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
+    bool soshiPointsInjection =
+        LocalDataService.getInjectionFlag("Soshi Points");
+
+    if (soshiPointsInjection == false || soshiPointsInjection == null) {
+      LocalDataService.updateInjectionFlag("Soshi Points", true);
+      databaseService.updateInjectionSwitch(
+          soshiUsername, "Soshi Points", true);
+
+      int numFriends = LocalDataService.getFriendsListCount();
+      LocalDataService.updateSoshiPoints(numFriends * 8);
+
+      databaseService.updateSoshiPoints(soshiUsername, (numFriends * 8));
+    }
+
+    bool profilePicFlagInjection =
+        LocalDataService.getInjectionFlag("Profile Pic");
+    print(profilePicFlagInjection.toString());
+
+    if (profilePicFlagInjection == false || profilePicFlagInjection == null) {
+      if (LocalDataService.getLocalProfilePictureURL() != "null") {
+        LocalDataService.updateInjectionFlag("Profile Pic", true);
+        databaseService.updateInjectionSwitch(
+            soshiUsername, "Profile Pic", true);
+        LocalDataService.updateSoshiPoints(10);
+
+        databaseService.updateSoshiPoints(soshiUsername, 10);
+      } else {
+        LocalDataService.updateInjectionFlag("Profile Pic", false);
+        databaseService.updateInjectionSwitch(
+            soshiUsername, "Profile Pic", false);
+      }
+    }
+
+    bool bioFlagInjection = LocalDataService.getInjectionFlag("Bio");
+    if (bioFlagInjection == false || bioFlagInjection == null) {
+      if (LocalDataService.getBio() != "" ||
+          LocalDataService.getBio() == null) {
+        LocalDataService.updateInjectionFlag("Bio", true);
+        databaseService.updateInjectionSwitch(soshiUsername, "Bio", true);
+        LocalDataService.updateSoshiPoints(10);
+
+        databaseService.updateSoshiPoints(soshiUsername, 10);
+      } else {
+        LocalDataService.updateInjectionFlag("Bio", false);
+        databaseService.updateInjectionSwitch(soshiUsername, "Bio", false);
+      }
+    }
+
+    // For now, just injecting passions flag field
+    LocalDataService.updateInjectionFlag("Passions", false);
+    databaseService.updateInjectionSwitch(soshiUsername, "Passions", false);
+
+    //       bool passionsFlagInjection =
+    //     LocalDataService.getLocalStateForInjectionFlag("Passions");
+    // if (passionsFlagInjection == false || passionsFlagInjection == null) {
+    //   if (LocalDataService.getPassions() != empty) {
+    //     LocalDataService.updateSwitchForInjection(
+    //         injection: "Passions", state: true);
+    //     databaseService.updateInjectionSwitch(injection: "Passions", state: true);
+    //   } else {
+    //     LocalDataService.updateSwitchForInjection(
+    //         injection: "Passions", state: false);
+    //     databaseService.updateInjectionSwitch(injection: "Passions", state: false);
+    //   }
+    // }
+
     double height = Utilities.getHeight(context);
     double width = Utilities.getWidth(context);
 
@@ -532,7 +599,7 @@ class ProfileState extends State<Profile> {
     profileBioController.text = LocalDataService.getBio();
     return SingleChildScrollView(
       child: Container(
-          height: height * 2, 
+          height: height * 2,
           child: Stack(
             children: [
               Positioned(
@@ -643,21 +710,22 @@ class ProfileState extends State<Profile> {
                                             ),
                                             Row(
                                               children: [
-                                                Text(
-                                                    "@" +
-                                                        LocalDataService
-                                                            .getLocalUsername(),
+                                                Text("@" + soshiUsername,
                                                     style: TextStyle(
-                                                        letterSpacing: 1.5)),
+                                                        color: Colors.grey,
+                                                        fontSize: width / 22,
+                                                        fontStyle:
+                                                            FontStyle.italic,
+                                                        letterSpacing: 1.2)),
                                                 SizedBox(
-                                                  width: 2,
+                                                  width: 3,
                                                 ),
                                                 isVerified == null ||
                                                         isVerified == false
                                                     ? Container()
                                                     : Image.asset(
-                                                        "assets/images/Verified.png",
-                                                        scale: width / 20,
+                                                        "assets/images/misc/verified.png",
+                                                        scale: width / 22,
                                                       )
                                               ],
                                             )
@@ -843,8 +911,8 @@ class ProfileState extends State<Profile> {
                             topLeft: Radius.circular(20.0),
                             topRight: Radius.circular(20.0))),
                     child: Padding(
-                      padding:
-                          EdgeInsets.fromLTRB(width / 35, 0, width / 35, 0),
+                      padding: EdgeInsets.fromLTRB(
+                          width / 35, height / 150, width / 35, 0),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [

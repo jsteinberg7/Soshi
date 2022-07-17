@@ -183,6 +183,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                             children: [
                                               Text("@" + friendSoshiUsername,
                                                   style: TextStyle(
+                                                      color: Colors.grey,
                                                       fontSize: width / 22,
                                                       fontStyle:
                                                           FontStyle.italic,
@@ -194,7 +195,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                                       isVerified == false
                                                   ? Container()
                                                   : Image.asset(
-                                                      "assets/images/Verified.png",
+                                                      "assets/images/misc/verified.png",
                                                       scale: width / 22,
                                                     )
                                             ],

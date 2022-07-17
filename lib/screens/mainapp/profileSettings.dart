@@ -201,7 +201,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                             child: Icon(
                               Icons.edit,
                               size: 50,
-                              color: Colors.white,
+                              color: Colors.black,
                             ),
                           ),
                         )
@@ -328,7 +328,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                                 : Padding(
                                     padding: EdgeInsets.only(left: width / 100),
                                     child: Image.asset(
-                                      "assets/images/Verified.png",
+                                      "assets/images/misc/verified.png",
                                       scale: width / 22,
                                     ),
                                   )
@@ -433,8 +433,6 @@ class ProfileSettingsState extends State<ProfileSettings> {
                   // SizedBox(
                   //   height: height / 30,
                   // ),
-
-        
 
                   // Center(
                   //   child: ProfilePic(
@@ -561,7 +559,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                   //             isVerified == null || isVerified == false
                   //                 ? Container()
                   //                 : Image.asset(
-                  //                     "assets/images/Verified.png",
+                  //                     "assets/images/misc/verified.png",
                   //                     scale: width / 30,
                   //                   )
                   //           ]),
