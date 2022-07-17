@@ -68,7 +68,8 @@ class FriendScreen extends StatefulWidget {
   _FriendScreenState createState() => _FriendScreenState();
 }
 
-class _FriendScreenState extends State<FriendScreen> with TickerProviderStateMixin {
+class _FriendScreenState extends State<FriendScreen>
+    with TickerProviderStateMixin {
   List recentFriendsList;
   List friendsList;
   List<Friend> formattedFriendsList = [];
@@ -88,7 +89,8 @@ class _FriendScreenState extends State<FriendScreen> with TickerProviderStateMix
     friendsList = LocalDataService.getLocalFriendsList();
     friendsListJson = LocalDataService.getLocalFriendsList();
     showKeyboard = isSearching = false;
-    hideRecents = (friendsList.length < 5); // hide recents if 5 or fewer total friends
+    hideRecents =
+        (friendsList.length < 5); // hide recents if 5 or fewer total friends
 
     searchController = TextEditingController();
     searchController.addListener(() {
@@ -133,7 +135,8 @@ class _FriendScreenState extends State<FriendScreen> with TickerProviderStateMix
       if (currName.contains(searchText) || currUsername.contains(searchText)) {
         // check for match
         filteredFriendsList.add(friend); // if match, add to new filtered list
-        filteredFriendsListNames.add(friend.fullName.toLowerCase()); // add name to names list
+        filteredFriendsListNames
+            .add(friend.fullName.toLowerCase()); // add name to names list
       }
     }
     setState(() {
@@ -171,7 +174,8 @@ class _FriendScreenState extends State<FriendScreen> with TickerProviderStateMix
       }
     }
 
-    formattedFriendsListOriginal.addAll(formattedFriendsList); // store copy of original
+    formattedFriendsListOriginal
+        .addAll(formattedFriendsList); // store copy of original
   }
 
   /* Generates a list of Friend(s) for the user by fetching data for each soshiUsername in their friends list */
@@ -237,7 +241,8 @@ class _FriendScreenState extends State<FriendScreen> with TickerProviderStateMix
   // }
 
   /* Creates a single "friend tile" (an element of the ListView of Friends) */
-  Widget createFriendTile({BuildContext context, Friend friend, DatabaseService databaseService}) {
+  Widget createFriendTile(
+      {BuildContext context, Friend friend, DatabaseService databaseService}) {
     double width = Utilities.getWidth(context);
     double height = Utilities.getHeight(context);
 
@@ -255,7 +260,8 @@ class _FriendScreenState extends State<FriendScreen> with TickerProviderStateMix
               }));
             },
             leading: Hero(
-                tag: "Profile Pic", child: ProfilePic(radius: width / 14, url: friend.photoURL)),
+                tag: "Profile Pic",
+                child: ProfilePic(radius: width / 14, url: friend.photoURL)),
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -274,7 +280,9 @@ class _FriendScreenState extends State<FriendScreen> with TickerProviderStateMix
                     Text(
                       "@" + friend.soshiUsername,
                       style: TextStyle(
-                          color: Colors.grey[500], fontSize: 14, fontStyle: FontStyle.italic),
+                          color: Colors.grey[500],
+                          fontSize: 14,
+                          fontStyle: FontStyle.italic),
                     ),
                     SizedBox(
                       width: width / 150,
@@ -333,31 +341,38 @@ class _FriendScreenState extends State<FriendScreen> with TickerProviderStateMix
                                     children: [
                                       ListTile(
                                         title: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
                                           children: [
                                             Padding(
                                               padding: EdgeInsets.fromLTRB(
-                                                  0, height / 160, 0, height / 100),
+                                                  0,
+                                                  height / 160,
+                                                  0,
+                                                  height / 100),
                                               child: ProfilePic(
                                                 radius: width / 10,
                                                 url: friend.photoURL,
                                               ),
                                             ),
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
                                               children: [
                                                 Text(
                                                   "@" + friend.soshiUsername,
                                                   style: TextStyle(
                                                       color: Colors.grey[500],
                                                       fontSize: width / 25,
-                                                      fontStyle: FontStyle.italic),
+                                                      fontStyle:
+                                                          FontStyle.italic),
                                                 ),
                                                 SizedBox(
                                                   width: width / 130,
                                                 ),
                                                 friend.isVerified == null ||
-                                                        friend.isVerified == false
+                                                        friend.isVerified ==
+                                                            false
                                                     ? Container()
                                                     : Image.asset(
                                                         "assets/images/Verified.png",
@@ -366,26 +381,31 @@ class _FriendScreenState extends State<FriendScreen> with TickerProviderStateMix
                                               ],
                                             ),
                                             Divider(
-                                              color:
-                                                  Theme.of(context).brightness == Brightness.light
-                                                      ? Colors.grey[500]
-                                                      : Colors.grey,
+                                              color: Theme.of(context)
+                                                          .brightness ==
+                                                      Brightness.light
+                                                  ? Colors.grey[500]
+                                                  : Colors.grey,
                                             ),
                                             ListTile(
                                               title: Center(
                                                 child: Text(
                                                   "Remove friend",
                                                   style: TextStyle(
-                                                      fontSize: width / 20, color: Colors.red),
+                                                      fontSize: width / 20,
+                                                      color: Colors.red),
                                                 ),
                                               ),
                                               onTap: () async {
                                                 List<String> newFriendsList =
-                                                    await LocalDataService.removeFriend(
-                                                        friendsoshiUsername: friend
-                                                            .soshiUsername); // update local list
-                                                databaseService.overwriteFriendsList(
-                                                    newFriendsList); // update cloud list
+                                                    await LocalDataService
+                                                        .removeFriend(
+                                                            friendsoshiUsername:
+                                                                friend
+                                                                    .soshiUsername); // update local list
+                                                databaseService
+                                                    .overwriteFriendsList(
+                                                        newFriendsList); // update cloud list
 
                                                 refreshFriendScreen();
                                                 Navigator.pop(context);
@@ -405,7 +425,9 @@ class _FriendScreenState extends State<FriendScreen> with TickerProviderStateMix
                                     title: Center(
                                       child: Text(
                                         "Cancel",
-                                        style: TextStyle(fontSize: width / 20, color: Colors.blue),
+                                        style: TextStyle(
+                                            fontSize: width / 20,
+                                            color: Colors.blue),
                                       ),
                                     ),
                                     onTap: () => Navigator.pop(context),
@@ -516,9 +538,11 @@ class _FriendScreenState extends State<FriendScreen> with TickerProviderStateMix
     double height = Utilities.getHeight(context);
     double width = Utilities.getWidth(context);
     DatabaseService databaseService = new DatabaseService(
-        currSoshiUsernameIn: LocalDataService.getLocalUsernameForPlatform("Soshi"));
+        currSoshiUsernameIn:
+            LocalDataService.getLocalUsernameForPlatform("Soshi"));
 
-    String soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
+    String soshiUsername =
+        LocalDataService.getLocalUsernameForPlatform("Soshi");
 
     // These are used to reset the flag (testing cases)
     // LocalDataService.updateInjectionFlag("Soshi Points", false);
@@ -533,11 +557,13 @@ class _FriendScreenState extends State<FriendScreen> with TickerProviderStateMix
 
     // databaseService.updateInjectionSwitch(soshiUsername, "Bio", false);
 
-    bool soshiPointsInjection = LocalDataService.getInjectionFlag("Soshi Points");
+    bool soshiPointsInjection =
+        LocalDataService.getInjectionFlag("Soshi Points");
 
     if (soshiPointsInjection == false || soshiPointsInjection == null) {
       LocalDataService.updateInjectionFlag("Soshi Points", true);
-      databaseService.updateInjectionSwitch(soshiUsername, "Soshi Points", true);
+      databaseService.updateInjectionSwitch(
+          soshiUsername, "Soshi Points", true);
 
       int numFriends = LocalDataService.getFriendsListCount();
       LocalDataService.updateSoshiPoints(numFriends * 8);
@@ -545,25 +571,29 @@ class _FriendScreenState extends State<FriendScreen> with TickerProviderStateMix
       databaseService.updateSoshiPoints(soshiUsername, (numFriends * 8));
     }
 
-    bool profilePicFlagInjection = LocalDataService.getInjectionFlag("Profile Pic");
+    bool profilePicFlagInjection =
+        LocalDataService.getInjectionFlag("Profile Pic");
     print(profilePicFlagInjection.toString());
 
     if (profilePicFlagInjection == false || profilePicFlagInjection == null) {
       if (LocalDataService.getLocalProfilePictureURL() != "null") {
         LocalDataService.updateInjectionFlag("Profile Pic", true);
-        databaseService.updateInjectionSwitch(soshiUsername, "Profile Pic", true);
+        databaseService.updateInjectionSwitch(
+            soshiUsername, "Profile Pic", true);
         LocalDataService.updateSoshiPoints(10);
 
         databaseService.updateSoshiPoints(soshiUsername, 10);
       } else {
         LocalDataService.updateInjectionFlag("Profile Pic", false);
-        databaseService.updateInjectionSwitch(soshiUsername, "Profile Pic", false);
+        databaseService.updateInjectionSwitch(
+            soshiUsername, "Profile Pic", false);
       }
     }
 
     bool bioFlagInjection = LocalDataService.getInjectionFlag("Bio");
     if (bioFlagInjection == false || bioFlagInjection == null) {
-      if (LocalDataService.getBio() != "" || LocalDataService.getBio() == null) {
+      if (LocalDataService.getBio() != "" ||
+          LocalDataService.getBio() == null) {
         LocalDataService.updateInjectionFlag("Bio", true);
         databaseService.updateInjectionSwitch(soshiUsername, "Bio", true);
         LocalDataService.updateSoshiPoints(10);
@@ -629,42 +659,41 @@ class _FriendScreenState extends State<FriendScreen> with TickerProviderStateMix
           child: Container(
             child: formattedFriendsList.isNotEmpty || isSearching
                 ? Container(
-                    height: height,
+                    // height: height,
                     width: width,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(25.0, 0, 25.0, 10.0),
+                          padding:
+                              const EdgeInsets.fromLTRB(25.0, 0, 25.0, 10.0),
                           child: Container(
                             height: height / 18,
-                            child: Neumorphic(
-                              style: NeumorphicStyle(
-                                  color: Colors.white, depth: 1, shape: NeumorphicShape.concave),
-                              child: CupertinoSearchTextField(
-                                controller: searchController,
-                                placeholder: "Search ${formattedFriendsList.length} " +
-                                    ((formattedFriendsList.length > 1)
-                                        ? "friends..."
-                                        : "friend..."),
-                                // placeholder: 'Search \"${[
-                                //   "Jason S",
-                                //   "Yuvan",
-                                //   "Kallie",
-                                //   "Michelle",
-                                //   "Sid Jagtap",
-                                //   "Sri"
-                                // ][Random().nextInt(5)]}\"',
+                            child: CupertinoSearchTextField(
+                              controller: searchController,
+                              placeholder:
+                                  "Search ${formattedFriendsList.length} " +
+                                      ((formattedFriendsList.length > 1)
+                                          ? "friends..."
+                                          : "friend..."),
+                              // placeholder: 'Search \"${[
+                              //   "Jason S",
+                              //   "Yuvan",
+                              //   "Kallie",
+                              //   "Michelle",
+                              //   "Sid Jagtap",
+                              //   "Sri"
+                              // ][Random().nextInt(5)]}\"',
 
-                                //     ),
-                              ),
+                              //     ),
                             ),
                           ),
                         ),
                         Visibility(
                           visible: formattedRecentsList.isNotEmpty,
                           child: Padding(
-                              padding: const EdgeInsets.fromLTRB(16.0, 10.0, 16.0, 0.0),
+                              padding: const EdgeInsets.fromLTRB(
+                                  16.0, 10.0, 16.0, 0.0),
                               child: Text("Recently Added")),
                         ),
                         Visibility(
@@ -675,18 +704,24 @@ class _FriendScreenState extends State<FriendScreen> with TickerProviderStateMix
                               child: SizedBox(
                                 width: width / 1.2,
                                 child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    children: List.generate(formattedRecentsList.length, (i) {
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: List.generate(
+                                        formattedRecentsList.length, (i) {
                                       return Padding(
                                         padding: EdgeInsets.all(width / 30),
                                         child: GestureDetector(
                                           onTap: () {
                                             Navigator.push(context,
-                                                MaterialPageRoute(builder: (context) {
-                                              Friend friend = formattedRecentsList[i];
+                                                MaterialPageRoute(
+                                                    builder: (context) {
+                                              Friend friend =
+                                                  formattedRecentsList[i];
                                               return ViewProfilePage(
-                                                  friendSoshiUsername: friend.soshiUsername,
-                                                  refreshScreen: refreshFriendScreen,
+                                                  friendSoshiUsername:
+                                                      friend.soshiUsername,
+                                                  refreshScreen:
+                                                      refreshFriendScreen,
                                                   friend:
                                                       friend); // show friend popup when tile is pressed
                                             }));
@@ -694,16 +729,22 @@ class _FriendScreenState extends State<FriendScreen> with TickerProviderStateMix
                                           child: Column(
                                             children: [
                                               Padding(
-                                                padding: const EdgeInsets.all(4.0),
+                                                padding:
+                                                    const EdgeInsets.all(4.0),
                                                 child: ProfilePic(
                                                     radius: width / 14,
-                                                    url: formattedRecentsList[i].photoURL),
+                                                    url: formattedRecentsList[i]
+                                                        .photoURL),
                                               ),
-                                              Text("@" + formattedRecentsList[i].soshiUsername,
+                                              Text(
+                                                  "@" +
+                                                      formattedRecentsList[i]
+                                                          .soshiUsername,
                                                   style: TextStyle(
                                                       color: Colors.grey[500],
                                                       fontSize: 14,
-                                                      fontStyle: FontStyle.italic))
+                                                      fontStyle:
+                                                          FontStyle.italic))
                                             ],
                                           ),
                                         ),
@@ -714,7 +755,8 @@ class _FriendScreenState extends State<FriendScreen> with TickerProviderStateMix
                           ),
                         ),
                         Padding(
-                            padding: const EdgeInsets.fromLTRB(16.0, 3.0, 16.0, 0.0),
+                            padding:
+                                const EdgeInsets.fromLTRB(16.0, 3.0, 16.0, 0.0),
                             child: Text("A-Z")),
                         Column(
                           children: List.generate(
@@ -723,8 +765,8 @@ class _FriendScreenState extends State<FriendScreen> with TickerProviderStateMix
                               if (i >= formattedFriendsList.length) {
                                 return Container();
                               }
-                              return createFriendTile(
-                                  context: context,
+                              return FriendTile(
+                                  refreshFriendScreen: refreshFriendScreen,
                                   friend: formattedFriendsList[i],
                                   databaseService: databaseService);
                             },
@@ -854,7 +896,8 @@ class SoshiPointsButton extends StatelessWidget {
               width: width / 18,
               child: Flex(direction: Axis.horizontal, children: <Widget>[
                 Expanded(
-                  child: Icon(CupertinoIcons.bolt, size: width / 20, color: Colors.grey),
+                  child: Icon(CupertinoIcons.bolt,
+                      size: width / 20, color: Colors.grey),
                 ),
               ]),
             ),
@@ -1179,3 +1222,201 @@ class SoshiPointsButton extends StatelessWidget {
 //     );
 //   }
 // }
+class FriendTile extends StatelessWidget {
+  Friend friend;
+  DatabaseService databaseService;
+  Function refreshFriendScreen;
+
+  FriendTile({this.friend, this.databaseService, this.refreshFriendScreen});
+  /* Creates a single "friend tile" (an element of the ListView of Friends) */
+
+  Widget build(BuildContext context) {
+    double width = Utilities.getWidth(context);
+    double height = Utilities.getHeight(context);
+
+    return Container(
+      height: height / 10,
+      child: ListTile(
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return ViewProfilePage(
+                  friendSoshiUsername: friend.soshiUsername,
+                  refreshScreen: refreshFriendScreen,
+                  friend: friend); // show friend popup when tile is pressed
+            }));
+          },
+          leading: Hero(
+              tag: friend.soshiUsername,
+              child: ProfilePic(radius: width / 14, url: friend.photoURL)),
+          title: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(friend.fullName,
+                  maxLines: 1,
+                  softWrap: false,
+                  overflow: TextOverflow.fade,
+                  style: TextStyle(
+                      // color: Colors.cyan[600],
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18)),
+              SizedBox(height: height / 170),
+              Row(
+                // mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "@" + friend.soshiUsername,
+                    style: TextStyle(
+                        color: Colors.grey[500],
+                        fontSize: 14,
+                        fontStyle: FontStyle.italic),
+                  ),
+                  SizedBox(
+                    width: width / 150,
+                  ),
+                  friend.isVerified == null || friend.isVerified == false
+                      ? Container()
+                      : Image.asset(
+                          "assets/images/Verified.png",
+                          scale: width / 20,
+                        )
+                ],
+              ),
+            ],
+          ),
+          tileColor: Colors.transparent,
+
+          // selectedTileColor: Constants.buttonColorLight,
+
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+            // side: BorderSide(width: .5)
+          ),
+          trailing: IconButton(
+              icon: Icon(
+                Icons.more_horiz_rounded,
+                size: 30,
+                // color: Colors.white,
+              ),
+              // color: Colors.black,
+              onPressed: () {
+                showModalBottomSheet(
+                    isScrollControlled: true,
+                    constraints: BoxConstraints(
+                      minWidth: width / 1.1,
+                      maxWidth: width / 1.1,
+                    ),
+                    backgroundColor: Colors.transparent,
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Container(
+                        height: height / 2.8,
+                        color: Colors.transparent,
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            // mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    ListTile(
+                                      title: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.fromLTRB(0,
+                                                height / 160, 0, height / 100),
+                                            child: ProfilePic(
+                                              radius: width / 10,
+                                              url: friend.photoURL,
+                                            ),
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                "@" + friend.soshiUsername,
+                                                style: TextStyle(
+                                                    color: Colors.grey[500],
+                                                    fontSize: width / 25,
+                                                    fontStyle:
+                                                        FontStyle.italic),
+                                              ),
+                                              SizedBox(
+                                                width: width / 130,
+                                              ),
+                                              friend.isVerified == null ||
+                                                      friend.isVerified == false
+                                                  ? Container()
+                                                  : Image.asset(
+                                                      "assets/images/Verified.png",
+                                                      scale: width / 21,
+                                                    )
+                                            ],
+                                          ),
+                                          Divider(
+                                            color:
+                                                Theme.of(context).brightness ==
+                                                        Brightness.light
+                                                    ? Colors.grey[500]
+                                                    : Colors.grey,
+                                          ),
+                                          ListTile(
+                                            title: Center(
+                                              child: Text(
+                                                "Remove friend",
+                                                style: TextStyle(
+                                                    fontSize: width / 20,
+                                                    color: Colors.red),
+                                              ),
+                                            ),
+                                            onTap: () async {
+                                              List<String> newFriendsList =
+                                                  await LocalDataService.removeFriend(
+                                                      friendsoshiUsername: friend
+                                                          .soshiUsername); // update local list
+                                              databaseService.overwriteFriendsList(
+                                                  newFriendsList); // update cloud list
+
+                                              refreshFriendScreen();
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: ListTile(
+                                  title: Center(
+                                    child: Text(
+                                      "Cancel",
+                                      style: TextStyle(
+                                          fontSize: width / 20,
+                                          color: Colors.blue),
+                                    ),
+                                  ),
+                                  onTap: () => Navigator.pop(context),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+                    });
+              })),
+    );
+  }
+}

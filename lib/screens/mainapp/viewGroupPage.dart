@@ -446,7 +446,7 @@ class _ViewGroupPageState extends State<ViewGroupPage> {
                               ),
                               alignment: Alignment.topCenter,
                             ),
-                            Divider(),
+                            
                             Align(
                               child: Padding(
                                 padding: const EdgeInsets.fromLTRB(

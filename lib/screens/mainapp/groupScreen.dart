@@ -21,7 +21,22 @@ import 'friendScreen.dart';
 class GroupScreenComingSoon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(child: Center(child: Text("Coming Soon!")));
+    return SingleChildScrollView(
+      child: Container(
+          child: Center(
+              child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(25.0),
+            child: Text("Coming Soon!"),
+          ),
+          SizedBox(
+              width: Utilities.getWidth(context) / 1.3,
+              child: Image.asset("assets/images/misc/groups_preview.png"))
+        ],
+      ))),
+    );
   }
 }
 

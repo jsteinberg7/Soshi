@@ -71,7 +71,7 @@ class _EditHandlesState extends State<EditHandles> {
 
   @override
   Widget build(BuildContext context) {
-    soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
+    soshiUsername = LocalDataService.getLocalUsername();
     databaseService = new DatabaseService();
     double height = Utilities.getHeight(context);
     double width = Utilities.getWidth(context);

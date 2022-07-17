@@ -201,7 +201,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                             child: Icon(
                               Icons.edit,
                               size: 50,
-                              color: Colors.white,
+                              color: Colors.black,
                             ),
                           ),
                         )
@@ -433,8 +433,6 @@ class ProfileSettingsState extends State<ProfileSettings> {
                   // SizedBox(
                   //   height: height / 30,
                   // ),
-
-                  SignOutButton()
 
                   // Center(
                   //   child: ProfilePic(

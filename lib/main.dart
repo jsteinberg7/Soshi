@@ -24,12 +24,13 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle(statusBarColor: Colors.transparent));
     return StreamProvider<User>.value(
         value: AuthService().user,
         child: MaterialApp(
             debugShowCheckedModeBanner: false,
-            themeMode: ThemeMode.light,
+            themeMode: ThemeMode.system,
             theme: ThemeData(
               pageTransitionsTheme: PageTransitionsTheme(builders: {
                 TargetPlatform.android: CupertinoPageTransitionsBuilder(),
@@ -62,10 +63,11 @@ class _MyAppState extends State<MyApp> {
               cardColor: Colors.white,
               dividerColor: Color(0x1f6D42CE),
               focusColor: Color(0x1aF5E0C3),
-              textSelectionTheme: TextSelectionThemeData(cursorColor: Colors.cyan[500]),
+              textSelectionTheme:
+                  TextSelectionThemeData(cursorColor: Colors.cyan[500]),
               elevatedButtonTheme: ElevatedButtonThemeData(style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+                backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
                   return Colors.white;
                 }),
               )),
@@ -107,15 +109,16 @@ class _MyAppState extends State<MyApp> {
                   //   return TextStyle(color: Colors.white);
                   // }
 
-                  backgroundColor:
-                      MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                      (Set<MaterialState> states) {
                     return Colors.grey[900];
                   }),
-                  elevation: MaterialStateProperty.resolveWith<double>((Set<MaterialState> states) {
+                  elevation: MaterialStateProperty.resolveWith<double>(
+                      (Set<MaterialState> states) {
                     return 5.0;
                   }),
-                  foregroundColor:
-                      MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+                  foregroundColor: MaterialStateProperty.resolveWith<Color>(
+                      (Set<MaterialState> states) {
                     return Colors.white;
                   }),
                 )),
@@ -164,7 +167,8 @@ void main() async {
           !LocalDataService.getLocalFriendsList().isEmpty) {
         // check if friendsList has been reformatted
         // if null, reformated friends list
-        await LocalDataService.reformatFriendsList(); // should only ever run once per user
+        await LocalDataService
+            .reformatFriendsList(); // should only ever run once per user
       }
     }
   }
@@ -178,7 +182,8 @@ void main() async {
   // print("Deep Link Params: " + linkData.utmParameters.toString())
   runApp(MyApp(linkData));
 
-  await LocalDataService.preferences.setBool("hasLaunched", true); // user has launched app
+  await LocalDataService.preferences
+      .setBool("hasLaunched", true); // user has launched app
 
   if (linkData != null) {
     print(linkData.utmParameters);

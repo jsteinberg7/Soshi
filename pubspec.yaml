@@ -82,6 +82,7 @@ dependencies:
   glassmorphism: ^3.0.0
   top_modal_sheet: ^1.0.0+1
   auto_size_text: ^3.0.0
+  in_app_review: ^2.0.4
   
   
 

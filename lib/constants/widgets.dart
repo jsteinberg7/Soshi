@@ -969,7 +969,12 @@ class PassionBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
-            border: Border.all(), borderRadius: BorderRadius.circular(20.0)),
+            border: Border.all(
+              color: Theme.of(context).brightness == Brightness.light
+                  ? Colors.black
+                  : Colors.white,
+            ),
+            borderRadius: BorderRadius.circular(20.0)),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(passion),

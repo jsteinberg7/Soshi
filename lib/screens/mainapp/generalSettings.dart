@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:provider/provider.dart';
 import 'package:soshi/constants/constants.dart';
 import 'package:soshi/screens/mainapp/profile.dart';
@@ -189,12 +190,9 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                   GestureDetector(
                     behavior: HitTestBehavior.opaque,
                     onTap: () {
-                      if (Platform.isIOS) {
-                        URL.launchURL(
-                            "https://apps.apple.com/us/app/soshi/id1595515750?see-all=reviews");
-                      } else {
-                        // go to google play Soshi rating link
-                      }
+                      final InAppReview inAppReview = InAppReview.instance;
+
+                      inAppReview.openStoreListing(appStoreId: '1595515750');
                     },
                     child: Padding(
                       padding:
