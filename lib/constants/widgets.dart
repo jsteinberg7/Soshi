@@ -180,7 +180,9 @@ class SignOutButton extends StatelessWidget {
                         //   MaterialPageRoute(builder: (context) => MainApp()),
                         // );
                         Navigator.pushReplacement(
-                            context, MaterialPageRoute(builder: ((context) => NewIntroFlow())));
+                            context,
+                            MaterialPageRoute(
+                                builder: ((context) => NewIntroFlow())));
                       },
                     ),
                   ],

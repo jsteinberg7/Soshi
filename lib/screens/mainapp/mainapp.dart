@@ -28,10 +28,14 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     screens = [
-      FractionallySizedBox(widthFactor: 1 / pageController.viewportFraction, child: NewQRScreen()),
-      FractionallySizedBox(widthFactor: 1 / pageController.viewportFraction, child: Profile()),
       FractionallySizedBox(
-          widthFactor: 1 / pageController.viewportFraction, child: FriendsGroupsWrapper()),
+          widthFactor: 1 / pageController.viewportFraction,
+          child: NewQRScreen()),
+      FractionallySizedBox(
+          widthFactor: 1 / pageController.viewportFraction, child: Profile()),
+      FractionallySizedBox(
+          widthFactor: 1 / pageController.viewportFraction,
+          child: FriendsGroupsWrapper()),
     ]; // list of screens (change through indexing)
     WidgetsBinding.instance.addObserver(this);
     print(">> calling from init");
@@ -42,7 +46,8 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
 
     NfcManager.instance.startSession(
       onDiscovered: (NfcTag tag) async {
-        var link = AsciiCodec().decode(Ndef.from(tag).cachedMessage.records.last.payload);
+        var link = AsciiCodec()
+            .decode(Ndef.from(tag).cachedMessage.records.last.payload);
         String username = link.toString().split("/").last;
 
         try {
@@ -71,12 +76,15 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
 
   int currScreen = 2;
 
-  PageController pageController = new PageController(initialPage: 1, viewportFraction: 1.1);
+  PageController pageController =
+      new PageController(initialPage: 1, viewportFraction: 1.1);
 
   @override
   Widget build(BuildContext context) {
-    String soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
-    DatabaseService databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
+    String soshiUsername =
+        LocalDataService.getLocalUsernameForPlatform("Soshi");
+    DatabaseService databaseService =
+        new DatabaseService(currSoshiUsernameIn: soshiUsername);
 
     return Scaffold(
       // floatingActionButton: FloatingActionButton(
@@ -182,44 +190,45 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
       //   //other params
       // ),
 
-      bottomNavigationBar: SafeArea(
-        child: SizedBox(
-          height: Utilities.getHeight(context) / 11,
-          child: CustomNavigationBar(
-            scaleCurve: Curves.fastLinearToSlowEaseIn,
-            scaleFactor: .05,
-            elevation: 5,
-            iconSize: Utilities.getWidth(context) / 10,
-            selectedColor:
-                Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
-            strokeColor: Colors.transparent,
-            unSelectedColor: Colors.grey,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            items: [
-              CustomNavigationBarItem(
-                icon: Icon(
-                  AntDesign.qrcode,
-                  size: 35,
-                ),
+      bottomNavigationBar: SizedBox(
+        height: Utilities.getHeight(context) / 11,
+        child: CustomNavigationBar(
+          scaleCurve: Curves.fastLinearToSlowEaseIn,
+          scaleFactor: .05,
+          elevation: 5,
+          iconSize: Utilities.getWidth(context) / 10,
+          selectedColor: Theme.of(context).brightness == Brightness.light
+              ? Colors.black
+              : Colors.white,
+          strokeColor: Colors.transparent,
+          unSelectedColor: Colors.grey,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          items: [
+            CustomNavigationBarItem(
+              icon: Icon(
+                AntDesign.qrcode,
+                size: 35,
               ),
-              CustomNavigationBarItem(
-                  icon: ProfilePic(radius: 20, url: LocalDataService.getLocalProfilePictureURL())),
-              CustomNavigationBarItem(
-                icon: Icon(
-                  AntDesign.contacts,
-                  size: 35,
-                ),
+            ),
+            CustomNavigationBarItem(
+                icon: ProfilePic(
+                    radius: 25,
+                    url: LocalDataService.getLocalProfilePictureURL())),
+            CustomNavigationBarItem(
+              icon: Icon(
+                AntDesign.contacts,
+                size: 35,
               ),
-            ],
-            currentIndex: currScreen,
-            onTap: (index) {
-              setState(() {
-                HapticFeedback.lightImpact();
-                pageController.jumpToPage(index);
-                currScreen = index;
-              });
-            },
-          ),
+            ),
+          ],
+          currentIndex: currScreen,
+          onTap: (index) {
+            setState(() {
+              HapticFeedback.lightImpact();
+              pageController.jumpToPage(index);
+              currScreen = index;
+            });
+          },
         ),
       ),
     );
