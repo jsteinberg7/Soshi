@@ -4,7 +4,6 @@ import 'dart:convert';
   Used SharedPreferences package for local data storage
   ** Note: Local Data must be initialized upon login and wiped upon logout
 */
-import 'package:device_display_brightness/device_display_brightness.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../screens/mainapp/friendScreen.dart';
@@ -17,8 +16,7 @@ abstract class LocalDataService {
   // adds initial preferences upon login
   // ** must be run after user file is created in database
 
-  static Future<void> initializeSharedPreferences(
-      {String currSoshiUsername}) async {
+  static Future<void> initializeSharedPreferences({String currSoshiUsername}) async {
     // initialize SharedPreferences instance
     preferences = await SharedPreferences.getInstance();
 
@@ -28,11 +26,9 @@ abstract class LocalDataService {
     // await preferences.setDouble("screen_brightness", brightness);
 
     // initialize DatabaseService to fetch updated values
-    DatabaseService databaseService =
-        new DatabaseService(currSoshiUsernameIn: currSoshiUsername);
+    DatabaseService databaseService = new DatabaseService(currSoshiUsernameIn: currSoshiUsername);
 
-    DatabaseService databaseServiceV =
-        new DatabaseService(currSoshiUsernameIn: "#Verified Users");
+    DatabaseService databaseServiceV = new DatabaseService(currSoshiUsernameIn: "#Verified Users");
 
     Map userData = await databaseService.getUserFile(currSoshiUsername);
 
@@ -51,32 +47,28 @@ abstract class LocalDataService {
     }
 
     // store first and last name map (used to set both first and last name)
-    Map<String, dynamic> fullName =
-        await databaseService.getFullNameMap(userData);
+    Map<String, dynamic> fullName = await databaseService.getFullNameMap(userData);
     // set first name
     await preferences.setString("First Name", fullName["First"]);
     // set last name
     await preferences.setString("Last Name", fullName["Last"]);
     // set username
-    String username = await databaseService.getUsernameForPlatform(
-        userData: userData, platform: "Soshi");
+    String username =
+        await databaseService.getUsernameForPlatform(userData: userData, platform: "Soshi");
     await preferences.setString("Username", username);
 
-    List<dynamic> verifiedUsersDynamic =
-        await databaseServiceV.getVerifiedUsers();
+    List<dynamic> verifiedUsersDynamic = await databaseServiceV.getVerifiedUsers();
     List<String> verifiedUsersString = [];
     for (dynamic verifiedUser in verifiedUsersDynamic) {
       verifiedUsersString.add(verifiedUser);
     }
     await preferences.setStringList("Verified Users", verifiedUsersString);
 
-    await preferences.setBool(
-        "Verified Status", verifiedUsersString.contains(currSoshiUsername));
+    await preferences.setBool("Verified Status", verifiedUsersString.contains(currSoshiUsername));
 
     try {
       // set profile picture URL
-      await preferences.setString(
-          "Photo URL", await databaseService.getPhotoURL(userData));
+      await preferences.setString("Photo URL", await databaseService.getPhotoURL(userData));
     } catch (e) {
       await preferences.setString("Photo URL", "null");
     }
@@ -85,19 +77,16 @@ abstract class LocalDataService {
     // we must convert (encode) the map to a json and store it as a String
     // to access Platform Usernames, we must use json.decode to convert to Map
 
-    Map<String, dynamic> userProfileNames =
-        await databaseService.getUserProfileNames(userData);
+    Map<String, dynamic> userProfileNames = await databaseService.getUserProfileNames(userData);
 
-    await preferences.setString(
-        "Platform Usernames", jsonEncode(userProfileNames));
+    await preferences.setString("Platform Usernames", jsonEncode(userProfileNames));
 
     // set social media platform switch states
-    await preferences.setString("Platform Switches",
-        jsonEncode(await databaseService.getUserSwitches(userData)));
+    await preferences.setString(
+        "Platform Switches", jsonEncode(await databaseService.getUserSwitches(userData)));
 
     // set choose platforms list to match cloud copy
-    List<dynamic> choosePlatformsDynamic =
-        await databaseService.getChoosePlatforms();
+    List<dynamic> choosePlatformsDynamic = await databaseService.getChoosePlatforms();
 
     List<String> choosePlatforms = [];
     for (dynamic platform in choosePlatformsDynamic) {
@@ -107,8 +96,7 @@ abstract class LocalDataService {
     await preferences.setStringList("Choose Platforms", choosePlatforms);
 
     // set profile platforms list to match cloud copy
-    List<dynamic> profilePlatformsDynamic =
-        await databaseService.getProfilePlatforms();
+    List<dynamic> profilePlatformsDynamic = await databaseService.getProfilePlatforms();
     List<String> profilePlatforms = [];
     for (dynamic platform in profilePlatformsDynamic) {
       profilePlatforms.add(platform);
@@ -118,22 +106,18 @@ abstract class LocalDataService {
     print("Local from ISP" + profilePlatforms.toString());
     await preferences.setStringList("Profile Platforms", profilePlatforms);
 
-    await preferences.setBool(
-        "Two Way Sharing", true); // two way sharing defaults to "on"
+    await preferences.setBool("Two Way Sharing", true); // two way sharing defaults to "on"
 
     // set friends list
-    List<dynamic> friendsListDynamic =
-        await databaseService.getFriends(currSoshiUsername);
+    List<dynamic> friendsListDynamic = await databaseService.getFriends(currSoshiUsername);
     List<String> friendsListString = [];
     for (dynamic friend in friendsListDynamic) {
       friendsListString.add(friend.toString());
     }
     await preferences.setStringList("Sorted Friends List", friendsListString);
     await preferences.setStringList("Recently Added Friends", []);
-    await preferences.setBool(
-        "Friends List Reformatted",
-        userData["Friends List Reformatted"] ??
-            false); // get friends list reformatted from db
+    await preferences.setBool("Friends List Reformatted",
+        userData["Friends List Reformatted"] ?? false); // get friends list reformatted from db
     if (preferences.getBool("Friends List Reformatted") == null ||
         preferences.getBool("Friends List Reformatted") == false) {
       // reformat friends list if necessary
@@ -144,8 +128,7 @@ abstract class LocalDataService {
   // clear all local data stored in SharedPreferences
   static Future<void> wipeSharedPreferences() async {
     await preferences.clear();
-    await preferences.setBool(
-        "firstSwitchTap", true); // ensure first_launch is preserved
+    await preferences.setBool("firstSwitchTap", true); // ensure first_launch is preserved
   }
 
   /*
@@ -203,19 +186,17 @@ abstract class LocalDataService {
     List<String> namesList = [];
     for (String json in friendsList) {
       String currName = jsonDecode(json)["n"];
-      currName = currName[0].toUpperCase() +
-          currName.substring(1); // capitalize first letter
+      currName = currName[0].toUpperCase() + currName.substring(1); // capitalize first letter
       namesList.add(currName);
     }
     return namesList;
   }
 
   static Future<void> reformatFriendsList() async {
-    DatabaseService databaseService = new DatabaseService(
-        currSoshiUsernameIn: LocalDataService.getLocalUsername());
-    List<String> friendsList =
-        preferences.getStringList("Sorted Friends List") ??
-            preferences.getStringList("Friends List");
+    DatabaseService databaseService =
+        new DatabaseService(currSoshiUsernameIn: LocalDataService.getLocalUsername());
+    List<String> friendsList = preferences.getStringList("Sorted Friends List") ??
+        preferences.getStringList("Friends List");
     // replace each username w/ json
     for (int i = 0; i < friendsList.length; i++) {
       String username = friendsList[i];
@@ -232,12 +213,10 @@ abstract class LocalDataService {
     });
     await preferences.setStringList(
         "Sorted Friends List", friendsList); // inject sorted friends list
-    await preferences
-        .setStringList("Recently Added Friends", []); // inject recently added
+    await preferences.setStringList("Recently Added Friends", []); // inject recently added
     await databaseService.overwriteFriendsList(friendsList);
     await preferences.setBool("Friends List Reformatted", true);
-    databaseService
-        .setFriendsListReformatted(true); // update in db to save if logged out
+    databaseService.setFriendsListReformatted(true); // update in db to save if logged out
   }
 
   static int getFriendsListCount() {
@@ -251,8 +230,7 @@ abstract class LocalDataService {
   }
 
   static Map<String, dynamic> getUserProfileNames() {
-    return jsonDecode(preferences.getString("Platform Usernames"))
-        as Map<String, dynamic>;
+    return jsonDecode(preferences.getString("Platform Usernames")) as Map<String, dynamic>;
   }
 
   static Map<String, dynamic> getUserSwitches() {
@@ -280,8 +258,7 @@ abstract class LocalDataService {
   }
 
   static bool isFriendAdded(String friendUsername) {
-    List<String> friendsList =
-        preferences.getStringList("Sorted Friends List") ?? [];
+    List<String> friendsList = preferences.getStringList("Sorted Friends List") ?? [];
     for (int i = 0; i < friendsList.length; i++) {
       Map<String, dynamic> friend = jsonDecode(friendsList[i]);
       if (friend["u"] == friendUsername) {
@@ -320,6 +297,21 @@ abstract class LocalDataService {
     return preferences.getStringList("Recently Added Friends") ?? [];
   }
 
+  static List<Map> getPassionsListLocal() {
+    // return preferences.getStringList("passions") ?? [];
+    try {
+      return jsonDecode(preferences.getString("passions"));
+    } catch (e) {
+      return [];
+    }
+  }
+
+  static resetPassionsList() async {
+    // return preferences.getStringList("passions") ?? [];
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await preferences.setString("passions", jsonEncode([]));
+  }
+
   /*
   Setters
   */
@@ -336,13 +328,11 @@ abstract class LocalDataService {
     await preferences.setBool("Two Way Sharing", state);
   }
 
-  static Future<void> updateInjectionFlag(
-      String injectionName, bool state) async {
+  static Future<void> updateInjectionFlag(String injectionName, bool state) async {
     await preferences.setBool("INJECTION $injectionName Flag", state);
   }
 
-  static Future<void> updateUsernameForPlatform(
-      {String platform, String username}) async {
+  static Future<void> updateUsernameForPlatform({String platform, String username}) async {
     // get copy of current usernames
     String oldUsernamesJSON = preferences.getString("Platform Usernames");
     // decode usernames json into map
@@ -351,12 +341,10 @@ abstract class LocalDataService {
     usernamesDecoded.update(platform, (value) => username,
         ifAbsent: () => usernamesDecoded.addAll({platform: username}));
     // update preferences to reflect new map
-    await preferences.setString(
-        "Platform Usernames", jsonEncode(usernamesDecoded));
+    await preferences.setString("Platform Usernames", jsonEncode(usernamesDecoded));
   }
 
-  static Future<void> updateSwitchForPlatform(
-      {String platform, bool state}) async {
+  static Future<void> updateSwitchForPlatform({String platform, bool state}) async {
     // get copy of current usernames
     String oldSwitchesJSON = preferences.getString("Platform Switches");
     // decode usernames json into map
@@ -366,8 +354,7 @@ abstract class LocalDataService {
         ifAbsent: () => switchesDecoded.addAll({platform: state}));
 
     // update preferences to reflect new map
-    await preferences.setString(
-        "Platform Switches", jsonEncode(switchesDecoded));
+    await preferences.setString("Platform Switches", jsonEncode(switchesDecoded));
   }
 
   static Future<List<String>> addFriend({@required Friend friend}) async {
@@ -377,16 +364,15 @@ abstract class LocalDataService {
     print(">> adding friend");
 
     await addToRecentFriends(friend: friend);
-    List<String> sortedFriendsList =
-        await getLocalFriendsList(); // assume list is already sorted
+    List<String> sortedFriendsList = await getLocalFriendsList(); // assume list is already sorted
 
     String json = friend.toJson();
     if (sortedFriendsList.isEmpty) {
       // if empty, simply add to beginning
       sortedFriendsList.add(json);
     } else {
-      friend.fullName = friend.fullName
-          .toUpperCase(); // convert fullName to uppercase for comparison
+      friend.fullName =
+          friend.fullName.toUpperCase(); // convert fullName to uppercase for comparison
       // find correct place for new friend
       int insertIndex = sortedFriendsList.length;
       print(">> in else");
@@ -421,15 +407,13 @@ abstract class LocalDataService {
       recentlyAddedFriends.insert(0, json);
       recentlyAddedFriends.removeAt(5);
     }
-    await preferences.setStringList(
-        "Recently Added Friends", recentlyAddedFriends);
+    await preferences.setStringList("Recently Added Friends", recentlyAddedFriends);
   }
 
   // remove friend with username
   // return updated friends list
   static Future<List<String>> removeFriend({String friendsoshiUsername}) async {
-    List<String> friendsList =
-        preferences.getStringList("Sorted Friends List") ?? [];
+    List<String> friendsList = preferences.getStringList("Sorted Friends List") ?? [];
     for (int i = 0; i < friendsList.length; i++) {
       Map friend = jsonDecode(friendsList[i]);
       if (friend["u"] == friendsoshiUsername) {
@@ -471,8 +455,7 @@ abstract class LocalDataService {
   }
 
   // removes Queue from choosePlatforms **goes hand-in-hand with addPlatformsToProfile
-  static Future<void> removeFromChoosePlatforms(
-      List<String> platformsQueue) async {
+  static Future<void> removeFromChoosePlatforms(List<String> platformsQueue) async {
     // getting the local list of choose platforms
     List<String> choosePlatforms = getLocalChoosePlatforms();
     // iterated through the queue and removes the "platforms" in the local list 1 by 1
@@ -517,5 +500,11 @@ abstract class LocalDataService {
   static Future<void> updateSoshiPoints(int addedPoints) async {
     int newSoshiPoints = LocalDataService.getSoshiPoints() + addedPoints;
     await preferences.setInt("Soshi Points", newSoshiPoints);
+  }
+
+// SRI : update local preferences with string list of passions (must also sync with firebase)
+  static Future<void> updatePassions(List overridePassionList) async {
+    await preferences.setString("passions", jsonEncode(overridePassionList));
+    // await preferences.setStringList("passions", overridePassionList);
   }
 }
