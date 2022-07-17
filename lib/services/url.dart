@@ -26,7 +26,6 @@ abstract class URL {
         username = username.replaceFirst('@', '');
       }
     }
-
     if (platform == "Instagram") {
       return "https://www.instagram.com/" + username + "/?hl=en";
     } else if (platform == "Snapchat") {
@@ -64,6 +63,9 @@ abstract class URL {
     } else if (platform == "Email") {
       return 'mailto:' + username;
     } else if (platform == "Spotify") {
+      if (username.contains("https://open.spotify.com")) {
+        return username;
+      }
       return "https://open.spotify.com/user/" + username;
     } else if (platform == "Venmo") {
       if (Platform.isIOS) {
@@ -85,6 +87,20 @@ abstract class URL {
           ? youtubeLink = username
           : youtubeLink = "https://www.youtube.com/channel/" + username;
       return youtubeLink;
+    } else if (platform == "AppleMusic") {
+      String appleMusicLink;
+      username.contains("https://")
+          ? appleMusicLink = username
+          : appleMusicLink = "https://music.apple.com/us/artist/" + username;
+      return appleMusicLink;
+    } else if (platform == "Vsco") {
+      return "https://vsco.co/" + username;
+    } else if (platform == "CashApp") {
+      return "https://cash.app/\$" + username;
+    } else if (platform == "BeReal") {
+      return "https://bere.al/" + username;
+    } else if (platform == "OnlyFans") {
+      return "https://onlyfans.com/" + username;
     }
   }
 }

@@ -20,6 +20,10 @@
 		</dict>
 		<dict/>
 	</array>
+	<key>FirebaseDynamicLinksCustomDomains</key>
+	<array>
+		<string>https://soshi.app/user</string>
+	</array>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>instagram</string>
@@ -34,9 +38,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>FirebaseDynamicLinksCustomDomains</key>
-		<array>
-   			<string>https://soshi.app/user</string>
-		</array>
 </dict>
 </plist>

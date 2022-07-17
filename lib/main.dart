@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,13 +24,18 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
     return StreamProvider<User>.value(
         value: AuthService().user,
         child: MaterialApp(
             debugShowCheckedModeBanner: false,
-            themeMode: ThemeMode.dark,
+            themeMode: ThemeMode.light,
             theme: ThemeData(
-              brightness: Brightness.light,
+              pageTransitionsTheme: PageTransitionsTheme(builders: {
+                TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+                TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+              }),
+              brightness: Theme.of(context).brightness,
               backgroundColor: Colors.grey[50],
               primarySwatch: MaterialColor(
                 0xFFE7E7E7,
@@ -68,6 +72,10 @@ class _MyAppState extends State<MyApp> {
               // , buttonTheme: ButtonTheme()
             ),
             darkTheme: ThemeData(
+                pageTransitionsTheme: PageTransitionsTheme(builders: {
+                  TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+                  TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+                }),
                 brightness: Brightness.dark,
                 backgroundColor: Colors.grey[850],
                 primarySwatch: MaterialColor(
@@ -89,7 +97,7 @@ class _MyAppState extends State<MyApp> {
                 primaryColorLight: Color(0x1a311F06),
                 primaryColorDark: Colors.black,
                 canvasColor: Colors.grey[850],
-                scaffoldBackgroundColor: Colors.grey[250],
+                scaffoldBackgroundColor: Colors.grey[900],
                 bottomAppBarColor: Color(0xff6D42CE),
                 cardColor: Colors.grey[900],
                 dividerColor: Color(0x1f6D42CE),

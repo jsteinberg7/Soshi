@@ -193,15 +193,21 @@ abstract class Constants {
     "Contact",
     "Personal",
     "Youtube",
-    "Cryptowallet"
+    "Vsco",
+    "AppleMusic",
+    "CashApp",
+    // "Soundcloud"
+    "BeReal",
+    "OnlyFans",
+    //"Cryptowallet"
   ];
   /* Instructions for injecting/adding new platforms: 
     1. Add to addedPlatforms (above)
     2. Add Logo and Writing Logo to assets
     3. Add handler to URL service
-    4. Add hinttext and indicator params to Popups.editUsernamePopup
-    5. Update createUserFile() in database.dart to include new platform (for accounts created in the future)
-    6. Add specific parameters to platform popup in SMCard (profile.dart)
+    4. Add hinttext and indicator params to editHandles.dart --> SMCard
+    5. Update createUserFile() in database.dart to include new platform (for new accounts)
+    6. (OLD) Add specific parameters to platform popup in SMCard (profile.dart)
     7. Reset vscode
     8. Repeat steps 2 (Logo only) and 3 for web
   */

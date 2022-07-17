@@ -1,6 +1,10 @@
 //import 'dart:html';
-import 'dart:typed_data';
+// ignore_for_file: must_be_immutable
 
+import 'dart:typed_data';
+import 'dart:ui';
+
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:device_display_brightness/device_display_brightness.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,6 +13,8 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:glassmorphism/glassmorphism.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,6 +22,9 @@ import 'package:soshi/constants/constants.dart';
 import 'package:soshi/constants/popups.dart';
 import 'package:soshi/constants/utilities.dart';
 import 'package:soshi/constants/widgets.dart';
+import 'package:soshi/screens/mainapp/editHandles.dart';
+import 'package:soshi/screens/mainapp/friendScreen.dart';
+import 'package:soshi/screens/mainapp/generalSettings.dart';
 import 'package:soshi/services/analytics.dart';
 import 'package:soshi/services/contacts.dart';
 import 'package:soshi/services/database.dart';
@@ -34,19 +43,21 @@ import 'dart:async';
 /*
 A social media card used in the profile (one card per platform)
 */
-class SMCard extends StatefulWidget {
+
+class SMTile extends StatefulWidget {
   String platformName, soshiUsername;
   Function() refreshScreen; // callback used to refresh screen
-  SMCard({String platformName, String soshiUsername, Function refreshScreen}) {
+  SMTile({String platformName, String soshiUsername, Function refreshScreen}) {
     this.platformName = platformName;
     this.soshiUsername = soshiUsername;
     this.refreshScreen = refreshScreen;
   }
+
   @override
-  _SMCardState createState() => _SMCardState();
+  _SMTileState createState() => _SMTileState();
 }
 
-class _SMCardState extends State<SMCard> {
+class _SMTileState extends State<SMTile> {
   DatabaseService databaseService;
   String soshiUsername, platformName, hintText = "Username";
   // used to store local state of switch
@@ -149,343 +160,243 @@ class _SMCardState extends State<SMCard> {
       "Personal"
     ];
 
-    //double width = Utilities.getWidth(context);
-    // text controller for username box
+    return Neumorphic(
+      style: NeumorphicStyle(
+          depth: 2,
+          color: Colors.white,
+          shape: NeumorphicShape.concave,
+          boxShape: NeumorphicBoxShape.roundRect(
+            BorderRadius.circular(20.0),
+          )),
+      child: Card(
+        //semanticContainer: true,
+        elevation: 0,
+        // shape: RoundedRectangleBorder(
+        //   borderRadius: BorderRadius.circular(15.0),
+        // ),
+        child: Container(
+          height: height / 6.5,
+          width: width / 3,
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                IconButton(
+                  splashRadius: Utilities.getWidth(context) / 25,
+                  icon: Image.asset(
+                    'assets/images/SMLogos/' + platformName + 'Logo.png',
+                  ),
+                  onPressed: () async {
+                    if (platformName == "Contact") {
+                      double width = Utilities.getWidth(context);
+                      String firstName = LocalDataService.getLocalFirstName();
+                      String lastName = LocalDataService.getLocalLastName();
+                      String photoUrl =
+                          LocalDataService.getLocalProfilePictureURL();
+                      Uint8List profilePicBytes;
+                      try {
+                        // try to load profile pic from url
+                        await http
+                            .get(Uri.parse(photoUrl))
+                            .then((http.Response response) {
+                          profilePicBytes = response.bodyBytes;
+                        });
+                      } catch (e) {
+                        // if url is invalid, use default profile pic
+                        ByteData data = await rootBundle
+                            .load("assets/images/SoshiLogos/soshi_icon.png");
+                        profilePicBytes = data.buffer.asUint8List();
+                      }
+                      Contact contact = new Contact(
+                          givenName: firstName,
+                          familyName: lastName,
+                          emails: [
+                            Item(
+                              label: "Email",
+                              value:
+                                  LocalDataService.getLocalUsernameForPlatform(
+                                      "Email"),
+                            ),
+                          ],
+                          phones: [
+                            Item(
+                                label: "Cell",
+                                value: LocalDataService
+                                    .getLocalUsernameForPlatform("Phone")),
+                          ],
+                          avatar: profilePicBytes);
+                      await askPermissions(context);
+                      ContactsService.addContact(contact)
+                          .then((dynamic success) {
+                        Popups.showContactAddedPopup(
+                            context, width, firstName, lastName);
+                      });
+                    } else if (platformName == "Cryptowallet") {
+                      Clipboard.setData(ClipboardData(
+                        text: LocalDataService.getLocalUsernameForPlatform(
+                                "Cryptowallet")
+                            .toString(),
+                      ));
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: const Text(
+                          'Wallet address copied to clipboard!',
+                          textAlign: TextAlign.center,
+                        ),
+                      ));
 
+                      // snackbar or popup that says:
+                      // "First name + last name's wallet address has been copied to clipboard"
+
+                    } else {
+                      URL.launchURL(URL.getPlatformURL(
+                          platform: platformName,
+                          username:
+                              LocalDataService.getLocalUsernameForPlatform(
+                                  platformName)));
+                    }
+                  },
+                  iconSize: 60.0,
+                ),
+                CupertinoSwitch(
+                    value: isSwitched,
+                    activeColor:
+                        Theme.of(context).brightness == Brightness.light
+                            ? Colors.black
+                            : Colors.white,
+                    onChanged: (bool value) {
+                      setState(() {
+                        isSwitched = value;
+                      });
+
+                      HapticFeedback.lightImpact();
+
+                      if (LocalDataService.getLocalUsernameForPlatform(
+                                  platformName) ==
+                              null ||
+                          LocalDataService.getLocalUsernameForPlatform(
+                                  platformName) ==
+                              "") {
+                        Popups.editUsernamePopup(
+                            context, soshiUsername, platformName, width);
+
+                        // Navigator.push(context,
+                        //     MaterialPageRoute(builder: (context) {
+                        //   return EditHandles(); // Returning the edit Socials screen
+                        // }));
+                      }
+                      LocalDataService.updateSwitchForPlatform(
+                          platform: platformName, state: value);
+                      databaseService.updatePlatformSwitch(
+                          platform: platformName, state: value);
+
+                      if (LocalDataService.getFirstSwitchTap()) {
+                        LocalDataService.updateFirstSwitchTap(false);
+                        Popups.platformSwitchesExplained(context);
+                      }
+                    }),
+              ]),
+        ),
+      ),
+    );
+
+    // double width = Utilities.getWidth(context);
+    // text controller for username box
+  }
+}
+
+/*
+A social media card used in the profile (one card per platform)
+*/
+
+class AddPlatformsTile extends StatefulWidget {
+  String platformName, soshiUsername;
+  Function() refreshScreen; // callback used to refresh screen
+  AddPlatformsTile(
+      {String platformName, String soshiUsername, Function refreshScreen}) {
+    this.platformName = platformName;
+    this.soshiUsername = soshiUsername;
+    this.refreshScreen = refreshScreen;
+  }
+
+  @override
+  _AddPlatformsTileState createState() => _AddPlatformsTileState();
+}
+
+class _AddPlatformsTileState extends State<AddPlatformsTile> {
+  refreshScreen() {
+    setState(() {
+      profilePlatforms = LocalDataService.getLocalProfilePlatforms();
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double height = Utilities.getHeight(context);
+    double width = Utilities.getWidth(context);
     return Stack(
       children: [
-        Card(
-          // color: Theme.of(context).brightness == Brightness.light
-          //     ? Colors.white
-          //     : Colors.grey[850],
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-              side:
-                  // (isSwitched == true)
-                  // ?
-                  // BorderSide(color: Colors.blueGrey)
-
-                  // :
-                  BorderSide.none),
-          elevation: 5,
-
-          // color: Colors.grey[850],
-
-          //Colors.grey[850],
-          child: Container(
-              height: height / 11,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Transform.scale(
-                      scaleY: .9,
-                      scaleX: .9,
-                      child: CupertinoSwitch(
-                          value: isSwitched,
-                          activeColor: Colors.cyan[500],
-                          onChanged: (bool value) {
-                            setState(() {
-                              isSwitched = value;
-                            });
-                            LocalDataService.updateSwitchForPlatform(
-                                platform: platformName, state: value);
-                            databaseService.updatePlatformSwitch(
-                                platform: platformName, state: value);
-
-                            if (LocalDataService.getFirstSwitchTap()) {
-                              LocalDataService.updateFirstSwitchTap(false);
-                              Popups.platformSwitchesExplained(context);
-                            }
-                          }),
-                    ),
-                    // Center(
-                    //   child: Material(
-                    //     color: Colors.transparent,
-                    //     shadowColor: Colors.black54,
-                    //     shape: RoundedRectangleBorder(
-                    //       borderRadius: BorderRadius.circular(0.0),
-                    //     ),
-                    //child:
-                    IconButton(
-                      splashRadius: Utilities.getWidth(context) / 25,
-                      icon: Image.asset(
-                        'assets/images/SMLogos/' + platformName + 'Logo.png',
-                      ),
-                      onPressed: () async {
-                        if (platformName == "Contact") {
-                          double width = Utilities.getWidth(context);
-                          String firstName =
-                              LocalDataService.getLocalFirstName();
-                          String lastName = LocalDataService.getLocalLastName();
-                          String photoUrl =
-                              LocalDataService.getLocalProfilePictureURL();
-                          Uint8List profilePicBytes;
-                          try {
-                            // try to load profile pic from url
-                            await http
-                                .get(Uri.parse(photoUrl))
-                                .then((http.Response response) {
-                              profilePicBytes = response.bodyBytes;
-                            });
-                          } catch (e) {
-                            // if url is invalid, use default profile pic
-                            ByteData data = await rootBundle.load(
-                                "assets/images/SoshiLogos/soshi_icon.png");
-                            profilePicBytes = data.buffer.asUint8List();
-                          }
-                          Contact contact = new Contact(
-                              givenName: firstName,
-                              familyName: lastName,
-                              emails: [
-                                Item(
-                                  label: "Email",
-                                  value: LocalDataService
-                                      .getLocalUsernameForPlatform("Email"),
-                                ),
-                              ],
-                              phones: [
-                                Item(
-                                    label: "Cell",
-                                    value: LocalDataService
-                                        .getLocalUsernameForPlatform("Phone")),
-                              ],
-                              avatar: profilePicBytes);
-                          await askPermissions(context);
-                          ContactsService.addContact(contact)
-                              .then((dynamic success) {
-                            Popups.showContactAddedPopup(
-                                context, width, firstName, lastName);
-                          });
-                        } else if (platformName == "Cryptowallet") {
-                          Clipboard.setData(ClipboardData(
-                            text: LocalDataService.getLocalUsernameForPlatform(
-                                    "Cryptowallet")
-                                .toString(),
-                          ));
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: const Text(
-                              'Wallet address copied to clipboard!',
-                              textAlign: TextAlign.center,
-                            ),
-                          ));
-
-                          // snackbar or popup that says:
-                          // "First name + last name's wallet address has been copied to clipboard"
-
-                        } else {
-                          URL.launchURL(URL.getPlatformURL(
-                              platform: platformName,
-                              username:
-                                  LocalDataService.getLocalUsernameForPlatform(
-                                      platformName)));
-                        }
-                      },
-                      iconSize: 55.0,
-                    ),
-
-                    // ['Email', 'Phone', 'Contact', 'Linkedin', 'Facebook']
-                    //         .contains(platformName)
-                    //     ? Container()
-                    //     : Padding(
-                    //         padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
-                    //         child: Text("@",
-                    //             style: TextStyle(
-                    //                 color: Colors.white,
-                    //                 fontWeight: FontWeight.bold,
-                    //                 fontSize: 20)),
-                    //       ),
-                    // Padding(
-                    //   padding: EdgeInsets.only(right: 35),
-                    // )
-                  ],
-                ),
-              )),
-        ),
-        Visibility(
-            child: GestureDetector(
-              onTap: () {
-                setState(() {
-                  isSwitched = true;
-                });
-                if (LocalDataService.getLocalUsernameForPlatform(
-                            platformName) ==
-                        null ||
-                    LocalDataService.getLocalUsernameForPlatform(
-                            platformName) ==
-                        "") {
-                  // prompt user to enter username
-                  Popups.editUsernamePopup(
-                    context,
-                    soshiUsername,
-                    platformName,
-                    MediaQuery.of(context).size.width,
-                  );
+        GestureDetector(
+          onTap: () async {
+            if (Constants.originalPlatforms.length +
+                    Constants.addedPlatforms.length >
+                LocalDataService.getLocalChoosePlatforms().length +
+                    LocalDataService.getLocalProfilePlatforms().length) {
+              // check which platforms need to be added
+              for (String platform in Constants.addedPlatforms) {
+                if (!LocalDataService.getLocalProfilePlatforms()
+                        .contains(platform) &&
+                    !LocalDataService.getLocalChoosePlatforms()
+                        .contains(platform)) {
+                  await LocalDataService.addToChoosePlatforms(
+                      platform); // add new platform to choose platforms
+                  await LocalDataService.updateSwitchForPlatform(
+                      platform: platform,
+                      state:
+                          false); // create switch for platform in and initialize to false
+                  if (LocalDataService.getLocalUsernameForPlatform(platform) ==
+                      null) {
+                    await LocalDataService.updateUsernameForPlatform(
+                        platform: platform,
+                        username:
+                            ""); // create username mapping for platform if absent
+                  }
                 }
-                LocalDataService.updateSwitchForPlatform(
-                    platform: platformName, state: true);
-                databaseService.updatePlatformSwitch(
-                    platform: platformName, state: true);
-                if (LocalDataService.getFirstSwitchTap()) {
-                  LocalDataService.updateFirstSwitchTap(false);
-                  Popups.platformSwitchesExplained(context);
-                }
-              },
-              child: Card(
-                // color: Colors.black12,
-                color: Colors.transparent,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: Container(
-                  height: Utilities.getHeight(context) / 11,
-                ),
+              }
+            }
+            await Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return Scaffold(
+                  body: ChooseSocials(
+                refreshFunction: refreshScreen,
+              ));
+            }));
+          },
+          child: Card(
+              //semanticContainer: true,
+              elevation: 5,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
               ),
-            ),
-            visible: !isSwitched),
-        Padding(
-          padding: EdgeInsets.fromLTRB(0, height / 38, 0, 0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              // SizedBox(
-              //   width: width / 3,
-              // ),
-              platformName != "Contact"
-                  ? Container(
-                      height: height / 20,
-                      width: width / 9,
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.transparent)),
-                      child: IconButton(
-                        onPressed: () {
-                          Popups.editUsernamePopup(
-                              context, soshiUsername, platformName, width);
-                        }
-                        //popup of edit username
-                        ,
-                        iconSize: 25,
-                        splashRadius: 20,
-                        icon: Icon(Icons.edit),
-                        // color: Colors.white,
-                      ),
-                    )
-                  : IconButton(
-                      icon: Icon(Icons.question_mark_rounded),
-                      iconSize: 25,
-                      color: Theme.of(context).brightness == Brightness.light
-                          ? Colors.black
-                          : Colors.white,
-                      onPressed: () {
-                        Popups.contactCardExplainedPopup(
-                            context, width, height);
-                      },
-                      splashRadius: 5,
-                    )
-            ],
-          ),
-        ),
-        Positioned(
-            width: width / 1.16,
-            height: height / 35,
-            child: ElevatedButton(
-              style: ButtonStyle(
-                shape: MaterialStateProperty.all(CircleBorder()),
-                // backgroundColor: MaterialStateProperty.all(Colors.black)
-              ),
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(40.0))),
-                        // backgroundColor: Colors.blueGrey[900],
-                        title: Text(
-                          "Remove Platform",
-                          style: TextStyle(
-                              // color: Colors.cyan[600],
-                              fontWeight: FontWeight.bold),
-                        ),
-                        content: Text(
-                          ("Are you sure you want to remove " +
-                              platformName +
-                              " from your profile?"),
-                          style: TextStyle(
-                            fontSize: 20,
-                            // color: Colors.cyan[700],
-                            // fontWeight: FontWeight.bold
-                          ),
-                        ),
-                        actions: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              TextButton(
-                                child: Text(
-                                  'Cancel',
-                                  style: TextStyle(
-                                      fontSize: 20, color: Colors.red),
-                                ),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                              ),
-                              TextButton(
-                                child: Text(
-                                  'Remove',
-                                  style: TextStyle(
-                                      fontSize: 20, color: Colors.blue),
-                                ),
-                                onPressed: () async {
-                                  if (!LocalDataService
-                                          .getLocalChoosePlatforms()
-                                      .contains(platformName)) {
-                                    Navigator.pop(context);
-
-                                    await LocalDataService
-                                        .removePlatformsFromProfile(
-                                            platformName);
-                                    LocalDataService.addToChoosePlatforms(
-                                        platformName);
-
-                                    LocalDataService.updateSwitchForPlatform(
-                                        platform: platformName, state: false);
-                                    databaseService.updatePlatformSwitch(
-                                        platform: platformName, state: false);
-                                    databaseService.removePlatformFromProfile(
-                                        platformName);
-                                    databaseService
-                                        .addToChoosePlatforms(platformName);
-                                    print(LocalDataService
-                                            .getLocalProfilePlatforms()
-                                        .toString());
-                                    widget.refreshScreen();
-                                  } else {
-                                    Navigator.pop(context);
-                                    await LocalDataService
-                                        .removePlatformsFromProfile(
-                                            platformName);
-                                    widget.refreshScreen();
-                                  }
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
-                      );
-                    });
-              },
-              child: Icon(
-                Icons.remove,
-                size: 20,
-                // color: Colors.white,
-              ),
-            ))
+              child: Container(
+                  height: height / .5,
+                  width: width / 3,
+                  child: Center(
+                    child: Icon(
+                      CupertinoIcons.add,
+                      size: width / 8,
+                      color: Colors.green,
+                    ),
+                  ))),
+        )
       ],
     );
+
+    // double width = Utilities.getWidth(context);
+    // text controller for username box
   }
 }
 
@@ -525,7 +436,6 @@ class ProfileState extends State<Profile> {
     soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
     profilePlatforms = LocalDataService.getLocalProfilePlatforms();
     verifiedUsers = LocalDataService.getVerifiedUsersLocal();
-    //print(verifiedUsers.toString());
 
     isVerified = verifiedUsers.contains(soshiUsername);
 
@@ -589,257 +499,609 @@ class ProfileState extends State<Profile> {
     double height = Utilities.getHeight(context);
     double width = Utilities.getWidth(context);
 
-    profileBioController.text = LocalDataService.getBio();
+    /* This is the dynamic sizing based on how long the bio is */
+    double containerSize;
+    double soshiPointsButtonSpacing;
+    int bioChars;
+    double bioSpacing;
 
+    String bio = LocalDataService.getBio();
+    if (bio == null || bio == "") {
+      bioSpacing = 90;
+      soshiPointsButtonSpacing = 1000;
+      containerSize = 3.3;
+    } else {
+      bioChars = bio.length;
+
+      if (bioChars <= 25) {
+        bioSpacing = 50;
+        soshiPointsButtonSpacing = 100;
+        containerSize = 3.0;
+      } else if (bioChars > 25 && bioChars <= 50) {
+        bioSpacing = 80;
+        soshiPointsButtonSpacing = 150;
+        containerSize = 2.9;
+      } else {
+        bioSpacing = 90;
+        soshiPointsButtonSpacing = 1000;
+        containerSize = 2.8;
+      }
+    }
+
+    profileBioController.text = LocalDataService.getBio();
     return SingleChildScrollView(
       child: Container(
-        child: Padding(
-            padding: EdgeInsets.fromLTRB(width / 35, 20, width / 35, 0),
-            child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Row(children: <Widget>[
-                    Column(
-                      children: [
-                        Container(
-                          child: GestureDetector(
-                            onTap: () async {
-                              DatabaseService dbService = new DatabaseService();
-                              //dbService.chooseAndCropImage();
-
-                              // update profile picture on tap
-                              // open up image picker
-                              final ImagePicker imagePicker = ImagePicker();
-                              final PickedFile pickedImage =
-                                  await imagePicker.getImage(
-                                      source: ImageSource.gallery,
-                                      imageQuality: 20);
-                              await dbService.cropAndUploadImage(pickedImage);
-
-                              // Checking if this is first time adding a profile pic
-                              // if it is, it gives Soshi points
-                              if (LocalDataService.getInjectionFlag(
-                                          "Profile Pic") ==
-                                      false ||
-                                  LocalDataService.getInjectionFlag(
-                                          "Profile Pic") ==
-                                      null) {
-                                LocalDataService.updateInjectionFlag(
-                                    "Profile Pic", true);
-                                dbService.updateInjectionSwitch(
-                                    soshiUsername, "Profile Pic", true);
-                                databaseService.updateSoshiPoints(
-                                    soshiUsername, 10);
-                                LocalDataService.updateSoshiPoints(10);
-                              }
-
-                              refreshScreen();
-                            },
-                            child: Stack(
-                              children: [
-                                ProfilePic(
-                                    radius: 55,
-                                    url: LocalDataService
-                                        .getLocalProfilePictureURL()),
-                                Positioned(
-                                    bottom: width / 100,
-                                    right: width / 100,
-                                    child: Container(
-                                      padding: EdgeInsets.all(width / 100),
-                                      decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Colors.cyan[500]),
-                                      child: Icon(
-                                        Icons.edit,
-                                        size: 20,
-                                        color: Colors.white,
-                                      ),
-                                    ))
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 15),
-                        Container(
-                          width: 130,
-                          child: Constants.makeBlueShadowButtonSmall(
-                            "Edit Profile",
-                            Icons.person_rounded,
-                            () {
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) {
-                                return Scaffold(
-                                    body: ProfileSettings(
-                                        soshiUsername: soshiUsername,
-                                        refreshProfile: refreshScreen));
-                              }));
-                            },
-                          ),
-                        )
-                      ],
-                    ),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: SizedBox(
-                        height: 160,
-                        child: BioTextField(
-                            importController: profileBioController,
-                            soshiUsername: soshiUsername),
-                      ),
-                    )
-                  ]),
-                  SizedBox(height: 5),
-                  Row(
-                    //mainAxisAlignment: MainAxisAlignment.start,
-                    //crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[],
-                  ),
-                  Divider(
-                    color: Colors.cyan[300],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        'Toggle',
-                        style: TextStyle(
-                          color: Colors.grey,
-                          letterSpacing: 2,
-                        ),
-                      ),
-                      // ElevatedButton(
-                      //   child: Icon(
-                      //     Icons.help,
-                      //     size: 30,
-                      //     // color: Colors.grey[900],
-                      //   ),
-                      //   style: ElevatedButton.styleFrom(
-                      //       fixedSize: Size(35, 35),
-                      //       primary: Colors.blueGrey[500],
-                      //       shape: CircleBorder()),
-                      //   onPressed: () {
-                      //     Popups.showPlatformHelpPopup(context, height);
-                      //   },
-                      // ),
-                      // SizedBox(
-                      //   width: width / 12,
-                      // ),
+          child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Stack(
+            children: [
+              Container(
+                width: width,
+                height: height / 3,
+                child: Image.network(
+                    (LocalDataService.getLocalProfilePictureURL() != "null"
+                        ? LocalDataService.getLocalProfilePictureURL()
+                        : "https://img.freepik.com/free-photo/abstract-luxury-plain-blur-grey-black-gradient-used-as-background-studio-wall-display-your-products_1258-58170.jpg?w=2000"),
+                    fit: BoxFit.fill),
+              ),
+              GlassmorphicContainer(
+                height: height / containerSize,
+                width: width,
+                borderRadius: 0,
+                blur: 5,
+                alignment: Alignment.bottomCenter,
+                border: 2,
+                linearGradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xFFffffff).withOpacity(0.8),
+                      Color(0xFFFFFFFF).withOpacity(0.4),
                     ],
-                  ),
-                  Container(
-                    child: (profilePlatforms == null ||
-                            profilePlatforms.isEmpty == true)
-                        ? Column(
-                            children: <Widget>[
-                              SizedBox(height: 10),
+                    stops: [
+                      0.1,
+                      1,
+                    ]),
+                borderGradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Color(0xFFffffff).withOpacity(0.5),
+                    Color((0xFFFFFFFF)).withOpacity(0.5),
+                  ],
+                ),
+              ),
+              Container(
+                child: Column(
+                  children: [
+                    SafeArea(
+                      child: Container(
+                        // color: Colors.green,
+                        height: height / containerSize,
+                        width: width,
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(
+                              width / 40, width / 40, width / 40, 0),
+                          child: Column(
+                            children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: <Widget>[
-                                  Text(
-                                    "Add your platforms!",
-                                    style: TextStyle(
-                                      color: Colors.cyan[300],
-                                      fontSize: 25,
-                                      fontStyle: FontStyle.italic,
-                                      letterSpacing: 3.0,
-                                      //fontWeight: FontWeight.bold
-                                    ),
+                                  IconButton(
+                                      onPressed: () {
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                          return Scaffold(
+                                              body: GeneralSettings());
+                                        }));
+                                      },
+                                      icon: Icon(CupertinoIcons.gear_alt)),
+                                  Column(
+                                    children: [
+                                      Container(
+                                        width: width / 1.5,
+                                        child: Center(
+                                          child: AutoSizeText(
+                                            LocalDataService
+                                                    .getLocalFirstName() +
+                                                " " +
+                                                LocalDataService
+                                                    .getLocalLastName(),
+                                            maxLines: 1,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: width / 16,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                              "@" +
+                                                  LocalDataService
+                                                      .getLocalUsername(),
+                                              style: TextStyle(
+                                                  letterSpacing: 1.5)),
+                                          SizedBox(
+                                            width: 2,
+                                          ),
+                                          isVerified == null ||
+                                                  isVerified == false
+                                              ? Container()
+                                              : Image.asset(
+                                                  "assets/images/Verified.png",
+                                                  scale: width / 20,
+                                                )
+                                        ],
+                                      )
+                                    ],
                                   ),
+                                  IconButton(
+                                      onPressed: () {
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                          return Scaffold(
+                                              body: ProfileSettings(
+                                                  soshiUsername: soshiUsername,
+                                                  refreshProfile:
+                                                      refreshScreen));
+                                        }));
+                                      },
+                                      icon: Icon(CupertinoIcons.pen)),
                                 ],
                               ),
-                              SizedBox(height: 10),
+                              SizedBox(
+                                height: height / 100,
+                              ),
+
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  Icon(
-                                    Icons.arrow_downward_rounded,
-                                    size: 30,
-                                    color: Colors.cyan[100],
+                                  SizedBox(
+                                    width: width / 4,
+                                    child: Column(children: [
+                                      Text(
+                                          LocalDataService.getFriendsListCount()
+                                              .toString(),
+                                          style: TextStyle(
+                                              letterSpacing: 1.2,
+                                              fontSize: width / 25)),
+                                      LocalDataService.getFriendsListCount() ==
+                                              1
+                                          ? Text(
+                                              "Friend",
+                                              style: TextStyle(
+                                                  //fontWeight: FontWeight.bold,
+                                                  letterSpacing: 1.2,
+                                                  fontSize: width / 25),
+                                            )
+                                          : Text("Friends",
+                                              style: TextStyle(
+                                                  letterSpacing: 1.2,
+                                                  fontSize: width / 25)),
+                                    ]),
                                   ),
-                                  Icon(
-                                    Icons.arrow_downward_rounded,
-                                    size: 30,
-                                    color: Colors.cyan[300],
-                                  ),
-                                  Icon(
-                                    Icons.arrow_downward_rounded,
-                                    size: 30,
-                                    color: Colors.cyan[700],
+                                  ProfilePic(
+                                      radius: 55,
+                                      url: LocalDataService
+                                          .getLocalProfilePictureURL()),
+                                  SizedBox(
+                                    width: width / 4,
+                                    child: Column(children: [
+                                      Text(
+                                          LocalDataService.getSoshiPoints()
+                                              .toString(),
+                                          style: TextStyle(
+                                              letterSpacing: 1.2,
+                                              fontSize: width / 25)),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          LocalDataService.getSoshiPoints() == 1
+                                              ? Text("Bolt",
+                                                  style: TextStyle(
+                                                      letterSpacing: 1.2,
+                                                      fontSize: width / 25))
+                                              : Text("Bolts",
+                                                  style: TextStyle(
+                                                      letterSpacing: 1.2,
+                                                      fontSize: width / 25)),
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(left: 2),
+                                            child: IconButton(
+                                              onPressed: () {
+                                                Popups
+                                                    .soshiPointsExplainedPopup(
+                                                        context, width, height);
+                                              },
+                                              padding: EdgeInsets.zero,
+                                              constraints: BoxConstraints(
+                                                  maxHeight: width / 28,
+                                                  maxWidth: width / 28,
+                                                  minHeight: 0,
+                                                  minWidth: 0),
+                                              icon: Icon(
+                                                  CupertinoIcons.info_circle,
+                                                  size: width / 28),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ]),
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 5),
+                              //SizedBox(height: height / 1),
+                              Padding(
+                                  padding: EdgeInsets.fromLTRB(
+                                      width / 5,
+                                      height / bioSpacing,
+                                      width / 5,
+                                      height / 50),
+                                  child: bio == "" || bio == null
+                                      ? Container()
+                                      : Container(
+                                          child: //Padding(
+                                              //padding: EdgeInsets.fromLTRB(width / 5, 0, width / 5, 0),
+                                              //child:
+                                              AutoSizeText(
+                                            LocalDataService.getBio(),
+                                            maxLines: 3,
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        )
+                                  //),
+                                  ),
+                              Text("Passions")
+                              //SoshiPointsButton(height, width),
                             ],
-                          )
-                        : GridView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                child: SMCard(
-                                    platformName: profilePlatforms[index],
-                                    soshiUsername: soshiUsername,
-                                    refreshScreen: refreshScreen),
-                              );
-                            },
-                            itemCount: profilePlatforms.length,
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                    childAspectRatio: 1.75,
-                                    crossAxisSpacing: 7),
                           ),
+                        ),
+                      ),
+                    ),
+                    // Padding(
+                    //   padding:
+                    //       EdgeInsets.fromLTRB(width / 25, 0, width / 25, 0),
+                    // ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
+          // Stack(
+          //   children: [
+          //     Padding(
+          //       padding: EdgeInsets.fromLTRB(width / 30, 0, width / 30, 0),
+          //       child: Divider(
+          //         color: Colors.white,
+          //       ),
+          //     ),
+          //     Row(
+          //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          //       children: [
+          //         Container(
+          //           child: Text("Hello"),
+          //         )
+          //       ],
+          //     )
+          //   ],
+          // ),
+          Container(
+              child: Padding(
+            padding: EdgeInsets.fromLTRB(width / 35, 0, width / 35, 0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Socials",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: width / 17),
+                    ),
+                    IconButton(
+                      icon: Icon(CupertinoIcons.pencil_ellipsis_rectangle),
+                      onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return Scaffold(
+                              body: EditHandles(
+                            soshiUsername: soshiUsername,
+                          ));
+                        }));
+                      },
+                      color: Colors.black,
+                    )
+                  ],
+                ),
+                Container(
+                  child: GridView.builder(
+                    // add an extra tile with the "+" that can be used always to add morem platforms
+
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Padding(
+                          padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                          child: index != profilePlatforms.length
+                              ? SMTile(
+                                  platformName: profilePlatforms[index],
+                                  soshiUsername: soshiUsername,
+                                  refreshScreen: refreshScreen)
+                              : AddPlatformsTile(refreshScreen: refreshScreen));
+                    },
+                    itemCount: profilePlatforms.length + 1,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        childAspectRatio: .8,
+                        crossAxisSpacing: width / 40),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(50, 10, 50, 40),
-                    child: Constants.makeBlueShadowButton(
-                        "Add Platforms!", Icons.add_circle_outline_rounded,
-                        () async {
-                      // check if user has all platforms (in case of update)
-                      if (Constants.originalPlatforms.length +
-                              Constants.addedPlatforms.length >
-                          LocalDataService.getLocalChoosePlatforms().length +
-                              LocalDataService.getLocalProfilePlatforms()
-                                  .length) {
-                        // check which platforms need to be added
-                        for (String platform in Constants.addedPlatforms) {
-                          if (!LocalDataService.getLocalProfilePlatforms()
-                                  .contains(platform) &&
-                              !LocalDataService.getLocalChoosePlatforms()
-                                  .contains(platform)) {
-                            await LocalDataService.addToChoosePlatforms(
-                                platform); // add new platform to choose platforms
-                            await LocalDataService.updateSwitchForPlatform(
-                                platform: platform,
-                                state:
-                                    false); // create switch for platform in and initialize to false
-                            if (LocalDataService.getLocalUsernameForPlatform(
-                                    platform) ==
-                                null) {
-                              await LocalDataService.updateUsernameForPlatform(
-                                  platform: platform,
-                                  username:
-                                      ""); // create username mapping for platform if absent
-                            }
-                          }
-                        }
-                      }
-                      await Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return Scaffold(
-                            body: ChooseSocials(
-                          refreshFunction: refreshScreen,
-                        ));
-                      }));
-                    }),
-                  ),
-                  SizedBox(height: 30)
-                ])),
-      ),
+                ),
+              ],
+            ),
+          )),
+        ],
+      )),
     );
+
+    // return SingleChildScrollView(
+    //   child: Container(
+    //     child: Padding(
+    //         padding: EdgeInsets.fromLTRB(width / 35, 20, width / 35, 0),
+    //         child: Column(
+    //             mainAxisSize: MainAxisSize.min,
+    //             crossAxisAlignment: CrossAxisAlignment.start,
+    //             children: <Widget>[
+    //               Row(children: <Widget>[
+    //                 Column(
+    //                   children: [
+    //                     Container(
+    // child: GestureDetector(
+    //   onTap: () async {
+    //     DatabaseService dbService = new DatabaseService();
+    //     //dbService.chooseAndCropImage();
+
+    //     // update profile picture on tap
+    //     // open up image picker
+    //     final ImagePicker imagePicker = ImagePicker();
+    //     final PickedFile pickedImage =
+    //         await imagePicker.getImage(
+    //             source: ImageSource.gallery,
+    //             imageQuality: 20);
+    //     await dbService.cropAndUploadImage(pickedImage);
+
+    //     // Checking if this is first time adding a profile pic
+    //     // if it is, it gives Soshi points
+    //     if (LocalDataService.getInjectionFlag(
+    //                 "Profile Pic") ==
+    //             false ||
+    //         LocalDataService.getInjectionFlag(
+    //                 "Profile Pic") ==
+    //             null) {
+    //       LocalDataService.updateInjectionFlag(
+    //           "Profile Pic", true);
+    //       dbService.updateInjectionSwitch(
+    //           soshiUsername, "Profile Pic", true);
+    //       databaseService.updateSoshiPoints(
+    //           soshiUsername, 10);
+    //       LocalDataService.updateSoshiPoints(10);
+    //     }
+
+    //     refreshScreen();
+    //   },
+    //   child: Stack(
+    //     children: [
+    //       ProfilePic(
+    //           radius: 55,
+    //           url: LocalDataService
+    //               .getLocalProfilePictureURL()),
+    //       Positioned(
+    //           bottom: width / 100,
+    //           right: width / 100,
+    //           child: Container(
+    //             padding: EdgeInsets.all(width / 100),
+    //             decoration: BoxDecoration(
+    //                 shape: BoxShape.circle,
+    //                 color: Colors.cyan[500]),
+    //             child: Icon(
+    //               Icons.edit,
+    //               size: 20,
+    //               color: Colors.white,
+    //             ),
+    //           ))
+    //     ],
+    //   ),
+    //  ),
+    //                     ),
+    //                     SizedBox(height: 15),
+    //                     Container(
+    //                       width: 130,
+    //                       child: Constants.makeBlueShadowButtonSmall(
+    //                         "Edit Profile",
+    //                         Icons.person_rounded,
+    //                         () {
+    //                           Navigator.push(context,
+    //                               MaterialPageRoute(builder: (context) {
+    //                             return Scaffold(
+    //                                 body: ProfileSettings(
+    //                                     soshiUsername: soshiUsername,
+    //                                     refreshProfile: refreshScreen));
+    //                           }));
+    //                         },
+    //                       ),
+    //                     )
+    //                   ],
+    //                 ),
+    //                 SizedBox(width: 10),
+    //                 Expanded(
+    //                   child: SizedBox(
+    //                     height: 160,
+    //                     child: BioTextField(
+    //                         importController: profileBioController,
+    //                         soshiUsername: soshiUsername),
+    //                   ),
+    //                 )
+    //               ]),
+    //               SizedBox(height: 5),
+    //               Row(
+    //                 //mainAxisAlignment: MainAxisAlignment.start,
+    //                 //crossAxisAlignment: CrossAxisAlignment.start,
+    //                 children: <Widget>[],
+    //               ),
+    //               Divider(
+    //                 color: Colors.cyan[300],
+    //               ),
+    //               Row(
+    //                 mainAxisAlignment: MainAxisAlignment.start,
+    //                 children: <Widget>[
+    //                   Text(
+    //                     'Toggle',
+    //                     style: TextStyle(
+    //                       color: Colors.grey,
+    //                       letterSpacing: 2,
+    //                     ),
+    //                   ),
+    //                   // ElevatedButton(
+    //                   //   child: Icon(
+    //                   //     Icons.help,
+    //                   //     size: 30,
+    //                   //     // color: Colors.grey[900],
+    //                   //   ),
+    //                   //   style: ElevatedButton.styleFrom(
+    //                   //       fixedSize: Size(35, 35),
+    //                   //       primary: Colors.blueGrey[500],
+    //                   //       shape: CircleBorder()),
+    //                   //   onPressed: () {
+    //                   //     Popups.showPlatformHelpPopup(context, height);
+    //                   //   },
+    //                   // ),
+    //                   // SizedBox(
+    //                   //   width: width / 12,
+    //                   // ),
+    //                 ],
+    //               ),
+    // Container(
+    //   child: (profilePlatforms == null ||
+    //           profilePlatforms.isEmpty == true)
+    //       ? Column(
+    //           children: <Widget>[
+    //             SizedBox(height: 10),
+    //             Row(
+    //               mainAxisAlignment: MainAxisAlignment.center,
+    //               children: <Widget>[
+    //                 Text(
+    //                   "Add your platforms!",
+    //                   style: TextStyle(
+    //                     color: Colors.cyan[300],
+    //                     fontSize: 25,
+    //                     fontStyle: FontStyle.italic,
+    //                     letterSpacing: 3.0,
+    //                     //fontWeight: FontWeight.bold
+    //                   ),
+    //                 ),
+    //               ],
+    //             ),
+    //             SizedBox(height: 10),
+    //             Row(
+    //               mainAxisAlignment: MainAxisAlignment.center,
+    //               children: [
+    //                 Icon(
+    //                   Icons.arrow_downward_rounded,
+    //                   size: 30,
+    //                   color: Colors.cyan[100],
+    //                 ),
+    //                 Icon(
+    //                   Icons.arrow_downward_rounded,
+    //                   size: 30,
+    //                   color: Colors.cyan[300],
+    //                 ),
+    //                 Icon(
+    //                   Icons.arrow_downward_rounded,
+    //                   size: 30,
+    //                   color: Colors.cyan[700],
+    //                 ),
+    //               ],
+    //             ),
+    //             SizedBox(height: 5),
+    //           ],
+    //         )
+    //       : GridView.builder(
+    //           physics: const NeverScrollableScrollPhysics(),
+    //           shrinkWrap: true,
+    //           itemBuilder: (BuildContext context, int index) {
+    //             return Padding(
+    //               padding:
+    //                   const EdgeInsets.fromLTRB(0, 10, 0, 10),
+    //               child: SMCard(
+    //                   platformName: profilePlatforms[index],
+    //                   soshiUsername: soshiUsername,
+    //                   refreshScreen: refreshScreen),
+    //             );
+    //           },
+    //           itemCount: profilePlatforms.length,
+    //           gridDelegate:
+    //               SliverGridDelegateWithFixedCrossAxisCount(
+    //                   crossAxisCount: 2,
+    //                   childAspectRatio: 1.75,
+    //                   crossAxisSpacing: 7),
+    //         ),
+    // ),
+    //               Padding(
+    //                 padding: const EdgeInsets.fromLTRB(50, 10, 50, 40),
+    //                 child: Constants.makeBlueShadowButton(
+    //                     "Add Platforms!", Icons.add_circle_outline_rounded,
+    //                     () async {
+    //                   // check if user has all platforms (in case of update)
+    //                   if (Constants.originalPlatforms.length +
+    //                           Constants.addedPlatforms.length >
+    //                       LocalDataService.getLocalChoosePlatforms().length +
+    //                           LocalDataService.getLocalProfilePlatforms()
+    //                               .length) {
+    //                     // check which platforms need to be added
+    //                     for (String platform in Constants.addedPlatforms) {
+    //                       if (!LocalDataService.getLocalProfilePlatforms()
+    //                               .contains(platform) &&
+    //                           !LocalDataService.getLocalChoosePlatforms()
+    //                               .contains(platform)) {
+    //                         await LocalDataService.addToChoosePlatforms(
+    //                             platform); // add new platform to choose platforms
+    //                         await LocalDataService.updateSwitchForPlatform(
+    //                             platform: platform,
+    //                             state:
+    //                                 false); // create switch for platform in and initialize to false
+    //                         if (LocalDataService.getLocalUsernameForPlatform(
+    //                                 platform) ==
+    //                             null) {
+    //                           await LocalDataService.updateUsernameForPlatform(
+    //                               platform: platform,
+    //                               username:
+    //                                   ""); // create username mapping for platform if absent
+    //                         }
+    //                       }
+    //                     }
+    //                   }
+    //                   await Navigator.push(context,
+    //                       MaterialPageRoute(builder: (context) {
+    //                     return Scaffold(
+    //                         body: ChooseSocials(
+    //                       refreshFunction: refreshScreen,
+    //                     ));
+    //                   }));
+    //                 }),
+    //               ),
+    //               SizedBox(height: 30)
+    //             ])),
+    //   ),
+    // );
   }
 }
 
@@ -901,7 +1163,7 @@ class _BioTextFieldState extends State<BioTextField> {
     return Container(
       child: TextField(
           focusNode: bioFocusNode,
-          maxLength: 80,
+          maxLength: 40,
           maxLengthEnforcement: MaxLengthEnforcement.enforced,
           // keyboardType: TextInputType.multiline,
           textInputAction: TextInputAction.done,
