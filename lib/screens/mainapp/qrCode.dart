@@ -533,8 +533,8 @@ class _NewQRScreenState extends State<NewQRScreen> {
                             borderRadius: BorderRadius.circular(25.0),
                             // elevation: 5,
                             child: Container(
-                              //height: width / 1.6,
-                              //width: width / 1.6,
+                              height: width / 1.6,
+                              width: width / 1.6,
                               child: Stack(
                                 alignment: AlignmentDirectional.center,
                                 children: [

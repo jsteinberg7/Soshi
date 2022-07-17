@@ -162,8 +162,8 @@ class _SMTileState extends State<SMTile> {
 
     return Neumorphic(
       style: NeumorphicStyle(
-          depth: 2,
-          color: Colors.white,
+          depth: 1,
+          color: Theme.of(context).cardColor,
           shape: NeumorphicShape.concave,
           boxShape: NeumorphicBoxShape.roundRect(
             BorderRadius.circular(20.0),
@@ -258,11 +258,9 @@ class _SMTileState extends State<SMTile> {
                   iconSize: 60.0,
                 ),
                 CupertinoSwitch(
+                    thumbColor: Colors.white,
                     value: isSwitched,
-                    activeColor:
-                        Theme.of(context).brightness == Brightness.light
-                            ? Colors.black
-                            : Colors.white,
+                    activeColor: Colors.black,
                     onChanged: (bool value) {
                       setState(() {
                         isSwitched = value;
@@ -338,61 +336,64 @@ class _AddPlatformsTileState extends State<AddPlatformsTile> {
   Widget build(BuildContext context) {
     double height = Utilities.getHeight(context);
     double width = Utilities.getWidth(context);
-    return Stack(
-      children: [
-        GestureDetector(
-          onTap: () async {
-            if (Constants.originalPlatforms.length +
-                    Constants.addedPlatforms.length >
-                LocalDataService.getLocalChoosePlatforms().length +
-                    LocalDataService.getLocalProfilePlatforms().length) {
-              // check which platforms need to be added
-              for (String platform in Constants.addedPlatforms) {
-                if (!LocalDataService.getLocalProfilePlatforms()
-                        .contains(platform) &&
-                    !LocalDataService.getLocalChoosePlatforms()
-                        .contains(platform)) {
-                  await LocalDataService.addToChoosePlatforms(
-                      platform); // add new platform to choose platforms
-                  await LocalDataService.updateSwitchForPlatform(
-                      platform: platform,
-                      state:
-                          false); // create switch for platform in and initialize to false
-                  if (LocalDataService.getLocalUsernameForPlatform(platform) ==
-                      null) {
-                    await LocalDataService.updateUsernameForPlatform(
-                        platform: platform,
-                        username:
-                            ""); // create username mapping for platform if absent
-                  }
-                }
+    return NeumorphicButton(
+      onPressed: () async {
+        if (Constants.originalPlatforms.length +
+                Constants.addedPlatforms.length >
+            LocalDataService.getLocalChoosePlatforms().length +
+                LocalDataService.getLocalProfilePlatforms().length) {
+          // check which platforms need to be added
+          for (String platform in Constants.addedPlatforms) {
+            if (!LocalDataService.getLocalProfilePlatforms()
+                    .contains(platform) &&
+                !LocalDataService.getLocalChoosePlatforms()
+                    .contains(platform)) {
+              await LocalDataService.addToChoosePlatforms(
+                  platform); // add new platform to choose platforms
+              await LocalDataService.updateSwitchForPlatform(
+                  platform: platform,
+                  state:
+                      false); // create switch for platform in and initialize to false
+              if (LocalDataService.getLocalUsernameForPlatform(platform) ==
+                  null) {
+                await LocalDataService.updateUsernameForPlatform(
+                    platform: platform,
+                    username:
+                        ""); // create username mapping for platform if absent
               }
             }
-            await Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return Scaffold(
-                  body: ChooseSocials(
-                refreshFunction: refreshScreen,
-              ));
-            }));
-          },
-          child: Card(
-              //semanticContainer: true,
-              elevation: 5,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15.0),
-              ),
-              child: Container(
-                  height: height / .5,
-                  width: width / 3,
-                  child: Center(
-                    child: Icon(
-                      CupertinoIcons.add,
-                      size: width / 8,
-                      color: Colors.green,
-                    ),
-                  ))),
-        )
-      ],
+          }
+        }
+        await Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return Scaffold(
+              body: ChooseSocials(
+            refreshFunction: refreshScreen,
+          ));
+        }));
+      },
+      style: NeumorphicStyle(
+          depth: 1,
+          color: Theme.of(context).cardColor,
+          shape: NeumorphicShape.concave,
+          boxShape: NeumorphicBoxShape.roundRect(
+            BorderRadius.circular(20.0),
+          )),
+      child: Card(
+          //semanticContainer: true,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          child: Container(
+              height: height / .5,
+              width: width / 3,
+              child: Center(
+                child: Icon(
+                  CupertinoIcons.add,
+                  size: width / 8,
+                  color: Colors.green,
+                ),
+              ))),
     );
 
     // double width = Utilities.getWidth(context);
@@ -556,8 +557,14 @@ class ProfileState extends State<Profile> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      Color(0xFFffffff).withOpacity(0.8),
-                      Color(0xFFFFFFFF).withOpacity(0.4),
+                      (Theme.of(context).brightness == Brightness.light
+                              ? Colors.white
+                              : Colors.black)
+                          .withOpacity(0.8),
+                      (Theme.of(context).brightness == Brightness.light
+                              ? Colors.white
+                              : Colors.black)
+                          .withOpacity(0.4),
                     ],
                     stops: [
                       0.1,
@@ -567,8 +574,14 @@ class ProfileState extends State<Profile> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    Color(0xFFffffff).withOpacity(0.5),
-                    Color((0xFFFFFFFF)).withOpacity(0.5),
+                    (Theme.of(context).brightness == Brightness.light
+                            ? Colors.white
+                            : Colors.black)
+                        .withOpacity(0.5),
+                    (Theme.of(context).brightness == Brightness.light
+                            ? Colors.white
+                            : Colors.black)
+                        .withOpacity(0.5),
                   ],
                 ),
               ),
@@ -819,31 +832,35 @@ class ProfileState extends State<Profile> {
                           ));
                         }));
                       },
-                      color: Colors.black,
                     )
                   ],
                 ),
                 Container(
-                  child: GridView.builder(
-                    // add an extra tile with the "+" that can be used always to add morem platforms
-
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Padding(
-                          padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                          child: index != profilePlatforms.length
-                              ? SMTile(
-                                  platformName: profilePlatforms[index],
-                                  soshiUsername: soshiUsername,
-                                  refreshScreen: refreshScreen)
-                              : AddPlatformsTile(refreshScreen: refreshScreen));
-                    },
-                    itemCount: profilePlatforms.length + 1,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        childAspectRatio: .8,
-                        crossAxisSpacing: width / 40),
+                  // color: Colors.red,
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: GridView.builder(
+                      // add an extra tile with the "+" that can be used always to add morem platforms
+                      padding: EdgeInsets.zero,
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Padding(
+                            padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                            child: index != profilePlatforms.length
+                                ? SMTile(
+                                    platformName: profilePlatforms[index],
+                                    soshiUsername: soshiUsername,
+                                    refreshScreen: refreshScreen)
+                                : AddPlatformsTile(
+                                    refreshScreen: refreshScreen));
+                      },
+                      itemCount: profilePlatforms.length + 1,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          childAspectRatio: .8,
+                          crossAxisSpacing: width / 40),
+                    ),
                   ),
                 ),
               ],
