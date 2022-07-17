@@ -532,7 +532,7 @@ class ProfileState extends State<Profile> {
     profileBioController.text = LocalDataService.getBio();
     return SingleChildScrollView(
       child: Container(
-          height: height * 2,
+          height: height * 2, 
           child: Stack(
             children: [
               Positioned(
@@ -594,6 +594,7 @@ class ProfileState extends State<Profile> {
                     ),
                     Container(
                       child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           SafeArea(
                             child: Container(
@@ -835,6 +836,7 @@ class ProfileState extends State<Profile> {
                 right: 0,
                 top: height / 2.5,
                 child: Container(
+                    height: height / 2,
                     decoration: BoxDecoration(
                         color: Theme.of(context).scaffoldBackgroundColor,
                         borderRadius: BorderRadius.only(
@@ -844,6 +846,7 @@ class ProfileState extends State<Profile> {
                       padding:
                           EdgeInsets.fromLTRB(width / 35, 0, width / 35, 0),
                       child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
