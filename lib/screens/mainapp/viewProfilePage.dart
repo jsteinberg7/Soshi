@@ -1,27 +1,17 @@
 import 'dart:typed_data';
-import 'dart:ui';
 
-import 'package:async/async.dart';
 import 'package:contacts_service/contacts_service.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import 'package:soshi/screens/login/loading.dart';
-import 'package:soshi/screens/mainapp/editHandles.dart';
-import 'package:vibration/vibration.dart';
 
 import '../../../constants/popups.dart';
-import '../../../constants/utilities.dart';
 import '../../../constants/widgets.dart';
-import '../../../services/analytics.dart';
 import '../../../services/database.dart';
 import '../../../services/localData.dart';
 
 import 'package:glassmorphism/glassmorphism.dart';
 
-import '../../constants/constants.dart';
 import '../../services/contacts.dart';
 import 'friendScreen.dart';
 import 'package:http/http.dart' as http;
@@ -90,6 +80,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                 "Entrepreneurship",
                 "Fitness"
               ];
+              String photoUrl = databaseService.getPhotoURL(userData);
 
               List<String> visiblePlatforms;
               Map usernames;
@@ -118,14 +109,8 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                     right: 0,
                     child: Stack(
                       children: [
-                        Image.network(
-                          (friend.photoURL != "null"
-                              ? friend.photoURL
-                              : "https://img.freepik.com/free-photo/abstract-luxury-plain-blur-grey-black-gradient-used-as-background-studio-wall-display-your-products_1258-58170.jpg?w=2000"),
-                          fit: BoxFit.fill,
-                          height: height / 2,
-                          width: width,
-                        ),
+                        ProfilePicBackdrop(photoUrl,
+                            height: height / 2, width: width),
                         GlassmorphicContainer(
                           height: height / 2,
                           width: width,
@@ -332,18 +317,6 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                                           FontWeight.bold,
                                                       fontSize: width / 25),
                                                 ),
-                                                // SizedBox(width: 15),
-                                                // ClipRRect(
-                                                //   borderRadius: BorderRadius.all(Radius.circular(10)),
-                                                //   child: Image.asset(
-                                                //     "assets/images/SoshiLogos/soshi_icon.png",
-                                                //   ),
-                                                // ),
-                                                // SizedBox(width: 10),
-                                                // Icon(
-                                                //   Icons.chevron_right,
-                                                //   size: 30,
-                                                // )
                                               ],
                                             ),
                                           )),
@@ -370,59 +343,6 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                       ],
                     ),
                   ),
-
-                  // Stack(children: [
-                  //   Padding(
-                  //     padding: EdgeInsets.fromLTRB(
-                  //         width / 25, height / 140, width / 25, 0),
-                  //     child: Divider(
-                  //       color: Colors.grey,
-                  //     ),
-                  //   ),
-                  //   Row(
-                  //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  //     children: [
-                  //       Container(
-                  //         decoration: BoxDecoration(
-                  //             // color: Colors.grey[850],
-                  //             border: Border.all(
-                  //               color: Colors.red,
-                  //             ),
-                  //             borderRadius: BorderRadius.all(Radius.circular(5))),
-
-                  //         child: Padding(
-                  //           padding: EdgeInsets.all(3.0),
-                  //           child: Text("Basketball"),
-                  //         ),
-
-                  //         //color: Colors.white,
-                  //       ),
-                  //       Container(
-                  //         decoration: BoxDecoration(
-                  //             color: Colors.grey[850],
-                  //             border: Border.all(
-                  //               color: Colors.green,
-                  //             ),
-                  //             borderRadius: BorderRadius.all(Radius.circular(5))),
-                  //         child: Padding(
-                  //           padding: const EdgeInsets.all(3.0),
-                  //           child: Text("Contact Exchange"),
-                  //         ),
-                  //       ),
-                  //       Container(
-                  //         decoration: BoxDecoration(
-                  //             color: Colors.grey[850],
-                  //             border: Border.all(
-                  //               color: Colors.blue,
-                  //             ),
-                  //             borderRadius: BorderRadius.all(Radius.circular(5))),
-                  //         child: Padding(
-                  //             padding: const EdgeInsets.all(3.0),
-                  //             child: Text("Programming")),
-                  //       )
-                  //     ],
-                  //   ),
-                  // ]),
                   Positioned(
                     top: height / 2.2,
                     left: 0,
@@ -521,13 +441,13 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                       spacing: width / 40,
                                       children: List.generate(
                                           visiblePlatforms.length, (i) {
-                                        return Popups.createSMButton(
-                                            soshiUsername: friendSoshiUsername,
-                                            platform: visiblePlatforms[i],
-                                            username:
-                                                usernames[visiblePlatforms[i]],
-                                            size: width / 7,
-                                            context: context);
+                                        return SMButton(
+                                          soshiUsername: friendSoshiUsername,
+                                          platform: visiblePlatforms[i],
+                                          username:
+                                              usernames[visiblePlatforms[i]],
+                                          size: width / 7,
+                                        );
                                       }),
                                     )),
                           ),

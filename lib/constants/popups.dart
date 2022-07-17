@@ -28,99 +28,6 @@ import 'constants.dart';
 Custom popup dialogs
 */
 class Popups {
-  // Create a clickable social media icon
-  static Widget createSMButton(
-      {String soshiUsername,
-      String platform,
-      String username,
-      double size = 70.0,
-      BuildContext context}) {
-    return IconButton(
-      // splashColor: Colors.cyan[300],
-      splashRadius: 55.0,
-      icon: Image.asset(
-        "assets/images/SMLogos/" + platform + "Logo.png",
-      ),
-      onPressed: () async {
-        Analytics.logAccessPlatform(platform);
-        if (platform == "Contact") {
-          DialogBuilder(context).showLoadingIndicator();
-
-          double width = MediaQuery.of(context).size.width;
-          DatabaseService databaseService =
-              new DatabaseService(currSoshiUsernameIn: soshiUsername);
-          Map userData = await databaseService.getUserFile(soshiUsername);
-
-          String firstName =
-              await databaseService.getFirstDisplayName(userData);
-          String lastName = databaseService.getLastDisplayName(userData);
-          String email = await databaseService.getUsernameForPlatform(
-              platform: "Email", userData: userData);
-          String phoneNumber = await databaseService.getUsernameForPlatform(
-              platform: "Phone", userData: userData);
-          String photoUrl = databaseService.getPhotoURL(userData);
-
-          Uint8List profilePicBytes;
-
-          try {
-            // try to load profile pic from url
-            await http.get(Uri.parse(photoUrl)).then((http.Response response) {
-              profilePicBytes = response.bodyBytes;
-            });
-          } catch (e) {
-            // if url is invalid, use default profile pic
-            ByteData data =
-                await rootBundle.load("assets/images/misc/default_pic.png");
-            profilePicBytes = data.buffer.asUint8List();
-          }
-          Contact newContact = new Contact(
-              givenName: firstName,
-              familyName: lastName,
-              emails: [
-                Item(label: "Email", value: email),
-              ],
-              phones: [
-                Item(label: "Cell", value: phoneNumber),
-              ],
-              avatar: profilePicBytes);
-          await askPermissions(context);
-
-          await ContactsService.addContact(newContact);
-
-          DialogBuilder(context).hideOpenDialog();
-
-          Popups.showContactAddedPopup(context, width, firstName, lastName);
-
-          //ContactsService.openContactForm();
-          // ContactsService.addContact(newContact).then((dynamic success) {
-          // });
-          //         ContactsService.addContact(newContact).then(dynamic success)
-          // {             ContactsService.openExistingContact(newContact);
-          //       };
-
-          // .then((dynamic success) {
-          //   Popups.showContactAddedPopup(context, width, firstName, lastName);
-          // });
-        } else if (platform == "Cryptowallet") {
-          Clipboard.setData(ClipboardData(
-            text: username.toString(),
-          ));
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: const Text(
-              'Wallet address copied to clipboard!',
-              textAlign: TextAlign.center,
-            ),
-          ));
-        } else {
-          print("Launching $username");
-          URL.launchURL(
-              URL.getPlatformURL(platform: platform, username: username));
-        }
-      },
-      iconSize: size,
-    );
-  }
-
   static void platformSwitchesExplained(BuildContext context) {
     showDialog(
         context: context,
@@ -1002,13 +909,12 @@ class Popups {
                                   alignment: WrapAlignment.spaceEvenly,
                                   children: List.generate(
                                       visiblePlatforms.length, (i) {
-                                    return createSMButton(
-                                        soshiUsername: friendSoshiUsername,
-                                        platform: visiblePlatforms[i],
-                                        username:
-                                            usernames[visiblePlatforms[i]],
-                                        size: width / 5,
-                                        context: context);
+                                    return SMButton(
+                                      soshiUsername: friendSoshiUsername,
+                                      platform: visiblePlatforms[i],
+                                      username: usernames[visiblePlatforms[i]],
+                                      size: width / 5,
+                                    );
                                   }),
                                 )
 
