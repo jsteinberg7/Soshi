@@ -843,7 +843,7 @@ class Popups {
                                                     isVerified == false
                                                 ? Container()
                                                 : Image.asset(
-                                                    "assets/images/misc/verified.png",
+                                                    "assets/images/Verified.png",
                                                     scale: width / 20,
                                                   )
                                           ],
@@ -918,6 +918,25 @@ class Popups {
                                   }),
                                 )
 
+                              // GridView.builder(
+                              //     padding: EdgeInsets.zero,
+                              //     gridDelegate:
+                              //         SliverGridDelegateWithFixedCrossAxisCount(
+                              //             crossAxisCount: 3),
+                              //     scrollDirection: Axis.vertical,
+                              //     itemBuilder: (BuildContext context, int i) {
+                              //       if (i == visiblePlatforms.length) {}
+
+                              //       return createSMButton(
+                              //           soshiUsername: friendSoshiUsername,
+                              //           platform: visiblePlatforms[i],
+                              //           username:
+                              //               usernames[visiblePlatforms[i]],
+                              //           size: width / 5,
+                              //           context: context);
+                              //     },
+                              //     itemCount: visiblePlatforms.length,
+                              //   )
                               : Center(
                                   child: Padding(
                                     padding: const EdgeInsets.all(15),

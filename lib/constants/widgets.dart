@@ -24,7 +24,6 @@ import '../services/contacts.dart';
 import 'constants.dart';
 import 'package:http/http.dart' as http;
 
-
 /* Widget to build the profile picture and check if they are null */
 class ProfilePic extends StatelessWidget {
   double radius;
@@ -935,7 +934,7 @@ class ProfilePicBackdrop extends StatelessWidget {
       return Image.network(
         url,
         fit: BoxFit.fill,
-        height: height / 2,
+        height: height,
         width: width,
       );
     } else {

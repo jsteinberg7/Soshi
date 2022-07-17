@@ -997,7 +997,7 @@ class FriendTile extends StatelessWidget {
                   friend.isVerified == null || friend.isVerified == false
                       ? Container()
                       : Image.asset(
-                          "assets/images/misc/verified.png",
+                          "assets/images/Verified.png",
                           scale: width / 20,
                         )
                 ],
@@ -1076,7 +1076,7 @@ class FriendTile extends StatelessWidget {
                                                       friend.isVerified == false
                                                   ? Container()
                                                   : Image.asset(
-                                                      "assets/images/misc/verified.png",
+                                                      "assets/images/Verified.png",
                                                       scale: width / 21,
                                                     )
                                             ],

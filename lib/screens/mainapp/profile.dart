@@ -656,7 +656,7 @@ class ProfileState extends State<Profile> {
                                                         isVerified == false
                                                     ? Container()
                                                     : Image.asset(
-                                                        "assets/images/misc/verified.png",
+                                                        "assets/images/Verified.png",
                                                         scale: width / 20,
                                                       )
                                               ],
