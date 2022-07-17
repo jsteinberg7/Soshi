@@ -182,28 +182,54 @@ class RenderPassionList extends StatelessWidget {
           } else {
             return GridView.builder(
                 itemBuilder: (BuildContext context, int index) {
-                  return InkWell(
-                    onTap: () {
-                      print("just tapped passion: ${renderPassions[index]}");
-                      // String SoshiUsername = LocalDataService.getLocalUsername();
-                      // DatabaseService DS = new DatabaseService(currSoshiUsernameIn: LocalDataService.getLocalUsername());
-                      // DS.updateUserPassions(LocalDataService.getLocalUsername(), newPassions)
-                      Navigator.pop(context, {
-                        'passion_emoji': passionsUtility.getEmoji(renderPassions[index]),
-                        'passion_name': renderPassions[index],
-                      });
-                    },
-                    child: Card(
-                      elevation: 3,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
-                      child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                        Text(passionsUtility.getEmoji(renderPassions[index]),
-                            style: TextStyle(fontSize: 35)),
-                        Text(renderPassions[index], style: TextStyle(fontSize: 14))
-                      ]),
-                    ),
-                  );
+                  return index == renderPassions.length
+                      ? InkWell(
+                          onTap: () {
+                            print("just tapped passion: NONE!");
+                            // String SoshiUsername = LocalDataService.getLocalUsername();
+                            // DatabaseService DS = new DatabaseService(currSoshiUsernameIn: LocalDataService.getLocalUsername());
+                            // DS.updateUserPassions(LocalDataService.getLocalUsername(), newPassions)
+                            Navigator.pop(context, {
+                              // 'passion_emoji': passionsUtility.getEmoji(renderPassions[index]),
+                              // 'passion_name': renderPassions[index],
+                              'valid': false
+                            });
+                          },
+                          child: Card(
+                            elevation: 3,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(10))),
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text("❌", style: TextStyle(fontSize: 35)),
+                                  Text("Empty", style: TextStyle(fontSize: 14))
+                                ]),
+                          ),
+                        )
+                      : InkWell(
+                          onTap: () {
+                            print("just tapped passion: ${renderPassions[index]}");
+                            // String SoshiUsername = LocalDataService.getLocalUsername();
+                            // DatabaseService DS = new DatabaseService(currSoshiUsernameIn: LocalDataService.getLocalUsername());
+                            // DS.updateUserPassions(LocalDataService.getLocalUsername(), newPassions)
+                            Navigator.pop(context, {
+                              'passion_emoji': passionsUtility.getEmoji(renderPassions[index]),
+                              'passion_name': renderPassions[index],
+                            });
+                          },
+                          child: Card(
+                            elevation: 3,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(10))),
+                            child:
+                                Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                              Text(passionsUtility.getEmoji(renderPassions[index]),
+                                  style: TextStyle(fontSize: 35)),
+                              Text(renderPassions[index], style: TextStyle(fontSize: 14))
+                            ]),
+                          ),
+                        );
                 },
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   // number of items per row
@@ -214,7 +240,7 @@ class RenderPassionList extends StatelessWidget {
                   crossAxisSpacing: 5,
                 ),
                 // number of items in your list
-                itemCount: renderPassions.length);
+                itemCount: renderPassions.length + 1);
           }
         });
   }
