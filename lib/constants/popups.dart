@@ -5,6 +5,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:glassmorphism/glassmorphism.dart';
+import 'package:soshi/constants/utilities.dart';
 import 'package:soshi/constants/widgets.dart';
 import 'package:soshi/screens/login/loading.dart';
 import 'package:soshi/services/analytics.dart';
@@ -13,8 +16,11 @@ import 'package:soshi/services/database.dart';
 import 'package:soshi/services/localData.dart';
 import 'package:http/http.dart' as http;
 import 'package:soshi/services/url.dart';
+import 'package:top_modal_sheet/top_modal_sheet.dart';
 // import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import '../screens/mainapp/friendScreen.dart';
+import '../screens/mainapp/groupScreen.dart';
+import '../screens/mainapp/viewGroupPage.dart';
 import 'constants.dart';
 //import 'package:google_fonts/google_fonts.dart';
 
@@ -29,8 +35,7 @@ class Popups {
       String username,
       double size = 70.0,
       BuildContext context}) {
-    return Container(
-        child: IconButton(
+    return IconButton(
       // splashColor: Colors.cyan[300],
       splashRadius: 55.0,
       icon: Image.asset(
@@ -64,8 +69,8 @@ class Popups {
             });
           } catch (e) {
             // if url is invalid, use default profile pic
-            ByteData data = await rootBundle
-                .load("assets/images/SoshiLogos/soshi_icon.png");
+            ByteData data =
+                await rootBundle.load("assets/images/misc/default_pic.png");
             profilePicBytes = data.buffer.asUint8List();
           }
           Contact newContact = new Contact(
@@ -113,7 +118,7 @@ class Popups {
         }
       },
       iconSize: size,
-    ));
+    );
   }
 
   static void platformSwitchesExplained(BuildContext context) {
@@ -152,42 +157,42 @@ class Popups {
         });
   }
 
-  static void twoWarSharingExplained(
-      BuildContext context, double width, double height) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(40.0))),
-            //backgroundColor: Colors.blueGrey[900],
-            title: Text(
-              "2 way sharing!",
-              style: TextStyle(
-                  // color: Colors.cyan[600],
-                  fontWeight: FontWeight.bold),
-            ),
-            content: Text(
-              ("When this switch is enabled, this means that when you share your QR code, you are added as a friend on their account AND they are added as a friend on yours!"),
-              style: TextStyle(
-                  fontSize: 20,
-                  // color: Colors.cyan[700],
-                  fontWeight: FontWeight.bold),
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: Text(
-                  'Ok',
-                  style: TextStyle(fontSize: 20, color: Colors.blue),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        });
-  }
+  // static void twoWarSharingExplained(
+  //     BuildContext context, double width, double height) {
+  //   showDialog(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return AlertDialog(
+  //           shape: RoundedRectangleBorder(
+  //               borderRadius: BorderRadius.all(Radius.circular(40.0))),
+  //           //backgroundColor: Colors.blueGrey[900],
+  //           title: Text(
+  //             "2 way sharing!",
+  //             style: TextStyle(
+  //                 // color: Colors.cyan[600],
+  //                 fontWeight: FontWeight.bold),
+  //           ),
+  //           content: Text(
+  //             ("When this switch is enabled, this means that when you share your QR code, you are added as a friend on their account AND they are added as a friend on yours!"),
+  //             style: TextStyle(
+  //                 fontSize: 20,
+  //                 // color: Colors.cyan[700],
+  //                 fontWeight: FontWeight.bold),
+  //           ),
+  //           actions: <Widget>[
+  //             TextButton(
+  //               child: Text(
+  //                 'Ok',
+  //                 style: TextStyle(fontSize: 20, color: Colors.blue),
+  //               ),
+  //               onPressed: () {
+  //                 Navigator.of(context).pop();
+  //               },
+  //             ),
+  //           ],
+  //         );
+  //       });
+  // }
 
   static void contactCardExplainedPopup(
       BuildContext context, double width, double height) {
@@ -331,13 +336,18 @@ class Popups {
         platformName == "Twitter" ||
         platformName == "Tiktok" ||
         platformName == "Discord" ||
-        platformName == "Spotify") {
+        platformName == "BeReal" ||
+        platformName == "CashApp" ||
+        platformName == "Vsco" ||
+        platformName == "OnlyFans") {
       hintText = "Username";
       indicator = "@";
     } else {
       if (platformName == "Facebook" ||
           platformName == "Linkedin" ||
-          platformName == "Personal") {
+          platformName == "Personal" ||
+          platformName == "Spotify" ||
+          platformName == "AppleMusic") {
         hintText = "Link To Profile";
         indicator = "https://";
       } else if (platformName == "Phone") {
@@ -360,7 +370,7 @@ class Popups {
         builder: (BuildContext context) {
           return AlertDialog(
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(40.0))),
+                borderRadius: BorderRadius.all(Radius.circular(30.0))),
             // backgroundColor: Colors.blueGrey[900],
             title: Text(
               platformName.contains("Cryptowallet")
@@ -373,13 +383,12 @@ class Popups {
             // ),
             content: Row(
               children: [
-                Text(
-                  indicator,
-                  style: TextStyle(
+                Text(indicator,
+                    style: TextStyle(
                       // color: Colors.white,
                       fontSize: width / 20,
-                      fontWeight: FontWeight.bold),
-                ),
+                      //fontWeight: FontWeight.bold
+                    )),
                 SizedBox(width: width / 40),
                 Expanded(
                   child: TextField(
@@ -389,9 +398,10 @@ class Popups {
                     autocorrect: false,
                     controller: usernameController,
                     style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: width / 20,
-                        color: Colors.cyan[300]),
+                      //fontWeight: FontWeight.bold,
+                      fontSize: width / 20,
+                      //color: Colors.cyan[300]
+                    ),
                     onSubmitted: (String inputText) {
                       LocalDataService.updateUsernameForPlatform(
                           platform: platformName, username: inputText);
@@ -400,72 +410,89 @@ class Popups {
                       Navigator.pop(context);
                     },
                     decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
+                      // enabledBorder: OutlineInputBorder(
+                      //   borderSide: BorderSide(
 
-                            // color: Colors.grey[600],
-                            ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.cyan[300],
-                        ),
-                      ),
-                      filled: true,
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      label: Text(platformName.contains("Cryptowallet")
-                          ? hintText
-                          : indicator),
-                      labelStyle: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        //color: Colors.black
+                      //       // color: Colors.grey[600],
+                      //       ),
+                      // ),
+                      // focusedBorder: OutlineInputBorder(
+                      //   borderSide: BorderSide(
+                      //     color: Colors.cyan[300],
+                      //   ),
+                      // ),
+                      filled: false,
+                      //floatingLabelBehavior: FloatingLabelBehavior.never,
+                      // label: Text(platformName.contains("Cryptowallet")
+                      //     ? hintText
+                      //     : indicator),
+                      // labelStyle: TextStyle(
+                      //   fontSize: 15,
+                      //   //color: Colors.black
 
-                        // \\\color: Colors.grey[400]),
-                      ),
+                      //   // \\\color: Colors.grey[400]),
+                      // ),
                       // fillColor: Colors.grey[850],
                       hintText: hintText,
                       hintStyle: TextStyle(
-                          color: Colors.grey[500],
-                          fontSize: 20,
-                          letterSpacing: 2,
-                          fontWeight: FontWeight.bold),
+                        color: Colors.grey[500],
+                        fontSize: width / 20,
+                      ),
                     ),
                   ),
                 ),
               ],
             ),
             actions: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  TextButton(
-                    child: Text(
-                      'Cancel',
-                      style: TextStyle(fontSize: width / 20, color: Colors.red),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+              Padding(
+                padding: EdgeInsets.only(right: width / 50),
+                child: TextButton(
+                  child: Text(
+                    'Done',
+                    style: TextStyle(fontSize: width / 20, color: Colors.blue),
                   ),
-                  TextButton(
-                    child: Text(
-                      'Done',
-                      style:
-                          TextStyle(fontSize: width / 20, color: Colors.blue),
-                    ),
-                    onPressed: () async {
-                      LocalDataService.updateUsernameForPlatform(
-                          platform: platformName,
-                          username: usernameController.text);
-                      databaseService.updateUsernameForPlatform(
-                          platform: platformName,
-                          username: usernameController.text);
-                      Navigator.pop(context);
-                    },
-                  ),
-                ],
+                  onPressed: () async {
+                    LocalDataService.updateUsernameForPlatform(
+                        platform: platformName,
+                        username: usernameController.text);
+                    databaseService.updateUsernameForPlatform(
+                        platform: platformName,
+                        username: usernameController.text);
+                    Navigator.pop(context);
+                  },
+                ),
               ),
+
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              //   children: <Widget>[
+              //     TextButton(
+              //       child: Text(
+              //         'Cancel',
+              //         style: TextStyle(fontSize: width / 20, color: Colors.red),
+              //       ),
+              //       onPressed: () {
+              //         Navigator.pop(context);
+              //       },
+              //     ),
+              //     TextButton(
+              //       child: Text(
+              //         'Done',
+              //         style:
+              //             TextStyle(fontSize: width / 20, color: Colors.blue),
+              //       ),
+              //       onPressed: () async {
+              //         LocalDataService.updateUsernameForPlatform(
+              //             platform: platformName,
+              //             username: usernameController.text);
+              //         databaseService.updateUsernameForPlatform(
+              //             platform: platformName,
+              //             username: usernameController.text);
+              //         Navigator.pop(context);
+              //       },
+              //     ),
+              //   ],
+              // ),
             ],
           );
         });
@@ -971,13 +998,10 @@ class Popups {
                           width: width,
                           padding: EdgeInsets.only(top: 10.0),
                           child: (visiblePlatforms.length > 0)
-                              ? GridView.builder(
-                                  padding: EdgeInsets.zero,
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 3),
-                                  scrollDirection: Axis.vertical,
-                                  itemBuilder: (BuildContext context, int i) {
+                              ? Wrap(
+                                  alignment: WrapAlignment.spaceEvenly,
+                                  children: List.generate(
+                                      visiblePlatforms.length, (i) {
                                     return createSMButton(
                                         soshiUsername: friendSoshiUsername,
                                         platform: visiblePlatforms[i],
@@ -985,9 +1009,28 @@ class Popups {
                                             usernames[visiblePlatforms[i]],
                                         size: width / 5,
                                         context: context);
-                                  },
-                                  itemCount: visiblePlatforms.length,
+                                  }),
                                 )
+
+                              // GridView.builder(
+                              //     padding: EdgeInsets.zero,
+                              //     gridDelegate:
+                              //         SliverGridDelegateWithFixedCrossAxisCount(
+                              //             crossAxisCount: 3),
+                              //     scrollDirection: Axis.vertical,
+                              //     itemBuilder: (BuildContext context, int i) {
+                              //       if (i == visiblePlatforms.length) {}
+
+                              //       return createSMButton(
+                              //           soshiUsername: friendSoshiUsername,
+                              //           platform: visiblePlatforms[i],
+                              //           username:
+                              //               usernames[visiblePlatforms[i]],
+                              //           size: width / 5,
+                              //           context: context);
+                              //     },
+                              //     itemCount: visiblePlatforms.length,
+                              //   )
                               : Center(
                                   child: Padding(
                                     padding: const EdgeInsets.all(15),
@@ -1518,38 +1561,234 @@ class Popups {
           );
         });
   }
+
+  static void showJoinGroupPopup(BuildContext context, String groupId) async {
+    double width = Utilities.getWidth(context);
+    // get group details
+    DatabaseService databaseService = DatabaseService(
+        currSoshiUsernameIn: LocalDataService.getLocalUsername());
+
+    Group group = await databaseService.getGroupData(groupId);
+
+    showModalBottomSheet(
+        backgroundColor: Colors.transparent,
+        context: context,
+        builder: (context) {
+          return JoinGroupPopup(width, databaseService, group);
+        });
+  }
+
+  static void displayNameErrorPopUp(String firstOrLast, BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(40.0))),
+            // backgroundColor: Colors.blueGrey[900],
+            title: Text(
+              "Error",
+              style: TextStyle(
+                  color: Colors.cyan[600], fontWeight: FontWeight.bold),
+            ),
+            content: Text(
+              ("$firstOrLast name must be between 1 and 12 characters"),
+              style: TextStyle(
+                //color: Colors.cyan[700],
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                  'Ok',
+                  style: TextStyle(fontSize: 20, color: Colors.blue),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  static void soshiPointsExplainedPopup(
+      BuildContext context, double width, double height) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Container(
+            child: AlertDialog(
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(40.0))),
+              title: Text(
+                "My Soshi Bolts",
+                style: TextStyle(fontSize: 25),
+                textAlign: TextAlign.center,
+              ),
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: NeumorphicIcon(CupertinoIcons.bolt_circle_fill,
+                        style: NeumorphicStyle(
+                            depth: 4,
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            shadowLightColor:
+                                Theme.of(context).brightness == Brightness.light
+                                    ? Colors.white
+                                    : Colors.black),
+                        size: width / 6),
+                  ),
+
+                  Text("You have " +
+                      LocalDataService.getSoshiPoints().toString() +
+                      " Soshi bolts.\n"),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "Customize your profile and make new friends to earn bolts!",
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.blue),
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(15.0))),
+                        height: height / 20,
+                        width: width / 1.1,
+                        child: Center(
+                            child: Text("Close",
+                                style: TextStyle(
+                                    color: Colors.blue, fontSize: width / 22))),
+                      ),
+                    ),
+                  ),
+                  // Text(
+                  //     "Who knows what you can get with these points in the future!")
+                ],
+              ),
+            ),
+          );
+        });
+  }
+}
+//}
+
+class JoinGroupPopup extends StatefulWidget {
+  double width;
+  DatabaseService databaseService;
+  Group group;
+  JoinGroupPopup(this.width, this.databaseService, this.group);
+
+  @override
+  State<JoinGroupPopup> createState() => _JoinGroupPopupState();
 }
 
-void displayNameErrorPopUp(String firstOrLast, BuildContext context) {
-  showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(40.0))),
-          // backgroundColor: Colors.blueGrey[900],
-          title: Text(
-            "Error",
-            style:
-                TextStyle(color: Colors.cyan[600], fontWeight: FontWeight.bold),
-          ),
-          content: Text(
-            ("$firstOrLast name must be between 1 and 12 characters"),
-            style: TextStyle(
-                //color: Colors.cyan[700],
-                fontWeight: FontWeight.bold),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text(
-                'Ok',
-                style: TextStyle(fontSize: 20),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+class _JoinGroupPopupState extends State<JoinGroupPopup> {
+  Group group;
+  double width;
+  DatabaseService databaseService;
+  bool hasJoined;
+  bool isJoining;
+  String username;
+  @override
+  void initState() {
+    this.width = widget.width;
+    this.group = widget.group;
+    this.databaseService = widget.databaseService;
+    username = LocalDataService.getLocalUsername();
+    hasJoined =
+        group.members.contains(username) || group.admin.contains(username);
+    isJoining = false;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(30.0),
+                topRight: Radius.circular(30.0))),
+        height: 250,
+        // color: Colors.white,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Column(
+              children: [
+                Hero(
+                    tag: group.id,
+                    child: RectangularProfilePic(
+                        radius: width / 3, url: group.photoURL)),
+                Text(group.name),
+              ],
             ),
+            ElevatedButton(
+                onPressed: () async {
+                  if (!isJoining) {
+                    if (hasJoined) {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return ViewGroupPage(
+                            group); // Returning the ResetPassword screen
+                      }));
+                    } else {
+                      HapticFeedback.mediumImpact();
+                      setState(() {
+                        isJoining = true;
+                      });
+                      await databaseService.joinGroup(group.id);
+                      setState(() {
+                        isJoining = false;
+                        hasJoined = true;
+                      });
+                    }
+                  }
+                },
+                child: Container(
+                    width: width / 3,
+                    child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: !isJoining
+                            ? Text(
+                                (hasJoined) ? "View Group" : "Join Group",
+                                style: TextStyle(
+                                    fontSize: 20.0,
+                                    color: Theme.of(context).brightness ==
+                                            Brightness.light
+                                        ? Colors.white
+                                        : Colors.black),
+                                textAlign: TextAlign.center,
+                              )
+                            : Center(child: CircularProgressIndicator()))),
+                style: ElevatedButton.styleFrom(
+                    primary: Theme.of(context).brightness != Brightness.light
+                        ? Colors.white
+                        : Colors.black,
+                    elevation: 8.0,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0)))),
+            GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Text("Close", style: TextStyle(color: Colors.blue)))
           ],
-        );
-      });
+        ));
+  }
 }

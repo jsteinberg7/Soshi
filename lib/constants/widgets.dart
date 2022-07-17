@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:share/share.dart';
 import 'package:soshi/constants/popups.dart';
 import 'package:soshi/constants/utilities.dart';
@@ -9,7 +12,7 @@ import 'package:soshi/services/auth.dart';
 import 'package:soshi/services/database.dart';
 import 'package:soshi/services/localData.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:soshi/services/url.dart';
+import 'package:soshi/services/nfc.dart';
 import 'constants.dart';
 
 /* Widget to build the profile picture and check if they are null */
@@ -27,19 +30,19 @@ class ProfilePic extends StatelessWidget {
     return Container(
       decoration: new BoxDecoration(
         shape: BoxShape.circle,
-        border: new Border.all(
-          color: Colors.cyanAccent,
-          width: radius / 30,
-        ),
+        // border: new Border.all(
+        //   color: Colors.cyanAccent,
+        //   width: radius / 30,
+        // ),
       ),
       child: CircularProfileAvatar(
         url,
         placeHolder: (b, c) {
-          return Image.asset('assets/images/SoshiLogos/soshi_icon.png');
+          return Image.asset('assets/images/misc/default_pic.png');
         },
         borderColor: Colors.black,
-        borderWidth: radius / 20,
-        elevation: 5,
+        borderWidth: radius / 40,
+        elevation: 0,
         radius: radius,
       ),
     );
@@ -65,6 +68,63 @@ class ProfilePic extends StatelessWidget {
   }
 }
 
+/* Widget to build the profile picture and check if they are null */
+class RectangularProfilePic extends StatelessWidget {
+  double customSize = 10.0;
+  String url = "";
+  bool defaultPic;
+  File file;
+  RectangularProfilePic(
+      {@required double radius,
+      @required String url,
+      bool defaultPic = false,
+      File file = null}) {
+    this.customSize = radius;
+    this.url = url;
+    this.defaultPic = defaultPic;
+    this.file = file;
+
+    // print("received url +" + url.toString());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 7,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+            // height: 110,
+            // width: 110,
+            height: customSize,
+            width: customSize,
+            child: (file == null)
+                ? ((url == "null" || url == null || url == "")
+                    ? Image.asset(
+                        (defaultPic)
+                            ? 'assets/images/misc/default_placeholder.png'
+                            : 'assets/images/SoshiLogos/soshi_icon.png',
+                        height: customSize,
+                        fit: BoxFit.cover,
+                      )
+                    : Image.network(
+                        url,
+                        height: customSize,
+                        fit: BoxFit.cover,
+                      ))
+                : (Image.file(
+                    file,
+                    height: customSize,
+                    fit: BoxFit.cover,
+                  ))),
+      ),
+    );
+  }
+}
+
 class SignOutButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -75,7 +135,8 @@ class SignOutButton extends StatelessWidget {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40.0))),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(40.0))),
               // backgroundColor: Colors.blueGrey[900],
               title: Text(
                 "Sign Out",
@@ -119,13 +180,35 @@ class SignOutButton extends StatelessWidget {
                         //   MaterialPageRoute(builder: (context) => MainApp()),
                         // );
                         Navigator.pushReplacement(
-                            context, MaterialPageRoute(builder: ((context) => NewIntroFlow())));
+                            context,
+                            MaterialPageRoute(
+                                builder: ((context) => NewIntroFlow())));
                       },
                     ),
                   ],
                 ),
               ],
             );
+          });
+    });
+  }
+}
+
+class ActivatePortalButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+
+    return Constants.makeBlueShadowButton("Activate Portal", Icons.tap_and_play,
+        () async {
+      showModalBottomSheet(
+          constraints:
+              BoxConstraints(minWidth: width / 1.1, maxWidth: width / 1.1),
+          backgroundColor: Colors.transparent,
+          context: context,
+          builder: (BuildContext context) {
+            return NFCWriter(height, width);
           });
     });
   }
@@ -201,9 +284,11 @@ class DeleteProfileButton extends StatelessWidget {
                               style: TextStyle(fontSize: 20, color: Colors.red),
                             ),
                             onPressed: () async {
-                              String soshiUsername = LocalDataService.getLocalUsername();
+                              String soshiUsername =
+                                  LocalDataService.getLocalUsername();
                               DatabaseService databaseService =
-                                  new DatabaseService(currSoshiUsernameIn: soshiUsername);
+                                  new DatabaseService(
+                                      currSoshiUsernameIn: soshiUsername);
                               await databaseService.deleteProfileData();
 
                               // wipe profile data in firestore
@@ -211,7 +296,8 @@ class DeleteProfileButton extends StatelessWidget {
                               Navigator.of(context).pop();
                               await authService
                                   .deleteProfile(); // delete user account from firebase
-                              LocalDataService.wipeSharedPreferences(); // clear local user data
+                              LocalDataService
+                                  .wipeSharedPreferences(); // clear local user data
                             },
                           ),
                         ],
@@ -241,14 +327,16 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
   @override
   Widget build(BuildContext context) {
     firstNameController.text = LocalDataService.getLocalFirstName();
-    firstNameController.selection =
-        TextSelection.fromPosition(TextPosition(offset: firstNameController.text.length));
+    firstNameController.selection = TextSelection.fromPosition(
+        TextPosition(offset: firstNameController.text.length));
     lastNameController.text = LocalDataService.getLocalLastName();
-    lastNameController.selection =
-        TextSelection.fromPosition(TextPosition(offset: lastNameController.text.length));
+    lastNameController.selection = TextSelection.fromPosition(
+        TextPosition(offset: lastNameController.text.length));
 
-    String soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
-    DatabaseService dbService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
+    String soshiUsername =
+        LocalDataService.getLocalUsernameForPlatform("Soshi");
+    DatabaseService dbService =
+        new DatabaseService(currSoshiUsernameIn: soshiUsername);
 
     // firstNameFN.addListener(() {
     //   if (!firstNameFN.hasFocus) {
@@ -295,7 +383,8 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
             ),
             onSubmitted: (String inputText) {
               if (inputText.length > 0 && inputText.length <= 12) {
-                LocalDataService.updateFirstName(firstNameController.text.trim());
+                LocalDataService.updateFirstName(
+                    firstNameController.text.trim());
                 LocalDataService.updateLastName(lastNameController.text.trim());
 
                 dbService.updateDisplayName(
@@ -303,7 +392,7 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
                     lastNameParam: lastNameController.text.trim());
                 print(firstName + lastName);
               } else {
-                displayNameErrorPopUp("First", context);
+                Popups.displayNameErrorPopUp("First", context);
               }
             },
             decoration: InputDecoration(
@@ -319,14 +408,17 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
               ),
               prefixIcon: Icon(
                 Icons.person,
-                color:
-                    Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.black
+                    : Colors.white,
               ),
               filled: true,
               floatingLabelBehavior: FloatingLabelBehavior.always,
               label: Text("First"),
-              labelStyle:
-                  TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.grey[400]),
+              labelStyle: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                  color: Colors.grey[400]),
               // fillColor: Colors.grey[850],
               hintText: "First Name",
               hintStyle: TextStyle(
@@ -345,20 +437,23 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 15,
-              color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+              color: Theme.of(context).brightness == Brightness.light
+                  ? Colors.black
+                  : Colors.white,
             ),
             controller: lastNameController,
             onSubmitted: (String text) {
               if (text.length > 0 && text.length <= 12) {
                 LocalDataService.updateLastName(lastNameController.text.trim());
-                LocalDataService.updateFirstName(firstNameController.text.trim());
+                LocalDataService.updateFirstName(
+                    firstNameController.text.trim());
 
                 dbService.updateDisplayName(
                     firstNameParam: firstNameController.text.trim(),
                     lastNameParam: lastNameController.text.trim());
                 print(firstName + lastName);
               } else {
-                displayNameErrorPopUp("Last", context);
+                Popups.displayNameErrorPopUp("Last", context);
               }
             },
             decoration: InputDecoration(
@@ -374,18 +469,24 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
               ),
               prefixIcon: Icon(
                 Icons.person,
-                color:
-                    Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.black
+                    : Colors.white,
               ),
               filled: true,
               floatingLabelBehavior: FloatingLabelBehavior.always,
               label: Text("Last"),
-              labelStyle:
-                  TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.grey[400]),
+              labelStyle: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                  color: Colors.grey[400]),
               //fillColor: Colors.grey[850],
               hintText: "Last Name",
               hintStyle: TextStyle(
-                  color: Colors.black, fontSize: 12, letterSpacing: 2, fontWeight: FontWeight.bold),
+                  color: Colors.black,
+                  fontSize: 12,
+                  letterSpacing: 2,
+                  fontWeight: FontWeight.bold),
             ),
           ),
         ),
@@ -407,7 +508,9 @@ class _ReturnNumConnectionsState extends State<ReturnNumConnections> {
     if (connectionsCount.toString() == "1") {
       return Text("1 friend",
           style: TextStyle(
-            color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+            color: Theme.of(context).brightness == Brightness.light
+                ? Colors.black
+                : Colors.white,
             letterSpacing: 2.0,
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -415,7 +518,9 @@ class _ReturnNumConnectionsState extends State<ReturnNumConnections> {
     }
     return Text(connectionsCount.toString() + " friends",
         style: TextStyle(
-          color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+          color: Theme.of(context).brightness == Brightness.light
+              ? Colors.black
+              : Colors.white,
           letterSpacing: 2.0,
           fontSize: 20,
           fontWeight: FontWeight.bold,
@@ -426,18 +531,25 @@ class _ReturnNumConnectionsState extends State<ReturnNumConnections> {
 class ShareButton extends StatelessWidget {
   double size;
   String soshiUsername;
+  String groupId;
 
-  ShareButton({this.size, this.soshiUsername});
+  ShareButton({this.size, this.soshiUsername, this.groupId});
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(shape: CircleBorder()),
       onPressed: () {
-        Share.share("https://soshi.app/" + soshiUsername,
-            subject: LocalDataService.getLocalFirstName() +
-                " " +
-                LocalDataService.getLocalLastName() +
-                "'s Soshi Contact Card");
+        if (groupId == null) {
+          Share.share("https://soshi.app/deeplink/user/" + soshiUsername,
+              subject: LocalDataService.getLocalFirstName() +
+                  " " +
+                  LocalDataService.getLocalLastName() +
+                  "'s Soshi Contact Card");
+        } else {
+          Share.share(
+            "https://soshi.app/deeplink/group/" + groupId,
+          );
+        }
       },
       child: Icon(Icons.share, size: size),
     );
@@ -470,7 +582,8 @@ class CustomThreeInOut extends StatefulWidget {
   _CustomThreeInOutState createState() => _CustomThreeInOutState();
 }
 
-class _CustomThreeInOutState extends State<CustomThreeInOut> with SingleTickerProviderStateMixin {
+class _CustomThreeInOutState extends State<CustomThreeInOut>
+    with SingleTickerProviderStateMixin {
   AnimationController _controller;
 
   List<Widget> _widgets;
@@ -492,7 +605,8 @@ class _CustomThreeInOutState extends State<CustomThreeInOut> with SingleTickerPr
       ),
     );
 
-    _controller = widget.controller ?? AnimationController(vsync: this, duration: widget.duration);
+    _controller = widget.controller ??
+        AnimationController(vsync: this, duration: widget.duration);
 
     _controller.forward();
 
@@ -504,7 +618,8 @@ class _CustomThreeInOutState extends State<CustomThreeInOut> with SingleTickerPr
       _lastAnim = _controller.value;
 
       if (_controller.isCompleted) {
-        _forwardTimer = Timer(widget.delay, () => _controller?.forward(from: 0));
+        _forwardTimer =
+            Timer(widget.delay, () => _controller?.forward(from: 0));
       }
     });
   }
@@ -570,7 +685,9 @@ class _CustomThreeInOutState extends State<CustomThreeInOut> with SingleTickerPr
 
   Widget _itemBuilder(int index) => widget.itemBuilder != null
       ? widget.itemBuilder(context, index)
-      : DecoratedBox(decoration: BoxDecoration(color: widget.color, shape: BoxShape.circle));
+      : DecoratedBox(
+          decoration:
+              BoxDecoration(color: widget.color, shape: BoxShape.circle));
 }
 
 ///CircularProfileAvatar allows developers to implement circular profile avatar with border,
@@ -681,7 +798,8 @@ class _CircularProfileAvatarState extends State<CircularProfileAvatar> {
             width: widget.radius * 2,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(widget.radius),
-              border: Border.all(width: widget.borderWidth, color: widget.borderColor),
+              border: Border.all(
+                  width: widget.borderWidth, color: widget.borderColor),
             ),
             child: Center(
               child: Container(
@@ -699,7 +817,8 @@ class _CircularProfileAvatarState extends State<CircularProfileAvatar> {
                                     Container(
                                       decoration: BoxDecoration(
                                         color: widget.foregroundColor,
-                                        borderRadius: BorderRadius.circular(widget.radius),
+                                        borderRadius: BorderRadius.circular(
+                                            widget.radius),
                                       ),
                                     ),
                                     _initialsText,
@@ -727,25 +846,29 @@ class _CircularProfileAvatarState extends State<CircularProfileAvatar> {
     );
   }
 
-  Widget profileImage() {
+  Widget profileImage({bool circular = true}) {
     return widget.cacheImage
         ? ClipRRect(
-            borderRadius: BorderRadius.circular(widget.radius),
-            child:
-                ((widget.imageUrl != null) && widget.imageUrl != "null" && widget.imageUrl != null)
-                    ? CachedNetworkImage(
-                        fit: widget.imageFit,
-                        imageUrl: widget.imageUrl,
-                        errorWidget: widget.errorWidget,
-                        placeholder: widget.placeHolder,
-                        imageBuilder: widget.imageBuilder,
-                        progressIndicatorBuilder: widget.progressIndicatorBuilder,
-                        useOldImageOnUrlChange: widget.animateFromOldImageOnUrlChange ?? false,
-                      )
-                    : Image.asset(
-                        'assets/images/SoshiLogos/soshi_icon.png',
-                        fit: widget.imageFit,
-                      ),
+            borderRadius: circular
+                ? BorderRadius.circular(widget.radius)
+                : BorderRadius.zero,
+            child: ((widget.imageUrl != null) &&
+                    widget.imageUrl != "null" &&
+                    widget.imageUrl != null)
+                ? CachedNetworkImage(
+                    fit: widget.imageFit,
+                    imageUrl: widget.imageUrl,
+                    errorWidget: widget.errorWidget,
+                    placeholder: widget.placeHolder,
+                    imageBuilder: widget.imageBuilder,
+                    progressIndicatorBuilder: widget.progressIndicatorBuilder,
+                    useOldImageOnUrlChange:
+                        widget.animateFromOldImageOnUrlChange ?? false,
+                  )
+                : Image.asset(
+                    'assets/images/misc/default_pic.png',
+                    fit: widget.imageFit,
+                  ),
           )
         : ClipRRect(
             borderRadius: BorderRadius.circular(widget.radius),
@@ -755,7 +878,7 @@ class _CircularProfileAvatarState extends State<CircularProfileAvatar> {
                     fit: widget.imageFit,
                   )
                 : Image.asset(
-                    'assets/images/SoshiLogos/soshi_icon.png',
+                    'assets/images/misc/default_pic.png',
                     fit: widget.imageFit,
                   ));
   }
@@ -764,59 +887,97 @@ class _CircularProfileAvatarState extends State<CircularProfileAvatar> {
 class SoshiAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
     return AppBar(
-      leadingWidth: 100,
-      actions: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-          child: ElevatedButton(
-            onPressed: () {
-              URL.launchURL("sms:" + "5713351885");
-            },
-            style: ElevatedButton.styleFrom(
-                // primary: Theme.of(context).primaryColor,
-                //shadowColor: Colors.grey[900],
-                shape:
-                    RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0)))),
-            child: Row(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Send",
-                        style:
-                            TextStyle(fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1)),
-                    Text("feedback!",
-                        style:
-                            TextStyle(fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1)),
-                  ],
-                ),
-                // Icon(
-                //   Icons.feedback,
-                //   color: Colors.cyan[300],
-                //   size: 10,
-                // ),
-              ],
-            ),
+      systemOverlayStyle: SystemUiOverlayStyle(
+        // Status bar color
+        statusBarColor: Colors.transparent,
 
-            // Icon(Icons.person_rounded,
-            //     color: Colors.cyan[300], size: 10.0),
-          ),
-        ),
-      ],
+        // Status bar brightness (optional)
+        statusBarIconBrightness: Brightness.dark, // For Android (dark icons)
+        statusBarBrightness: Brightness.light, // For iOS (dark icons)
+      ),
+      leadingWidth: 100,
+      // actions: [
+      //   Padding(
+      //     padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+      //     child: ElevatedButton(
+      //       onPressed: () {
+      //         URL.launchURL("sms:" + "5713351885");
+      //       },
+      //       style: ElevatedButton.styleFrom(
+      //           // primary: Theme.of(context).primaryColor,
+      //           //shadowColor: Colors.grey[900],
+      //           shape: RoundedRectangleBorder(
+      //               borderRadius: BorderRadius.all(Radius.circular(15.0)))),
+      //       child: Row(
+      //         children: [
+      //           Column(
+      //             crossAxisAlignment: CrossAxisAlignment.center,
+      //             mainAxisAlignment: MainAxisAlignment.center,
+      //             children: [
+      //               Text("Send",
+      //                   style: TextStyle(
+      //                       fontSize: 10,
+      //                       fontWeight: FontWeight.bold,
+      //                       letterSpacing: 1)),
+      //               Text("feedback!",
+      //                   style: TextStyle(
+      //                       fontSize: 10,
+      //                       fontWeight: FontWeight.bold,
+      //                       letterSpacing: 1)),
+      //             ],
+      //           ),
+      //           // Icon(
+      //           //   Icons.feedback,
+      //           //   color: Colors.cyan[300],
+      //           //   size: 10,
+      //           // ),
+      //         ],
+      //       ),
+
+      //       // Icon(Icons.person_rounded,
+      //       //     color: Colors.cyan[300], size: 10.0),
+      //     ),
+      //   ),
+      // ],
       elevation: 5,
       shadowColor: Colors.cyan,
-      title: Image.asset(
-        Theme.of(context).brightness == Brightness.light
-            ? "assets/images/SoshiLogos/soshi_logo_black.png"
-            : "assets/images/SoshiLogos/soshi_logo.png",
-        height: Utilities.getHeight(context) / 22,
+      title: Padding(
+        padding: EdgeInsets.zero,
+        child: Image.asset(
+          "assets/images/SoshiLogos/SoshiBubbleLogo.png",
+          // Theme.of(context).brightness == Brightness.light
+          //     ? "assets/images/SoshiLogos/soshi_logo_black.png"
+          //     : "assets/images/SoshiLogos/soshi_logo.png",
+
+          height: Utilities.getHeight(context) / 17,
+        ),
       ),
-      backgroundColor: Theme.of(context).brightness == Brightness.light
-          ? Theme.of(context).appBarTheme.backgroundColor
-          : Colors.grey[900],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       centerTitle: true,
     );
+  }
+}
+
+class PassionBubble extends StatelessWidget {
+  String passion;
+
+  PassionBubble(this.passion);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        decoration: BoxDecoration(
+            border: Border.all(
+              color: Theme.of(context).brightness == Brightness.light
+                  ? Colors.black
+                  : Colors.white,
+            ),
+            borderRadius: BorderRadius.circular(20.0)),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(passion),
+        ));
   }
 }

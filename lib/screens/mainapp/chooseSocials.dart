@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:soshi/screens/login/loading.dart';
+import 'package:soshi/screens/mainapp/editHandles.dart';
 import 'package:soshi/screens/mainapp/qrCode.dart';
 import 'package:soshi/services/contacts.dart';
 import 'package:soshi/services/database.dart';
@@ -147,105 +149,101 @@ class _ChooseSocialsState extends State<ChooseSocials> {
     List<String> choosePlatforms = LocalDataService.getLocalChoosePlatforms();
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: Icon(CupertinoIcons.back),
+        ),
+
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: width / 150),
+            child: TextButton(
+              style: ButtonStyle(
+                  overlayColor: MaterialStateProperty.all(Colors.transparent)),
+              child: Text(
+                "Done",
+                style: TextStyle(color: Colors.blue, fontSize: width / 23),
+              ),
+              onPressed: () async {
+                DialogBuilder dialogBuilder = new DialogBuilder(context);
+                dialogBuilder.showLoadingIndicator();
+
+                /* this accounts for the edge case where there is a platform that 
+            is in both profile platforms and choose socials. (only seen on emula)
+            */
+                for (int i = 0; i < Queue.choosePlatformsQueue.length; i++) {
+                  if (LocalDataService.getLocalProfilePlatforms()
+                      .contains(Queue.choosePlatformsQueue[i])) {
+                    Queue.filteredChoosePlatformsQueue
+                        .add(Queue.choosePlatformsQueue[i]);
+                    Queue.choosePlatformsQueue
+                        .remove(Queue.choosePlatformsQueue[i]);
+                  }
+                }
+                LocalDataService.removeFromChoosePlatforms(
+                    Queue.filteredChoosePlatformsQueue);
+
+                // if platform has username, turn switch on
+                for (String platform in Queue.choosePlatformsQueue) {
+                  String username =
+                      LocalDataService.getLocalUsernameForPlatform(platform);
+                  if (username != null && username.length != 0) {
+                    // turn switch on
+                    await LocalDataService.updateSwitchForPlatform(
+                        platform: platform, state: true);
+                    await databaseService.updatePlatformSwitch(
+                        platform: platform, state: true);
+                  }
+                }
+
+                await LocalDataService.addPlatformsToProfile(
+                    Queue.choosePlatformsQueue);
+                // check if contact card is being added
+                if (Queue.choosePlatformsQueue.contains("Contact")) {
+                  await databaseService.updateContactCard();
+                }
+                dialogBuilder.hideOpenDialog(); // disable loading indicator
+                refreshProfile();
+                Navigator.maybePop(context); // return to profile screen
+                LocalDataService.removeFromChoosePlatforms(
+                    Queue.choosePlatformsQueue);
+                databaseService
+                    .addPlatformsToProfile(Queue.choosePlatformsQueue);
+                databaseService
+                    .removeFromChoosePlatforms(Queue.choosePlatformsQueue);
+
+                Navigator.pop(context);
+                // await Navigator.push(context,
+                //     MaterialPageRoute(builder: (context) {
+                //   return Scaffold(
+                //       body: EditHandles(
+                //     soshiUsername:
+                //         LocalDataService.getLocalUsernameForPlatform("Soshi"),
+                //   ));
+                // }));
+              },
+            ),
+          )
+        ],
         elevation: 10,
         shadowColor: Colors.cyan,
         title: Text(
-          "Add Platform",
+          "Add Platforms",
           style: TextStyle(
-              color: Theme.of(context).brightness == Brightness.light
-                  ? Colors.black
-                  : Colors.white,
-              fontSize: 25,
-              letterSpacing: 2,
-              fontWeight: FontWeight.bold,
-              fontStyle: FontStyle.italic),
+            // color: Colors.cyan[200],
+            letterSpacing: 1,
+            fontSize: width / 18,
+            fontWeight: FontWeight.bold,
+            //fontStyle: FontStyle.italic
+          ),
         ),
         // backgroundColor: Colors.grey[850],
         centerTitle: true,
       ),
-      floatingActionButton: Align(
-        alignment: Alignment.bottomRight,
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-              elevation: 7.0,
-              shadowColor: Colors.cyan,
-              shape: RoundedRectangleBorder(
-                  borderRadius: new BorderRadius.circular(30))),
-
-          //style: ElevatedButton.styleFrom(side: BorderSide(width: 5.0, color: Colors.red,)),
-          //color: Colors.grey[500],
-          //elevation: 20,
-          onPressed: () async {
-            DialogBuilder dialogBuilder = new DialogBuilder(context);
-            dialogBuilder.showLoadingIndicator();
-
-            /* this accounts for the edge case where there is a platform that 
-            is in both profile platforms and choose socials. (only seen on emula)
-            */
-            for (int i = 0; i < Queue.choosePlatformsQueue.length; i++) {
-              if (LocalDataService.getLocalProfilePlatforms()
-                  .contains(Queue.choosePlatformsQueue[i])) {
-                Queue.filteredChoosePlatformsQueue
-                    .add(Queue.choosePlatformsQueue[i]);
-                Queue.choosePlatformsQueue
-                    .remove(Queue.choosePlatformsQueue[i]);
-              }
-            }
-            LocalDataService.removeFromChoosePlatforms(
-                Queue.filteredChoosePlatformsQueue);
-
-            // if platform has username, turn switch on
-            for (String platform in Queue.choosePlatformsQueue) {
-              String username =
-                  LocalDataService.getLocalUsernameForPlatform(platform);
-              if (username != null && username.length != 0) {
-                // turn switch on
-                await LocalDataService.updateSwitchForPlatform(
-                    platform: platform, state: true);
-                await databaseService.updatePlatformSwitch(
-                    platform: platform, state: true);
-              }
-            }
-
-            await LocalDataService.addPlatformsToProfile(
-                Queue.choosePlatformsQueue);
-            // check if contact card is being added
-            if (Queue.choosePlatformsQueue.contains("Contact")) {
-              await databaseService.updateContactCard();
-            }
-            dialogBuilder.hideOpenDialog(); // disable loading indicator
-            refreshProfile();
-            Navigator.maybePop(context); // return to profile screen
-            LocalDataService.removeFromChoosePlatforms(
-                Queue.choosePlatformsQueue);
-            databaseService.addPlatformsToProfile(Queue.choosePlatformsQueue);
-            databaseService
-                .removeFromChoosePlatforms(Queue.choosePlatformsQueue);
-          },
-          //padding: EdgeInsets.all(15.0),
-          // shape: RoundedRectangleBorder(
-          //     borderRadius: BorderRadius.circular(30.0),
-          //     side: BorderSide(color: Colors.cyan[400])),
-          // color: Colors.grey[300],
-          child: Padding(
-            padding: EdgeInsets.all(width / 25.0),
-            child: Text(
-              'Add to profile',
-              style: TextStyle(
-                //color: Color(0xFF527DAA),
-                // color: Colors.black,
-                letterSpacing: 2,
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'OpenSans',
-              ),
-            ),
-          ),
-        ),
-      ),
-      // backgroundColor: Colors.grey[900],
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(15, 15, 15, 110),
+        padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
         child: ListView.builder(
             itemBuilder: (BuildContext context, int index) {
               return Padding(
