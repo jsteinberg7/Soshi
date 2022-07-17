@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 
@@ -31,12 +30,10 @@ class DatabaseService {
   }
 
   // store reference to all user files
-  CollectionReference usersCollection =
-      FirebaseFirestore.instance.collection("users");
+  CollectionReference usersCollection = FirebaseFirestore.instance.collection("users");
 
   // store reference to all group files
-  CollectionReference groupsCollection =
-      FirebaseFirestore.instance.collection("groups");
+  CollectionReference groupsCollection = FirebaseFirestore.instance.collection("groups");
 
   // store reference to all email-username link files
   CollectionReference emailToUsernameCollection =
@@ -44,13 +41,10 @@ class DatabaseService {
   /*
   Creates file for new user
   */
-  Future<void> createUserFile(
-      {String username, String email, String first, String last}) async {
+  Future<void> createUserFile({String username, String email, String first, String last}) async {
     var links = FirebaseDynamicLinks.instance; // register dynamic link
     // links.buildShortLink(DynamicLinkParameters(link: link, uriPrefix: uriPrefix));
-    await emailToUsernameCollection
-        .doc(email)
-        .set(<String, dynamic>{"soshiUsername": username});
+    await emailToUsernameCollection.doc(email).set(<String, dynamic>{"soshiUsername": username});
     String phoneNumber = await SmsAutoFill().hint;
     await usersCollection.doc(currSoshiUsername).set(<String, dynamic>{
       "Name": {"First": first, "Last": last},
@@ -145,8 +139,7 @@ class DatabaseService {
   Friend userDataToFriend(Map userData) {
     return new Friend(
         fullName: getFullName(userData),
-        soshiUsername:
-            getUsernameForPlatform(userData: userData, platform: "Soshi"),
+        soshiUsername: getUsernameForPlatform(userData: userData, platform: "Soshi"),
         photoURL: getPhotoURL(userData),
         isVerified: getVerifiedStatus(userData),
         switches: getUserSwitches(userData),
@@ -159,10 +152,7 @@ class DatabaseService {
 
   Future<List<dynamic>> getVerifiedUsers() async {
     List<dynamic> verifiedUsers;
-    await usersCollection
-        .doc("#Verified Users")
-        .get()
-        .then((DocumentSnapshot ds) {
+    await usersCollection.doc("#Verified Users").get().then((DocumentSnapshot ds) {
       Map data = ds.data();
       verifiedUsers = data["Verified Users"];
     });
@@ -176,8 +166,7 @@ class DatabaseService {
   // see following reference: https://pub.dev/packages/cloud_firestore/example
 
   // updates username for specified social media platform
-  Future<void> updateUsernameForPlatform(
-      {String platform, String username}) async {
+  Future<void> updateUsernameForPlatform({String platform, String username}) async {
     // get user data
     Map userData = await getUserFile(currSoshiUsername);
     // get current map of usernames
@@ -185,9 +174,7 @@ class DatabaseService {
     // update local map to reflect change
     usernamesMap[platform] = username;
     // update database to reflect local map change
-    await usersCollection
-        .doc(currSoshiUsername)
-        .update({"Usernames": usernamesMap});
+    await usersCollection.doc(currSoshiUsername).update({"Usernames": usernamesMap});
     // if email or phone is updated, update contact card vcf
     if (platform == "Email" || platform == "Phone") {
       await updateContactCard();
@@ -197,19 +184,14 @@ class DatabaseService {
   // updates switch for given platform
   Future<void> updatePlatformSwitch({String platform, bool state}) async {
     Map<String, dynamic> switches;
-    await usersCollection
-        .doc(currSoshiUsername)
-        .get()
-        .then((DocumentSnapshot ds) {
+    await usersCollection.doc(currSoshiUsername).get().then((DocumentSnapshot ds) {
       Map data = ds.data();
       switches = data["Switches"];
     });
     // update map locally
     switches["$platform"] = state;
     // upload change to database
-    return await usersCollection
-        .doc(currSoshiUsername)
-        .update({"Switches": switches});
+    return await usersCollection.doc(currSoshiUsername).update({"Switches": switches});
   }
 
   // upload selected image to Firebse Storage, return URL
@@ -218,19 +200,13 @@ class DatabaseService {
     // upload image
     File file = new File(image.path);
     if (groupId != null) {
-      await firebaseStorage
-          .ref()
-          .child("Profile Pictures/" + groupId)
-          .putFile(file);
+      await firebaseStorage.ref().child("Profile Pictures/" + groupId).putFile(file);
       return await FirebaseStorage.instance
           .ref()
           .child("Profile Pictures/" + groupId)
           .getDownloadURL();
     } else {
-      await firebaseStorage
-          .ref()
-          .child("Profile Pictures/" + currSoshiUsername)
-          .putFile(file);
+      await firebaseStorage.ref().child("Profile Pictures/" + currSoshiUsername).putFile(file);
       return await FirebaseStorage.instance
           .ref()
           .child("Profile Pictures/" + currSoshiUsername)
@@ -247,9 +223,7 @@ class DatabaseService {
   Future<String> uploadContactCard(VCard vCard) async {
     FirebaseStorage firebaseStorage = FirebaseStorage.instance;
     File file = await vCard.generateVcf(currSoshiUsername);
-    dynamic child = firebaseStorage
-        .ref()
-        .child("VCards/$currSoshiUsername Contact Card.vcf");
+    dynamic child = firebaseStorage.ref().child("VCards/$currSoshiUsername Contact Card.vcf");
     await child.putFile(file); // upload vCard to Firebase Storage
     return await child.getDownloadURL();
   }
@@ -266,8 +240,7 @@ class DatabaseService {
     // upload contact card to firebase storage
     String vcfLink = await uploadContactCard(vCard);
     // set link in database to point toward storage
-    LocalDataService.updateUsernameForPlatform(
-        platform: "Contact", username: vcfLink);
+    LocalDataService.updateUsernameForPlatform(platform: "Contact", username: vcfLink);
 
     updateUsernameForPlatform(platform: "Contact", username: vcfLink);
   }
@@ -277,8 +250,7 @@ class DatabaseService {
   */
   // add new friend to current user's friend list
   Future<void> addFriend(
-      {@required String thisSoshiUsername,
-      @required String friendSoshiUsername}) async {
+      {@required String thisSoshiUsername, @required String friendSoshiUsername}) async {
     // get copy of current friends list
     List<dynamic> friendsList = await getFriends(thisSoshiUsername);
 
@@ -294,17 +266,13 @@ class DatabaseService {
       }
     }
 
-    await usersCollection
-        .doc(thisSoshiUsername)
-        .update({"Friends": friendsList});
+    await usersCollection.doc(thisSoshiUsername).update({"Friends": friendsList});
 
     // usersCollection.doc(friendSoshiUsername).update({"Added Me": addedMeList})
   }
 
   Future<void> overwriteFriendsList(List<String> newFriendsList) async {
-    await usersCollection
-        .doc(currSoshiUsername)
-        .update({"Friends": newFriendsList});
+    await usersCollection.doc(currSoshiUsername).update({"Friends": newFriendsList});
   }
 
   Future<void> setFriendsListReformatted(bool hasReformatted) async {
@@ -321,18 +289,13 @@ class DatabaseService {
     // remove friend from local list
     friendsList.remove(friendSoshiUsername);
     // update database to reflect change
-    await usersCollection
-        .doc(currSoshiUsername)
-        .update({"Friends": friendsList});
+    await usersCollection.doc(currSoshiUsername).update({"Friends": friendsList});
   }
 
   // return list of friends for current user (for use with friends screen)
   Future<List<dynamic>> getFriends(String currSoshiUsernameParam) async {
     List<dynamic> friendsList;
-    await usersCollection
-        .doc(currSoshiUsernameParam)
-        .get()
-        .then((DocumentSnapshot ds) {
+    await usersCollection.doc(currSoshiUsernameParam).get().then((DocumentSnapshot ds) {
       Map data = ds.data();
       friendsList = data["Friends"];
     });
@@ -348,10 +311,7 @@ class DatabaseService {
   // return list of friends for current user (for use with friends screen)
   Future<List<dynamic>> getAddedMeList(String othercurrSoshiUsername) async {
     List<dynamic> addedMeList;
-    await usersCollection
-        .doc(othercurrSoshiUsername)
-        .get()
-        .then((DocumentSnapshot ds) {
+    await usersCollection.doc(othercurrSoshiUsername).get().then((DocumentSnapshot ds) {
       Map data = ds.data();
       addedMeList = data["Added Me"];
     });
@@ -373,9 +333,7 @@ class DatabaseService {
       addedMeList.add(othercurrSoshiUsername);
     }
 
-    return await usersCollection
-        .doc(currSoshiUsername)
-        .update({"Added Me": addedMeList});
+    return await usersCollection.doc(currSoshiUsername).update({"Added Me": addedMeList});
   }
 
   // remove friend from current user's friend list
@@ -386,9 +344,7 @@ class DatabaseService {
     // remove friend from local list
     addedMeList.remove(friendcurrSoshiUsername);
     // update database to reflect change
-    await usersCollection
-        .doc(currSoshiUsername)
-        .update({"Added Me": addedMeList});
+    await usersCollection.doc(currSoshiUsername).update({"Added Me": addedMeList});
   }
 
   /*
@@ -433,8 +389,7 @@ class DatabaseService {
   }
 
   // return username for specified platform
-  String getUsernameForPlatform(
-      {@required Map userData, @required String platform}) {
+  String getUsernameForPlatform({@required Map userData, @required String platform}) {
     String username;
     Map<String, dynamic> profileNamesMap = getUserProfileNames(userData);
     username = profileNamesMap[platform];
@@ -465,10 +420,7 @@ class DatabaseService {
 
   Future<List<dynamic>> getProfilePlatforms() async {
     dynamic data;
-    await usersCollection
-        .doc(currSoshiUsername)
-        .get()
-        .then((DocumentSnapshot ds) {
+    await usersCollection.doc(currSoshiUsername).get().then((DocumentSnapshot ds) {
       data = ds.data();
     });
     return data["Profile Platforms"];
@@ -476,10 +428,7 @@ class DatabaseService {
 
   Future<List<dynamic>> getChoosePlatforms() async {
     dynamic data;
-    await usersCollection
-        .doc(currSoshiUsername)
-        .get()
-        .then((DocumentSnapshot ds) {
+    await usersCollection.doc(currSoshiUsername).get().then((DocumentSnapshot ds) {
       data = ds.data();
     });
     return data["Choose Platforms"];
@@ -538,8 +487,7 @@ class DatabaseService {
     return firstName;
   }
 
-  Future<void> updateDisplayName(
-      {String firstNameParam, String lastNameParam}) async {
+  Future<void> updateDisplayName({String firstNameParam, String lastNameParam}) async {
     Map userData = await getUserFile(currSoshiUsername);
     //get current map of display name
     Map<String, dynamic> displayNameMap = getFullNameMap(userData);
@@ -547,9 +495,7 @@ class DatabaseService {
     displayNameMap["First"] = firstNameParam;
     displayNameMap["Last"] = lastNameParam;
     //update to databse to reflect local map changes
-    await usersCollection
-        .doc(currSoshiUsername)
-        .update({"Name": displayNameMap});
+    await usersCollection.doc(currSoshiUsername).update({"Name": displayNameMap});
     // update contact card vcf in database if name is changed
     await updateContactCard();
   }
@@ -578,18 +524,14 @@ class DatabaseService {
   // pass in currSoshiUsername, return (Map) of full name of user
   Future<String> getSoshiUsernameForLogin({String email}) async {
     String currSoshiUsername;
-    await emailToUsernameCollection
-        .doc(email)
-        .get()
-        .then((DocumentSnapshot ds) {
+    await emailToUsernameCollection.doc(email).get().then((DocumentSnapshot ds) {
       Map data = ds.data();
       currSoshiUsername = data["soshiUsername"];
     });
     return currSoshiUsername;
   }
 
-  Future<File> cropImage(String path,
-      {CropStyle cropStyle = CropStyle.circle}) async {
+  Future<File> cropImage(String path, {CropStyle cropStyle = CropStyle.circle}) async {
     return (await ImageCropper().cropImage(
         cropStyle: cropStyle,
         sourcePath: path,
@@ -597,8 +539,7 @@ class DatabaseService {
         maxHeight: 700,
         maxWidth: 700,
         compressFormat: ImageCompressFormat.jpg,
-        androidUiSettings: AndroidUiSettings(
-            toolbarColor: Colors.cyan, toolbarTitle: "Crop Image"),
+        androidUiSettings: AndroidUiSettings(toolbarColor: Colors.cyan, toolbarTitle: "Crop Image"),
         iosUiSettings: IOSUiSettings(
           title: "Crop Image",
         )));
@@ -611,10 +552,8 @@ class DatabaseService {
     if (passedInImage != null) {
       File croppedImage = await cropImage(passedInImage.path);
 
-      String currSoshiUsername =
-          LocalDataService.getLocalUsernameForPlatform("Soshi");
-      DatabaseService databaseService =
-          new DatabaseService(currSoshiUsernameIn: currSoshiUsername);
+      String currSoshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
+      DatabaseService databaseService = new DatabaseService(currSoshiUsernameIn: currSoshiUsername);
       await databaseService.uploadProfilePicture(croppedImage);
       String url = await FirebaseStorage.instance
           .ref()
@@ -641,10 +580,7 @@ class DatabaseService {
     String photoURL = LocalDataService.getLocalUsernameForPlatform("Photo URL");
     // delete profile picture (if N/A, skip by catching error)
     try {
-      await FirebaseStorage.instance
-          .ref()
-          .child("Profile Pictures/" + currSoshiUsername)
-          .delete();
+      await FirebaseStorage.instance.ref().child("Profile Pictures/" + currSoshiUsername).delete();
     } catch (e) {}
 
     await emailToUsernameCollection.doc(email).delete();
@@ -670,6 +606,9 @@ class DatabaseService {
     await usersCollection.doc(soshiUser).update({"Verified": isVerified});
   }
 
+  Future<void> updateUserPassions(String soshiUser, List newPassions) async {
+    await usersCollection.doc(soshiUser).update({"passions": newPassions});
+  }
   // bool isFirstTime() {
   //    (await IsFirstRun.isFirstRun()) ? return true : return false;
   //   // bool check = await IsFirstRun.isFirstRun();
@@ -677,9 +616,7 @@ class DatabaseService {
   // }
 
   Future<void> updateTwoWaySharing(bool state) async {
-    await usersCollection
-        .doc(currSoshiUsername)
-        .update({"Two Way Sharing": state});
+    await usersCollection.doc(currSoshiUsername).update({"Two Way Sharing": state});
   }
 
   int getSoshiPoints(Map userData) {
@@ -688,28 +625,21 @@ class DatabaseService {
 
   Future<void> updateSoshiPoints(String soshiUsername, int addedPoints) async {
     int newSoshiPoints = LocalDataService.getSoshiPoints() + addedPoints;
-    await usersCollection
-        .doc(soshiUsername)
-        .update({"Soshi Points": newSoshiPoints});
+    await usersCollection.doc(soshiUsername).update({"Soshi Points": newSoshiPoints});
   }
 
-  Future<bool> getInjectionFlagStatus(
-      String injectionName, Map userData) async {
+  Future<bool> getInjectionFlagStatus(String injectionName, Map userData) async {
     return userData["INJECTION $injectionName Flag"];
   }
 
-  Future<void> updateInjectionSwitch(
-      String soshiUsername, String injectionName, bool state) async {
-    await usersCollection
-        .doc(soshiUsername)
-        .update({"INJECTION $injectionName Flag": state});
+  Future<void> updateInjectionSwitch(String soshiUsername, String injectionName, bool state) async {
+    await usersCollection.doc(soshiUsername).update({"INJECTION $injectionName Flag": state});
   }
 
   /*
   Create group file, add pointer to file in user file 
   */
-  Future<void> createGroup(
-      {@required String id, @required String name, String photoURL}) async {
+  Future<void> createGroup({@required String id, @required String name, String photoURL}) async {
     await groupsCollection.doc(id).set(<String, dynamic>{
       "Name": name,
       "Description": "",
@@ -726,10 +656,7 @@ class DatabaseService {
   /* Get list of groups for user */
   Future<List<dynamic>> getGroups() async {
     List<dynamic> groupsList;
-    await usersCollection
-        .doc(currSoshiUsername)
-        .get()
-        .then((DocumentSnapshot ds) {
+    await usersCollection.doc(currSoshiUsername).get().then((DocumentSnapshot ds) {
       Map data = ds.data();
       groupsList = data["Groups"];
     });
@@ -772,26 +699,21 @@ class DatabaseService {
     newMembers = await groupData.members;
     newAdmin.add(username);
     newMembers.remove(username);
-    await groupsCollection
-        .doc(id)
-        .update({"Admin": newAdmin, "Members": newMembers});
+    await groupsCollection.doc(id).update({"Admin": newAdmin, "Members": newMembers});
   }
 
   Future<void> joinGroup(String id) async {
-    await _addUserToGroupFile(
-        id); // add username to group members list (in group doc)
+    await _addUserToGroupFile(id); // add username to group members list (in group doc)
     await _addGroupToUserFile(id); // add group to user doc
   }
 
   /*
   Removes {username} from group {id}
   */
-  Future<void> leaveGroup(String id, String username,
-      {bool isAdmin = false}) async {
+  Future<void> leaveGroup(String id, String username, {bool isAdmin = false}) async {
     await _removeUserFromGroupFile(
         id, username, isAdmin); // remove user from members (or admin) in group
-    await _removeGroupFromUserFile(
-        id, username); // remove group id from group list in user file
+    await _removeGroupFromUserFile(id, username); // remove group id from group list in user file
   }
 
   /*
@@ -805,18 +727,15 @@ class DatabaseService {
     return await usersCollection.doc(username).update({"Groups": groupsList});
   }
 
-  Future<void> _removeUserFromGroupFile(
-      String id, String username, bool isAdmin) async {
+  Future<void> _removeUserFromGroupFile(String id, String username, bool isAdmin) async {
     // remove username from members (or admin) list
     if (!isAdmin) {
-      List<dynamic> groupMembers =
-          await getGroupMembers(id); // get current group members
+      List<dynamic> groupMembers = await getGroupMembers(id); // get current group members
       await groupMembers.remove(username);
       return await groupsCollection.doc(id).update({"Members": groupMembers});
     } else {
       // remove from admin
-      List<dynamic> groupAdmin =
-          await getGroupAdmin(id); // get current group members
+      List<dynamic> groupAdmin = await getGroupAdmin(id); // get current group members
       await groupAdmin.remove(username);
       return await groupsCollection.doc(id).update({"Admin": groupAdmin});
     }
@@ -842,8 +761,7 @@ class DatabaseService {
   }
 
   Future<void> _addUserToGroupFile(id) async {
-    List<dynamic> groupMembers =
-        await getGroupMembers(id); // get current group members
+    List<dynamic> groupMembers = await getGroupMembers(id); // get current group members
 
     // add new member to list (if not already in group)
     if (!groupMembers.contains(currSoshiUsername)) {
