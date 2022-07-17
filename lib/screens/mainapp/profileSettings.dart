@@ -1,10 +1,13 @@
 //import 'dart:html';
+import 'dart:typed_data';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:nfc_manager/nfc_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:soshi/constants/constants.dart';
 import 'package:soshi/screens/mainapp/resetPassword.dart';
@@ -15,6 +18,7 @@ import 'package:soshi/constants/widgets.dart';
 import 'package:soshi/constants/utilities.dart';
 
 import '../../constants/popups.dart';
+import '../../services/nfc.dart';
 
 /* 
 * Widget allows users to access their profile settings 
@@ -340,13 +344,26 @@ class ProfileSettingsState extends State<ProfileSettings> {
                     ),
                   ),
                   SizedBox(height: height / 30),
-                  Row(
+                  Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         SizedBox(
                           width: 5,
                         ),
                         // DeleteProfileButton(),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 15.0),
+                          child: Constants.makeBlueShadowButton(
+                              "Activate Portal", Icons.tap_and_play, () async {
+                            showModalBottomSheet(
+                                backgroundColor: Colors.transparent,
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return NFCWriter();
+                                });
+                          }),
+                        ),
+
                         SignOutButton(),
                       ]),
                 ],

@@ -23,6 +23,8 @@ import 'package:vibration/vibration.dart';
 import 'package:share/share.dart';
 import 'package:device_display_brightness/device_display_brightness.dart';
 
+import 'friendScreen.dart';
+
 /*
 Screen displaying user's QR code and allowing QR scanning
 */

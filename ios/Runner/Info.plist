@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -13,9 +15,10 @@
 			<string>Bundle ID</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+				<string>com.example.strippedsoshi</string>
 			</array>
 		</dict>
+		<dict/>
 	</array>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
@@ -31,5 +34,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>FirebaseDynamicLinksCustomDomains</key>
+		<array>
+   			<string>https://soshi.app/user</string>
+		</array>
 </dict>
 </plist>

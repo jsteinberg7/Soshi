@@ -1,16 +1,14 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 import 'package:soshi/constants/popups.dart';
 import 'package:soshi/constants/utilities.dart';
+import 'package:soshi/screens/login/newIntroFlowSri.dart';
 import 'package:soshi/services/auth.dart';
 import 'package:soshi/services/database.dart';
 import 'package:soshi/services/localData.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:soshi/services/url.dart';
 import 'constants.dart';
 
@@ -115,7 +113,13 @@ class SignOutButton extends StatelessWidget {
                       onPressed: () async {
                         await authService.signOut();
                         Navigator.pop(context); // close popup
-                        Navigator.pop(context); // pop to login screen
+                        // Navigator.pop(context); // pop to login screen
+                        //        Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(builder: (context) => MainApp()),
+                        // );
+                        Navigator.pushReplacement(
+                            context, MaterialPageRoute(builder: ((context) => NewIntroFlow())));
                       },
                     ),
                   ],
@@ -145,7 +149,9 @@ class DeleteProfileButton extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(0, 5, 3, 3),
                 child: Icon(
                   Icons.delete,
-                  color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.black
+                      : Colors.white,
                 ),
               ),
               Text("Delete Account",
@@ -159,7 +165,8 @@ class DeleteProfileButton extends StatelessWidget {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40.0))),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(40.0))),
                     backgroundColor: Colors.blueGrey[900],
                     title: Text(
                       "Delete Account",
@@ -195,13 +202,15 @@ class DeleteProfileButton extends StatelessWidget {
                             ),
                             onPressed: () async {
                               String soshiUsername = LocalDataService.getLocalUsername();
-                              DatabaseService databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
+                              DatabaseService databaseService =
+                                  new DatabaseService(currSoshiUsernameIn: soshiUsername);
                               await databaseService.deleteProfileData();
 
                               // wipe profile data in firestore
                               AuthService authService = new AuthService();
                               Navigator.of(context).pop();
-                              await authService.deleteProfile(); // delete user account from firebase
+                              await authService
+                                  .deleteProfile(); // delete user account from firebase
                               LocalDataService.wipeSharedPreferences(); // clear local user data
                             },
                           ),
@@ -232,9 +241,11 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
   @override
   Widget build(BuildContext context) {
     firstNameController.text = LocalDataService.getLocalFirstName();
-    firstNameController.selection = TextSelection.fromPosition(TextPosition(offset: firstNameController.text.length));
+    firstNameController.selection =
+        TextSelection.fromPosition(TextPosition(offset: firstNameController.text.length));
     lastNameController.text = LocalDataService.getLocalLastName();
-    lastNameController.selection = TextSelection.fromPosition(TextPosition(offset: lastNameController.text.length));
+    lastNameController.selection =
+        TextSelection.fromPosition(TextPosition(offset: lastNameController.text.length));
 
     String soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
     DatabaseService dbService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
@@ -287,7 +298,9 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
                 LocalDataService.updateFirstName(firstNameController.text.trim());
                 LocalDataService.updateLastName(lastNameController.text.trim());
 
-                dbService.updateDisplayName(firstNameParam: firstNameController.text.trim(), lastNameParam: lastNameController.text.trim());
+                dbService.updateDisplayName(
+                    firstNameParam: firstNameController.text.trim(),
+                    lastNameParam: lastNameController.text.trim());
                 print(firstName + lastName);
               } else {
                 displayNameErrorPopUp("First", context);
@@ -306,15 +319,21 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
               ),
               prefixIcon: Icon(
                 Icons.person,
-                color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+                color:
+                    Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
               ),
               filled: true,
               floatingLabelBehavior: FloatingLabelBehavior.always,
               label: Text("First"),
-              labelStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.grey[400]),
+              labelStyle:
+                  TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.grey[400]),
               // fillColor: Colors.grey[850],
               hintText: "First Name",
-              hintStyle: TextStyle(color: Colors.grey[500], fontSize: 12, letterSpacing: 2, fontWeight: FontWeight.bold),
+              hintStyle: TextStyle(
+                  color: Colors.grey[500],
+                  fontSize: 12,
+                  letterSpacing: 2,
+                  fontWeight: FontWeight.bold),
             ),
           ),
         ),
@@ -334,7 +353,9 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
                 LocalDataService.updateLastName(lastNameController.text.trim());
                 LocalDataService.updateFirstName(firstNameController.text.trim());
 
-                dbService.updateDisplayName(firstNameParam: firstNameController.text.trim(), lastNameParam: lastNameController.text.trim());
+                dbService.updateDisplayName(
+                    firstNameParam: firstNameController.text.trim(),
+                    lastNameParam: lastNameController.text.trim());
                 print(firstName + lastName);
               } else {
                 displayNameErrorPopUp("Last", context);
@@ -353,15 +374,18 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
               ),
               prefixIcon: Icon(
                 Icons.person,
-                color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+                color:
+                    Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
               ),
               filled: true,
               floatingLabelBehavior: FloatingLabelBehavior.always,
               label: Text("Last"),
-              labelStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.grey[400]),
+              labelStyle:
+                  TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.grey[400]),
               //fillColor: Colors.grey[850],
               hintText: "Last Name",
-              hintStyle: TextStyle(color: Colors.black, fontSize: 12, letterSpacing: 2, fontWeight: FontWeight.bold),
+              hintStyle: TextStyle(
+                  color: Colors.black, fontSize: 12, letterSpacing: 2, fontWeight: FontWeight.bold),
             ),
           ),
         ),
@@ -410,7 +434,10 @@ class ShareButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(shape: CircleBorder()),
       onPressed: () {
         Share.share("https://soshi.app/" + soshiUsername,
-            subject: LocalDataService.getLocalFirstName() + " " + LocalDataService.getLocalLastName() + "'s Soshi Contact Card");
+            subject: LocalDataService.getLocalFirstName() +
+                " " +
+                LocalDataService.getLocalLastName() +
+                "'s Soshi Contact Card");
       },
       child: Icon(Icons.share, size: size),
     );
@@ -426,7 +453,9 @@ class CustomThreeInOut extends StatefulWidget {
     this.duration = const Duration(milliseconds: 500),
     this.delay = const Duration(milliseconds: 50),
     this.controller,
-  })  : assert(!(itemBuilder is IndexedWidgetBuilder && color is Color) && !(itemBuilder == null && color == null),
+  })  : assert(
+            !(itemBuilder is IndexedWidgetBuilder && color is Color) &&
+                !(itemBuilder == null && color == null),
             'You should specify either a itemBuilder or a color'),
         super(key: key);
 
@@ -656,7 +685,9 @@ class _CircularProfileAvatarState extends State<CircularProfileAvatar> {
             ),
             child: Center(
               child: Container(
-                decoration: BoxDecoration(color: widget.backgroundColor, borderRadius: BorderRadius.circular(widget.radius)),
+                decoration: BoxDecoration(
+                    color: widget.backgroundColor,
+                    borderRadius: BorderRadius.circular(widget.radius)),
                 child: widget.child == null
                     ? Stack(
                         fit: StackFit.expand,
@@ -700,20 +731,21 @@ class _CircularProfileAvatarState extends State<CircularProfileAvatar> {
     return widget.cacheImage
         ? ClipRRect(
             borderRadius: BorderRadius.circular(widget.radius),
-            child: ((widget.imageUrl != null) && widget.imageUrl != "null" && widget.imageUrl != null)
-                ? CachedNetworkImage(
-                    fit: widget.imageFit,
-                    imageUrl: widget.imageUrl,
-                    errorWidget: widget.errorWidget,
-                    placeholder: widget.placeHolder,
-                    imageBuilder: widget.imageBuilder,
-                    progressIndicatorBuilder: widget.progressIndicatorBuilder,
-                    useOldImageOnUrlChange: widget.animateFromOldImageOnUrlChange ?? false,
-                  )
-                : Image.asset(
-                    'assets/images/SoshiLogos/soshi_icon.png',
-                    fit: widget.imageFit,
-                  ),
+            child:
+                ((widget.imageUrl != null) && widget.imageUrl != "null" && widget.imageUrl != null)
+                    ? CachedNetworkImage(
+                        fit: widget.imageFit,
+                        imageUrl: widget.imageUrl,
+                        errorWidget: widget.errorWidget,
+                        placeholder: widget.placeHolder,
+                        imageBuilder: widget.imageBuilder,
+                        progressIndicatorBuilder: widget.progressIndicatorBuilder,
+                        useOldImageOnUrlChange: widget.animateFromOldImageOnUrlChange ?? false,
+                      )
+                    : Image.asset(
+                        'assets/images/SoshiLogos/soshi_icon.png',
+                        fit: widget.imageFit,
+                      ),
           )
         : ClipRRect(
             borderRadius: BorderRadius.circular(widget.radius),
@@ -744,15 +776,20 @@ class SoshiAppBar extends StatelessWidget {
             style: ElevatedButton.styleFrom(
                 // primary: Theme.of(context).primaryColor,
                 //shadowColor: Colors.grey[900],
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0)))),
+                shape:
+                    RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0)))),
             child: Row(
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Send", style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1)),
-                    Text("feedback!", style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1)),
+                    Text("Send",
+                        style:
+                            TextStyle(fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1)),
+                    Text("feedback!",
+                        style:
+                            TextStyle(fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1)),
                   ],
                 ),
                 // Icon(
@@ -776,7 +813,9 @@ class SoshiAppBar extends StatelessWidget {
             : "assets/images/SoshiLogos/soshi_logo.png",
         height: Utilities.getHeight(context) / 22,
       ),
-      backgroundColor: Theme.of(context).brightness == Brightness.light ? Theme.of(context).appBarTheme.backgroundColor : Colors.grey[900],
+      backgroundColor: Theme.of(context).brightness == Brightness.light
+          ? Theme.of(context).appBarTheme.backgroundColor
+          : Colors.grey[900],
       centerTitle: true,
     );
   }

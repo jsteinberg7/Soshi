@@ -14,6 +14,7 @@ import 'package:soshi/services/localData.dart';
 import 'package:http/http.dart' as http;
 import 'package:soshi/services/url.dart';
 // import 'package:circular_profile_avatar/circular_profile_avatar.dart';
+import '../screens/mainapp/friendScreen.dart';
 import 'constants.dart';
 //import 'package:google_fonts/google_fonts.dart';
 
@@ -401,6 +402,7 @@ class Popups {
                     decoration: InputDecoration(
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
+
                             // color: Colors.grey[600],
                             ),
                       ),
@@ -764,36 +766,48 @@ class Popups {
 
   static bool popup_live = false;
   static void showUserProfilePopupNew(BuildContext context,
-      {String friendSoshiUsername, Function refreshScreen}) async {
+      {String friendSoshiUsername,
+      Friend friend,
+      Function refreshScreen}) async {
+    String userUsername = LocalDataService.getLocalUsername();
     // get list of all visible platforms
     DatabaseService databaseService = new DatabaseService(
         currSoshiUsernameIn: LocalDataService.getLocalUsername());
 
-    String userUsername = LocalDataService.getLocalUsername();
     Map userData = await databaseService.getUserFile(friendSoshiUsername);
-    List<String> visiblePlatforms =
-        await databaseService.getEnabledPlatformsList(userData);
+
+    List<String> visiblePlatforms;
+    Map<String, dynamic> usernames;
+
+    if (friend == null) {
+      // DYNAMIC SHARING if no friend data passed in
+      visiblePlatforms =
+          await databaseService.getEnabledPlatformsList(userData);
+      // get list of profile usernames
+      usernames = databaseService.getUserProfileNames(userData);
+    } else {
+      // STATIC SHARING
+      visiblePlatforms = friend.enabledUsernames.keys.toList();
+      usernames = friend.enabledUsernames;
+    }
 
     double popupHeightDivisor;
     double innerContainerSizeDivisor;
 
     if (visiblePlatforms.length >= 0 && visiblePlatforms.length <= 3) {
-      popupHeightDivisor = 2.4;
+      popupHeightDivisor = 2.2;
       innerContainerSizeDivisor = 8;
     } else if (visiblePlatforms.length > 3 && visiblePlatforms.length <= 6) {
-      popupHeightDivisor = 2.0;
+      popupHeightDivisor = 1.8;
       innerContainerSizeDivisor = 4.4;
     } else if (visiblePlatforms.length > 6 && visiblePlatforms.length <= 9) {
-      popupHeightDivisor = 1.6;
+      popupHeightDivisor = 1.5;
       innerContainerSizeDivisor = 2.9;
     } else {
-      popupHeightDivisor = 1.35;
+      popupHeightDivisor = 1.25;
       innerContainerSizeDivisor = 2.2;
     }
 
-    // get list of profile usernames
-    Map<String, dynamic> usernames =
-        databaseService.getUserProfileNames(userData);
     String fullName = databaseService.getFullName(userData);
     bool isFriendAdded = LocalDataService.isFriendAdded(friendSoshiUsername);
     String profilePhotoURL = databaseService.getPhotoURL(userData);
@@ -879,7 +893,10 @@ class Popups {
                                               MainAxisAlignment.center,
                                           children: [
                                             Text(
-                                              "@" + usernames["Soshi"],
+                                              "@" +
+                                                  ((friend == null)
+                                                      ? usernames["Soshi"]
+                                                      : friend.soshiUsername),
                                               style: TextStyle(
                                                   fontSize: width / 23,
                                                   // color: Colors.grey[500],
@@ -995,15 +1012,38 @@ class Popups {
                                 // do nothing
                               } else {
                                 setState(() {
-                                  isFriendAdded = true;
+                                  // isFriendAdded = true;
                                 });
                                 // add friend, update button, refresh screen
-                                await LocalDataService.addFriend(
-                                    friendsoshiUsername: friendSoshiUsername);
-                                databaseService.addFriend(
-                                    thisSoshiUsername:
-                                        databaseService.currSoshiUsername,
-                                    friendSoshiUsername: friendSoshiUsername);
+                                // await LocalDataService.addFriend(
+                                //     friendsoshiUsername: friendSoshiUsername);
+                                // databaseService.addFriend(
+                                //     thisSoshiUsername:
+                                //         databaseService.currSoshiUsername,
+                                //     friendSoshiUsername: friendSoshiUsername);
+
+                                Map friendData = await databaseService
+                                    .getUserFile(friendSoshiUsername);
+                                Friend friend = databaseService
+                                    .userDataToFriend(friendData);
+                                bool isFriendAdded =
+                                    await LocalDataService.isFriendAdded(
+                                        friendSoshiUsername);
+
+                                Popups.showUserProfilePopupNew(context,
+                                    friendSoshiUsername: friendSoshiUsername,
+                                    refreshScreen: () {});
+                                if (!isFriendAdded &&
+                                    friendSoshiUsername !=
+                                        databaseService.currSoshiUsername) {
+                                  List<String> newFriendsList =
+                                      await LocalDataService.addFriend(
+                                          friend: friend);
+
+                                  databaseService
+                                      .overwriteFriendsList(newFriendsList);
+                                }
+
                                 // bool friendHasTwoWaySharing =    *Two way sharing
                                 //     await databaseService
                                 //         .getTwoWaySharing(userData);
@@ -1284,7 +1324,7 @@ class Popups {
                   }),
                 )),
           );
-        }).then((_) => popup_live = false);
+        });
   }
 
   void usernameEmptyPopup(
