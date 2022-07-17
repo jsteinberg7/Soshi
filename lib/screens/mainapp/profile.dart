@@ -903,9 +903,10 @@ class ProfileState extends State<Profile> {
                 right: 0,
                 top: height / 2.5,
                 child: Container(
-                    height: height / 2,
+                    //height: height / 2,
                     decoration: BoxDecoration(
                         color: Theme.of(context).scaffoldBackgroundColor,
+                        // color: Colors.blue,
                         borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(20.0),
                             topRight: Radius.circular(20.0))),
@@ -943,6 +944,7 @@ class ProfileState extends State<Profile> {
                             ],
                           ),
                           Container(
+                            //decoration: BoxDecoration(color: Colors.green),
                             // color: Colors.red,
                             child: Align(
                               alignment: Alignment.topCenter,
