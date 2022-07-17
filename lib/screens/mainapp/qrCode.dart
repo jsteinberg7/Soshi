@@ -129,7 +129,7 @@ import 'friendScreen.dart';
 //                                       isVerified == null || isVerified == false
 //                                           ? Container()
 //                                           : Image.asset(
-//                                               "assets/images/Verified.png",
+//                                               "assets/images/misc/verified.png",
 //                                               scale: width / 20,
 //                                             )
 //                                     ],

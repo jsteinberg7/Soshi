@@ -105,7 +105,6 @@ flutter:
     - "assets/images/SoshiLogos/"
     # - 'assets/animations/addFriendAnimation.json'
     - "assets/images/SMWriting/"
-    - "assets/images/Verified.png"
     - "assets/images/misc/"
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -128,7 +128,7 @@ class _ViewGroupPageState extends State<ViewGroupPage> {
                 friend.isVerified == null || friend.isVerified == false
                     ? Container()
                     : Image.asset(
-                        "assets/images/Verified.png",
+                        "assets/images/misc/verified.png",
                         scale: width / 20,
                       )
               ],
