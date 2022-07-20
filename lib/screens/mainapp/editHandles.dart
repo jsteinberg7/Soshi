@@ -118,7 +118,7 @@ class _EditHandlesState extends State<EditHandles> {
             ),
           )
         ],
-        elevation: 0,
+        elevation: .5,
         title: Text(
           "My Platforms",
           style: TextStyle(
@@ -133,65 +133,68 @@ class _EditHandlesState extends State<EditHandles> {
         centerTitle: true,
       ),
       body: Padding(
-        padding: EdgeInsets.fromLTRB(width / 40, height / 50, width / 40, 0),
+        padding: EdgeInsets.fromLTRB(width / 40, 0, width / 40, 0),
         child: SingleChildScrollView(
           child: Column(children: <Widget>[
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  elevation: 5,
-                  primary: Colors.green,
-                  shape: RoundedRectangleBorder(
-                      //to set border radius to button
-                      borderRadius: BorderRadius.circular(15)),
-                  padding: EdgeInsets.fromLTRB(
-                      50, 0, 50, 0) //content padding inside button
+            Padding(
+              padding: EdgeInsets.only(top: height / 50),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    elevation: 0,
+                    primary: Colors.green,
+                    shape: RoundedRectangleBorder(
+                        //to set border radius to button
+                        borderRadius: BorderRadius.circular(15)),
+                    padding: EdgeInsets.fromLTRB(
+                        50, 0, 50, 0) //content padding inside button
 
-                  ),
-              child: Text(
-                "Add",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.5,
-                    fontSize: width / 20,
-                    color: Colors.white),
-              ),
-              onPressed: () async {
-                // check if user has all platforms (in case of update)
-                if (Constants.originalPlatforms.length +
-                        Constants.addedPlatforms.length >
-                    LocalDataService.getLocalChoosePlatforms().length +
-                        LocalDataService.getLocalProfilePlatforms().length) {
-                  // check which platforms need to be added
-                  for (String platform in Constants.addedPlatforms) {
-                    if (!LocalDataService.getLocalProfilePlatforms()
-                            .contains(platform) &&
-                        !LocalDataService.getLocalChoosePlatforms()
-                            .contains(platform)) {
-                      await LocalDataService.addToChoosePlatforms(
-                          platform); // add new platform to choose platforms
-                      await LocalDataService.updateSwitchForPlatform(
-                          platform: platform,
-                          state:
-                              false); // create switch for platform in and initialize to false
-                      if (LocalDataService.getLocalUsernameForPlatform(
-                              platform) ==
-                          null) {
-                        await LocalDataService.updateUsernameForPlatform(
+                    ),
+                child: Text(
+                  "Add",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.5,
+                      fontSize: width / 20,
+                      color: Colors.white),
+                ),
+                onPressed: () async {
+                  // check if user has all platforms (in case of update)
+                  if (Constants.originalPlatforms.length +
+                          Constants.addedPlatforms.length >
+                      LocalDataService.getLocalChoosePlatforms().length +
+                          LocalDataService.getLocalProfilePlatforms().length) {
+                    // check which platforms need to be added
+                    for (String platform in Constants.addedPlatforms) {
+                      if (!LocalDataService.getLocalProfilePlatforms()
+                              .contains(platform) &&
+                          !LocalDataService.getLocalChoosePlatforms()
+                              .contains(platform)) {
+                        await LocalDataService.addToChoosePlatforms(
+                            platform); // add new platform to choose platforms
+                        await LocalDataService.updateSwitchForPlatform(
                             platform: platform,
-                            username:
-                                ""); // create username mapping for platform if absent
+                            state:
+                                false); // create switch for platform in and initialize to false
+                        if (LocalDataService.getLocalUsernameForPlatform(
+                                platform) ==
+                            null) {
+                          await LocalDataService.updateUsernameForPlatform(
+                              platform: platform,
+                              username:
+                                  ""); // create username mapping for platform if absent
+                        }
                       }
                     }
                   }
-                }
-                await Navigator.push(context,
-                    MaterialPageRoute(builder: (context) {
-                  return Scaffold(
-                      body: ChooseSocials(
-                    refreshFunction: refreshScreen,
-                  ));
-                }));
-              },
+                  await Navigator.push(context,
+                      MaterialPageRoute(builder: (context) {
+                    return Scaffold(
+                        body: ChooseSocials(
+                      refreshFunction: refreshScreen,
+                    ));
+                  }));
+                },
+              ),
             ),
             // Constants.makeBlueShadowButton(
             //     "Add Platforms!", Icons.add_circle_outline_rounded, () async {

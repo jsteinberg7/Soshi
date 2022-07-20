@@ -1268,7 +1268,7 @@ class FriendTile extends StatelessWidget {
                     "@" + friend.soshiUsername,
                     style: TextStyle(
                         color: Colors.grey[500],
-                        fontSize: 14,
+                        fontSize: 16,
                         fontStyle: FontStyle.italic),
                   ),
                   SizedBox(

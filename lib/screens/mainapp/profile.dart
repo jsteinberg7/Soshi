@@ -261,7 +261,7 @@ class _SMTileState extends State<SMTile> {
                 CupertinoSwitch(
                     thumbColor: Colors.white,
                     value: isSwitched,
-                    activeColor: Colors.black,
+                    activeColor: Colors.cyan,
                     onChanged: (bool value) {
                       setState(() {
                         isSwitched = value;
@@ -715,7 +715,8 @@ class ProfileState extends State<Profile> {
                                                         LocalDataService
                                                             .getLocalUsername(),
                                                     style: TextStyle(
-                                                        letterSpacing: 1.5)),
+                                                        letterSpacing: 1.5,
+                                                        fontSize: 16)),
                                                 SizedBox(
                                                   width: 2,
                                                 ),
@@ -747,7 +748,7 @@ class ProfileState extends State<Profile> {
                                       ],
                                     ),
                                     SizedBox(
-                                      height: height / 100,
+                                      height: height / 50,
                                     ),
 
                                     Row(

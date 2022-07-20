@@ -40,7 +40,7 @@ class ProfilePic extends StatelessWidget {
         placeHolder: (b, c) {
           return Image.asset('assets/images/misc/default_pic.png');
         },
-        borderColor: Colors.black,
+        borderColor: Colors.white,
         borderWidth: radius / 40,
         elevation: 0,
         radius: radius,

@@ -49,28 +49,30 @@ class _GeneralSettingsState extends State<GeneralSettings> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: Icon(CupertinoIcons.back),
+          onPressed: () {},
+          splashRadius: 1,
+          icon: Icon(
+            CupertinoIcons.back,
+            color: Colors.transparent,
+          ),
         ),
 
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(right: width / 150),
-            child: TextButton(
-              style: ButtonStyle(
-                  overlayColor: MaterialStateProperty.all(Colors.transparent)),
-              child: Text(
-                "Done",
-                style: TextStyle(color: Colors.blue, fontSize: width / 23),
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          )
-        ],
+        // actions: [
+        //   Padding(
+        //     padding: EdgeInsets.only(right: width / 150),
+        //     child: TextButton(
+        //       style: ButtonStyle(
+        //           overlayColor: MaterialStateProperty.all(Colors.transparent)),
+        //       child: Text(
+        //         "Done",
+        //         style: TextStyle(color: Colors.blue, fontSize: width / 23),
+        //       ),
+        //       onPressed: () {
+        //         Navigator.pop(context);
+        //       },
+        //     ),
+        //   )
+        // ],
         elevation: 0,
         title: Text(
           "Settings",
@@ -120,7 +122,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                     children: [
                       Text("@" + LocalDataService.getLocalUsername(),
                           style: TextStyle(
-                              letterSpacing: 1.5, fontSize: width / 26)),
+                              letterSpacing: .6, fontSize: width / 26)),
                       SizedBox(
                         width: 2,
                       ),
@@ -163,7 +165,9 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                               style: TextStyle(fontSize: width / 23),
                             ),
                             Spacer(),
-                            Icon(CupertinoIcons.forward)
+                            Icon(
+                              CupertinoIcons.forward,
+                            )
                           ]),
                     ),
                   ),

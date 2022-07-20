@@ -702,7 +702,7 @@ class _NewQRScreenState extends State<NewQRScreen> {
                           ),
                         )),
                     style: NeumorphicStyle(
-                        shadowLightColor: Colors.cyan,
+                        //shadowLightColor: Colors.cyan,
                         //shadowDarkColor: Colors.cyan,
                         depth: 2,
                         shape: NeumorphicShape.convex,

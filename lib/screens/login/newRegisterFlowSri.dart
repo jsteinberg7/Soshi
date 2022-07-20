@@ -555,6 +555,7 @@ class _RegisterSingleScreenState extends State<RegisterSingleScreen> {
           ? true
           : false,
       cursorHeight: 28,
+      textCapitalization: hintText == "Email" ? TextCapitalization.none : null,
       controller: controller,
       onChanged: widget.type == InputType.ALL_PASSWORDS
           ? (String newValue) {
