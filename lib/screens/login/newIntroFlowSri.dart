@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:soshi/constants/utilities.dart';
 import 'package:soshi/screens/login/newRegisterFlowSri.dart';
 import 'package:soshi/screens/login/superController.dart';
 
@@ -23,22 +24,26 @@ class _NewIntroFlowState extends State<NewIntroFlow> {
   @override
   Widget build(BuildContext context) {
     print("reanimating with current apge: " + currentPage.toString());
+    double width = Utilities.getWidth(context);
+    double height = Utilities.getHeight(context);
+
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 100,
         elevation: 0,
-        backgroundColor: Colors.grey[850],
         centerTitle: true,
         title: Container(
           child: Image.asset(
-            "assets/images/SoshiLogos/soshi_logo2.png",
-            width: 200,
+            "assets/images/SoshiLogos/SoshiBubbleLogo.png",
+            width: width / 3,
           ),
         ),
         automaticallyImplyLeading: false,
       ),
       body: Column(
         children: [
+          SizedBox(
+            height: height / 12,
+          ),
           Expanded(
             child: PageView(
               onPageChanged: (int newPage) {
@@ -50,14 +55,17 @@ class _NewIntroFlowState extends State<NewIntroFlow> {
               // physics: const NeverScrollableScrollPhysics(),
               children: [
                 IntroSingleScreen(
-                  message: "Share socials with 1 tap!",
+                  message: "All of you.\nIn one place.",
+                  imageUrl: "assets/images/onboarding/intro_1.png",
                 ),
                 IntroSingleScreen(
-                  message: "Connect with your community through groups",
+                  message: "Your QR code...\nYour portal.",
+                  imageUrl: "assets/images/onboarding/intro_1.png",
                 ),
                 IntroSingleScreen(
-                  message: "Get rewarded for engaging with your community",
-                )
+                  message: "Everyone you meet.\nIn. One. Place.",
+                  imageUrl: "assets/images/onboarding/intro_1.png",
+                ),
               ],
             ),
           ),
@@ -66,7 +74,8 @@ class _NewIntroFlowState extends State<NewIntroFlow> {
             controller: controller, // PageController
             count: 3,
             effect: WormEffect(
-                activeDotColor: Colors.cyan, dotColor: Colors.grey), // your preferred effect
+                activeDotColor: Colors.cyan,
+                dotColor: Colors.grey), // your preferred effect
           ),
           SizedBox(height: 10),
           Padding(
@@ -77,9 +86,10 @@ class _NewIntroFlowState extends State<NewIntroFlow> {
 
                 if (currentPage != 2) {
                   await controller.animateToPage(currentPage + 1,
-                      duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+                      duration: Duration(milliseconds: 500),
+                      curve: Curves.easeInOut);
                 } else {
-                  // After the 3 intro screens are done, push to registration onboarding process
+                  // After the 4 intro screens are done, push to registration onboarding process
                   // Navigator.push(context, MaterialPageRoute(builder: (context) {
                   //   return Scaffold(body: RegisterScreen());
                   // }));

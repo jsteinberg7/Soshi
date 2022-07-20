@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:contacts_service/contacts_service.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:soshi/screens/login/loading.dart';
@@ -104,7 +105,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
               return Stack(
                 children: [
                   Positioned(
-                    top: 0,
+                    top: 5,
                     left: 0,
                     right: 0,
                     child: Stack(
@@ -152,10 +153,11 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                             ],
                           ),
                           child: Padding(
-                            padding: EdgeInsets.all(width / 40),
+                            padding: EdgeInsets.fromLTRB(
+                                width / 40, height / 20, width / 40, 0),
                             child: Column(
                               children: [
-                                SafeArea(
+                                Container(
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -164,8 +166,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                           onPressed: () {
                                             Navigator.pop(context);
                                           },
-                                          icon: Icon(Icons
-                                              .arrow_back_ios_new_rounded)),
+                                          icon: Icon(CupertinoIcons.back)),
 
                                       Column(
                                         children: [
@@ -176,9 +177,6 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                               fontSize: width / 16,
                                             ),
                                           ),
-                                          SizedBox(
-                                            height: height / 170,
-                                          ),
                                           Row(
                                             children: [
                                               Text("@" + friendSoshiUsername,
@@ -187,7 +185,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                                       fontSize: width / 22,
                                                       fontStyle:
                                                           FontStyle.italic,
-                                                      letterSpacing: 1.2)),
+                                                      letterSpacing: 1)),
                                               SizedBox(
                                                 width: 3,
                                               ),
@@ -210,70 +208,70 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                     ],
                                   ),
                                 ),
-                                SizedBox(
-                                  height: height / 60,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    SizedBox(
-                                      width: width / 4,
-                                      child: Column(children: [
-                                        Text(
-                                          numFriendsString.toString(),
-                                          style: TextStyle(
-                                              fontSize: width / 25,
-                                              letterSpacing: 1.2),
-                                        ),
-                                        numFriendsString == "1"
-                                            ? Text(
-                                                "Friend",
-                                                style: TextStyle(
-                                                    fontSize: width / 25,
-                                                    letterSpacing: 1.2),
-                                              )
-                                            : Text(
-                                                "Friends",
-                                                style: TextStyle(
-                                                    fontSize: width / 25,
-                                                    letterSpacing: 1.2),
-                                              )
-                                      ]),
-                                    ),
-                                    Hero(
-                                      tag: friendSoshiUsername,
-                                      child: ProfilePic(
-                                          radius: width / 7,
-                                          url: profilePhotoURL),
-                                      // child: Text(
-                                      //   "c",
-                                      //   textAlign: TextAlign.center,
-                                      // )
-                                    ),
-                                    SizedBox(
-                                      width: width / 4,
-                                      child: Column(children: [
-                                        Text(
-                                          soshiPoints == null
-                                              ? "0"
-                                              : soshiPoints.toString(),
-                                          style: TextStyle(
-                                              fontSize: width / 25,
-                                              letterSpacing: 1.2),
-                                        ),
-                                        soshiPoints.toString() == "1"
-                                            ? Text("Bolt",
-                                                style: TextStyle(
-                                                    fontSize: width / 25,
-                                                    letterSpacing: 1.2))
-                                            : Text("Bolts",
-                                                style: TextStyle(
-                                                    fontSize: width / 25,
-                                                    letterSpacing: 1.2))
-                                      ]),
-                                    ),
-                                  ],
+                                SizedBox(height: height / 50),
+                                Container(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      SizedBox(
+                                        width: width / 4,
+                                        child: Column(children: [
+                                          Text(
+                                            numFriendsString.toString(),
+                                            style: TextStyle(
+                                                fontSize: width / 24,
+                                                letterSpacing: 1.2),
+                                          ),
+                                          numFriendsString == "1"
+                                              ? Text(
+                                                  "Friend",
+                                                  style: TextStyle(
+                                                      fontSize: width / 24,
+                                                      letterSpacing: 1.2),
+                                                )
+                                              : Text(
+                                                  "Friends",
+                                                  style: TextStyle(
+                                                      fontSize: width / 24,
+                                                      letterSpacing: 1.2),
+                                                )
+                                        ]),
+                                      ),
+                                      Hero(
+                                        tag: friendSoshiUsername,
+                                        child: ProfilePic(
+                                            radius: width / 6,
+                                            url: profilePhotoURL),
+                                        // child: Text(
+                                        //   "c",
+                                        //   textAlign: TextAlign.center,
+                                        // )
+                                      ),
+                                      SizedBox(
+                                        width: width / 4,
+                                        child: Column(children: [
+                                          Text(
+                                            soshiPoints == null
+                                                ? "0"
+                                                : soshiPoints.toString(),
+                                            style: TextStyle(
+                                                fontSize: width / 24,
+                                                letterSpacing: 1.2),
+                                          ),
+                                          soshiPoints.toString() == "1"
+                                              ? Text("Bolt",
+                                                  style: TextStyle(
+                                                      fontSize: width / 24,
+                                                      letterSpacing: 1.2))
+                                              : Text("Bolts",
+                                                  style: TextStyle(
+                                                      fontSize: width / 24,
+                                                      letterSpacing: 1.2))
+                                        ]),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                                 //SizedBox(height: height / 1),
                                 Padding(
@@ -298,7 +296,17 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                     //),
                                     ),
                                 NeumorphicButton(
-                                    onPressed: () async {},
+                                    onPressed: () async {
+                                      if (!isFriendAdded) {
+                                        LocalDataService.addFriend(
+                                            friend: friend);
+                                        databaseService.addFriend(
+                                            thisSoshiUsername: LocalDataService
+                                                .getLocalUsername(),
+                                            friendSoshiUsername:
+                                                friendSoshiUsername);
+                                      }
+                                    },
                                     child: Padding(
                                       padding: const EdgeInsets.all(2.0),
                                       child: Container(
@@ -309,15 +317,42 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                               mainAxisAlignment:
                                                   MainAxisAlignment.spaceEvenly,
                                               children: [
-                                                Text(
-                                                  "Add Friend",
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontFamily: "Montserrat",
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: width / 25),
-                                                ),
+                                                isFriendAdded
+                                                    ? Text(
+                                                        "Friend Added",
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontFamily:
+                                                                "Montserrat",
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize:
+                                                                width / 25),
+                                                      )
+                                                    : Text(
+                                                        "Add Friend",
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontFamily:
+                                                                "Montserrat",
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize:
+                                                                width / 25),
+                                                      ),
+
+                                                // SizedBox(width: 15),
+                                                // ClipRRect(
+                                                //   borderRadius: BorderRadius.all(Radius.circular(10)),
+                                                //   child: Image.asset(
+                                                //     "assets/images/SoshiLogos/soshi_icon.png",
+                                                //   ),
+                                                // ),
+                                                // SizedBox(width: 10),
+                                                // Icon(
+                                                //   Icons.chevron_right,
+                                                //   size: 30,
+                                                // )
                                               ],
                                             ),
                                           )),
