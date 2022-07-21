@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,7 +33,7 @@ class _MyAppState extends State<MyApp> {
             debugShowCheckedModeBanner: false,
             themeMode: ThemeMode.dark,
             theme: ThemeData(
-              fontFamily: "Montserrat",
+              textTheme: GoogleFonts.interTextTheme(),
 
               pageTransitionsTheme: PageTransitionsTheme(builders: {
                 TargetPlatform.android: CupertinoPageTransitionsBuilder(),
@@ -76,7 +77,7 @@ class _MyAppState extends State<MyApp> {
               // , buttonTheme: ButtonTheme()
             ),
             darkTheme: ThemeData(
-                fontFamily: "Montserrat",
+                textTheme: GoogleFonts.interTextTheme(),
                 pageTransitionsTheme: PageTransitionsTheme(builders: {
                   TargetPlatform.android: CupertinoPageTransitionsBuilder(),
                   TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),

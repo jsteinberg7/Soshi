@@ -955,7 +955,7 @@ class Popups {
                               String soshiUsername =
                                   LocalDataService.getLocalUsernameForPlatform(
                                       "Soshi");
-
+        
                               if (isFriendAdded ||
                                   friendSoshiUsername == userUsername) {
                                 // do nothing
@@ -978,7 +978,7 @@ class Popups {
                                 bool isFriendAdded =
                                     await LocalDataService.isFriendAdded(
                                         friendSoshiUsername);
-
+                                
                                 Popups.showUserProfilePopupNew(context,
                                     friendSoshiUsername: friendSoshiUsername,
                                     refreshScreen: () {});

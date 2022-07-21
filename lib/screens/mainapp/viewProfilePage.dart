@@ -13,6 +13,7 @@ import '../../../services/localData.dart';
 
 import 'package:glassmorphism/glassmorphism.dart';
 
+import '../../services/analytics.dart';
 import '../../services/contacts.dart';
 import 'friendScreen.dart';
 import 'package:http/http.dart' as http;
@@ -295,83 +296,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                     )
                                     //),
                                     ),
-                                NeumorphicButton(
-                                    onPressed: () async {
-                                      if (!isFriendAdded) {
-                                        LocalDataService.addFriend(
-                                            friend: friend);
-                                        databaseService.addFriend(
-                                            thisSoshiUsername: LocalDataService
-                                                .getLocalUsername(),
-                                            friendSoshiUsername:
-                                                friendSoshiUsername);
-                                      }
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(2.0),
-                                      child: Container(
-                                          height: height / 40,
-                                          width: width / 3,
-                                          child: Center(
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                isFriendAdded
-                                                    ? Text(
-                                                        "Friend Added",
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontFamily:
-                                                                "Montserrat",
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize:
-                                                                width / 25),
-                                                      )
-                                                    : Text(
-                                                        "Add Friend",
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontFamily:
-                                                                "Montserrat",
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize:
-                                                                width / 25),
-                                                      ),
-
-                                                // SizedBox(width: 15),
-                                                // ClipRRect(
-                                                //   borderRadius: BorderRadius.all(Radius.circular(10)),
-                                                //   child: Image.asset(
-                                                //     "assets/images/SoshiLogos/soshi_icon.png",
-                                                //   ),
-                                                // ),
-                                                // SizedBox(width: 10),
-                                                // Icon(
-                                                //   Icons.chevron_right,
-                                                //   size: 30,
-                                                // )
-                                              ],
-                                            ),
-                                          )),
-                                    ),
-                                    style: NeumorphicStyle(
-                                        shadowDarkColor: Colors.black12,
-                                        shadowLightColor: Colors.black12,
-                                        color: Colors.black,
-                                        boxShape: NeumorphicBoxShape.roundRect(
-                                            BorderRadius.circular(20.0)))
-                                    // ElevatedButton.styleFrom(
-                                    //   primary: Colors.black,
-                                    //   elevation: 10,
-                                    //   padding: const EdgeInsets.all(15.0),
-                                    //   shape: RoundedRectangleBorder(
-                                    //     borderRadius: BorderRadius.circular(20.0),
-                                    //   ),
-                                    // ),
-                                    ),
+                                AddFriendButton()
                               ],
                             ),
                           ),
@@ -617,5 +542,137 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
             }
           }),
     );
+  }
+}
+
+class AddFriendButton extends StatefulWidget {
+  @override
+  State<AddFriendButton> createState() => _AddFriendButtonState();
+
+  String friendSoshiUsername;
+  Function refreshFunction;
+  double height, width;
+  AddFriendButton(
+      {@required this.friendSoshiUsername,
+      @required this.refreshFunction,
+      @required this.height,
+      @required this.width});
+}
+
+class _AddFriendButtonState extends State<AddFriendButton> {
+  double height;
+  double width;
+  bool isFriendAdded;
+  bool isAdding = false;
+  String friendSoshiUsername;
+  Function refreshFunction;
+  DatabaseService databaseService;
+  String soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
+  @override
+  void initState() {
+    height = widget.height;
+    width = widget.width;
+    friendSoshiUsername = widget.friendSoshiUsername;
+    refreshFunction = widget.refreshFunction;
+    isFriendAdded = LocalDataService.isFriendAdded(friendSoshiUsername);
+    databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return NeumorphicButton(
+        onPressed: () async {
+          if (isFriendAdded || friendSoshiUsername == soshiUsername) {
+            // do nothing
+            return;
+          } else {
+            setState(() {
+              isAdding = true;
+            });
+
+            Map friendData =
+                await databaseService.getUserFile(friendSoshiUsername);
+            Friend friend = databaseService.userDataToFriend(friendData);
+            bool isFriendAdded =
+                await LocalDataService.isFriendAdded(friendSoshiUsername);
+
+            if (!isFriendAdded &&
+                friendSoshiUsername != databaseService.currSoshiUsername) {
+              List<String> newFriendsList =
+                  await LocalDataService.addFriend(friend: friend);
+
+              databaseService.overwriteFriendsList(newFriendsList);
+            }
+
+            // bool friendHasTwoWaySharing =    *Two way sharing
+            //     await databaseService
+            //         .getTwoWaySharing(userData);
+            // if (friendHasTwoWaySharing == null ||
+            //     friendHasTwoWaySharing == true) {
+            //   // if user has two way sharing on, add self to user's friends list
+            //   databaseService.addFriend(
+            //       thisSoshiUsername: friendSoshiUsername,
+            //       friendSoshiUsername:
+            //           databaseService.currSoshiUsername);
+            // }
+
+            // Checking if Soshi points is injected
+            if (LocalDataService.getInjectionFlag("Soshi Points") == false ||
+                LocalDataService.getInjectionFlag("Soshi Points") == null) {
+              LocalDataService.updateInjectionFlag("Soshi Points", true);
+              databaseService.updateInjectionSwitch(
+                  soshiUsername, "Soshi Points", true);
+            }
+            // Give 8 soshi points for every friend added
+            databaseService.updateSoshiPoints(soshiUsername, 8);
+            LocalDataService.updateSoshiPoints(8);
+
+            Analytics.logAddFriend(friendSoshiUsername);
+            setState(() {
+              isAdding = false;
+              isFriendAdded = true;
+            });
+            refreshFunction();
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: Container(
+              height: height,
+              width: width,
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    isAdding
+                        ? CircularProgressIndicator.adaptive()
+                        : (isFriendAdded
+                            ? Text(
+                                "Friend Added",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: "Montserrat",
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: width / 10),
+                              )
+                            : Text(
+                                "Add Friend",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: "Montserrat",
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: width / 10),
+                              ))
+                  ],
+                ),
+              )),
+        ),
+        style: NeumorphicStyle(
+            shadowDarkColor: Colors.black12,
+            shadowLightColor: Colors.black12,
+            color: isFriendAdded ? Colors.black : Colors.grey,
+            boxShape:
+                NeumorphicBoxShape.roundRect(BorderRadius.circular(20.0))));
   }
 }
