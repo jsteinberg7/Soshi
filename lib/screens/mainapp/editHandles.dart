@@ -80,7 +80,8 @@ class _EditHandlesState extends State<EditHandles> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
+        leading: CupertinoBackButton(
+  
           onPressed: () {
             // loop throgh all profilePlatforms
             // check if LocalDataservice.getusernameForPlatform(platform) equals the userNameController.text for each of the profile platforms
@@ -91,7 +92,6 @@ class _EditHandlesState extends State<EditHandles> {
 
             Navigator.of(context).pop();
           },
-          icon: Icon(CupertinoIcons.back),
         ),
         actions: [
           Padding(

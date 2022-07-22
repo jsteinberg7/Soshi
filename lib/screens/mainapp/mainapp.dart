@@ -89,66 +89,7 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
         new DatabaseService(currSoshiUsernameIn: soshiUsername);
 
     return Scaffold(
-      // floatingActionButton: FloatingActionButton(
-      //   backgroundColor: Color.fromARGB(255, 32, 199, 221),
-      //   //Floating action button on Scaffold
-      //   onPressed: () async {
-      //     //code to execute on button press
-      //     {
-      //       String QRScanResult = await Utilities.scanQR(mounted);
-      //       if (QRScanResult.length > 5) {
-      //         // vibrate when QR code is successfully scanned
-      //         Vibration.vibrate();
-      //         try {
-      //           String friendSoshiUsername = QRScanResult.split("/").last;
-      //           Map friendData =
-      //               await databaseService.getUserFile(friendSoshiUsername);
-      //           bool isFriendAdded =
-      //               await LocalDataService.isFriendAdded(friendSoshiUsername);
-
-      //           Popups.showUserProfilePopupNew(context,
-      //               friendSoshiUsername: friendSoshiUsername,
-      //               refreshScreen: () {});
-      //           if (!isFriendAdded && friendSoshiUsername != soshiUsername) {
-      //             // await LocalDataService.addFriend(
-      //             //     friendsoshiUsername: friendSoshiUsername);
-      //             databaseService.addFriend(
-      //                 thisSoshiUsername: databaseService.currSoshiUsername,
-      //                 friendSoshiUsername: friendSoshiUsername);
-      //           }
-
-      //           // bool friendHasTwoWaySharing = await databaseService.getTwoWaySharing(friendData);
-      //           // if (friendHasTwoWaySharing == null || friendHasTwoWaySharing == true) {
-      //           //   // if user has two way sharing on, add self to user's friends list
-      //           //   databaseService.addFriend(thisSoshiUsername: friendSoshiUsername, friendSoshiUsername: databaseService.currSoshiUsername);
-      //           // }
-      //           //add friend right here
-
-      //           Analytics.logQRScan(QRScanResult, true, "qrCode.dart");
-      //         } catch (e) {
-      //           Analytics.logQRScan(QRScanResult, false, "qrCode.dart");
-      //           print(e);
-      //         }
-      //       }
-      //     }
-      //   },
-      //   child: Icon(Icons.camera_alt_rounded), //icon inside button
-      // ),
-      //floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-
-      // appBar: (currScreen != 1)
-      //     ? PreferredSize(
-      //         //Create "Beta" icon on left
-      //         preferredSize: Size(Utilities.getWidth(context),
-      //             Utilities.getHeight(context) / 20),
-      //         child: SoshiAppBar())
-      //     : PreferredSize(
-      //         //Create "Beta" icon on left
-      //         preferredSize: Size(Utilities.getWidth(context),
-      //             Utilities.getHeight(context) / 20),
-      //         child: Container(
-      //           color: Colors.transparent,
-      //         )),
+      drawerEnableOpenDragGesture: false,
       drawer: Drawer(
         child: GeneralSettings(),
       ),

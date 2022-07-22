@@ -1106,3 +1106,58 @@ class SMButton extends StatelessWidget {
     );
   }
 }
+
+class CupertinoBackButton extends StatelessWidget {
+  Function onPressed;
+  Color color = Colors.grey;
+
+  CupertinoBackButton({this.onPressed, this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      splashRadius: 15,
+      onPressed: () {
+        onPressed != null ? onPressed() : Navigator.of(context).pop();
+      },
+      icon: Icon(CupertinoIcons.back, color: color),
+    );
+  }
+}
+
+class SoshiUsernameText extends StatelessWidget {
+  double fontSize;
+  String username;
+  bool isVerified;
+  SoshiUsernameText(this.username,
+      {@required this.fontSize, @required this.isVerified});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        child: Row(
+      children: [
+        Text("@" + username,
+            style: TextStyle(
+              color: Colors.grey,
+              fontSize: fontSize,
+            )),
+        Visibility(
+          visible: isVerified != null && isVerified != false,
+          child: Row(
+            children: [
+              SizedBox(
+                width: fontSize / 10,
+              ),
+              Image.asset(
+                "assets/images/misc/verified.png",
+                width: fontSize,
+                height: fontSize,
+              ),
+            ],
+          ),
+        )
+      ],
+    ));
+  }
+}

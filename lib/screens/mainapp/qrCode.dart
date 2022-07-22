@@ -518,13 +518,11 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                       style: TextStyle(
                                           fontSize: width / 15,
                                           fontWeight: FontWeight.bold)),
-                                  Text(
-                                    "@" + LocalDataService.getLocalUsername(),
-                                    style: TextStyle(
-                                        color: Colors.grey[500],
-                                        fontSize: width / 25,
-                                        fontStyle: FontStyle.italic),
-                                  )
+                                  SoshiUsernameText(
+                                      LocalDataService.getLocalUsername(),
+                                      fontSize: width / 22,
+                                      isVerified:
+                                          LocalDataService.getVerifiedStatus())
                                 ],
                               ),
                               IconButton(
@@ -694,16 +692,14 @@ class _NewQRScreenState extends State<NewQRScreen> {
                               Text(
                                 "Scan",
                                 style: TextStyle(
-                                    fontFamily: "Montserrat",
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20),
+                                    fontWeight: FontWeight.bold, fontSize: 20),
                               ),
                             ],
                           ),
                         )),
                     style: NeumorphicStyle(
-                        shadowLightColor: Colors.cyan,
-                        //shadowDarkColor: Colors.cyan,
+                        // shadowLightColor: Colors.cyan,
+                        // shadowDarkColor: Colors.cyan,
                         depth: 2,
                         shape: NeumorphicShape.convex,
                         color: Theme.of(context).brightness == Brightness.light

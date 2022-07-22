@@ -9,6 +9,8 @@ import 'package:soshi/services/contacts.dart';
 import 'package:soshi/services/database.dart';
 import 'package:soshi/services/localData.dart';
 
+import '../../constants/widgets.dart';
+
 // ignore: must_be_immutable
 class ChooseSocialsCard extends StatefulWidget {
   @override
@@ -149,12 +151,7 @@ class _ChooseSocialsState extends State<ChooseSocials> {
     List<String> choosePlatforms = LocalDataService.getLocalChoosePlatforms();
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: Icon(CupertinoIcons.back),
-        ),
+        leading: CupertinoBackButton(),
 
         actions: [
           Padding(
@@ -227,8 +224,8 @@ class _ChooseSocialsState extends State<ChooseSocials> {
             ),
           )
         ],
-        elevation: 10,
-        shadowColor: Colors.cyan,
+        elevation: 0,
+
         title: Text(
           "Add Platforms",
           style: TextStyle(

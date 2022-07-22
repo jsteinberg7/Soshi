@@ -163,12 +163,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      IconButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          icon: Icon(CupertinoIcons.back)),
-
+                                      CupertinoBackButton(),
                                       Column(
                                         children: [
                                           Text(
@@ -178,34 +173,14 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                               fontSize: width / 16,
                                             ),
                                           ),
-                                          Row(
-                                            children: [
-                                              Text("@" + friendSoshiUsername,
-                                                  style: TextStyle(
-                                                      color: Colors.grey,
-                                                      fontSize: width / 22,
-                                                      fontStyle:
-                                                          FontStyle.italic,
-                                                      letterSpacing: 1)),
-                                              SizedBox(
-                                                width: 3,
-                                              ),
-                                              isVerified == null ||
-                                                      isVerified == false
-                                                  ? Container()
-                                                  : Image.asset(
-                                                      "assets/images/misc/verified.png",
-                                                      scale: width / 22,
-                                                    )
-                                            ],
-                                          )
+                                          SoshiUsernameText(friendSoshiUsername,
+                                              fontSize: width / 22,
+                                              isVerified: isVerified)
                                         ],
                                       ),
-                                      IconButton(
-                                          color: Colors.transparent,
+                                      CupertinoBackButton(
                                           onPressed: () {},
-                                          icon: Icon(Icons
-                                              .arrow_back_ios_new_rounded)), // for balancing
+                                          color: Colors.transparent),
                                     ],
                                   ),
                                 ),

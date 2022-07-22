@@ -112,27 +112,8 @@ class _ViewGroupPageState extends State<ViewGroupPage> {
                     fontWeight: FontWeight.w600,
                     fontSize: 20)),
             SizedBox(height: height / 170),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "@" + friend.soshiUsername,
-                  style: TextStyle(
-                      color: Colors.grey[500],
-                      fontSize: 15,
-                      fontStyle: FontStyle.italic),
-                ),
-                SizedBox(
-                  width: width / 150,
-                ),
-                friend.isVerified == null || friend.isVerified == false
-                    ? Container()
-                    : Image.asset(
-                        "assets/images/misc/verified.png",
-                        scale: width / 20,
-                      )
-              ],
-            ),
+            SoshiUsernameText(friend.soshiUsername,
+                fontSize: 14, isVerified: friend.isVerified),
           ],
         ),
         tileColor: Theme.of(context).brightness == Brightness.light
@@ -666,7 +647,8 @@ class _MemberOptionsPopupState extends State<MemberOptionsPopup> {
       //       radius: widget.width / 16, url: this.widget.member.photoURL),
       // ),
       title: Text(widget.member.fullName),
-      message: Text("@" + widget.member.soshiUsername),
+      message: SoshiUsernameText(widget.member.soshiUsername,
+          fontSize: 14, isVerified: widget.member.isVerified),
       actions: <CupertinoActionSheetAction>[
         CupertinoActionSheetAction(
           onPressed: () async {

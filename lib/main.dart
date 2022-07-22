@@ -33,7 +33,7 @@ class _MyAppState extends State<MyApp> {
             debugShowCheckedModeBanner: false,
             themeMode: ThemeMode.dark,
             theme: ThemeData(
-              textTheme: GoogleFonts.interTextTheme(),
+              fontFamily: GoogleFonts.inter().fontFamily,
 
               pageTransitionsTheme: PageTransitionsTheme(builders: {
                 TargetPlatform.android: CupertinoPageTransitionsBuilder(),
@@ -64,7 +64,8 @@ class _MyAppState extends State<MyApp> {
               bottomAppBarColor: Color.fromARGB(255, 0, 0, 0),
               appBarTheme: AppBarTheme(color: Colors.grey[50]),
               cardColor: Colors.white,
-              dividerColor: Color(0x1f6D42CE),
+              dividerTheme: DividerThemeData(
+                  thickness: .2, indent: 0, endIndent: 0, color: Colors.grey),
               focusColor: Color(0x1aF5E0C3),
               textSelectionTheme:
                   TextSelectionThemeData(cursorColor: Colors.cyan[500]),
@@ -77,7 +78,7 @@ class _MyAppState extends State<MyApp> {
               // , buttonTheme: ButtonTheme()
             ),
             darkTheme: ThemeData(
-                textTheme: GoogleFonts.interTextTheme(),
+                fontFamily: GoogleFonts.inter().fontFamily,
                 pageTransitionsTheme: PageTransitionsTheme(builders: {
                   TargetPlatform.android: CupertinoPageTransitionsBuilder(),
                   TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
@@ -101,12 +102,15 @@ class _MyAppState extends State<MyApp> {
                 ),
                 primaryColor: Colors.grey[850],
                 primaryColorLight: Color(0x1a311F06),
+                dividerTheme: DividerThemeData(
+                    thickness: .2, indent: 0, endIndent: 0, color: Colors.grey),
                 primaryColorDark: Colors.black,
                 canvasColor: Colors.grey[850],
                 scaffoldBackgroundColor: Colors.grey[900],
                 bottomAppBarColor: Color(0xff6D42CE),
                 cardColor: Colors.grey[900],
-                dividerColor: Color(0x1f6D42CE),
+                textSelectionTheme:
+                    TextSelectionThemeData(cursorColor: Colors.cyan[500]),
                 elevatedButtonTheme: ElevatedButtonThemeData(
                     style: ButtonStyle(
                   // MaterialStateProperty.resolveWith<TextStyle>(Set<MaterialState> states) {

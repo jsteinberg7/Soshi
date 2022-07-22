@@ -48,12 +48,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: Icon(CupertinoIcons.back),
-        ),
+        leading: CupertinoBackButton(),
 
         actions: [
           Padding(
@@ -115,23 +110,9 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                     ),
                   ),
                   SizedBox(height: 5),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text("@" + LocalDataService.getLocalUsername(),
-                          style: TextStyle(
-                              letterSpacing: 1.5, fontSize: width / 26)),
-                      SizedBox(
-                        width: 2,
-                      ),
-                      isVerified == null || isVerified == false
-                          ? Container()
-                          : Image.asset(
-                              "assets/images/misc/verified.png",
-                              scale: width / 20,
-                            )
-                    ],
-                  ),
+                  SoshiUsernameText(soshiUsername,
+                      fontSize: width / 26, isVerified: isVerified),
+
                   Padding(
                     padding: EdgeInsets.only(top: height / 100),
                     child: Divider(

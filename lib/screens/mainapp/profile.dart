@@ -687,8 +687,8 @@ class ProfileState extends State<Profile> {
                                               //       body: GeneralSettings());
                                               // }));
                                             },
-                                            icon:
-                                                Icon(CupertinoIcons.gear_alt)),
+                                            icon: Icon(CupertinoIcons
+                                                .line_horizontal_3)),
                                         Column(
                                           children: [
                                             Container(
@@ -708,27 +708,9 @@ class ProfileState extends State<Profile> {
                                                 ),
                                               ),
                                             ),
-                                            Row(
-                                              children: [
-                                                Text("@" + soshiUsername,
-                                                    style: TextStyle(
-                                                        color: Colors.grey,
-                                                        fontSize: width / 22,
-                                                        fontStyle:
-                                                            FontStyle.italic,
-                                                        letterSpacing: 1.2)),
-                                                SizedBox(
-                                                  width: 3,
-                                                ),
-                                                isVerified == null ||
-                                                        isVerified == false
-                                                    ? Container()
-                                                    : Image.asset(
-                                                        "assets/images/misc/verified.png",
-                                                        scale: width / 22,
-                                                      )
-                                              ],
-                                            )
+                                            SoshiUsernameText(soshiUsername,
+                                                fontSize: width / 22,
+                                                isVerified: isVerified)
                                           ],
                                         ),
                                         IconButton(
