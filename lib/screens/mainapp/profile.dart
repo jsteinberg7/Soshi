@@ -184,8 +184,12 @@ class _SMTileState extends State<SMTile> {
               children: <Widget>[
                 IconButton(
                   splashRadius: Utilities.getWidth(context) / 25,
-                  icon: Image.asset(
-                    'assets/images/SMLogos/' + platformName + 'Logo.png',
+                  icon: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.asset(
+                      'assets/images/SMLogos/' + platformName + 'Logo.png',
+                      fit: BoxFit.fill,
+                    ),
                   ),
                   onPressed: () async {
                     if (platformName == "Contact") {
@@ -624,7 +628,7 @@ class ProfileState extends State<Profile> {
                       height: height / 2.3,
                       width: width,
                       borderRadius: 0,
-                      blur: 5,
+                      blur: 8,
                       alignment: Alignment.bottomCenter,
                       border: 2,
                       linearGradient: LinearGradient(
@@ -708,9 +712,14 @@ class ProfileState extends State<Profile> {
                                                 ),
                                               ),
                                             ),
-                                            SoshiUsernameText(soshiUsername,
-                                                fontSize: width / 22,
-                                                isVerified: isVerified)
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 3.0, bottom: 2.0),
+                                              child: SoshiUsernameText(
+                                                  soshiUsername,
+                                                  fontSize: width / 22,
+                                                  isVerified: isVerified),
+                                            )
                                           ],
                                         ),
                                         IconButton(
@@ -769,58 +778,69 @@ class ProfileState extends State<Profile> {
                                                 .getLocalProfilePictureURL()),
                                         SizedBox(
                                           width: width / 4,
-                                          child: Column(children: [
-                                            Text(
-                                                LocalDataService
-                                                        .getSoshiPoints()
-                                                    .toString(),
-                                                style: TextStyle(
-                                                    letterSpacing: 1.2,
-                                                    fontSize: width / 25)),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                LocalDataService
-                                                            .getSoshiPoints() ==
-                                                        1
-                                                    ? Text("Bolt",
-                                                        style: TextStyle(
-                                                            letterSpacing: 1.2,
-                                                            fontSize:
-                                                                width / 25))
-                                                    : Text("Bolts",
-                                                        style: TextStyle(
-                                                            letterSpacing: 1.2,
-                                                            fontSize:
-                                                                width / 25)),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 2),
-                                                  child: IconButton(
-                                                    onPressed: () {
-                                                      Popups
-                                                          .soshiPointsExplainedPopup(
-                                                              context,
-                                                              width,
-                                                              height);
-                                                    },
-                                                    padding: EdgeInsets.zero,
-                                                    constraints: BoxConstraints(
-                                                        maxHeight: width / 28,
-                                                        maxWidth: width / 28,
-                                                        minHeight: 0,
-                                                        minWidth: 0),
-                                                    icon: Icon(
-                                                        CupertinoIcons
-                                                            .info_circle,
-                                                        size: width / 28),
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          ]),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              Popups.soshiPointsExplainedPopup(
+                                                  context, width, height);
+                                            },
+                                            child: Column(children: [
+                                              Text(
+                                                  LocalDataService
+                                                          .getSoshiPoints()
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                      letterSpacing: 1.2,
+                                                      fontSize: width / 25)),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  LocalDataService
+                                                              .getSoshiPoints() ==
+                                                          1
+                                                      ? Text("Bolt",
+                                                          style: TextStyle(
+                                                              letterSpacing:
+                                                                  1.2,
+                                                              fontSize:
+                                                                  width / 25))
+                                                      : Text("Bolts",
+                                                          style: TextStyle(
+                                                              letterSpacing:
+                                                                  1.2,
+                                                              fontSize:
+                                                                  width / 25)),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 2),
+                                                    child: IconButton(
+                                                      onPressed: () {
+                                                        Popups
+                                                            .soshiPointsExplainedPopup(
+                                                                context,
+                                                                width,
+                                                                height);
+                                                      },
+                                                      padding: EdgeInsets.zero,
+                                                      constraints:
+                                                          BoxConstraints(
+                                                              maxHeight:
+                                                                  width / 28,
+                                                              maxWidth:
+                                                                  width / 28,
+                                                              minHeight: 0,
+                                                              minWidth: 0),
+                                                      icon: Icon(
+                                                          CupertinoIcons
+                                                              .info_circle,
+                                                          size: width / 28),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ]),
+                                          ),
                                         ),
                                       ],
                                     ),

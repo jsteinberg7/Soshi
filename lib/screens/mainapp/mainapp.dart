@@ -90,8 +90,11 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
 
     return Scaffold(
       drawerEnableOpenDragGesture: false,
-      drawer: Drawer(
-        child: GeneralSettings(),
+      drawer: Container(
+        width: Utilities.getWidth(context) * .75,
+        child: Drawer(
+          child: GeneralSettings(),
+        ),
       ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       // backgroundColor: Colors.white,
