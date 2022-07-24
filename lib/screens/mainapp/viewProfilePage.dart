@@ -1,27 +1,19 @@
 import 'dart:typed_data';
-import 'dart:ui';
 
-import 'package:async/async.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import 'package:soshi/screens/login/loading.dart';
-import 'package:soshi/screens/mainapp/editHandles.dart';
-import 'package:vibration/vibration.dart';
 
 import '../../../constants/popups.dart';
-import '../../../constants/utilities.dart';
 import '../../../constants/widgets.dart';
-import '../../../services/analytics.dart';
 import '../../../services/database.dart';
 import '../../../services/localData.dart';
 
 import 'package:glassmorphism/glassmorphism.dart';
 
-import '../../constants/constants.dart';
+import '../../services/analytics.dart';
 import '../../services/contacts.dart';
 import 'friendScreen.dart';
 import 'package:http/http.dart' as http;
@@ -90,6 +82,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                 "Entrepreneurship",
                 "Fitness"
               ];
+              String photoUrl = databaseService.getPhotoURL(userData);
 
               List<String> visiblePlatforms;
               Map usernames;
@@ -118,14 +111,8 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                     right: 0,
                     child: Stack(
                       children: [
-                        Image.network(
-                          (friend.photoURL != "null"
-                              ? friend.photoURL
-                              : "https://img.freepik.com/free-photo/abstract-luxury-plain-blur-grey-black-gradient-used-as-background-studio-wall-display-your-products_1258-58170.jpg?w=2000"),
-                          fit: BoxFit.fill,
-                          height: height / 2,
-                          width: width,
-                        ),
+                        ProfilePicBackdrop(photoUrl,
+                            height: height / 2, width: width),
                         GlassmorphicContainer(
                           height: height / 2,
                           width: width,
@@ -176,12 +163,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      IconButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          icon: Icon(CupertinoIcons.back)),
-
+                                      CupertinoBackButton(),
                                       Column(
                                         children: [
                                           Text(
@@ -191,33 +173,14 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                               fontSize: width / 16,
                                             ),
                                           ),
-                                          Row(
-                                            children: [
-                                              Text("@" + friendSoshiUsername,
-                                                  style: TextStyle(
-                                                      fontSize: width / 22,
-                                                      fontStyle:
-                                                          FontStyle.italic,
-                                                      letterSpacing: 1)),
-                                              SizedBox(
-                                                width: 3,
-                                              ),
-                                              isVerified == null ||
-                                                      isVerified == false
-                                                  ? Container()
-                                                  : Image.asset(
-                                                      "assets/images/Verified.png",
-                                                      scale: width / 25,
-                                                    )
-                                            ],
-                                          )
+                                          SoshiUsernameText(friendSoshiUsername,
+                                              fontSize: width / 22,
+                                              isVerified: isVerified)
                                         ],
                                       ),
-                                      IconButton(
-                                          color: Colors.transparent,
+                                      CupertinoBackButton(
                                           onPressed: () {},
-                                          icon: Icon(Icons
-                                              .arrow_back_ios_new_rounded)), // for balancing
+                                          color: Colors.transparent),
                                     ],
                                   ),
                                 ),
@@ -308,83 +271,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                     )
                                     //),
                                     ),
-                                NeumorphicButton(
-                                    onPressed: () async {
-                                      if (!isFriendAdded) {
-                                        LocalDataService.addFriend(
-                                            friend: friend);
-                                        databaseService.addFriend(
-                                            thisSoshiUsername: LocalDataService
-                                                .getLocalUsername(),
-                                            friendSoshiUsername:
-                                                friendSoshiUsername);
-                                      }
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(2.0),
-                                      child: Container(
-                                          height: height / 40,
-                                          width: width / 3,
-                                          child: Center(
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                isFriendAdded
-                                                    ? Text(
-                                                        "Friend Added",
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontFamily:
-                                                                "Montserrat",
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize:
-                                                                width / 25),
-                                                      )
-                                                    : Text(
-                                                        "Add Friend",
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontFamily:
-                                                                "Montserrat",
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize:
-                                                                width / 25),
-                                                      ),
-
-                                                // SizedBox(width: 15),
-                                                // ClipRRect(
-                                                //   borderRadius: BorderRadius.all(Radius.circular(10)),
-                                                //   child: Image.asset(
-                                                //     "assets/images/SoshiLogos/soshi_icon.png",
-                                                //   ),
-                                                // ),
-                                                // SizedBox(width: 10),
-                                                // Icon(
-                                                //   Icons.chevron_right,
-                                                //   size: 30,
-                                                // )
-                                              ],
-                                            ),
-                                          )),
-                                    ),
-                                    style: NeumorphicStyle(
-                                        shadowDarkColor: Colors.black12,
-                                        shadowLightColor: Colors.black12,
-                                        color: Colors.black,
-                                        boxShape: NeumorphicBoxShape.roundRect(
-                                            BorderRadius.circular(20.0)))
-                                    // ElevatedButton.styleFrom(
-                                    //   primary: Colors.black,
-                                    //   elevation: 10,
-                                    //   padding: const EdgeInsets.all(15.0),
-                                    //   shape: RoundedRectangleBorder(
-                                    //     borderRadius: BorderRadius.circular(20.0),
-                                    //   ),
-                                    // ),
-                                    ),
+                                AddFriendButton()
                               ],
                             ),
                           ),
@@ -392,59 +279,6 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                       ],
                     ),
                   ),
-
-                  // Stack(children: [
-                  //   Padding(
-                  //     padding: EdgeInsets.fromLTRB(
-                  //         width / 25, height / 140, width / 25, 0),
-                  //     child: Divider(
-                  //       color: Colors.grey,
-                  //     ),
-                  //   ),
-                  //   Row(
-                  //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  //     children: [
-                  //       Container(
-                  //         decoration: BoxDecoration(
-                  //             // color: Colors.grey[850],
-                  //             border: Border.all(
-                  //               color: Colors.red,
-                  //             ),
-                  //             borderRadius: BorderRadius.all(Radius.circular(5))),
-
-                  //         child: Padding(
-                  //           padding: EdgeInsets.all(3.0),
-                  //           child: Text("Basketball"),
-                  //         ),
-
-                  //         //color: Colors.white,
-                  //       ),
-                  //       Container(
-                  //         decoration: BoxDecoration(
-                  //             color: Colors.grey[850],
-                  //             border: Border.all(
-                  //               color: Colors.green,
-                  //             ),
-                  //             borderRadius: BorderRadius.all(Radius.circular(5))),
-                  //         child: Padding(
-                  //           padding: const EdgeInsets.all(3.0),
-                  //           child: Text("Contact Exchange"),
-                  //         ),
-                  //       ),
-                  //       Container(
-                  //         decoration: BoxDecoration(
-                  //             color: Colors.grey[850],
-                  //             border: Border.all(
-                  //               color: Colors.blue,
-                  //             ),
-                  //             borderRadius: BorderRadius.all(Radius.circular(5))),
-                  //         child: Padding(
-                  //             padding: const EdgeInsets.all(3.0),
-                  //             child: Text("Programming")),
-                  //       )
-                  //     ],
-                  //   ),
-                  // ]),
                   Positioned(
                     top: height / 2.2,
                     left: 0,
@@ -543,13 +377,13 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                       spacing: width / 40,
                                       children: List.generate(
                                           visiblePlatforms.length, (i) {
-                                        return Popups.createSMButton(
-                                            soshiUsername: friendSoshiUsername,
-                                            platform: visiblePlatforms[i],
-                                            username:
-                                                usernames[visiblePlatforms[i]],
-                                            size: width / 7,
-                                            context: context);
+                                        return SMButton(
+                                          soshiUsername: friendSoshiUsername,
+                                          platform: visiblePlatforms[i],
+                                          username:
+                                              usernames[visiblePlatforms[i]],
+                                          size: width / 7,
+                                        );
                                       }),
                                     )),
                           ),
@@ -683,5 +517,137 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
             }
           }),
     );
+  }
+}
+
+class AddFriendButton extends StatefulWidget {
+  @override
+  State<AddFriendButton> createState() => _AddFriendButtonState();
+
+  String friendSoshiUsername;
+  Function refreshFunction;
+  double height, width;
+  AddFriendButton(
+      {@required this.friendSoshiUsername,
+      @required this.refreshFunction,
+      @required this.height,
+      @required this.width});
+}
+
+class _AddFriendButtonState extends State<AddFriendButton> {
+  double height;
+  double width;
+  bool isFriendAdded;
+  bool isAdding = false;
+  String friendSoshiUsername;
+  Function refreshFunction;
+  DatabaseService databaseService;
+  String soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
+  @override
+  void initState() {
+    height = widget.height;
+    width = widget.width;
+    friendSoshiUsername = widget.friendSoshiUsername;
+    refreshFunction = widget.refreshFunction;
+    isFriendAdded = LocalDataService.isFriendAdded(friendSoshiUsername);
+    databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return NeumorphicButton(
+        onPressed: () async {
+          if (isFriendAdded || friendSoshiUsername == soshiUsername) {
+            // do nothing
+            return;
+          } else {
+            setState(() {
+              isAdding = true;
+            });
+
+            Map friendData =
+                await databaseService.getUserFile(friendSoshiUsername);
+            Friend friend = databaseService.userDataToFriend(friendData);
+            bool isFriendAdded =
+                await LocalDataService.isFriendAdded(friendSoshiUsername);
+
+            if (!isFriendAdded &&
+                friendSoshiUsername != databaseService.currSoshiUsername) {
+              List<String> newFriendsList =
+                  await LocalDataService.addFriend(friend: friend);
+
+              databaseService.overwriteFriendsList(newFriendsList);
+            }
+
+            // bool friendHasTwoWaySharing =    *Two way sharing
+            //     await databaseService
+            //         .getTwoWaySharing(userData);
+            // if (friendHasTwoWaySharing == null ||
+            //     friendHasTwoWaySharing == true) {
+            //   // if user has two way sharing on, add self to user's friends list
+            //   databaseService.addFriend(
+            //       thisSoshiUsername: friendSoshiUsername,
+            //       friendSoshiUsername:
+            //           databaseService.currSoshiUsername);
+            // }
+
+            // Checking if Soshi points is injected
+            if (LocalDataService.getInjectionFlag("Soshi Points") == false ||
+                LocalDataService.getInjectionFlag("Soshi Points") == null) {
+              LocalDataService.updateInjectionFlag("Soshi Points", true);
+              databaseService.updateInjectionSwitch(
+                  soshiUsername, "Soshi Points", true);
+            }
+            // Give 8 soshi points for every friend added
+            databaseService.updateSoshiPoints(soshiUsername, 8);
+            LocalDataService.updateSoshiPoints(8);
+
+            Analytics.logAddFriend(friendSoshiUsername);
+            setState(() {
+              isAdding = false;
+              isFriendAdded = true;
+            });
+            refreshFunction();
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: Container(
+              height: height,
+              width: width,
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    isAdding
+                        ? CircularProgressIndicator.adaptive()
+                        : (isFriendAdded
+                            ? Text(
+                                "Friend Added",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: "Montserrat",
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: width / 10),
+                              )
+                            : Text(
+                                "Add Friend",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: "Montserrat",
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: width / 10),
+                              ))
+                  ],
+                ),
+              )),
+        ),
+        style: NeumorphicStyle(
+            shadowDarkColor: Colors.black12,
+            shadowLightColor: Colors.black12,
+            color: isFriendAdded ? Colors.black : Colors.grey,
+            boxShape:
+                NeumorphicBoxShape.roundRect(BorderRadius.circular(20.0))));
   }
 }

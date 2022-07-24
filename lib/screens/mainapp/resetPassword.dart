@@ -7,6 +7,7 @@ import 'package:soshi/services/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../constants/utilities.dart';
+import '../../constants/widgets.dart';
 
 //import 'package:my_first_app/search.dart';
 //import 'main.dart';
@@ -36,20 +37,7 @@ class _ResetPassword extends State<ResetPassword> {
     return Scaffold(
       //backgroundColor: Colors.grey[850],
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            // loop throgh all profilePlatforms
-            // check if LocalDataservice.getusernameForPlatform(platform) equals the userNameController.text for each of the profile platforms
-            // if ALL match, then pop
-            // if even ONE doesn't match throw popup saying "Save changes, ..."
-            // Then in that popup, if they say "Save" --> same function for onpressed of "Done"
-            // if they say "Discard" --> just pop
-
-            Navigator.of(context).pop();
-          },
-          icon: Icon(CupertinoIcons.back),
-        ),
-
+        leading: CupertinoBackButton(),
         title: Text(
           "Reset password",
           style: TextStyle(

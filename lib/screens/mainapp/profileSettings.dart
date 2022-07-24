@@ -59,29 +59,28 @@ class ProfileSettingsState extends State<ProfileSettings> {
     double height = Utilities.getHeight(context);
     double width = Utilities.getWidth(context);
 
-    String soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
-    DatabaseService dbService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
+    String soshiUsername =
+        LocalDataService.getLocalUsernameForPlatform("Soshi");
+    DatabaseService dbService =
+        new DatabaseService(currSoshiUsernameIn: soshiUsername);
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: Icon(CupertinoIcons.back),
-        ),
+        leading: CupertinoBackButton(),
 
         actions: [
           Padding(
             padding: EdgeInsets.only(right: width / 150),
             child: TextButton(
-              style: ButtonStyle(overlayColor: MaterialStateProperty.all(Colors.transparent)),
+              style: ButtonStyle(
+                  overlayColor: MaterialStateProperty.all(Colors.transparent)),
               child: Text(
                 "Done",
                 style: TextStyle(color: Colors.blue, fontSize: width / 23),
               ),
               onPressed: () {
-                LocalDataService.updateFirstName(firstNameController.text.trim());
+                LocalDataService.updateFirstName(
+                    firstNameController.text.trim());
                 LocalDataService.updateLastName(lastNameController.text.trim());
 
                 dbService.updateDisplayName(
@@ -90,14 +89,16 @@ class ProfileSettingsState extends State<ProfileSettings> {
 
                 LocalDataService.updateBio(bioController.text);
                 databaseService.updateBio(
-                    LocalDataService.getLocalUsernameForPlatform("Soshi"), bioController.text);
+                    LocalDataService.getLocalUsernameForPlatform("Soshi"),
+                    bioController.text);
 
                 // Checking if this is first time adding a bio
                 // if it is, it gives Soshi points
                 if (LocalDataService.getInjectionFlag("Bio") == false ||
                     LocalDataService.getInjectionFlag("Bio") == null) {
                   LocalDataService.updateInjectionFlag("Bio", true);
-                  databaseService.updateInjectionSwitch(soshiUsername, "Bio", true);
+                  databaseService.updateInjectionSwitch(
+                      soshiUsername, "Bio", true);
                   LocalDataService.updateSoshiPoints(10);
                   databaseService.updateSoshiPoints(soshiUsername, 10);
                 }
@@ -131,7 +132,8 @@ class ProfileSettingsState extends State<ProfileSettings> {
       body: SingleChildScrollView(
         child: SafeArea(
           child: Padding(
-            padding: EdgeInsets.fromLTRB(width / 40, height / 50, width / 40, 0),
+            padding:
+                EdgeInsets.fromLTRB(width / 40, height / 50, width / 40, 0),
             child: Column(
                 //crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -143,16 +145,20 @@ class ProfileSettingsState extends State<ProfileSettings> {
                       // update profile picture on tap
                       // open up image picker
                       final ImagePicker imagePicker = ImagePicker();
-                      final PickedFile pickedImage =
-                          await imagePicker.getImage(source: ImageSource.gallery, imageQuality: 20);
+                      final PickedFile pickedImage = await imagePicker.getImage(
+                          source: ImageSource.gallery, imageQuality: 20);
                       await dbService.cropAndUploadImage(pickedImage);
 
                       // Checking if this is first time adding a profile pic
                       // if it is, it gives Soshi points
-                      if (LocalDataService.getInjectionFlag("Profile Pic") == false ||
-                          LocalDataService.getInjectionFlag("Profile Pic") == null) {
-                        LocalDataService.updateInjectionFlag("Profile Pic", true);
-                        dbService.updateInjectionSwitch(soshiUsername, "Profile Pic", true);
+                      if (LocalDataService.getInjectionFlag("Profile Pic") ==
+                              false ||
+                          LocalDataService.getInjectionFlag("Profile Pic") ==
+                              null) {
+                        LocalDataService.updateInjectionFlag(
+                            "Profile Pic", true);
+                        dbService.updateInjectionSwitch(
+                            soshiUsername, "Profile Pic", true);
                         databaseService.updateSoshiPoints(soshiUsername, 10);
                         LocalDataService.updateSoshiPoints(10);
                       }
@@ -161,14 +167,17 @@ class ProfileSettingsState extends State<ProfileSettings> {
                     },
                     child: Stack(
                       children: [
-                        ProfilePic(radius: 55, url: LocalDataService.getLocalProfilePictureURL()),
+                        ProfilePic(
+                            radius: 55,
+                            url: LocalDataService.getLocalProfilePictureURL()),
                         Positioned(
                           right: width / 15,
                           top: height / 30,
                           child: Container(
                             padding: EdgeInsets.all(width / 100),
-                            decoration:
-                                BoxDecoration(shape: BoxShape.circle, color: Colors.transparent),
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.transparent),
                             child: Icon(
                               Icons.edit,
                               size: 50,
@@ -182,57 +191,59 @@ class ProfileSettingsState extends State<ProfileSettings> {
                   SizedBox(
                     height: height / 100,
                   ),
-                  Divider(
-                      color: Theme.of(context).brightness == Brightness.light
-                          ? Colors.black
-                          : Colors.white),
+                  Divider(),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     // mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         "First Name",
-                        style: TextStyle(fontSize: width / 23),
+                        style: TextStyle(
+                            fontSize: width / 23, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
                         width: width / 15,
                       ),
                       Expanded(
-                        child: TextField(
+                        child: TextFormField(
+                          style: TextStyle(fontSize: width / 23),
                           // keyboardType: TextInputType.datetime,
-                          decoration: InputDecoration(border: InputBorder.none, counterText: ""),
+                          decoration: InputDecoration(
+                              border: InputBorder.none, counterText: ""),
                           controller: firstNameController,
                           maxLines: 1,
                           maxLength: 12,
-                          onSubmitted: (String firstName) {},
+                          onFieldSubmitted: (String firstName) {},
                         ),
                       ),
                     ],
                   ),
-                  Divider(
-                      color: Theme.of(context).brightness == Brightness.light
-                          ? Colors.black
-                          : Colors.white),
+                  Divider(),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     // mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         "Last Name",
-                        style: TextStyle(fontSize: width / 23),
+                        style: TextStyle(
+                            fontSize: width / 23, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
                         width: width / 15,
                       ),
                       Expanded(
-                        child: TextField(
-                          decoration: InputDecoration(border: InputBorder.none, counterText: ""),
+                        child: TextFormField(
+                          style: TextStyle(fontSize: width / 23),
+                          decoration: InputDecoration(
+                              border: InputBorder.none, counterText: ""),
                           controller: lastNameController,
                           maxLines: 1,
                           maxLength: 12,
-                          onSubmitted: (String lastName) {
-                            LocalDataService.updateFirstName(firstNameController.text.trim());
-                            LocalDataService.updateLastName(lastNameController.text.trim());
+                          onFieldSubmitted: (String lastName) {
+                            LocalDataService.updateFirstName(
+                                firstNameController.text.trim());
+                            LocalDataService.updateLastName(
+                                lastNameController.text.trim());
                             dbService.updateDisplayName(
                                 firstNameParam: firstNameController.text.trim(),
                                 lastNameParam: lastNameController.text.trim());
@@ -241,19 +252,19 @@ class ProfileSettingsState extends State<ProfileSettings> {
                       ),
                     ],
                   ),
-                  Divider(
-                      color: Theme.of(context).brightness == Brightness.light
-                          ? Colors.black
-                          : Colors.white),
+                  Divider(),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(0, height / 60, 0, height / 60),
+                    padding:
+                        EdgeInsets.fromLTRB(0, height / 60, 0, height / 60),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       // mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           "Username",
-                          style: TextStyle(fontSize: width / 23),
+                          style: TextStyle(
+                              fontSize: width / 23,
+                              fontWeight: FontWeight.bold),
                         ),
                         SizedBox(
                           width: width / 15,
@@ -263,24 +274,21 @@ class ProfileSettingsState extends State<ProfileSettings> {
                             Text(
                               "@ ",
                               style: TextStyle(
-                                  fontSize: width / 25,
-                                  fontStyle: FontStyle.italic,
-                                  color: Colors.grey),
+                                  fontSize: width / 23, color: Colors.grey),
                             ),
                             Text(
                               LocalDataService.getLocalUsername(),
                               style: TextStyle(
-                                fontSize: width / 25,
-                                fontStyle: FontStyle.italic,
-                                //color: Colors.grey
-                              ),
+                                  fontSize: width / 23, color: Colors.grey
+                                  //color: Colors.grey
+                                  ),
                             ),
                             isVerified == false || isVerified == null
                                 ? Container()
                                 : Padding(
                                     padding: EdgeInsets.only(left: width / 100),
                                     child: Image.asset(
-                                      "assets/images/Verified.png",
+                                      "assets/images/misc/verified.png",
                                       scale: width / 22,
                                     ),
                                   )
@@ -289,22 +297,27 @@ class ProfileSettingsState extends State<ProfileSettings> {
                       ],
                     ),
                   ),
-                  Divider(
-                      color: Theme.of(context).brightness == Brightness.light
-                          ? Colors.black
-                          : Colors.white),
+                  Divider(),
+
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Bio",
-                        style: TextStyle(fontSize: width / 23),
+                      Padding(
+                        padding: EdgeInsets.only(top: height / 65),
+                        child: Text(
+                          "Bio",
+                          style: TextStyle(
+                              fontSize: width / 23,
+                              fontWeight: FontWeight.bold),
+                        ),
                       ),
                       SizedBox(
                         width: width / 4.5,
                       ),
                       Expanded(
-                        child: TextField(
-                          // keyboardType: TextInputType.,
+                        child: TextFormField(
+                          style: TextStyle(fontSize: width / 23),
+                          keyboardType: TextInputType.multiline,
                           textInputAction: TextInputAction.done,
                           decoration: InputDecoration(
                             border: InputBorder.none,
@@ -313,39 +326,51 @@ class ProfileSettingsState extends State<ProfileSettings> {
                           maxLines: 3,
                           maxLength: 80,
                           //maxLengthEnforcement: MaxLengthEnforcement.none,
-                          onSubmitted: (String bio) {
+                          onFieldSubmitted: (String bio) {
                             LocalDataService.updateBio(bio);
                             databaseService.updateBio(
-                                LocalDataService.getLocalUsernameForPlatform("Soshi"), bio);
+                                LocalDataService.getLocalUsernameForPlatform(
+                                    "Soshi"),
+                                bio);
 
                             // Checking if this is first time adding a bio
                             // if it is, it gives Soshi points
-                            if (LocalDataService.getInjectionFlag("Bio") == false ||
-                                LocalDataService.getInjectionFlag("Bio") == null) {
+                            if (LocalDataService.getInjectionFlag("Bio") ==
+                                    false ||
+                                LocalDataService.getInjectionFlag("Bio") ==
+                                    null) {
                               LocalDataService.updateInjectionFlag("Bio", true);
-                              databaseService.updateInjectionSwitch(soshiUsername, "Bio", true);
+                              databaseService.updateInjectionSwitch(
+                                  soshiUsername, "Bio", true);
 
                               LocalDataService.updateSoshiPoints(10);
-                              databaseService.updateSoshiPoints(soshiUsername, 10);
+                              databaseService.updateSoshiPoints(
+                                  soshiUsername, 10);
                             }
                           },
                         ),
                       ),
                     ],
                   ),
-                  Divider(
-                      color: Theme.of(context).brightness == Brightness.light
-                          ? Colors.black
-                          : Colors.white),
+                  Divider(),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                          top: height / 65, bottom: height / 65),
+                      child: Text(
+                        "Passions",
+                        style: TextStyle(
+                            fontSize: width / 23, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
                   PassionTileList(),
-                  Divider(
-                      color: Theme.of(context).brightness == Brightness.light
-                          ? Colors.black
-                          : Colors.white),
+                  Divider(),
                   SizedBox(
                     height: height / 15,
                   ),
-                  SignOutButton()
+                  // SignOutButton()
                 ]),
           ),
         ),

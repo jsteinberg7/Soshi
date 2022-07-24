@@ -274,27 +274,8 @@ class _FriendScreenState extends State<FriendScreen>
                         fontWeight: FontWeight.bold,
                         fontSize: 18)),
                 SizedBox(height: height / 170),
-                Row(
-                  // mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "@" + friend.soshiUsername,
-                      style: TextStyle(
-                          color: Colors.grey[500],
-                          fontSize: 14,
-                          fontStyle: FontStyle.italic),
-                    ),
-                    SizedBox(
-                      width: width / 150,
-                    ),
-                    friend.isVerified == null || friend.isVerified == false
-                        ? Container()
-                        : Image.asset(
-                            "assets/images/Verified.png",
-                            scale: width / 20,
-                          )
-                  ],
-                ),
+                SoshiUsernameText(friend.soshiUsername,
+                    fontSize: 14, isVerified: friend.isVerified)
               ],
             ),
             tileColor: Theme.of(context).brightness == Brightness.light
@@ -362,10 +343,9 @@ class _FriendScreenState extends State<FriendScreen>
                                                 Text(
                                                   "@" + friend.soshiUsername,
                                                   style: TextStyle(
-                                                      color: Colors.grey[500],
-                                                      fontSize: width / 25,
-                                                      fontStyle:
-                                                          FontStyle.italic),
+                                                    color: Colors.grey[500],
+                                                    fontSize: width / 25,
+                                                  ),
                                                 ),
                                                 SizedBox(
                                                   width: width / 130,
@@ -375,18 +355,12 @@ class _FriendScreenState extends State<FriendScreen>
                                                             false
                                                     ? Container()
                                                     : Image.asset(
-                                                        "assets/images/Verified.png",
+                                                        "assets/images/misc/verified.png",
                                                         scale: width / 21,
                                                       )
                                               ],
                                             ),
-                                            Divider(
-                                              color: Theme.of(context)
-                                                          .brightness ==
-                                                      Brightness.light
-                                                  ? Colors.grey[500]
-                                                  : Colors.grey,
-                                            ),
+                                            Divider(),
                                             ListTile(
                                               title: Center(
                                                 child: Text(
@@ -736,15 +710,11 @@ class _FriendScreenState extends State<FriendScreen>
                                                     url: formattedRecentsList[i]
                                                         .photoURL),
                                               ),
-                                              Text(
-                                                  "@" +
-                                                      formattedRecentsList[i]
-                                                          .soshiUsername,
-                                                  style: TextStyle(
-                                                      color: Colors.grey[500],
-                                                      fontSize: 14,
-                                                      fontStyle:
-                                                          FontStyle.italic))
+                                              SoshiUsernameText(soshiUsername,
+                                                  fontSize: 14,
+                                                  isVerified:
+                                                      formattedFriendsList[i]
+                                                          .isVerified),
                                             ],
                                           ),
                                         ),
@@ -785,7 +755,6 @@ class _FriendScreenState extends State<FriendScreen>
                             style: TextStyle(
                                 color: Colors.cyan[300],
                                 fontSize: 20,
-                                fontStyle: FontStyle.italic,
                                 letterSpacing: 2),
                           ),
                         ],
@@ -1261,27 +1230,8 @@ class FriendTile extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                       fontSize: 18)),
               SizedBox(height: height / 170),
-              Row(
-                // mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "@" + friend.soshiUsername,
-                    style: TextStyle(
-                        color: Colors.grey[500],
-                        fontSize: 14,
-                        fontStyle: FontStyle.italic),
-                  ),
-                  SizedBox(
-                    width: width / 150,
-                  ),
-                  friend.isVerified == null || friend.isVerified == false
-                      ? Container()
-                      : Image.asset(
-                          "assets/images/Verified.png",
-                          scale: width / 20,
-                        )
-                ],
-              ),
+              SoshiUsernameText(friend.soshiUsername,
+                  fontSize: 14, isVerified: friend.isVerified)
             ],
           ),
           tileColor: Colors.transparent,
@@ -1344,10 +1294,9 @@ class FriendTile extends StatelessWidget {
                                               Text(
                                                 "@" + friend.soshiUsername,
                                                 style: TextStyle(
-                                                    color: Colors.grey[500],
-                                                    fontSize: width / 25,
-                                                    fontStyle:
-                                                        FontStyle.italic),
+                                                  color: Colors.grey[500],
+                                                  fontSize: width / 25,
+                                                ),
                                               ),
                                               SizedBox(
                                                 width: width / 130,
@@ -1356,18 +1305,12 @@ class FriendTile extends StatelessWidget {
                                                       friend.isVerified == false
                                                   ? Container()
                                                   : Image.asset(
-                                                      "assets/images/Verified.png",
+                                                      "assets/images/misc/verified.png",
                                                       scale: width / 21,
                                                     )
                                             ],
                                           ),
-                                          Divider(
-                                            color:
-                                                Theme.of(context).brightness ==
-                                                        Brightness.light
-                                                    ? Colors.grey[500]
-                                                    : Colors.grey,
-                                          ),
+                                          Divider(),
                                           ListTile(
                                             title: Center(
                                               child: Text(
