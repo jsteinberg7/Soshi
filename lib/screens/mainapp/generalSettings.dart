@@ -250,75 +250,80 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                   //     ),
                   //   ),
                   // )
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    //bottom: ,
-                    child: TextButton(
-                      onPressed: () {
-                        AuthService authService = new AuthService();
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          AuthService authService = new AuthService();
 
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(40.0))),
-                                // backgroundColor: Colors.blueGrey[900],
-                                title: Text(
-                                  "Sign Out",
-                                  style: TextStyle(
-                                    // color: Colors.cyan[600],
-                                    fontWeight: FontWeight.bold,
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(40.0))),
+                                  // backgroundColor: Colors.blueGrey[900],
+                                  title: Text(
+                                    "Sign Out",
+                                    style: TextStyle(
+                                      // color: Colors.cyan[600],
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
-                                content: Text(
-                                  ("Are you sure you want to sign out?"),
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    // color: Colors.cyan[700],
-                                    // fontWeight: FontWeight.bold
+                                  content: Text(
+                                    ("Are you sure you want to sign out?"),
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      // color: Colors.cyan[700],
+                                      // fontWeight: FontWeight.bold
+                                    ),
                                   ),
-                                ),
-                                actions: <Widget>[
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: <Widget>[
-                                      TextButton(
-                                        child: Text(
-                                          'No',
-                                          style: TextStyle(
-                                              fontSize: 20, color: Colors.red),
+                                  actions: <Widget>[
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: <Widget>[
+                                        TextButton(
+                                          child: Text(
+                                            'No',
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                color: Colors.red),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
                                         ),
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                      TextButton(
-                                        child: Text(
-                                          'Yes',
-                                          style: TextStyle(
-                                              fontSize: 20, color: Colors.blue),
+                                        TextButton(
+                                          child: Text(
+                                            'Yes',
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                color: Colors.blue),
+                                          ),
+                                          onPressed: () async {
+                                            await authService.signOut();
+                                            Navigator.pop(
+                                                context); // close popup
+                                            Navigator.pop(
+                                                context); // pop to login screen
+                                          },
                                         ),
-                                        onPressed: () async {
-                                          await authService.signOut();
-                                          Navigator.pop(context); // close popup
-                                          Navigator.pop(
-                                              context); // pop to login screen
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              );
-                            });
-                      },
-                      child: Text(
-                        "Sign out",
-                        style: TextStyle(color: Colors.red),
+                                      ],
+                                    ),
+                                  ],
+                                );
+                              });
+                        },
+                        child: Text(
+                          "Log out",
+                          style: TextStyle(color: Colors.red),
+                        ),
                       ),
-                    ),
+                      Icon(Icons.logout, color: Colors.grey)
+                    ],
                   )
                 ]),
           ]),
