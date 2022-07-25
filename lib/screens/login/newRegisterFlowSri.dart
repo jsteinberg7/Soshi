@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -312,11 +313,109 @@ class RegisterSingleScreen extends StatefulWidget {
 class _RegisterSingleScreenState extends State<RegisterSingleScreen> {
   String forgotPasswordText = "Forgot password?";
   bool validPassword = true;
-  bool validPassword2 = true;
+  bool validEmail = true;
+  String emailValidation = r"[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+      r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+      r"{0,253}[a-zA-Z0-9])?)*";
   @override
   Widget build(BuildContext context) {
     double width = Utilities.getWidth(context);
     double height = Utilities.getHeight(context);
+
+    renderInputErrorMessage() {
+      String messageText = "";
+      bool badMessage = true;
+      String pass1 = widget.superController.passwordNew.text;
+      String pass2 = widget.superController.passwordNewConfirm.text;
+      if (widget.type == InputType.ALL_PASSWORDS && pass1 != "") {
+        print('✅✅✅✅ isnide check all passwords');
+
+        if (pass1 != "" && pass2 != "" && pass1.length >= 8) {
+          if (pass1 != pass2) {
+            messageText = "Passwords don't match!";
+          } else {
+            messageText = "Passwords match!";
+            badMessage = false;
+          }
+        } else if (pass1.length < 8) {
+          messageText = "Password must be greater than 8 characters!";
+        }
+      } else if (widget.type == InputType.EMAIL && widget.superController.email.text != "") {
+        if (validEmail) {
+          messageText = "Valid email";
+          badMessage = false;
+        } else {
+          messageText = "Invalid email";
+        }
+      }
+
+      if (messageText != "") {
+        return TextButton.icon(
+            style: TextButton.styleFrom(primary: badMessage ? Colors.red : Colors.green),
+            onPressed: () {},
+            icon: badMessage
+                ? Icon(Icons.cancel, color: Colors.red)
+                : Icon(Icons.check, color: Colors.green),
+            label: Text(messageText,
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.grey[850],
+                )));
+      } else {
+        return Container();
+      }
+    }
+
+    renderAuthErrorMessage() {
+      if ([InputType.SOSHI_USERNAME, InputType.PASSWORD].contains(widget.type)) {
+        if (widget.registerError == true && getMapData('controller').text != "") {
+          return TextButton.icon(
+              onPressed: () {},
+              icon: Icon(
+                Icons.cancel,
+                color: Colors.red,
+              ),
+              label: Text(widget.registerErrorMessaage));
+        } else {
+          return Container();
+        }
+      } else {
+        return Container();
+      }
+    }
+
+    sendResetPassword() {
+      if (widget.type == InputType.PASSWORD) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            TextButton.icon(
+                onPressed: () async {
+                  try {
+                    setState(() {
+                      forgotPasswordText = "Sent to ${widget.superController.email.text}. Resend?";
+                    });
+                    final FirebaseAuth _auth = FirebaseAuth.instance;
+                    await _auth.sendPasswordResetEmail(email: widget.superController.email.text);
+                  } catch (e) {
+                    setState(() {
+                      forgotPasswordText = "Unable to send reset email, sorry";
+                    });
+                  }
+                },
+                icon: forgotPasswordText.contains("Sent")
+                    ? Icon(Icons.check, color: Colors.green)
+                    : Container(),
+                label: Text(forgotPasswordText,
+                    style: TextStyle(
+                        color: forgotPasswordText.contains("Sent") ? Colors.green : Colors.white))),
+          ],
+        );
+      } else {
+        return Container();
+      }
+    }
 
     return Container(
         // color: Colors.red,
@@ -377,56 +476,7 @@ class _RegisterSingleScreenState extends State<RegisterSingleScreen> {
                     SizedBox(height: 10),
                     makeTextField(
                         getMapData('hint_text').split("%")[1], getMapData('controller_2')),
-                    widget.type == InputType.ALL_PASSWORDS &&
-                            widget.superController.passwordNew.text != "" &&
-                            widget.superController.passwordNewConfirm.text != "" &&
-                            widget.superController.passwordNew.text.length >= 8
-                        ? widget.superController.passwordNew.text !=
-                                widget.superController.passwordNewConfirm.text
-                            ? OutlinedButton.icon(
-                                onPressed: () {},
-                                icon: Icon(
-                                  Icons.cancel,
-                                  color: Colors.red,
-                                ),
-                                label: Text("Passwords don't match!",
-                                    style: TextStyle(
-                                      color: Theme.of(context).brightness == Brightness.dark
-                                          ? Colors.white
-                                          : Colors.grey[850],
-                                    )))
-                            : OutlinedButton.icon(
-                                onPressed: () {},
-                                icon: Icon(
-                                  Icons.check_circle_rounded,
-                                  color: Colors.green,
-                                ),
-                                label: Text(
-                                  "Passwords match!",
-                                  style: TextStyle(
-                                    color: Theme.of(context).brightness == Brightness.dark
-                                        ? Colors.white
-                                        : Colors.grey[850],
-                                  ),
-                                ))
-                        : Container(),
-                    widget.type == InputType.ALL_PASSWORDS &&
-                            widget.superController.passwordNew.text.length < 8
-                        ? !validPassword
-                            ? OutlinedButton.icon(
-                                onPressed: () {},
-                                icon: Icon(
-                                  Icons.cancel,
-                                  color: Colors.red,
-                                ),
-                                label: Text("Password must be greater than 8 characters!",
-                                    style: TextStyle(
-                                      color: Theme.of(context).brightness == Brightness.dark
-                                          ? Colors.white
-                                          : Colors.grey[850],
-                                    )))
-                            : Container()
-                        : Container()
+                    renderInputErrorMessage(),
                   ],
                 )
               : Padding(
@@ -438,55 +488,9 @@ class _RegisterSingleScreenState extends State<RegisterSingleScreen> {
                         child: makeTextField(getMapData('hint_text'), getMapData('controller')),
                       ),
 
+                      renderAuthErrorMessage(),
+                      sendResetPassword()
                       // Forgot password functionality
-                      widget.type == InputType.PASSWORD
-                          ? Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                TextButton.icon(
-                                    onPressed: () async {
-                                      try {
-                                        setState(() {
-                                          forgotPasswordText =
-                                              "Sent to ${widget.superController.email.text}. Resend?";
-                                        });
-                                        final FirebaseAuth _auth = FirebaseAuth.instance;
-                                        await _auth.sendPasswordResetEmail(
-                                            email: widget.superController.email.text);
-                                      } catch (e) {
-                                        setState(() {
-                                          forgotPasswordText = "Unable to send reset email, sorry";
-                                        });
-                                      }
-                                    },
-                                    icon: forgotPasswordText.contains("Sent")
-                                        ? Icon(Icons.check, color: Colors.green)
-                                        : Container(),
-                                    // Icon(
-                                    //     Icons.question_mark_rounded,
-                                    //     color: Colors.white,
-                                    //     size: 20,
-                                    //   ),
-                                    label: Text(forgotPasswordText,
-                                        style: TextStyle(
-                                            color: forgotPasswordText.contains("Sent")
-                                                ? Colors.green
-                                                : Colors.white))),
-                              ],
-                            )
-                          : Container(),
-                      // To show registration errors!
-                      [InputType.SOSHI_USERNAME, InputType.PASSWORD].contains(widget.type) &&
-                              widget.registerError == true &&
-                              getMapData('controller').text != ""
-                          ? OutlinedButton.icon(
-                              onPressed: () {},
-                              icon: Icon(
-                                Icons.cancel,
-                                color: Colors.red,
-                              ),
-                              label: Text(widget.registerErrorMessaage))
-                          : Container(),
                     ],
                   )),
         ],
@@ -494,8 +498,8 @@ class _RegisterSingleScreenState extends State<RegisterSingleScreen> {
     ));
   }
 
-  TextField makeTextField(String hintText, TextEditingController controller) {
-    return TextField(
+  TextFormField makeTextField(String hintText, TextEditingController controller) {
+    return TextFormField(
       keyboardType: hintText == "Email"
           ? TextInputType.emailAddress
           : hintText == "First Name" || hintText == "Last Name"
@@ -504,25 +508,26 @@ class _RegisterSingleScreenState extends State<RegisterSingleScreen> {
       obscureText: hintText == "Password" || hintText == "Confirm password" ? true : false,
       cursorHeight: 28,
       controller: controller,
-      inputFormatters: widget.type == InputType.SOSHI_USERNAME
-          ? [FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]"))]
-          : null,
+      inputFormatters: widget.type == InputType.EMAIL
+          ? [FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9_.-@]"))]
+          : widget.type == InputType.SOSHI_USERNAME
+              ? [FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9_.]"))]
+              : null,
       onChanged: widget.type == InputType.ALL_PASSWORDS
           ? (String newValue) {
-              String pass1 = widget.superController.passwordNew.text;
-              String pass2 = widget.superController.passwordNewConfirm.text;
+              print("Updaintg password: " + newValue);
 
-              if (pass1 == pass2 && pass1 != "" && pass2 != "" && pass1.length >= 8) {
-                setState(() {
-                  validPassword = true;
-                });
-              } else {
-                setState(() {
-                  validPassword = false;
-                });
-              }
+              setState(() {});
             }
-          : null,
+          : widget.type == InputType.EMAIL
+              ? (String newValue) {
+                  print("📧📧📧📧📧");
+                  setState(() {
+                    validEmail = EmailValidator.validate(newValue);
+                    print(" valid email::: ${validEmail}");
+                  });
+                }
+              : null,
       style: TextStyle(fontSize: 24),
       decoration: InputDecoration(
           hintText: hintText,
@@ -547,7 +552,8 @@ class _RegisterSingleScreenState extends State<RegisterSingleScreen> {
         'validator': null,
         'hint_text': 'Email',
         'main_text': "Let's get started, what's your email?",
-        'controller': widget.superController.email
+        'controller': widget.superController.email,
+        'error_text': "Invalid email"
       },
       InputType.FIRST_NAME: {
         'validator': null,

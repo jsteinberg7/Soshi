@@ -41,9 +41,6 @@ class _NewIntroFlowState extends State<NewIntroFlow> {
       ),
       body: Column(
         children: [
-          // SizedBox(
-          //   height: height / 12,
-          // ),
           Expanded(
             child: PageView(
               onPageChanged: (int newPage) {
@@ -87,10 +84,6 @@ class _NewIntroFlowState extends State<NewIntroFlow> {
                   await controller.animateToPage(currentPage + 1,
                       duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
                 } else {
-                  // After the 4 intro screens are done, push to registration onboarding process
-                  // Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  //   return Scaffold(body: RegisterScreen());
-                  // }));
                   SuperController superController = new SuperController();
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return Scaffold(
@@ -161,8 +154,7 @@ class IntroSingleScreen extends StatelessWidget {
           child: Container(
             // height: MediaQuery.of(context).size.height - 500,
             // width: MediaQuery.of(context).size.height - 200,
-            // {PLACE IMAGE HERE}
-            height: 500,
+            height: 400,
             width: 500,
             // color: Colors.grey,
 
