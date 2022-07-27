@@ -80,7 +80,7 @@ class _EditHandlesState extends State<EditHandles> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
+        leading: CupertinoBackButton(
           onPressed: () {
             // loop throgh all profilePlatforms
             // check if LocalDataservice.getusernameForPlatform(platform) equals the userNameController.text for each of the profile platforms
@@ -91,7 +91,6 @@ class _EditHandlesState extends State<EditHandles> {
 
             Navigator.of(context).pop();
           },
-          icon: Icon(CupertinoIcons.back),
         ),
         actions: [
           Padding(
@@ -343,22 +342,19 @@ class _SMCardState extends State<SMCard> {
     return Stack(
       children: [
         Card(
+          color: Colors.grey[200],
           // color: Theme.of(context).brightness == Brightness.light
           //     ? Colors.white
           //     : Colors.grey[850],
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(50),
-                  bottomLeft: Radius.circular(50),
-                  topRight: Radius.circular(20),
-                  bottomRight: Radius.circular(20)),
+              borderRadius: BorderRadius.circular(15.0),
               side:
                   // (isSwitched == true)
                   // ?
                   // BorderSide(color: Colors.blueGrey)
 
                   // :
-                  BorderSide.none),
+                  BorderSide(color: Colors.white, width: 3.0)),
           elevation: 2,
 
           // color: Colors.grey[850],
@@ -369,82 +365,86 @@ class _SMCardState extends State<SMCard> {
               child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              IconButton(
-                icon: CircleAvatar(
-                    minRadius: width / 10.5,
-                    maxRadius: width / 10.5,
-                    backgroundImage: AssetImage(
-                      'assets/images/SMLogos/' + platformName + 'Logo.png',
-                    )),
-                onPressed: () async {
-                  if (platformName == "Contact") {
-                    double width = Utilities.getWidth(context);
-                    String firstName = LocalDataService.getLocalFirstName();
-                    String lastName = LocalDataService.getLocalLastName();
-                    String photoUrl =
-                        LocalDataService.getLocalProfilePictureURL();
-                    Uint8List profilePicBytes;
-                    try {
-                      // try to load profile pic from url
-                      await http
-                          .get(Uri.parse(photoUrl))
-                          .then((http.Response response) {
-                        profilePicBytes = response.bodyBytes;
-                      });
-                    } catch (e) {
-                      // if url is invalid, use default profile pic
-                      ByteData data = await rootBundle
-                          .load("assets/images/misc/default_pic.png");
-                      profilePicBytes = data.buffer.asUint8List();
-                    }
-                    Contact contact = new Contact(
-                        givenName: firstName,
-                        familyName: lastName,
-                        emails: [
-                          Item(
-                            label: "Email",
-                            value: LocalDataService.getLocalUsernameForPlatform(
-                                "Email"),
+              Padding(
+                padding: const EdgeInsets.all(3.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(15.0),
+                  child: InkWell(
+                    onTap: () async {
+                      if (platformName == "Contact") {
+                        double width = Utilities.getWidth(context);
+                        String firstName = LocalDataService.getLocalFirstName();
+                        String lastName = LocalDataService.getLocalLastName();
+                        String photoUrl =
+                            LocalDataService.getLocalProfilePictureURL();
+                        Uint8List profilePicBytes;
+                        try {
+                          // try to load profile pic from url
+                          await http
+                              .get(Uri.parse(photoUrl))
+                              .then((http.Response response) {
+                            profilePicBytes = response.bodyBytes;
+                          });
+                        } catch (e) {
+                          // if url is invalid, use default profile pic
+                          ByteData data = await rootBundle
+                              .load("assets/images/misc/default_pic.png");
+                          profilePicBytes = data.buffer.asUint8List();
+                        }
+                        Contact contact = new Contact(
+                            givenName: firstName,
+                            familyName: lastName,
+                            emails: [
+                              Item(
+                                label: "Email",
+                                value: LocalDataService
+                                    .getLocalUsernameForPlatform("Email"),
+                              ),
+                            ],
+                            phones: [
+                              Item(
+                                  label: "Cell",
+                                  value: LocalDataService
+                                      .getLocalUsernameForPlatform("Phone")),
+                            ],
+                            avatar: profilePicBytes);
+                        await askPermissions(context);
+                        ContactsService.addContact(contact)
+                            .then((dynamic success) {
+                          Popups.showContactAddedPopup(
+                              context, width, firstName, lastName);
+                        });
+                      } else if (platformName == "Cryptowallet") {
+                        Clipboard.setData(ClipboardData(
+                          text: LocalDataService.getLocalUsernameForPlatform(
+                                  "Cryptowallet")
+                              .toString(),
+                        ));
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: const Text(
+                            'Wallet address copied to clipboard!',
+                            textAlign: TextAlign.center,
                           ),
-                        ],
-                        phones: [
-                          Item(
-                              label: "Cell",
-                              value:
-                                  LocalDataService.getLocalUsernameForPlatform(
-                                      "Phone")),
-                        ],
-                        avatar: profilePicBytes);
-                    await askPermissions(context);
-                    ContactsService.addContact(contact).then((dynamic success) {
-                      Popups.showContactAddedPopup(
-                          context, width, firstName, lastName);
-                    });
-                  } else if (platformName == "Cryptowallet") {
-                    Clipboard.setData(ClipboardData(
-                      text: LocalDataService.getLocalUsernameForPlatform(
-                              "Cryptowallet")
-                          .toString(),
-                    ));
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: const Text(
-                        'Wallet address copied to clipboard!',
-                        textAlign: TextAlign.center,
-                      ),
-                    ));
+                        ));
 
-                    // snackbar or popup that says:
-                    // "First name + last name's wallet address has been copied to clipboard"
+                        // snackbar or popup that says:
+                        // "First name + last name's wallet address has been copied to clipboard"
 
-                  } else {
-                    URL.launchURL(URL.getPlatformURL(
-                        platform: platformName,
-                        username: LocalDataService.getLocalUsernameForPlatform(
-                            platformName)));
-                  }
-                },
-                iconSize: 75,
+                      } else {
+                        URL.launchURL(URL.getPlatformURL(
+                            platform: platformName,
+                            username:
+                                LocalDataService.getLocalUsernameForPlatform(
+                                    platformName)));
+                      }
+                    },
+                    child: Image.asset(
+                      'assets/images/SMLogos/' + platformName + 'Logo.png',
+                    ),
+                  ),
+                ),
               ),
+
               // SizedBox(
               //   width: width / 5,
               // ),

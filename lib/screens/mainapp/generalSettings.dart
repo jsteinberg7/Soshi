@@ -48,14 +48,21 @@ class _GeneralSettingsState extends State<GeneralSettings> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {},
-          splashRadius: 1,
-          icon: Icon(
-            CupertinoIcons.back,
-            color: Colors.transparent,
+        leadingWidth: 0,
+        title: Container(
+          width: width / 2,
+          child: Text(
+            "Settings",
+            style: TextStyle(
+              // color: Colors.cyan[200],
+              letterSpacing: 1,
+              fontSize: width / 18,
+              fontWeight: FontWeight.bold,
+              //fontStyle: FontStyle.italic
+            ),
           ),
         ),
+        automaticallyImplyLeading: false,
 
         // actions: [
         //   Padding(
@@ -74,18 +81,9 @@ class _GeneralSettingsState extends State<GeneralSettings> {
         //   )
         // ],
         elevation: 0,
-        title: Text(
-          "Settings",
-          style: TextStyle(
-            // color: Colors.cyan[200],
-            letterSpacing: 1,
-            fontSize: width / 18,
-            fontWeight: FontWeight.bold,
-            //fontStyle: FontStyle.italic
-          ),
-        ),
+
         // backgroundColor: Colors.grey[850],
-        centerTitle: true,
+        centerTitle: false,
       ),
       body: Scaffold(
           body: SafeArea(
@@ -117,23 +115,9 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                     ),
                   ),
                   SizedBox(height: 5),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text("@" + LocalDataService.getLocalUsername(),
-                          style: TextStyle(
-                              letterSpacing: .6, fontSize: width / 26)),
-                      SizedBox(
-                        width: 2,
-                      ),
-                      isVerified == null || isVerified == false
-                          ? Container()
-                          : Image.asset(
-                              "assets/images/Verified.png",
-                              scale: width / 20,
-                            )
-                    ],
-                  ),
+                  SoshiUsernameText(soshiUsername,
+                      fontSize: width / 26, isVerified: isVerified),
+
                   Padding(
                     padding: EdgeInsets.only(top: height / 100),
                     child: Divider(

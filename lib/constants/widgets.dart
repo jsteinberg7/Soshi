@@ -1,19 +1,27 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:contacts_service/contacts_service.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:share/share.dart';
 import 'package:soshi/constants/popups.dart';
 import 'package:soshi/constants/utilities.dart';
+import 'package:soshi/services/analytics.dart';
 import 'package:soshi/screens/login/newIntroFlowSri.dart';
 import 'package:soshi/services/auth.dart';
 import 'package:soshi/services/database.dart';
 import 'package:soshi/services/localData.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:soshi/services/nfc.dart';
+import 'package:soshi/services/url.dart';
+import '../screens/login/loading.dart';
+import '../services/contacts.dart';
 import 'constants.dart';
+import 'package:http/http.dart' as http;
 
 /* Widget to build the profile picture and check if they are null */
 class ProfilePic extends StatelessWidget {
@@ -979,5 +987,177 @@ class PassionBubble extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Text(passion),
         ));
+  }
+}
+
+class ProfilePicBackdrop extends StatelessWidget {
+  String url;
+  double height, width;
+
+  ProfilePicBackdrop(this.url, {@required this.height, @required this.width});
+
+  @override
+  Widget build(BuildContext context) {
+    if (url != null && url != "null") {
+      return Image.network(
+        url,
+        fit: BoxFit.fill,
+        height: height,
+        width: width,
+      );
+    } else {
+      return Image.asset("assets/images/misc/default_pic.png");
+    }
+  }
+}
+
+class SMButton extends StatelessWidget {
+  String soshiUsername, platform, username;
+  double size;
+
+  SMButton(
+      {this.soshiUsername, this.platform, this.username, this.size = 70.0});
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      // splashColor: Colors.cyan[300],
+      splashRadius: 55.0,
+      icon: Image.asset(
+        "assets/images/SMLogos/" + platform + "Logo.png",
+      ),
+      onPressed: () async {
+        Analytics.logAccessPlatform(platform);
+        if (platform == "Contact") {
+          DialogBuilder(context).showLoadingIndicator();
+
+          double width = MediaQuery.of(context).size.width;
+          DatabaseService databaseService =
+              new DatabaseService(currSoshiUsernameIn: soshiUsername);
+          Map userData = await databaseService.getUserFile(soshiUsername);
+
+          String firstName =
+              await databaseService.getFirstDisplayName(userData);
+          String lastName = databaseService.getLastDisplayName(userData);
+          String email = await databaseService.getUsernameForPlatform(
+              platform: "Email", userData: userData);
+          String phoneNumber = await databaseService.getUsernameForPlatform(
+              platform: "Phone", userData: userData);
+          String photoUrl = databaseService.getPhotoURL(userData);
+
+          Uint8List profilePicBytes;
+
+          try {
+            // try to load profile pic from url
+            await http.get(Uri.parse(photoUrl)).then((http.Response response) {
+              profilePicBytes = response.bodyBytes;
+            });
+          } catch (e) {
+            // if url is invalid, use default profile pic
+            ByteData data =
+                await rootBundle.load("assets/images/misc/default_pic.png");
+            profilePicBytes = data.buffer.asUint8List();
+          }
+          Contact newContact = new Contact(
+              givenName: firstName,
+              familyName: lastName,
+              emails: [
+                Item(label: "Email", value: email),
+              ],
+              phones: [
+                Item(label: "Cell", value: phoneNumber),
+              ],
+              avatar: profilePicBytes);
+          await askPermissions(context);
+
+          await ContactsService.addContact(newContact);
+
+          DialogBuilder(context).hideOpenDialog();
+
+          Popups.showContactAddedPopup(context, width, firstName, lastName);
+
+          //ContactsService.openContactForm();
+          // ContactsService.addContact(newContact).then((dynamic success) {
+          // });
+          //         ContactsService.addContact(newContact).then(dynamic success)
+          // {             ContactsService.openExistingContact(newContact);
+          //       };
+
+          // .then((dynamic success) {
+          //   Popups.showContactAddedPopup(context, width, firstName, lastName);
+          // });
+        } else if (platform == "Cryptowallet") {
+          Clipboard.setData(ClipboardData(
+            text: username.toString(),
+          ));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: const Text(
+              'Wallet address copied to clipboard!',
+              textAlign: TextAlign.center,
+            ),
+          ));
+        } else {
+          print("Launching $username");
+          URL.launchURL(
+              URL.getPlatformURL(platform: platform, username: username));
+        }
+      },
+      iconSize: size,
+    );
+  }
+}
+
+class CupertinoBackButton extends StatelessWidget {
+  Function onPressed;
+  Color color = Colors.grey;
+
+  CupertinoBackButton({this.onPressed, this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      splashRadius: 15,
+      onPressed: () {
+        onPressed != null ? onPressed() : Navigator.of(context).pop();
+      },
+      icon: Icon(CupertinoIcons.back, color: color),
+    );
+  }
+}
+
+class SoshiUsernameText extends StatelessWidget {
+  double fontSize;
+  String username;
+  bool isVerified;
+  SoshiUsernameText(this.username,
+      {@required this.fontSize, @required this.isVerified});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        child: Row(
+      children: [
+        Text("@" + username,
+            style: TextStyle(
+              color: Colors.grey,
+              fontSize: fontSize,
+            )),
+        Visibility(
+          visible: isVerified != null && isVerified != false,
+          child: Row(
+            children: [
+              SizedBox(
+                width: fontSize / 10,
+              ),
+              Image.asset(
+                "assets/images/misc/verified.png",
+                width: fontSize,
+                height: fontSize,
+              ),
+            ],
+          ),
+        )
+      ],
+    ));
   }
 }

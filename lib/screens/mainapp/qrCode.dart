@@ -129,7 +129,7 @@ import 'friendScreen.dart';
 //                                       isVerified == null || isVerified == false
 //                                           ? Container()
 //                                           : Image.asset(
-//                                               "assets/images/Verified.png",
+//                                               "assets/images/misc/verified.png",
 //                                               scale: width / 20,
 //                                             )
 //                                     ],
@@ -518,13 +518,11 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                       style: TextStyle(
                                           fontSize: width / 15,
                                           fontWeight: FontWeight.bold)),
-                                  Text(
-                                    "@" + LocalDataService.getLocalUsername(),
-                                    style: TextStyle(
-                                        color: Colors.grey[500],
-                                        fontSize: width / 25,
-                                        fontStyle: FontStyle.italic),
-                                  )
+                                  SoshiUsernameText(
+                                      LocalDataService.getLocalUsername(),
+                                      fontSize: width / 22,
+                                      isVerified:
+                                          LocalDataService.getVerifiedStatus())
                                 ],
                               ),
                               IconButton(
@@ -694,9 +692,7 @@ class _NewQRScreenState extends State<NewQRScreen> {
                               Text(
                                 "Scan",
                                 style: TextStyle(
-                                    fontFamily: "Montserrat",
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20),
+                                    fontWeight: FontWeight.bold, fontSize: 20),
                               ),
                             ],
                           ),

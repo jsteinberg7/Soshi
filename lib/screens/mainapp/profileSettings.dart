@@ -66,12 +66,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: Icon(CupertinoIcons.back),
-        ),
+        leading: CupertinoBackButton(),
 
         actions: [
           Padding(
@@ -199,10 +194,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                   SizedBox(
                     height: height / 100,
                   ),
-                  Divider(
-                      color: Theme.of(context).brightness == Brightness.light
-                          ? Colors.black
-                          : Colors.white),
+                  Divider(),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     // mainAxisAlignment: MainAxisAlignment.center,
@@ -216,7 +208,8 @@ class ProfileSettingsState extends State<ProfileSettings> {
                         width: width / 15,
                       ),
                       Expanded(
-                        child: TextField(
+                        child: TextFormField(
+                          style: TextStyle(fontSize: width / 23),
                           // keyboardType: TextInputType.datetime,
                           decoration: InputDecoration(
                               border: InputBorder.none, counterText: ""),
@@ -224,34 +217,33 @@ class ProfileSettingsState extends State<ProfileSettings> {
 
                           maxLines: 1,
                           maxLength: 12,
-                          onSubmitted: (String firstName) {},
+                          onFieldSubmitted: (String firstName) {},
                         ),
                       ),
                     ],
                   ),
-                  Divider(
-                      color: Theme.of(context).brightness == Brightness.light
-                          ? Colors.black
-                          : Colors.white),
+                  Divider(),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     // mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         "Last Name",
-                        style: TextStyle(fontSize: width / 23),
+                        style: TextStyle(
+                            fontSize: width / 23, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
                         width: width / 15,
                       ),
                       Expanded(
-                        child: TextField(
+                        child: TextFormField(
+                          style: TextStyle(fontSize: width / 23),
                           decoration: InputDecoration(
                               border: InputBorder.none, counterText: ""),
                           controller: lastNameController,
                           maxLines: 1,
                           maxLength: 12,
-                          onSubmitted: (String lastName) {
+                          onFieldSubmitted: (String lastName) {
                             LocalDataService.updateFirstName(
                                 firstNameController.text.trim());
                             LocalDataService.updateLastName(
@@ -264,10 +256,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                       ),
                     ],
                   ),
-                  Divider(
-                      color: Theme.of(context).brightness == Brightness.light
-                          ? Colors.black
-                          : Colors.white),
+                  Divider(),
                   Padding(
                     padding:
                         EdgeInsets.fromLTRB(0, height / 60, 0, height / 60),
@@ -277,7 +266,9 @@ class ProfileSettingsState extends State<ProfileSettings> {
                       children: [
                         Text(
                           "Username",
-                          style: TextStyle(fontSize: width / 23),
+                          style: TextStyle(
+                              fontSize: width / 23,
+                              fontWeight: FontWeight.bold),
                         ),
                         SizedBox(
                           width: width / 15,
@@ -287,25 +278,22 @@ class ProfileSettingsState extends State<ProfileSettings> {
                             Text(
                               "@ ",
                               style: TextStyle(
-                                  fontSize: width / 25,
-                                  //fontStyle: FontStyle.italic,
-                                  color: Colors.grey),
+                                  fontSize: width / 23, color: Colors.grey),
                             ),
                             Text(
                               LocalDataService.getLocalUsername(),
                               style: TextStyle(
-                                fontSize: width / 25,
-                                //ontStyle: FontStyle.italic,
-                                //color: Colors.grey
-                              ),
+                                  fontSize: width / 23, color: Colors.grey
+                                  //color: Colors.grey
+                                  ),
                             ),
                             isVerified == false || isVerified == null
                                 ? Container()
                                 : Padding(
                                     padding: EdgeInsets.only(left: 3),
                                     child: Image.asset(
-                                      "assets/images/Verified.png",
-                                      scale: width / 25,
+                                      "assets/images/misc/verified.png",
+                                      scale: width / 22,
                                     ),
                                   )
                           ],
@@ -313,22 +301,27 @@ class ProfileSettingsState extends State<ProfileSettings> {
                       ],
                     ),
                   ),
-                  Divider(
-                      color: Theme.of(context).brightness == Brightness.light
-                          ? Colors.black
-                          : Colors.white),
+                  Divider(),
+
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Bio",
-                        style: TextStyle(fontSize: width / 23),
+                      Padding(
+                        padding: EdgeInsets.only(top: height / 65),
+                        child: Text(
+                          "Bio",
+                          style: TextStyle(
+                              fontSize: width / 23,
+                              fontWeight: FontWeight.bold),
+                        ),
                       ),
                       SizedBox(
                         width: width / 4.5,
                       ),
                       Expanded(
-                        child: TextField(
-                          // keyboardType: TextInputType.,
+                        child: TextFormField(
+                          style: TextStyle(fontSize: width / 23),
+                          keyboardType: TextInputType.multiline,
                           textInputAction: TextInputAction.done,
                           decoration: InputDecoration(
                             border: InputBorder.none,
@@ -337,7 +330,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                           maxLines: 3,
                           maxLength: 80,
                           //maxLengthEnforcement: MaxLengthEnforcement.none,
-                          onSubmitted: (String bio) {
+                          onFieldSubmitted: (String bio) {
                             LocalDataService.updateBio(bio);
                             databaseService.updateBio(
                                 LocalDataService.getLocalUsernameForPlatform(
@@ -363,19 +356,25 @@ class ProfileSettingsState extends State<ProfileSettings> {
                       ),
                     ],
                   ),
-                  Divider(
-                      color: Theme.of(context).brightness == Brightness.light
-                          ? Colors.black
-                          : Colors.white),
+                  Divider(),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                          top: height / 65, bottom: height / 65),
+                      child: Text(
+                        "Passions",
+                        style: TextStyle(
+                            fontSize: width / 23, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
                   PassionTileList(),
-                  Divider(
-                      color: Theme.of(context).brightness == Brightness.light
-                          ? Colors.black
-                          : Colors.white),
+                  Divider(),
                   SizedBox(
                     height: height / 15,
                   ),
-                  SignOutButton()
+                  // SignOutButton()
                 ]),
           ),
         ),
