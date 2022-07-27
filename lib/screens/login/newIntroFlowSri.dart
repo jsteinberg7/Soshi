@@ -56,15 +56,15 @@ class _NewIntroFlowState extends State<NewIntroFlow> {
               children: [
                 IntroSingleScreen(
                   message: "All of you.\nIn one place.",
-                  imageUrl: "assets/images/onboarding/intro_1.png",
+                  imageUrl: "assets/images/onboarding/intro1.png",
                 ),
                 IntroSingleScreen(
                   message: "Your QR code...\nYour portal.",
-                  imageUrl: "assets/images/onboarding/intro_1.png",
+                  imageUrl: "assets/images/onboarding/intro1.png",
                 ),
                 IntroSingleScreen(
                   message: "Everyone you meet.\nIn. One. Place.",
-                  imageUrl: "assets/images/onboarding/intro_1.png",
+                  imageUrl: "assets/images/onboarding/intro1.png",
                 ),
               ],
             ),
@@ -168,7 +168,7 @@ class IntroSingleScreen extends StatelessWidget {
             width: 400,
             // color: Colors.grey,
 
-            child: Image.asset("assets/images/onboarding/intro_1.png"),
+            child: Image.asset("assets/images/onboarding/intro1.png"),
           ),
         ),
         // SizedBox(height: 30),
