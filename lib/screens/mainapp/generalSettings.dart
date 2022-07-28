@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_review/in_app_review.dart';
+import 'package:soshi/screens/login/newIntroFlowSri.dart';
 import 'package:soshi/screens/mainapp/profileSettings.dart';
 import 'package:soshi/screens/mainapp/resetPassword.dart';
 import 'package:soshi/services/auth.dart';
@@ -226,13 +227,13 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                     // color: Colors.cyan[600],
                                     fontWeight: FontWeight.bold,
                                   ),
-                                  content: Text(
-                                    ("Are you sure you want to sign out?"),
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      // color: Colors.cyan[700],
-                                      // fontWeight: FontWeight.bold
-                                    ),
+                                ),
+                                content: Text(
+                                  ("Are you sure you want to sign out?"),
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    // color: Colors.cyan[700],
+                                    // fontWeight: FontWeight.bold
                                   ),
                                 ),
                                 actions: <Widget>[
@@ -256,7 +257,15 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                         onPressed: () async {
                                           await authService.signOut();
                                           Navigator.pop(context); // close popup
-                                          Navigator.pop(context); // pop to login screen
+                                          // Navigator.pop(context); // pop to login screen
+                                          //        Navigator.push(
+                                          //   context,
+                                          //   MaterialPageRoute(builder: (context) => MainApp()),
+                                          // );
+                                          Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: ((context) => NewIntroFlow())));
                                         },
                                       ),
                                     ],
@@ -269,8 +278,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                         "Sign out",
                         style: TextStyle(color: Colors.red),
                       ),
-                      Icon(Icons.logout, color: Colors.grey)
-                    ],
+                    ),
                   )
                 ]),
           ]),
