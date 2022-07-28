@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:contacts_service/contacts_service.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:soshi/screens/login/loading.dart';
@@ -42,8 +41,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
     friendSoshiUsername = widget.friendSoshiUsername;
     friend = widget.friend;
     refreshScreen = widget.refreshScreen;
-    databaseService = new DatabaseService(
-        currSoshiUsernameIn: LocalDataService.getLocalUsername());
+    databaseService = new DatabaseService(currSoshiUsernameIn: LocalDataService.getLocalUsername());
   }
 
   Future<Map> getUserData() async {
@@ -66,8 +64,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
             if (snapshot.connectionState == ConnectionState.done) {
               var userData = snapshot.data;
               String fullName = databaseService.getFullName(userData);
-              bool isFriendAdded =
-                  LocalDataService.isFriendAdded(friendSoshiUsername);
+              bool isFriendAdded = LocalDataService.isFriendAdded(friendSoshiUsername);
               String profilePhotoURL = databaseService.getPhotoURL(userData);
               String bio = databaseService.getBio(userData);
               bool isVerified = databaseService.getVerifiedStatus(userData);
@@ -77,19 +74,14 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
               String numGroupsString = "15";
               bool isContactEnabled;
               // List<String> passionsList = databaseService.getPassions(userData);
-              List<String> passionsList = [
-                "Ice Hockey",
-                "Entrepreneurship",
-                "Fitness"
-              ];
+              List<String> passionsList = ["Ice Hockey", "Entrepreneurship", "Fitness"];
               String photoUrl = databaseService.getPhotoURL(userData);
 
               List<String> visiblePlatforms;
               Map usernames;
               if (friend == null) {
                 // DYNAMIC SHARING if no friend data passed in
-                visiblePlatforms =
-                    databaseService.getEnabledPlatformsList(userData);
+                visiblePlatforms = databaseService.getEnabledPlatformsList(userData);
                 // get list of profile usernames
                 usernames = databaseService.getUserProfileNames(userData);
               } else {
@@ -111,8 +103,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                     right: 0,
                     child: Stack(
                       children: [
-                        ProfilePicBackdrop(photoUrl,
-                            height: height / 2, width: width),
+                        ProfilePicBackdrop(photoUrl, height: height / 2, width: width),
                         GlassmorphicContainer(
                           height: height / 2,
                           width: width,
@@ -124,13 +115,11 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                               colors: [
-                                (Theme.of(context).brightness ==
-                                            Brightness.light
+                                (Theme.of(context).brightness == Brightness.light
                                         ? Colors.white
                                         : Colors.black)
                                     .withOpacity(0.8),
-                                (Theme.of(context).brightness ==
-                                            Brightness.light
+                                (Theme.of(context).brightness == Brightness.light
                                         ? Colors.white
                                         : Colors.black)
                                     .withOpacity(0.4),
@@ -154,14 +143,12 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                             ],
                           ),
                           child: Padding(
-                            padding: EdgeInsets.fromLTRB(
-                                width / 40, height / 20, width / 40, 0),
+                            padding: EdgeInsets.fromLTRB(width / 40, height / 20, width / 40, 0),
                             child: Column(
                               children: [
                                 Container(
                                   child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       CupertinoBackButton(),
                                       Column(
@@ -174,51 +161,43 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                             ),
                                           ),
                                           SoshiUsernameText(friendSoshiUsername,
-                                              fontSize: width / 22,
-                                              isVerified: isVerified)
+                                              fontSize: width / 22, isVerified: isVerified)
                                         ],
                                       ),
                                       CupertinoBackButton(
-                                          onPressed: () {},
-                                          color: Colors.transparent),
+                                          onPressed: () {}, color: Colors.transparent),
                                     ],
                                   ),
                                 ),
                                 SizedBox(height: height / 50),
                                 Container(
                                   child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: [
                                       SizedBox(
                                         width: width / 4,
                                         child: Column(children: [
                                           Text(
                                             numFriendsString.toString(),
-                                            style: TextStyle(
-                                                fontSize: width / 24,
-                                                letterSpacing: 1.2),
+                                            style:
+                                                TextStyle(fontSize: width / 24, letterSpacing: 1.2),
                                           ),
                                           numFriendsString == "1"
                                               ? Text(
                                                   "Friend",
                                                   style: TextStyle(
-                                                      fontSize: width / 24,
-                                                      letterSpacing: 1.2),
+                                                      fontSize: width / 24, letterSpacing: 1.2),
                                                 )
                                               : Text(
                                                   "Friends",
                                                   style: TextStyle(
-                                                      fontSize: width / 24,
-                                                      letterSpacing: 1.2),
+                                                      fontSize: width / 24, letterSpacing: 1.2),
                                                 )
                                         ]),
                                       ),
                                       Hero(
                                         tag: friendSoshiUsername,
-                                        child: ProfilePic(
-                                            radius: width / 6,
-                                            url: profilePhotoURL),
+                                        child: ProfilePic(radius: width / 6, url: profilePhotoURL),
                                         // child: Text(
                                         //   "c",
                                         //   textAlign: TextAlign.center,
@@ -228,22 +207,17 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                         width: width / 4,
                                         child: Column(children: [
                                           Text(
-                                            soshiPoints == null
-                                                ? "0"
-                                                : soshiPoints.toString(),
-                                            style: TextStyle(
-                                                fontSize: width / 24,
-                                                letterSpacing: 1.2),
+                                            soshiPoints == null ? "0" : soshiPoints.toString(),
+                                            style:
+                                                TextStyle(fontSize: width / 24, letterSpacing: 1.2),
                                           ),
                                           soshiPoints.toString() == "1"
                                               ? Text("Bolt",
                                                   style: TextStyle(
-                                                      fontSize: width / 24,
-                                                      letterSpacing: 1.2))
+                                                      fontSize: width / 24, letterSpacing: 1.2))
                                               : Text("Bolts",
                                                   style: TextStyle(
-                                                      fontSize: width / 24,
-                                                      letterSpacing: 1.2))
+                                                      fontSize: width / 24, letterSpacing: 1.2))
                                         ]),
                                       ),
                                     ],
@@ -251,8 +225,8 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                 ),
                                 //SizedBox(height: height / 1),
                                 Padding(
-                                    padding: EdgeInsets.fromLTRB(width / 6,
-                                        height / 70, width / 6, height / 80),
+                                    padding: EdgeInsets.fromLTRB(
+                                        width / 6, height / 70, width / 6, height / 80),
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Container(
@@ -262,10 +236,8 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                               Visibility(
                                                   visible: bio != null,
                                                   child: Text(bio ?? "",
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: TextStyle(
-                                                          fontSize: width / 25
+                                                      textAlign: TextAlign.center,
+                                                      style: TextStyle(fontSize: width / 25
                                                           // color: Colors.grey[300],
                                                           )))),
                                     )
@@ -287,8 +259,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                       decoration: BoxDecoration(
                           color: Theme.of(context).scaffoldBackgroundColor,
                           borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(20.0),
-                              topRight: Radius.circular(20.0))),
+                              topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -298,13 +269,12 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Padding(
-                                  padding: EdgeInsets.fromLTRB(width / 15,
-                                      height / 30, width / 25, width / 30),
+                                  padding: EdgeInsets.fromLTRB(
+                                      width / 15, height / 30, width / 25, width / 30),
                                   child: Text(
                                     "Passions",
                                     style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: width / 20),
+                                        fontWeight: FontWeight.bold, fontSize: width / 20),
                                   ),
                                 ),
                                 Center(
@@ -313,8 +283,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                     child: Wrap(
                                       alignment: WrapAlignment.center,
                                       spacing: width / 35,
-                                      children: List.generate(
-                                          passionsList.length, (i) {
+                                      children: List.generate(passionsList.length, (i) {
                                         return PassionBubble(passionsList[i]);
                                       }),
                                     ),
@@ -324,18 +293,15 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.fromLTRB(width / 15,
-                                height / 30, width / 25, width / 30),
+                            padding: EdgeInsets.fromLTRB(
+                                width / 15, height / 30, width / 25, width / 30),
                             child: Text(
                               "Socials",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: width / 20),
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: width / 20),
                             ),
                           ),
                           Center(
-                            child: (visiblePlatforms == null ||
-                                    visiblePlatforms.isEmpty == true)
+                            child: (visiblePlatforms == null || visiblePlatforms.isEmpty == true)
                                 ? Center(
                                     child: Padding(
                                       padding: const EdgeInsets.all(15),
@@ -375,50 +341,40 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                     child: Wrap(
                                       alignment: WrapAlignment.center,
                                       spacing: width / 40,
-                                      children: List.generate(
-                                          visiblePlatforms.length, (i) {
+                                      children: List.generate(visiblePlatforms.length, (i) {
                                         return SMButton(
                                           soshiUsername: friendSoshiUsername,
                                           platform: visiblePlatforms[i],
-                                          username:
-                                              usernames[visiblePlatforms[i]],
+                                          username: usernames[visiblePlatforms[i]],
                                           size: width / 7,
                                         );
                                       }),
                                     )),
                           ),
                           Padding(
-                            padding: EdgeInsets.fromLTRB(
-                                0, height / 30, 0, height / 20),
+                            padding: EdgeInsets.fromLTRB(0, height / 30, 0, height / 20),
                             child: Center(
                               child: Visibility(
                                 visible: isContactEnabled,
                                 // visible: false,
                                 child: ElevatedButton(
                                   onPressed: () async {
-                                    DialogBuilder(context)
-                                        .showLoadingIndicator();
+                                    DialogBuilder(context).showLoadingIndicator();
 
-                                    double width =
-                                        MediaQuery.of(context).size.width;
+                                    double width = MediaQuery.of(context).size.width;
                                     // DatabaseService databaseService =
                                     //     new DatabaseService(currSoshiUsernameIn: soshiUsername);
                                     // Map userData = await databaseService.getUserFile(soshiUsername);
 
-                                    String firstName = await databaseService
-                                        .getFirstDisplayName(userData);
-                                    String lastName = databaseService
-                                        .getLastDisplayName(userData);
-                                    String email = await databaseService
-                                        .getUsernameForPlatform(
-                                            platform: "Email",
-                                            userData: userData);
-                                    String phoneNumber = await databaseService
-                                        .getUsernameForPlatform(
-                                            platform: "Phone",
-                                            userData: userData);
-                                    String photoUrl =
-                                        databaseService.getPhotoURL(userData);
+                                    String firstName =
+                                        await databaseService.getFirstDisplayName(userData);
+                                    String lastName = databaseService.getLastDisplayName(userData);
+                                    String email = await databaseService.getUsernameForPlatform(
+                                        platform: "Email", userData: userData);
+                                    String phoneNumber =
+                                        await databaseService.getUsernameForPlatform(
+                                            platform: "Phone", userData: userData);
+                                    String photoUrl = databaseService.getPhotoURL(userData);
 
                                     Uint8List profilePicBytes;
 
@@ -431,10 +387,9 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                       });
                                     } catch (e) {
                                       // if url is invalid, use default profile pic
-                                      ByteData data = await rootBundle.load(
-                                          "assets/images/misc/default_pic.png");
-                                      profilePicBytes =
-                                          data.buffer.asUint8List();
+                                      ByteData data = await rootBundle
+                                          .load("assets/images/misc/default_pic.png");
+                                      profilePicBytes = data.buffer.asUint8List();
                                     }
                                     Contact newContact = new Contact(
                                         givenName: firstName,
@@ -443,15 +398,12 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                           Item(label: "Email", value: email),
                                         ],
                                         phones: [
-                                          Item(
-                                              label: "Cell",
-                                              value: phoneNumber),
+                                          Item(label: "Cell", value: phoneNumber),
                                         ],
                                         avatar: profilePicBytes);
                                     await askPermissions(context);
 
-                                    await ContactsService.addContact(
-                                        newContact);
+                                    await ContactsService.addContact(newContact);
 
                                     DialogBuilder(context).hideOpenDialog();
 
@@ -473,8 +425,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                     height: height / 22,
                                     width: width / 2,
                                     child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Image.asset(
                                           "assets/images/SMLogos/ContactLogo.png",
@@ -566,16 +517,12 @@ class _AddFriendButtonState extends State<AddFriendButton> {
               isAdding = true;
             });
 
-            Map friendData =
-                await databaseService.getUserFile(friendSoshiUsername);
+            Map friendData = await databaseService.getUserFile(friendSoshiUsername);
             Friend friend = databaseService.userDataToFriend(friendData);
-            bool isFriendAdded =
-                await LocalDataService.isFriendAdded(friendSoshiUsername);
+            bool isFriendAdded = await LocalDataService.isFriendAdded(friendSoshiUsername);
 
-            if (!isFriendAdded &&
-                friendSoshiUsername != databaseService.currSoshiUsername) {
-              List<String> newFriendsList =
-                  await LocalDataService.addFriend(friend: friend);
+            if (!isFriendAdded && friendSoshiUsername != databaseService.currSoshiUsername) {
+              List<String> newFriendsList = await LocalDataService.addFriend(friend: friend);
 
               databaseService.overwriteFriendsList(newFriendsList);
             }
@@ -596,8 +543,7 @@ class _AddFriendButtonState extends State<AddFriendButton> {
             if (LocalDataService.getInjectionFlag("Soshi Points") == false ||
                 LocalDataService.getInjectionFlag("Soshi Points") == null) {
               LocalDataService.updateInjectionFlag("Soshi Points", true);
-              databaseService.updateInjectionSwitch(
-                  soshiUsername, "Soshi Points", true);
+              databaseService.updateInjectionSwitch(soshiUsername, "Soshi Points", true);
             }
             // Give 8 soshi points for every friend added
             databaseService.updateSoshiPoints(soshiUsername, 8);
@@ -647,7 +593,6 @@ class _AddFriendButtonState extends State<AddFriendButton> {
             shadowDarkColor: Colors.black12,
             shadowLightColor: Colors.black12,
             color: isFriendAdded ? Colors.black : Colors.grey,
-            boxShape:
-                NeumorphicBoxShape.roundRect(BorderRadius.circular(20.0))));
+            boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(20.0))));
   }
 }

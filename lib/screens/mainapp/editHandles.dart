@@ -1,51 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:soshi/screens/mainapp/chooseSocials.dart';
 import 'package:soshi/services/database.dart';
-import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
 import 'package:soshi/constants/constants.dart';
-import 'package:soshi/screens/mainapp/profile.dart';
-import 'package:soshi/screens/mainapp/resetPassword.dart';
-import 'package:soshi/services/auth.dart';
-import 'package:soshi/services/database.dart';
 import 'package:soshi/services/localData.dart';
 import 'package:soshi/constants/widgets.dart';
 import 'package:soshi/constants/utilities.dart';
 
 import '../../constants/popups.dart';
-import '../../services/nfc.dart';
-import 'package:nfc_manager/nfc_manager.dart';
-import 'dart:typed_data';
-import 'dart:ui';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:contacts_service/contacts_service.dart';
-import 'package:device_display_brightness/device_display_brightness.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/cupertino.dart';
 
 import 'package:soshi/constants/popups.dart';
-import 'package:soshi/constants/utilities.dart';
 import 'package:soshi/services/contacts.dart';
-import 'package:soshi/services/database.dart';
-import 'package:soshi/services/localData.dart';
 import 'package:soshi/services/url.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'chooseSocials.dart';
-import 'profileSettings.dart';
 import 'package:http/http.dart' as http;
-
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-import 'dart:async';
 
 class EditHandles extends StatefulWidget {
   String soshiUsername;
@@ -96,8 +68,7 @@ class _EditHandlesState extends State<EditHandles> {
           Padding(
             padding: EdgeInsets.only(right: width / 150),
             child: TextButton(
-              style: ButtonStyle(
-                  overlayColor: MaterialStateProperty.all(Colors.transparent)),
+              style: ButtonStyle(overlayColor: MaterialStateProperty.all(Colors.transparent)),
               child: Text(
                 "Done",
                 style: TextStyle(color: Colors.blue, fontSize: width / 23),
@@ -142,8 +113,7 @@ class _EditHandlesState extends State<EditHandles> {
                   shape: RoundedRectangleBorder(
                       //to set border radius to button
                       borderRadius: BorderRadius.circular(15)),
-                  padding: EdgeInsets.fromLTRB(
-                      50, 0, 50, 0) //content padding inside button
+                  padding: EdgeInsets.fromLTRB(50, 0, 50, 0) //content padding inside button
 
                   ),
               child: Text(
@@ -156,83 +126,33 @@ class _EditHandlesState extends State<EditHandles> {
               ),
               onPressed: () async {
                 // check if user has all platforms (in case of update)
-                if (Constants.originalPlatforms.length +
-                        Constants.addedPlatforms.length >
+                if (Constants.originalPlatforms.length + Constants.addedPlatforms.length >
                     LocalDataService.getLocalChoosePlatforms().length +
                         LocalDataService.getLocalProfilePlatforms().length) {
                   // check which platforms need to be added
                   for (String platform in Constants.addedPlatforms) {
-                    if (!LocalDataService.getLocalProfilePlatforms()
-                            .contains(platform) &&
-                        !LocalDataService.getLocalChoosePlatforms()
-                            .contains(platform)) {
+                    if (!LocalDataService.getLocalProfilePlatforms().contains(platform) &&
+                        !LocalDataService.getLocalChoosePlatforms().contains(platform)) {
                       await LocalDataService.addToChoosePlatforms(
                           platform); // add new platform to choose platforms
                       await LocalDataService.updateSwitchForPlatform(
                           platform: platform,
-                          state:
-                              false); // create switch for platform in and initialize to false
-                      if (LocalDataService.getLocalUsernameForPlatform(
-                              platform) ==
-                          null) {
+                          state: false); // create switch for platform in and initialize to false
+                      if (LocalDataService.getLocalUsernameForPlatform(platform) == null) {
                         await LocalDataService.updateUsernameForPlatform(
                             platform: platform,
-                            username:
-                                ""); // create username mapping for platform if absent
+                            username: ""); // create username mapping for platform if absent
                       }
                     }
                   }
                 }
-                await Navigator.push(context,
-                    MaterialPageRoute(builder: (context) {
-                  return Scaffold(
-                      body: ChooseSocials(
-                    refreshFunction: refreshScreen,
-                  ));
+                await Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return Scaffold(body: ChooseSocials());
                 }));
               },
             ),
-            // Constants.makeBlueShadowButton(
-            //     "Add Platforms!", Icons.add_circle_outline_rounded, () async {
-            //   // check if user has all platforms (in case of update)
-            //   if (Constants.originalPlatforms.length +
-            //           Constants.addedPlatforms.length >
-            //       LocalDataService.getLocalChoosePlatforms().length +
-            //           LocalDataService.getLocalProfilePlatforms().length) {
-            //     // check which platforms need to be added
-            //     for (String platform in Constants.addedPlatforms) {
-            //       if (!LocalDataService.getLocalProfilePlatforms()
-            //               .contains(platform) &&
-            //           !LocalDataService.getLocalChoosePlatforms()
-            //               .contains(platform)) {
-            //         await LocalDataService.addToChoosePlatforms(
-            //             platform); // add new platform to choose platforms
-            //         await LocalDataService.updateSwitchForPlatform(
-            //             platform: platform,
-            //             state:
-            //                 false); // create switch for platform in and initialize to false
-            //         if (LocalDataService.getLocalUsernameForPlatform(
-            //                 platform) ==
-            //             null) {
-            //           await LocalDataService.updateUsernameForPlatform(
-            //               platform: platform,
-            //               username:
-            //                   ""); // create username mapping for platform if absent
-            //         }
-            //       }
-            //     }
-            //   }
-            //   await Navigator.push(context,
-            //       MaterialPageRoute(builder: (context) {
-            //     return Scaffold(
-            //         body: ChooseSocials(
-            //       refreshFunction: refreshScreen,
-            //     ));
-            //   }));
-            // }),
             Container(
-              child: (profilePlatforms == null ||
-                      profilePlatforms.isEmpty == true)
+              child: (profilePlatforms == null || profilePlatforms.isEmpty == true)
                   ? Container()
                   : GridView.builder(
                       physics: const NeverScrollableScrollPhysics(),
@@ -316,15 +236,13 @@ class _SMCardState extends State<SMCard> {
       indicator = "@";
     }
 
-    databaseService = new DatabaseService(
-        currSoshiUsernameIn: soshiUsername); // store ref to databaseService
+    databaseService =
+        new DatabaseService(currSoshiUsernameIn: soshiUsername); // store ref to databaseService
     isSwitched = LocalDataService.getLocalStateForPlatform(platformName) ??
         false; // track state of platform switch
-    usernameController.text =
-        LocalDataService.getLocalUsernameForPlatform(platformName) ?? null;
+    usernameController.text = LocalDataService.getLocalUsernameForPlatform(platformName) ?? null;
 
-    usernameController.text =
-        LocalDataService.getLocalUsernameForPlatform(platformName);
+    usernameController.text = LocalDataService.getLocalUsernameForPlatform(platformName);
 
     if (platformName == "Contact") {
       usernameController.text = "Contact Card";
@@ -372,20 +290,17 @@ class _SMCardState extends State<SMCard> {
                         double width = Utilities.getWidth(context);
                         String firstName = LocalDataService.getLocalFirstName();
                         String lastName = LocalDataService.getLocalLastName();
-                        String photoUrl =
-                            LocalDataService.getLocalProfilePictureURL();
+                        String photoUrl = LocalDataService.getLocalProfilePictureURL();
                         Uint8List profilePicBytes;
                         try {
                           // try to load profile pic from url
-                          await http
-                              .get(Uri.parse(photoUrl))
-                              .then((http.Response response) {
+                          await http.get(Uri.parse(photoUrl)).then((http.Response response) {
                             profilePicBytes = response.bodyBytes;
                           });
                         } catch (e) {
                           // if url is invalid, use default profile pic
-                          ByteData data = await rootBundle
-                              .load("assets/images/misc/default_pic.png");
+                          ByteData data =
+                              await rootBundle.load("assets/images/misc/default_pic.png");
                           profilePicBytes = data.buffer.asUint8List();
                         }
                         Contact contact = new Contact(
@@ -394,27 +309,22 @@ class _SMCardState extends State<SMCard> {
                             emails: [
                               Item(
                                 label: "Email",
-                                value: LocalDataService
-                                    .getLocalUsernameForPlatform("Email"),
+                                value: LocalDataService.getLocalUsernameForPlatform("Email"),
                               ),
                             ],
                             phones: [
                               Item(
                                   label: "Cell",
-                                  value: LocalDataService
-                                      .getLocalUsernameForPlatform("Phone")),
+                                  value: LocalDataService.getLocalUsernameForPlatform("Phone")),
                             ],
                             avatar: profilePicBytes);
                         await askPermissions(context);
-                        ContactsService.addContact(contact)
-                            .then((dynamic success) {
-                          Popups.showContactAddedPopup(
-                              context, width, firstName, lastName);
+                        ContactsService.addContact(contact).then((dynamic success) {
+                          Popups.showContactAddedPopup(context, width, firstName, lastName);
                         });
                       } else if (platformName == "Cryptowallet") {
                         Clipboard.setData(ClipboardData(
-                          text: LocalDataService.getLocalUsernameForPlatform(
-                                  "Cryptowallet")
+                          text: LocalDataService.getLocalUsernameForPlatform("Cryptowallet")
                               .toString(),
                         ));
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -430,9 +340,7 @@ class _SMCardState extends State<SMCard> {
                       } else {
                         URL.launchURL(URL.getPlatformURL(
                             platform: platformName,
-                            username:
-                                LocalDataService.getLocalUsernameForPlatform(
-                                    platformName)));
+                            username: LocalDataService.getLocalUsernameForPlatform(platformName)));
                       }
                     },
                     child: Image.asset(
@@ -446,18 +354,14 @@ class _SMCardState extends State<SMCard> {
               //   width: width / 5,
               // ),
               platformName != "Contact"
-                  ? Text(indicator,
-                      style:
-                          TextStyle(fontSize: width / 25, color: Colors.grey))
+                  ? Text(indicator, style: TextStyle(fontSize: width / 25, color: Colors.grey))
                   : Text(
                       "  ",
                     ),
               platformName != "Contact"
                   ? Padding(
-                      padding:
-                          EdgeInsets.fromLTRB(0, height / 35, 0, height / 35),
-                      child:
-                          VerticalDivider(thickness: 1.5, color: Colors.grey),
+                      padding: EdgeInsets.fromLTRB(0, height / 35, 0, height / 35),
+                      child: VerticalDivider(thickness: 1.5, color: Colors.grey),
                     )
                   : Container(),
 
@@ -466,14 +370,12 @@ class _SMCardState extends State<SMCard> {
                     child: platformName != "Contact"
                         ? TextField(
                             keyboardType: platformName == "Phone"
-                                ? TextInputType.numberWithOptions(
-                                    decimal: true, signed: true)
+                                ? TextInputType.numberWithOptions(decimal: true, signed: true)
                                 : TextInputType.text,
                             inputFormatters: platformName == "Phone"
                                 ? [FilteringTextInputFormatter.digitsOnly]
                                 : null,
-                            style: TextStyle(
-                                fontSize: width / 20, letterSpacing: 1.3),
+                            style: TextStyle(fontSize: width / 20, letterSpacing: 1.3),
                             // scribbleEnabled: true,
                             cursorColor: Colors.blue,
                             decoration: InputDecoration(
@@ -494,8 +396,7 @@ class _SMCardState extends State<SMCard> {
                           )
                         : TextField(
                             style: TextStyle(fontSize: width / 20),
-                            decoration: InputDecoration(
-                                border: InputBorder.none, counterText: ""),
+                            decoration: InputDecoration(border: InputBorder.none, counterText: ""),
                             controller: usernameController,
                             maxLines: 1,
                             readOnly: true, // so user cant edit their vcf link
@@ -539,54 +440,39 @@ class _SMCardState extends State<SMCard> {
                                   children: [
                                     ListTile(
                                       title: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           ListTile(
                                             title: Center(
                                               child: Text(
                                                 "Remove " + platformName,
                                                 style: TextStyle(
-                                                    fontSize: width / 20,
-                                                    color: Colors.red),
+                                                    fontSize: width / 20, color: Colors.red),
                                               ),
                                             ),
                                             onTap: () async {
-                                              if (!LocalDataService
-                                                      .getLocalChoosePlatforms()
+                                              if (!LocalDataService.getLocalChoosePlatforms()
                                                   .contains(platformName)) {
                                                 Navigator.pop(context);
 
-                                                await LocalDataService
-                                                    .removePlatformsFromProfile(
-                                                        platformName);
-                                                LocalDataService
-                                                    .addToChoosePlatforms(
-                                                        platformName);
+                                                await LocalDataService.removePlatformsFromProfile(
+                                                    platformName);
+                                                LocalDataService.addToChoosePlatforms(platformName);
 
-                                                LocalDataService
-                                                    .updateSwitchForPlatform(
-                                                        platform: platformName,
-                                                        state: false);
+                                                LocalDataService.updateSwitchForPlatform(
+                                                    platform: platformName, state: false);
+                                                databaseService.updatePlatformSwitch(
+                                                    platform: platformName, state: false);
                                                 databaseService
-                                                    .updatePlatformSwitch(
-                                                        platform: platformName,
-                                                        state: false);
-                                                databaseService
-                                                    .removePlatformFromProfile(
-                                                        platformName);
-                                                databaseService
-                                                    .addToChoosePlatforms(
-                                                        platformName);
-                                                print(LocalDataService
-                                                        .getLocalProfilePlatforms()
+                                                    .removePlatformFromProfile(platformName);
+                                                databaseService.addToChoosePlatforms(platformName);
+                                                print(LocalDataService.getLocalProfilePlatforms()
                                                     .toString());
                                                 widget.refreshScreen();
                                               } else {
                                                 Navigator.pop(context);
-                                                await LocalDataService
-                                                    .removePlatformsFromProfile(
-                                                        platformName);
+                                                await LocalDataService.removePlatformsFromProfile(
+                                                    platformName);
                                                 widget.refreshScreen();
                                               }
                                             },
@@ -605,9 +491,7 @@ class _SMCardState extends State<SMCard> {
                                   title: Center(
                                     child: Text(
                                       "Cancel",
-                                      style: TextStyle(
-                                          fontSize: width / 20,
-                                          color: Colors.blue),
+                                      style: TextStyle(fontSize: width / 20, color: Colors.blue),
                                     ),
                                   ),
                                   onTap: () => Navigator.pop(context),
@@ -637,10 +521,9 @@ class _SMCardState extends State<SMCard> {
                       //                     ? Colors.white
                       //                     : Colors.black,
                       shape: MaterialStateProperty.all(CircleBorder()),
-                      backgroundColor:
-                          Theme.of(context).brightness == Brightness.light
-                              ? MaterialStateProperty.all(Colors.white)
-                              : MaterialStateProperty.all(Colors.grey[850])),
+                      backgroundColor: Theme.of(context).brightness == Brightness.light
+                          ? MaterialStateProperty.all(Colors.white)
+                          : MaterialStateProperty.all(Colors.grey[850])),
                   onPressed: () {
                     Popups.contactCardExplainedPopup(context, width, height);
                   },

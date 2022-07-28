@@ -2,8 +2,6 @@
 A wrapper a around friendScreen and groupScreen
 */
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:soshi/screens/mainapp/friendScreen.dart';
 import 'package:soshi/screens/mainapp/groupScreen.dart';
 

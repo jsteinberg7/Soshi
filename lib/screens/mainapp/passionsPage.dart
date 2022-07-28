@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class PassionsUtility {
   PassionsUtility({this.passionOptions, this.emojiLookup});
 
+// [!] These are set to be initialize this way as a backup
   List passionOptions = [
     'baseball',
     'coding',

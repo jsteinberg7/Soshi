@@ -1,11 +1,6 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'dart:async';
-
-import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 
 abstract class Utilities {
   static double getHeight(BuildContext context) {
@@ -21,8 +16,8 @@ abstract class Utilities {
     // store result of scan
     String barcodeScanResult;
 
-    barcodeScanResult = await FlutterBarcodeScanner.scanBarcode(
-        "#ff6666", "Cancel", false, ScanMode.QR);
+    barcodeScanResult =
+        await FlutterBarcodeScanner.scanBarcode("#ff6666", "Cancel", false, ScanMode.QR);
 
     if (!mounted) {
       return "";
@@ -73,14 +68,12 @@ class _ModalBottomSheetLayout extends SingleChildLayoutDelegate {
   Offset getPositionForChild(Size size, Size childSize) {
     // return new Offset(
     //     0.0, size.height - bottomInset - childSize.height * progress);
-    return new Offset(
-        0.0, size.height - bottomInset - childSize.height * progress);
+    return new Offset(0.0, size.height - bottomInset - childSize.height * progress);
   }
 
   @override
   bool shouldRelayout(_ModalBottomSheetLayout oldDelegate) {
-    return progress != oldDelegate.progress ||
-        bottomInset != oldDelegate.bottomInset;
+    return progress != oldDelegate.progress || bottomInset != oldDelegate.bottomInset;
   }
 }
 
@@ -106,11 +99,10 @@ class _ModalBottomSheetState<T> extends State<_ModalBottomSheet<T>> {
                   : 0.0;
               return new ClipRect(
                   child: new CustomSingleChildLayout(
-                      delegate: new _ModalBottomSheetLayout(
-                          widget.route.animation.value, bottomInset),
+                      delegate:
+                          new _ModalBottomSheetLayout(widget.route.animation.value, bottomInset),
                       child: new BottomSheet(
-                          animationController:
-                              widget.route._animationController,
+                          animationController: widget.route._animationController,
                           onClosing: () => Navigator.pop(context),
                           builder: widget.route.builder)));
             }));
@@ -152,14 +144,13 @@ class _ModalBottomSheetRoute<T> extends PopupRoute<T> {
   @override
   AnimationController createAnimationController() {
     assert(_animationController == null);
-    _animationController =
-        BottomSheet.createAnimationController(navigator.overlay);
+    _animationController = BottomSheet.createAnimationController(navigator.overlay);
     return _animationController;
   }
 
   @override
-  Widget buildPage(BuildContext context, Animation<double> animation,
-      Animation<double> secondaryAnimation) {
+  Widget buildPage(
+      BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
     // By definition, the bottom sheet is aligned to the bottom of the page
     // and isn't exposed to the top padding of the MediaQuery.
     Widget bottomSheet = new MediaQuery.removePadding(
@@ -213,8 +204,7 @@ Future<T> showModalBottomSheetApp<T>({
         theme: Theme.of(
           context,
         ),
-        barrierLabel:
-            MaterialLocalizations.of(context).modalBarrierDismissLabel,
+        barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
         resizeToAvoidBottomPadding: resizeToAvoidBottomPadding,
         dismissOnTap: dismissOnTap,
       ));
