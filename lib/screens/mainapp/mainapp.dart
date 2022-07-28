@@ -26,18 +26,38 @@ class MainApp extends StatefulWidget {
 class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
   Timer _timerLink;
   List<Widget> screens;
+
+  ValueNotifier controlsQRScreen = new ValueNotifier("CONTROL_QR");
+  ValueNotifier controlsProfileScreen = new ValueNotifier("CONTROL_PROFILE");
+  ValueNotifier controlsConnections = new ValueNotifier("CONTROL_CONNECTION");
+
   @override
   void initState() {
     super.initState();
     screens = [
       FractionallySizedBox(
           widthFactor: 1 / pageController.viewportFraction,
-          child: NewQRScreen()),
-      FractionallySizedBox(
-          widthFactor: 1 / pageController.viewportFraction, child: Profile()),
+          child: ValueListenableBuilder(
+              valueListenable: controlsQRScreen,
+              builder: (context, value, _) {
+                return NewQRScreen();
+              })),
       FractionallySizedBox(
           widthFactor: 1 / pageController.viewportFraction,
-          child: FriendsGroupsWrapper()),
+          child: ValueListenableBuilder(
+              valueListenable: controlsProfileScreen,
+              builder: (context, value, _) {
+                return Profile(
+                  importProfileNotifier: this.controlsProfileScreen,
+                );
+              })),
+      FractionallySizedBox(
+          widthFactor: 1 / pageController.viewportFraction,
+          child: ValueListenableBuilder(
+              valueListenable: controlsConnections,
+              builder: (context, value, _) {
+                return FriendsGroupsWrapper();
+              })),
     ]; // list of screens (change through indexing)
     WidgetsBinding.instance.addObserver(this);
     print(">> calling from init");
@@ -48,8 +68,7 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
 
     NfcManager.instance.startSession(
       onDiscovered: (NfcTag tag) async {
-        var link = AsciiCodec()
-            .decode(Ndef.from(tag).cachedMessage.records.last.payload);
+        var link = AsciiCodec().decode(Ndef.from(tag).cachedMessage.records.last.payload);
         String username = link.toString().split("/").last;
 
         try {
@@ -77,16 +96,13 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
   }
 
   int currScreen = 1;
-
-  PageController pageController =
-      new PageController(initialPage: 1, viewportFraction: 1.1);
+  PageController pageController = new PageController(initialPage: 1, viewportFraction: 1.1);
+  ValueNotifier controlsBottomNavBar = new ValueNotifier(1);
 
   @override
   Widget build(BuildContext context) {
-    String soshiUsername =
-        LocalDataService.getLocalUsernameForPlatform("Soshi");
-    DatabaseService databaseService =
-        new DatabaseService(currSoshiUsernameIn: soshiUsername);
+    String soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
+    DatabaseService databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
 
     return Scaffold(
       drawerEnableOpenDragGesture: false,
@@ -97,87 +113,73 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
         ),
       ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      // backgroundColor: Colors.white,
-
-      // {Changed color}
-
       body: PageView(
         children: screens,
         controller: pageController,
-        onPageChanged: (index) {
-          setState(() {
-            print("changinc current screen information");
-            currScreen = index;
-          });
+        onPageChanged: (int newPage) {
+          controlsBottomNavBar.value = newPage;
         },
       ),
-      // bottomNavigationBar: SriCustomBottomNavBar(),
-      // bottomNavigationBar: AnimatedBottomNavigationBar(
-      //   iconSize: 30,
-      //   icons: [
-      //     Icons.qr_code,
-      //     Icons.person,
-      //     Icons.bolt_sharp,
-      //     Icons.list,
-      //   ],
-      //   backgroundColor: Colors.grey[800],
-      //   // height: 50,
-      //   inactiveColor: Colors.white,
-      //   activeColor: Colors.cyan,
-      //   activeIndex: currScreen,
-      //   gapLocation: GapLocation.center,
-      //   notchSmoothness: NotchSmoothness.softEdge,
-      //   // onTap: (index) => setState(() => _bottomNavIndex = index),
+      bottomNavigationBar: ValueListenableBuilder(
+          valueListenable: controlsBottomNavBar,
+          builder: (context, value, _) {
+            return LatestBottomNavBar(
+              currScreen: currScreen,
+              pageController: pageController,
+              importNotifier: controlsBottomNavBar,
+            );
+          }),
+    );
+  }
+}
 
-      //   onTap: (index) {
-      //     setState(() {
-      //       // _bottomNavIndex = index
-      //       currScreen = index;
-      //     });
-      //   },
-      //   //other params
-      // ),
+class LatestBottomNavBar extends StatelessWidget {
+  const LatestBottomNavBar(
+      {Key key,
+      @required this.currScreen,
+      @required this.pageController,
+      @required this.importNotifier})
+      : super(key: key);
 
-      bottomNavigationBar: SizedBox(
-        height: Utilities.getHeight(context) / 11,
-        child: CustomNavigationBar(
-          scaleCurve: Curves.fastLinearToSlowEaseIn,
-          scaleFactor: .05,
-          elevation: 5,
-          iconSize: Utilities.getWidth(context) / 10,
-          selectedColor: Theme.of(context).brightness == Brightness.light
-              ? Colors.black
-              : Colors.white,
-          strokeColor: Colors.transparent,
-          unSelectedColor: Colors.grey,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          items: [
-            CustomNavigationBarItem(
-              icon: Icon(
-                AntDesign.qrcode,
-                size: 35,
-              ),
+  final int currScreen;
+  final PageController pageController;
+  final ValueNotifier importNotifier;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: Utilities.getHeight(context) / 11,
+      child: CustomNavigationBar(
+        scaleCurve: Curves.fastLinearToSlowEaseIn,
+        scaleFactor: .05,
+        elevation: 5,
+        iconSize: Utilities.getWidth(context) / 10,
+        selectedColor:
+            Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+        strokeColor: Colors.transparent,
+        unSelectedColor: Colors.grey,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        items: [
+          CustomNavigationBarItem(
+            icon: Icon(
+              AntDesign.qrcode,
+              size: 35,
             ),
-            CustomNavigationBarItem(
-                icon: ProfilePic(
-                    radius: 25,
-                    url: LocalDataService.getLocalProfilePictureURL())),
-            CustomNavigationBarItem(
-              icon: Icon(
-                AntDesign.contacts,
-                size: 35,
-              ),
+          ),
+          CustomNavigationBarItem(
+              icon: ProfilePic(radius: 25, url: LocalDataService.getLocalProfilePictureURL())),
+          CustomNavigationBarItem(
+            icon: Icon(
+              AntDesign.contacts,
+              size: 35,
             ),
-          ],
-          currentIndex: currScreen,
-          onTap: (index) {
-            setState(() {
-              HapticFeedback.lightImpact();
-              pageController.jumpToPage(index);
-              currScreen = index;
-            });
-          },
-        ),
+          ),
+        ],
+        currentIndex: importNotifier.value,
+        onTap: (index) {
+          HapticFeedback.lightImpact();
+          pageController.jumpToPage(index);
+        },
       ),
     );
   }

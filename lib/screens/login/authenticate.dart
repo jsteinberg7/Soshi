@@ -21,16 +21,6 @@ class _AuthenticateState extends State<Authenticate> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        // appBar: PreferredSize(
-        //     preferredSize: Size(Utilities.getWidth(context), Utilities.getHeight(context) / 16),
-        //     child: SoshiAppBar()),
-        body: NewIntroFlow()
-
-        // isRegistering
-        //     ? NewIntroFlow()
-        //     : LoginScreen(toggleScreen: toggleIsRegistering, refresh: widget.refreshWrapper)
-
-        );
+    return Scaffold(body: NewIntroFlow());
   }
 }

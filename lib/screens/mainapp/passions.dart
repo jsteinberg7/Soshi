@@ -95,9 +95,7 @@ class _PassionTileListState extends State<PassionTileList> {
   Widget makePassionTile(Map passion, int index) {
     return passion.containsKey('passion_name')
         ? ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(
-                //primary: Colors.white, \
-                elevation: 3),
+            style: ElevatedButton.styleFrom(elevation: 3),
             onPressed: () async {
               pushAndUpdatePassions(index);
             },

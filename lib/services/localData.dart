@@ -257,6 +257,11 @@ abstract class LocalDataService {
     return preferences.getStringList("Profile Platforms");
   }
 
+  static Future<List<String>> getLocalProfilePlatformsSynced() async {
+    SharedPreferences newPrefs = await SharedPreferences.getInstance();
+    return newPrefs.getStringList("Profile Platforms");
+  }
+
   static bool isFriendAdded(String friendUsername) {
     List<String> friendsList = preferences.getStringList("Sorted Friends List") ?? [];
     for (int i = 0; i < friendsList.length; i++) {
