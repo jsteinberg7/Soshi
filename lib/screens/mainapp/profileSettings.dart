@@ -64,6 +64,16 @@ class ProfileSettingsState extends State<ProfileSettings> {
     DatabaseService dbService =
         new DatabaseService(currSoshiUsernameIn: soshiUsername);
 
+    // Setting the cursor to the end of each field (flutter bug makes so that cursor starts at beginning of textfield)
+    firstNameController.selection = TextSelection.fromPosition(
+        TextPosition(offset: firstNameController.text.length));
+
+    lastNameController.selection = TextSelection.fromPosition(
+        TextPosition(offset: lastNameController.text.length));
+
+    bioController.selection = TextSelection.fromPosition(
+        TextPosition(offset: bioController.text.length));
+
     return Scaffold(
       appBar: AppBar(
         leading: CupertinoBackButton(),

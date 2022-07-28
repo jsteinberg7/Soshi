@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -511,13 +512,21 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                   onPressed: () => {}),
                               Column(
                                 children: [
-                                  Text(
-                                      LocalDataService.getLocalFirstName() +
-                                          " " +
-                                          LocalDataService.getLocalLastName(),
-                                      style: TextStyle(
-                                          fontSize: width / 15,
-                                          fontWeight: FontWeight.bold)),
+                                  Container(
+                                    width: width / 1.85,
+                                    child: Center(
+                                      child: AutoSizeText(
+                                        LocalDataService.getLocalFirstName() +
+                                            " " +
+                                            LocalDataService.getLocalLastName(),
+                                        maxLines: 1,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: width / 16,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                   SoshiUsernameText(
                                       LocalDataService.getLocalUsername(),
                                       fontSize: width / 22,
@@ -582,8 +591,8 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                     // bottom: width / 4.5,
                                     // right: width / 20,
                                     child: Container(
-                                      height: width / 7,
-                                      width: width / 7,
+                                      height: width / 9,
+                                      width: width / 9,
                                       decoration: BoxDecoration(
                                           color: Colors.white,
                                           shape: BoxShape.circle),
@@ -592,9 +601,9 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                           height: width / 10,
                                           width: width / 10,
                                           child: Padding(
-                                            padding: const EdgeInsets.all(3.0),
+                                            padding: const EdgeInsets.all(0.0),
                                             child: ProfilePic(
-                                                radius: width / 10,
+                                                radius: width / 5,
                                                 url: LocalDataService
                                                     .getLocalProfilePictureURL()),
                                           ),

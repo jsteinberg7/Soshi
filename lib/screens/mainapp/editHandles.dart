@@ -333,28 +333,33 @@ class _SMCardState extends State<SMCard> {
       usernameController.text = "Contact Card";
     }
 
+    // Setting the cursor to the end of each field (flutter bug makes so that cursor starts at beginning of textfield)
+    usernameController.selection = TextSelection.fromPosition(
+        TextPosition(offset: usernameController.text.length));
+
     double height = Utilities.getHeight(context);
     double width = Utilities.getWidth(context);
-
-    //double width = Utilities.getWidth(context);
-    // text controller for username box
 
     return Stack(
       children: [
         Card(
-          color: Colors.grey[200],
+          //color: Colors.grey[200],
           // color: Theme.of(context).brightness == Brightness.light
           //     ? Colors.white
           //     : Colors.grey[850],
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),
-              side:
-                  // (isSwitched == true)
-                  // ?
-                  // BorderSide(color: Colors.blueGrey)
+            borderRadius: BorderRadius.circular(15.0),
+            // side:
+            //     // (isSwitched == true)
+            //     // ?
+            //     // BorderSide(color: Colors.blueGrey)
 
-                  // :
-                  BorderSide(color: Colors.white, width: 3.0)),
+            //     // :
+
+            //     BorderSide(
+            //         color: isSwitched ? Colors.white : Colors.transparent,
+            //         width: 3.0)
+          ),
           elevation: 2,
 
           // color: Colors.grey[850],

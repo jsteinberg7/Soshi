@@ -25,6 +25,7 @@ import 'package:soshi/constants/widgets.dart';
 import 'package:soshi/screens/mainapp/editHandles.dart';
 import 'package:soshi/screens/mainapp/friendScreen.dart';
 import 'package:soshi/screens/mainapp/generalSettings.dart';
+import 'package:soshi/screens/mainapp/passions.dart';
 import 'package:soshi/services/analytics.dart';
 import 'package:soshi/services/contacts.dart';
 import 'package:soshi/services/database.dart';
@@ -163,7 +164,7 @@ class _SMTileState extends State<SMTile> {
     return Neumorphic(
       style: NeumorphicStyle(
           depth: 1,
-          shadowLightColor: Colors.cyan[300],
+          //shadowLightColor: Colors.cyan[300],
           color: Theme.of(context).cardColor,
           shape: NeumorphicShape.concave,
           boxShape: NeumorphicBoxShape.roundRect(
@@ -575,26 +576,21 @@ class ProfileState extends State<Profile> {
     double containerSize;
     double soshiPointsButtonSpacing;
     int bioChars;
-    double bioSpacing;
 
     String bio = LocalDataService.getBio();
     if (bio == null || bio == "") {
-      bioSpacing = 90;
       soshiPointsButtonSpacing = 1000;
       containerSize = 3.3;
     } else {
       bioChars = bio.length;
 
       if (bioChars <= 25) {
-        bioSpacing = 50;
         soshiPointsButtonSpacing = 100;
         containerSize = 3.0;
       } else if (bioChars > 25 && bioChars <= 50) {
-        bioSpacing = 80;
         soshiPointsButtonSpacing = 150;
         containerSize = 2.9;
       } else {
-        bioSpacing = 90;
         soshiPointsButtonSpacing = 1000;
         containerSize = 2.8;
       }
@@ -603,7 +599,7 @@ class ProfileState extends State<Profile> {
     profileBioController.text = LocalDataService.getBio();
     return SingleChildScrollView(
       child: Container(
-          height: height * 2,
+          height: height,
           child: Stack(
             children: [
               Positioned(
@@ -670,7 +666,7 @@ class ProfileState extends State<Profile> {
                           SafeArea(
                             child: Container(
                               // color: Colors.green,
-                              height: height / containerSize,
+                              height: height / containerSize + 10,
                               width: width,
                               child: Padding(
                                 padding: EdgeInsets.fromLTRB(
@@ -755,7 +751,9 @@ class ProfileState extends State<Profile> {
                                                     .toString(),
                                                 style: TextStyle(
                                                     letterSpacing: 1.2,
-                                                    fontSize: width / 25)),
+                                                    fontSize: width / 25,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
                                             LocalDataService
                                                         .getFriendsListCount() ==
                                                     1
@@ -773,7 +771,7 @@ class ProfileState extends State<Profile> {
                                           ]),
                                         ),
                                         ProfilePic(
-                                            radius: 55,
+                                            radius: width / 6.5,
                                             url: LocalDataService
                                                 .getLocalProfilePictureURL()),
                                         SizedBox(
@@ -790,7 +788,9 @@ class ProfileState extends State<Profile> {
                                                       .toString(),
                                                   style: TextStyle(
                                                       letterSpacing: 1.2,
-                                                      fontSize: width / 25)),
+                                                      fontSize: width / 25,
+                                                      fontWeight:
+                                                          FontWeight.bold)),
                                               Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.center,
@@ -846,19 +846,19 @@ class ProfileState extends State<Profile> {
                                     ),
                                     //SizedBox(height: height / 1),
                                     Padding(
-                                        padding: EdgeInsets.fromLTRB(
-                                            width / 5,
-                                            height / bioSpacing,
-                                            width / 5,
-                                            height / 50),
+                                        padding: EdgeInsets.fromLTRB(width / 7,
+                                            height / 65, width / 7, 0),
                                         child: bio == "" || bio == null
                                             ? Container()
                                             : Container(
+                                                // decoration: BoxDecoration(
+                                                //     color: Colors.green),
                                                 child: //Padding(
                                                     //padding: EdgeInsets.fromLTRB(width / 5, 0, width / 5, 0),
                                                     //child:
                                                     AutoSizeText(
                                                   LocalDataService.getBio(),
+                                                  minFontSize: 16,
                                                   maxLines: 3,
                                                   textAlign: TextAlign.center,
                                                 ),
@@ -915,10 +915,24 @@ class ProfileState extends State<Profile> {
                             topRight: Radius.circular(20.0))),
                     child: Padding(
                       padding: EdgeInsets.fromLTRB(
-                          width / 35, height / 150, width / 35, 0),
+                          width / 35, height / 75, width / 35, 0),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          Padding(
+                            padding: EdgeInsets.only(left: width / 40),
+                            child: Text(
+                              "Passions",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: width / 17),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: height / 200),
+                            child: PassionTileList(),
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [

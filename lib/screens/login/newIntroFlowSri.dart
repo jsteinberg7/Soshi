@@ -41,9 +41,6 @@ class _NewIntroFlowState extends State<NewIntroFlow> {
       ),
       body: Column(
         children: [
-          SizedBox(
-            height: height / 12,
-          ),
           Expanded(
             child: PageView(
               onPageChanged: (int newPage) {
@@ -56,15 +53,15 @@ class _NewIntroFlowState extends State<NewIntroFlow> {
               children: [
                 IntroSingleScreen(
                   message: "All of you.\nIn one place.",
-                  imageUrl: "assets/images/onboarding/intro1.png",
+                  imageUrl: "assets/images/onboarding/mockup1.png",
                 ),
                 IntroSingleScreen(
-                  message: "Your QR code...\nYour portal.",
-                  imageUrl: "assets/images/onboarding/intro1.png",
+                  message: "Your QR code.\nYour portal.",
+                  imageUrl: "assets/images/onboarding/mockup2.png",
                 ),
                 IntroSingleScreen(
-                  message: "Everyone you meet.\nIn. One. Place.",
-                  imageUrl: "assets/images/onboarding/intro1.png",
+                  message: "Everyone you meet.\nIn one place.",
+                  imageUrl: "assets/images/onboarding/mockup3.png",
                 ),
               ],
             ),
@@ -89,10 +86,6 @@ class _NewIntroFlowState extends State<NewIntroFlow> {
                       duration: Duration(milliseconds: 500),
                       curve: Curves.easeInOut);
                 } else {
-                  // After the 4 intro screens are done, push to registration onboarding process
-                  // Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  //   return Scaffold(body: RegisterScreen());
-                  // }));
                   SuperController superController = new SuperController();
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return Scaffold(
@@ -163,20 +156,30 @@ class IntroSingleScreen extends StatelessWidget {
           child: Container(
             // height: MediaQuery.of(context).size.height - 500,
             // width: MediaQuery.of(context).size.height - 200,
-            // {PLACE IMAGE HERE}
             height: 400,
-            width: 400,
+            width: 500,
             // color: Colors.grey,
 
-            child: Image.asset("assets/images/onboarding/intro1.png"),
+            child: Image.asset(imageUrl),
           ),
         ),
         // SizedBox(height: 30),
+
         Padding(
-          padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+          padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
           child: Text(
-            this.message,
-            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            this.message.split("\n")[0],
+            style: TextStyle(
+                fontSize: 30, fontWeight: FontWeight.bold, color: Colors.cyan),
+            textAlign: TextAlign.center,
+          ),
+        ),
+
+        Padding(
+          padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+          child: Text(
+            this.message.split("\n")[1],
+            style: TextStyle(fontSize: 30, fontWeight: FontWeight.w400),
             textAlign: TextAlign.center,
           ),
         ),
