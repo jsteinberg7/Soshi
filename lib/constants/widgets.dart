@@ -83,7 +83,10 @@ class RectangularProfilePic extends StatelessWidget {
   bool defaultPic;
   File file;
   RectangularProfilePic(
-      {@required double radius, @required String url, bool defaultPic = false, File file = null}) {
+      {@required double radius,
+      @required String url,
+      bool defaultPic = false,
+      File file = null}) {
     this.customSize = radius;
     this.url = url;
     this.defaultPic = defaultPic;
@@ -144,8 +147,9 @@ class CustomAlertDialog {
         barrierDismissible: false,
         builder: (BuildContext context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30.0))),
-            backgroundColor: Colors.grey.shade800,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(30.0))),
+            //backgroundColor: Colors.grey.shade800,
             // backgroundColor: Colors.blueGrey[900],
             title: Text(
               title,
@@ -170,15 +174,22 @@ class CustomAlertDialog {
                 TextButton(
                     child: Text(
                       primaryText,
-                      style:
-                          TextStyle(fontSize: 16, color: Colors.blue, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold),
                     ),
                     onPressed: primaryAction),
                 Divider(),
                 TextButton(
                     child: Text(
                       secondaryText,
-                      style: TextStyle(fontSize: 16, color: Colors.white),
+                      style: TextStyle(
+                          fontSize: 16,
+                          color:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? Colors.black
+                                  : Colors.white),
                     ),
                     onPressed: secondaryAction),
               ],
@@ -198,7 +209,8 @@ class SignOutButton extends StatelessWidget {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40.0))),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(40.0))),
               // backgroundColor: Colors.blueGrey[900],
               title: Text(
                 "Sign Out",
@@ -242,7 +254,9 @@ class SignOutButton extends StatelessWidget {
                         //   MaterialPageRoute(builder: (context) => MainApp()),
                         // );
                         Navigator.pushReplacement(
-                            context, MaterialPageRoute(builder: ((context) => NewIntroFlow())));
+                            context,
+                            MaterialPageRoute(
+                                builder: ((context) => NewIntroFlow())));
                       },
                     ),
                   ],
@@ -260,9 +274,11 @@ class ActivatePortalButton extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 
-    return Constants.makeBlueShadowButton("Activate Portal", Icons.tap_and_play, () async {
+    return Constants.makeBlueShadowButton("Activate Portal", Icons.tap_and_play,
+        () async {
       showModalBottomSheet(
-          constraints: BoxConstraints(minWidth: width / 1.1, maxWidth: width / 1.1),
+          constraints:
+              BoxConstraints(minWidth: width / 1.1, maxWidth: width / 1.1),
           backgroundColor: Colors.transparent,
           context: context,
           builder: (BuildContext context) {
@@ -342,9 +358,11 @@ class DeleteProfileButton extends StatelessWidget {
                               style: TextStyle(fontSize: 20, color: Colors.red),
                             ),
                             onPressed: () async {
-                              String soshiUsername = LocalDataService.getLocalUsername();
+                              String soshiUsername =
+                                  LocalDataService.getLocalUsername();
                               DatabaseService databaseService =
-                                  new DatabaseService(currSoshiUsernameIn: soshiUsername);
+                                  new DatabaseService(
+                                      currSoshiUsernameIn: soshiUsername);
                               await databaseService.deleteProfileData();
 
                               // wipe profile data in firestore
@@ -352,7 +370,8 @@ class DeleteProfileButton extends StatelessWidget {
                               Navigator.of(context).pop();
                               await authService
                                   .deleteProfile(); // delete user account from firebase
-                              LocalDataService.wipeSharedPreferences(); // clear local user data
+                              LocalDataService
+                                  .wipeSharedPreferences(); // clear local user data
                             },
                           ),
                         ],
@@ -382,14 +401,16 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
   @override
   Widget build(BuildContext context) {
     firstNameController.text = LocalDataService.getLocalFirstName();
-    firstNameController.selection =
-        TextSelection.fromPosition(TextPosition(offset: firstNameController.text.length));
+    firstNameController.selection = TextSelection.fromPosition(
+        TextPosition(offset: firstNameController.text.length));
     lastNameController.text = LocalDataService.getLocalLastName();
-    lastNameController.selection =
-        TextSelection.fromPosition(TextPosition(offset: lastNameController.text.length));
+    lastNameController.selection = TextSelection.fromPosition(
+        TextPosition(offset: lastNameController.text.length));
 
-    String soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
-    DatabaseService dbService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
+    String soshiUsername =
+        LocalDataService.getLocalUsernameForPlatform("Soshi");
+    DatabaseService dbService =
+        new DatabaseService(currSoshiUsernameIn: soshiUsername);
 
     // firstNameFN.addListener(() {
     //   if (!firstNameFN.hasFocus) {
@@ -436,7 +457,8 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
             ),
             onSubmitted: (String inputText) {
               if (inputText.length > 0 && inputText.length <= 12) {
-                LocalDataService.updateFirstName(firstNameController.text.trim());
+                LocalDataService.updateFirstName(
+                    firstNameController.text.trim());
                 LocalDataService.updateLastName(lastNameController.text.trim());
 
                 dbService.updateDisplayName(
@@ -460,14 +482,17 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
               ),
               prefixIcon: Icon(
                 Icons.person,
-                color:
-                    Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.black
+                    : Colors.white,
               ),
               filled: true,
               floatingLabelBehavior: FloatingLabelBehavior.always,
               label: Text("First"),
-              labelStyle:
-                  TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.grey[400]),
+              labelStyle: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                  color: Colors.grey[400]),
               // fillColor: Colors.grey[850],
               hintText: "First Name",
               hintStyle: TextStyle(
@@ -486,13 +511,16 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 15,
-              color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+              color: Theme.of(context).brightness == Brightness.light
+                  ? Colors.black
+                  : Colors.white,
             ),
             controller: lastNameController,
             onSubmitted: (String text) {
               if (text.length > 0 && text.length <= 12) {
                 LocalDataService.updateLastName(lastNameController.text.trim());
-                LocalDataService.updateFirstName(firstNameController.text.trim());
+                LocalDataService.updateFirstName(
+                    firstNameController.text.trim());
 
                 dbService.updateDisplayName(
                     firstNameParam: firstNameController.text.trim(),
@@ -515,18 +543,24 @@ class _DisplayNameTextFieldsState extends State<DisplayNameTextFields> {
               ),
               prefixIcon: Icon(
                 Icons.person,
-                color:
-                    Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.black
+                    : Colors.white,
               ),
               filled: true,
               floatingLabelBehavior: FloatingLabelBehavior.always,
               label: Text("Last"),
-              labelStyle:
-                  TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.grey[400]),
+              labelStyle: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                  color: Colors.grey[400]),
               //fillColor: Colors.grey[850],
               hintText: "Last Name",
               hintStyle: TextStyle(
-                  color: Colors.black, fontSize: 12, letterSpacing: 2, fontWeight: FontWeight.bold),
+                  color: Colors.black,
+                  fontSize: 12,
+                  letterSpacing: 2,
+                  fontWeight: FontWeight.bold),
             ),
           ),
         ),
@@ -548,7 +582,9 @@ class _ReturnNumConnectionsState extends State<ReturnNumConnections> {
     if (connectionsCount.toString() == "1") {
       return Text("1 friend",
           style: TextStyle(
-            color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+            color: Theme.of(context).brightness == Brightness.light
+                ? Colors.black
+                : Colors.white,
             letterSpacing: 2.0,
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -556,7 +592,9 @@ class _ReturnNumConnectionsState extends State<ReturnNumConnections> {
     }
     return Text(connectionsCount.toString() + " friends",
         style: TextStyle(
-          color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+          color: Theme.of(context).brightness == Brightness.light
+              ? Colors.black
+              : Colors.white,
           letterSpacing: 2.0,
           fontSize: 20,
           fontWeight: FontWeight.bold,
@@ -618,7 +656,8 @@ class CustomThreeInOut extends StatefulWidget {
   _CustomThreeInOutState createState() => _CustomThreeInOutState();
 }
 
-class _CustomThreeInOutState extends State<CustomThreeInOut> with SingleTickerProviderStateMixin {
+class _CustomThreeInOutState extends State<CustomThreeInOut>
+    with SingleTickerProviderStateMixin {
   AnimationController _controller;
 
   List<Widget> _widgets;
@@ -640,7 +679,8 @@ class _CustomThreeInOutState extends State<CustomThreeInOut> with SingleTickerPr
       ),
     );
 
-    _controller = widget.controller ?? AnimationController(vsync: this, duration: widget.duration);
+    _controller = widget.controller ??
+        AnimationController(vsync: this, duration: widget.duration);
 
     _controller.forward();
 
@@ -652,7 +692,8 @@ class _CustomThreeInOutState extends State<CustomThreeInOut> with SingleTickerPr
       _lastAnim = _controller.value;
 
       if (_controller.isCompleted) {
-        _forwardTimer = Timer(widget.delay, () => _controller?.forward(from: 0));
+        _forwardTimer =
+            Timer(widget.delay, () => _controller?.forward(from: 0));
       }
     });
   }
@@ -718,7 +759,9 @@ class _CustomThreeInOutState extends State<CustomThreeInOut> with SingleTickerPr
 
   Widget _itemBuilder(int index) => widget.itemBuilder != null
       ? widget.itemBuilder(context, index)
-      : DecoratedBox(decoration: BoxDecoration(color: widget.color, shape: BoxShape.circle));
+      : DecoratedBox(
+          decoration:
+              BoxDecoration(color: widget.color, shape: BoxShape.circle));
 }
 
 ///CircularProfileAvatar allows developers to implement circular profile avatar with border,
@@ -829,7 +872,8 @@ class _CircularProfileAvatarState extends State<CircularProfileAvatar> {
             width: widget.radius * 2,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(widget.radius),
-              border: Border.all(width: widget.borderWidth, color: widget.borderColor),
+              border: Border.all(
+                  width: widget.borderWidth, color: widget.borderColor),
             ),
             child: Center(
               child: Container(
@@ -847,7 +891,8 @@ class _CircularProfileAvatarState extends State<CircularProfileAvatar> {
                                     Container(
                                       decoration: BoxDecoration(
                                         color: widget.foregroundColor,
-                                        borderRadius: BorderRadius.circular(widget.radius),
+                                        borderRadius: BorderRadius.circular(
+                                            widget.radius),
                                       ),
                                     ),
                                     _initialsText,
@@ -878,22 +923,26 @@ class _CircularProfileAvatarState extends State<CircularProfileAvatar> {
   Widget profileImage({bool circular = true}) {
     return widget.cacheImage
         ? ClipRRect(
-            borderRadius: circular ? BorderRadius.circular(widget.radius) : BorderRadius.zero,
-            child:
-                ((widget.imageUrl != null) && widget.imageUrl != "null" && widget.imageUrl != null)
-                    ? CachedNetworkImage(
-                        fit: widget.imageFit,
-                        imageUrl: widget.imageUrl,
-                        errorWidget: widget.errorWidget,
-                        placeholder: widget.placeHolder,
-                        imageBuilder: widget.imageBuilder,
-                        progressIndicatorBuilder: widget.progressIndicatorBuilder,
-                        useOldImageOnUrlChange: widget.animateFromOldImageOnUrlChange ?? false,
-                      )
-                    : Image.asset(
-                        'assets/images/misc/default_pic.png',
-                        fit: widget.imageFit,
-                      ),
+            borderRadius: circular
+                ? BorderRadius.circular(widget.radius)
+                : BorderRadius.zero,
+            child: ((widget.imageUrl != null) &&
+                    widget.imageUrl != "null" &&
+                    widget.imageUrl != null)
+                ? CachedNetworkImage(
+                    fit: widget.imageFit,
+                    imageUrl: widget.imageUrl,
+                    errorWidget: widget.errorWidget,
+                    placeholder: widget.placeHolder,
+                    imageBuilder: widget.imageBuilder,
+                    progressIndicatorBuilder: widget.progressIndicatorBuilder,
+                    useOldImageOnUrlChange:
+                        widget.animateFromOldImageOnUrlChange ?? false,
+                  )
+                : Image.asset(
+                    'assets/images/misc/default_pic.png',
+                    fit: widget.imageFit,
+                  ),
           )
         : ClipRRect(
             borderRadius: BorderRadius.circular(widget.radius),
@@ -995,7 +1044,9 @@ class PassionBubble extends StatelessWidget {
     return Container(
         decoration: BoxDecoration(
             border: Border.all(
-              color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+              color: Theme.of(context).brightness == Brightness.light
+                  ? Colors.black
+                  : Colors.white,
             ),
             borderRadius: BorderRadius.circular(20.0)),
         child: Padding(
@@ -1030,7 +1081,8 @@ class SMButton extends StatelessWidget {
   String soshiUsername, platform, username;
   double size;
 
-  SMButton({this.soshiUsername, this.platform, this.username, this.size = 70.0});
+  SMButton(
+      {this.soshiUsername, this.platform, this.username, this.size = 70.0});
 
   @override
   Widget build(BuildContext context) {
@@ -1046,15 +1098,17 @@ class SMButton extends StatelessWidget {
           DialogBuilder(context).showLoadingIndicator();
 
           double width = MediaQuery.of(context).size.width;
-          DatabaseService databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
+          DatabaseService databaseService =
+              new DatabaseService(currSoshiUsernameIn: soshiUsername);
           Map userData = await databaseService.getUserFile(soshiUsername);
 
-          String firstName = await databaseService.getFirstDisplayName(userData);
+          String firstName =
+              await databaseService.getFirstDisplayName(userData);
           String lastName = databaseService.getLastDisplayName(userData);
-          String email =
-              await databaseService.getUsernameForPlatform(platform: "Email", userData: userData);
-          String phoneNumber =
-              await databaseService.getUsernameForPlatform(platform: "Phone", userData: userData);
+          String email = await databaseService.getUsernameForPlatform(
+              platform: "Email", userData: userData);
+          String phoneNumber = await databaseService.getUsernameForPlatform(
+              platform: "Phone", userData: userData);
           String photoUrl = databaseService.getPhotoURL(userData);
 
           Uint8List profilePicBytes;
@@ -1066,7 +1120,8 @@ class SMButton extends StatelessWidget {
             });
           } catch (e) {
             // if url is invalid, use default profile pic
-            ByteData data = await rootBundle.load("assets/images/misc/default_pic.png");
+            ByteData data =
+                await rootBundle.load("assets/images/misc/default_pic.png");
             profilePicBytes = data.buffer.asUint8List();
           }
           Contact newContact = new Contact(
@@ -1109,7 +1164,8 @@ class SMButton extends StatelessWidget {
           ));
         } else {
           print("Launching $username");
-          URL.launchURL(URL.getPlatformURL(platform: platform, username: username));
+          URL.launchURL(
+              URL.getPlatformURL(platform: platform, username: username));
         }
       },
       iconSize: size,
@@ -1139,7 +1195,8 @@ class SoshiUsernameText extends StatelessWidget {
   double fontSize;
   String username;
   bool isVerified;
-  SoshiUsernameText(this.username, {@required this.fontSize, @required this.isVerified});
+  SoshiUsernameText(this.username,
+      {@required this.fontSize, @required this.isVerified});
 
   @override
   Widget build(BuildContext context) {

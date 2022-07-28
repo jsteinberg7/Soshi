@@ -66,7 +66,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
             ),
           )
         ],
-        elevation: 0,
+        elevation: .5,
 
         // backgroundColor: Colors.grey[850],
         centerTitle: false,
@@ -228,70 +228,90 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                       onPressed: () {
                         AuthService authService = new AuthService();
 
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(40.0))),
-                                // backgroundColor: Colors.blueGrey[900],
-                                title: Text(
-                                  "Sign Out",
-                                  style: TextStyle(
-                                    // color: Colors.cyan[600],
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                content: Text(
-                                  ("Are you sure you want to sign out?"),
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    // color: Colors.cyan[700],
-                                    // fontWeight: FontWeight.bold
-                                  ),
-                                ),
-                                actions: <Widget>[
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: <Widget>[
-                                      TextButton(
-                                        child: Text(
-                                          'No',
-                                          style: TextStyle(
-                                              fontSize: 20, color: Colors.red),
-                                        ),
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                      TextButton(
-                                        child: Text(
-                                          'Yes',
-                                          style: TextStyle(
-                                              fontSize: 20, color: Colors.blue),
-                                        ),
-                                        onPressed: () async {
-                                          await authService.signOut();
-                                          Navigator.pop(context); // close popup
-                                          // Navigator.pop(context); // pop to login screen
-                                          //        Navigator.push(
-                                          //   context,
-                                          //   MaterialPageRoute(builder: (context) => MainApp()),
-                                          // );
-                                          Navigator.pushReplacement(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: ((context) =>
-                                                      NewIntroFlow())));
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              );
-                            });
+                        CustomAlertDialog.showCustomAlertDialog(
+                            "Sign out",
+                            "Are you sure you want to sign out?",
+                            "Yes",
+                            "No", () async {
+                          await authService.signOut();
+                          Navigator.pop(context); // close popup
+                          // Navigator.pop(context); // pop to login screen
+                          //        Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(builder: (context) => MainApp()),
+                          // );
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: ((context) => NewIntroFlow())));
+                        }, () {
+                          Navigator.pop(context);
+                        }, context);
+
+                        // showDialog(
+                        //     context: context,
+                        //     builder: (BuildContext context) {
+                        //       return AlertDialog(
+                        //         shape: RoundedRectangleBorder(
+                        //             borderRadius: BorderRadius.all(
+                        //                 Radius.circular(40.0))),
+                        //         // backgroundColor: Colors.blueGrey[900],
+                        //         title: Text(
+                        //           "Sign Out",
+                        //           style: TextStyle(
+                        //             // color: Colors.cyan[600],
+                        //             fontWeight: FontWeight.bold,
+                        //           ),
+                        //         ),
+                        //         content: Text(
+                        //           ("Are you sure you want to sign out?"),
+                        //           style: TextStyle(
+                        //             fontSize: 20,
+                        //             // color: Colors.cyan[700],
+                        //             // fontWeight: FontWeight.bold
+                        //           ),
+                        //         ),
+                        //         actions: <Widget>[
+                        //           Row(
+                        //             mainAxisAlignment:
+                        //                 MainAxisAlignment.spaceEvenly,
+                        //             children: <Widget>[
+                        //               TextButton(
+                        //                 child: Text(
+                        //                   'No',
+                        //                   style: TextStyle(
+                        //                       fontSize: 20, color: Colors.red),
+                        //                 ),
+                        //                 onPressed: () {
+                        //                   Navigator.pop(context);
+                        //                 },
+                        //               ),
+                        //               TextButton(
+                        //                 child: Text(
+                        //                   'Yes',
+                        //                   style: TextStyle(
+                        //                       fontSize: 20, color: Colors.blue),
+                        //                 ),
+                        //                 onPressed: () async {
+                        //                   await authService.signOut();
+                        //                   Navigator.pop(context); // close popup
+                        //                   // Navigator.pop(context); // pop to login screen
+                        //                   //        Navigator.push(
+                        //                   //   context,
+                        //                   //   MaterialPageRoute(builder: (context) => MainApp()),
+                        //                   // );
+                        //                   Navigator.pushReplacement(
+                        //                       context,
+                        //                       MaterialPageRoute(
+                        //                           builder: ((context) =>
+                        //                               NewIntroFlow())));
+                        //                 },
+                        //               ),
+                        //             ],
+                        //           ),
+                        //         ],
+                        //       );
+                        //     });
                       },
                       label: Text(
                         "Sign out",

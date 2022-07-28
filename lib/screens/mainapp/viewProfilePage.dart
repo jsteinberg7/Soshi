@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -166,11 +167,16 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                       CupertinoBackButton(),
                                       Column(
                                         children: [
-                                          Text(
-                                            fullName,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: width / 16,
+                                          Container(
+                                            width: width / 1.5,
+                                            child: Center(
+                                              child: AutoSizeText(
+                                                fullName,
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: width / 16,
+                                                ),
+                                              ),
                                             ),
                                           ),
                                           SoshiUsernameText(friendSoshiUsername,

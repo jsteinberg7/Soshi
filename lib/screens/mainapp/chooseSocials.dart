@@ -24,7 +24,8 @@ class _ChooseSocialsCardState extends State<ChooseSocialsCard> {
     super.initState();
     currSoshiUsername = widget.soshiUsername;
     platformName = widget.platformName;
-    databaseService = new DatabaseService(currSoshiUsernameIn: currSoshiUsername);
+    databaseService =
+        new DatabaseService(currSoshiUsernameIn: currSoshiUsername);
     isSwitched = Queue.choosePlatformsQueue.contains(platformName);
   }
 
@@ -52,11 +53,17 @@ class _ChooseSocialsCardState extends State<ChooseSocialsCard> {
           Card(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0),
-                side: isSwitched ? BorderSide(color: Colors.cyanAccent[100]) : BorderSide.none),
+                side: isSwitched
+                    ?
+                    //BorderSide(color: Colors.cyanAccent[100])
+                    //BorderSide(color: Colors.white)
+                    BorderSide.none
+                    : BorderSide.none),
             elevation: 5,
             //color: Colors.grey[8,
-            color:
-                Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.grey[700],
+            color: Theme.of(context).brightness == Brightness.light
+                ? Colors.white
+                : Colors.grey[850],
             child: Padding(
               // padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
               padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
@@ -75,19 +82,20 @@ class _ChooseSocialsCardState extends State<ChooseSocialsCard> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
                     child: Transform.scale(
-                      scale: 1.8,
+                      scale: 1.2,
                       child: Checkbox(
                         side: BorderSide(width: 1, color: Colors.grey),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
                         value: isSwitched,
-                        checkColor: Colors.cyan,
-                        activeColor: Colors.white.withOpacity(0.7),
+                        checkColor: Colors.cyan[400],
+                        activeColor: Colors.cyan[400],
                         onChanged: (bool value) {
                           setState(() {
                             isSwitched = !isSwitched;
-                            if (!Queue.choosePlatformsQueue.contains(platformName)) {
+                            if (!Queue.choosePlatformsQueue
+                                .contains(platformName)) {
                               Queue.choosePlatformsQueue.add(platformName);
                             } else {
                               Queue.choosePlatformsQueue.remove(platformName);
@@ -105,8 +113,10 @@ class _ChooseSocialsCardState extends State<ChooseSocialsCard> {
             // alignment: Alignment.centerLeft,
             left: 0,
             top: 0,
-            child: Image.asset('assets/images/SMLogos/' + platformName + 'Logo.png',
-                height: width / 4.5, width: width / 4.5),
+            child: Image.asset(
+                'assets/images/SMLogos/' + platformName + 'Logo.png',
+                height: width / 4.5,
+                width: width / 4.5),
           ),
         ],
       ),
@@ -140,7 +150,8 @@ class _ChooseSocialsState extends State<ChooseSocials> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
-    String soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
+    String soshiUsername =
+        LocalDataService.getLocalUsernameForPlatform("Soshi");
     databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
     // List<String> choosePlatformsQueue = [];
     List<String> choosePlatforms = LocalDataService.getLocalChoosePlatforms();
@@ -152,7 +163,8 @@ class _ChooseSocialsState extends State<ChooseSocials> {
           Padding(
             padding: EdgeInsets.only(right: width / 150),
             child: TextButton(
-              style: ButtonStyle(overlayColor: MaterialStateProperty.all(Colors.transparent)),
+              style: ButtonStyle(
+                  overlayColor: MaterialStateProperty.all(Colors.transparent)),
               child: Text(
                 "Done",
                 style: TextStyle(color: Colors.blue, fontSize: width / 23),
@@ -167,23 +179,30 @@ class _ChooseSocialsState extends State<ChooseSocials> {
                 for (int i = 0; i < Queue.choosePlatformsQueue.length; i++) {
                   if (LocalDataService.getLocalProfilePlatforms()
                       .contains(Queue.choosePlatformsQueue[i])) {
-                    Queue.filteredChoosePlatformsQueue.add(Queue.choosePlatformsQueue[i]);
-                    Queue.choosePlatformsQueue.remove(Queue.choosePlatformsQueue[i]);
+                    Queue.filteredChoosePlatformsQueue
+                        .add(Queue.choosePlatformsQueue[i]);
+                    Queue.choosePlatformsQueue
+                        .remove(Queue.choosePlatformsQueue[i]);
                   }
                 }
-                LocalDataService.removeFromChoosePlatforms(Queue.filteredChoosePlatformsQueue);
+                LocalDataService.removeFromChoosePlatforms(
+                    Queue.filteredChoosePlatformsQueue);
 
                 // if platform has username, turn switch on
                 for (String platform in Queue.choosePlatformsQueue) {
-                  String username = LocalDataService.getLocalUsernameForPlatform(platform);
+                  String username =
+                      LocalDataService.getLocalUsernameForPlatform(platform);
                   if (username != null && username.length != 0) {
                     // turn switch on
-                    await LocalDataService.updateSwitchForPlatform(platform: platform, state: true);
-                    await databaseService.updatePlatformSwitch(platform: platform, state: true);
+                    await LocalDataService.updateSwitchForPlatform(
+                        platform: platform, state: true);
+                    await databaseService.updatePlatformSwitch(
+                        platform: platform, state: true);
                   }
                 }
 
-                await LocalDataService.addPlatformsToProfile(Queue.choosePlatformsQueue);
+                await LocalDataService.addPlatformsToProfile(
+                    Queue.choosePlatformsQueue);
                 // check if contact card is being added
                 if (Queue.choosePlatformsQueue.contains("Contact")) {
                   await databaseService.updateContactCard();
@@ -193,16 +212,19 @@ class _ChooseSocialsState extends State<ChooseSocials> {
                 // MAYBE NEED TO NOTIFY PROFILE LISTENER HERE!!!!
 
                 Navigator.maybePop(context); // return to profile screen
-                LocalDataService.removeFromChoosePlatforms(Queue.choosePlatformsQueue);
-                databaseService.addPlatformsToProfile(Queue.choosePlatformsQueue);
-                databaseService.removeFromChoosePlatforms(Queue.choosePlatformsQueue);
+                LocalDataService.removeFromChoosePlatforms(
+                    Queue.choosePlatformsQueue);
+                databaseService
+                    .addPlatformsToProfile(Queue.choosePlatformsQueue);
+                databaseService
+                    .removeFromChoosePlatforms(Queue.choosePlatformsQueue);
 
                 Navigator.pop(context);
               },
             ),
           )
         ],
-        elevation: 0,
+        elevation: .5,
 
         title: Text(
           "Add Platforms",
@@ -224,7 +246,8 @@ class _ChooseSocialsState extends State<ChooseSocials> {
               return Padding(
                 padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
                 child: ChooseSocialsCard(
-                    platformName: choosePlatforms[index], soshiUsername: soshiUsername),
+                    platformName: choosePlatforms[index],
+                    soshiUsername: soshiUsername),
               );
             },
             itemCount: choosePlatforms.length),

@@ -108,6 +108,7 @@ class _PassionsPageState extends State<PassionsPage> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
     print("Current passions: ${renderPassions}");
     return Container(
       // height: 400,
@@ -121,7 +122,17 @@ class _PassionsPageState extends State<PassionsPage> {
             } else {
               return Scaffold(
                 appBar: AppBar(
-                  title: Text("Select your Passions"),
+                  elevation: .5,
+                  title: Text(
+                    "Select your Passions",
+                    style: TextStyle(
+                      // color: Colors.cyan[200],
+                      letterSpacing: 1,
+                      fontSize: width / 18,
+                      fontWeight: FontWeight.bold,
+                      //fontStyle: FontStyle.italic
+                    ),
+                  ),
                   leading: IconButton(
                     onPressed: () {
                       Navigator.of(context).pop();

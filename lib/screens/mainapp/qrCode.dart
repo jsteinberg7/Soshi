@@ -494,24 +494,27 @@ class _NewQRScreenState extends State<NewQRScreen> {
                       height: height / 2,
                       width: width / 1.2,
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                            //crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              IconButton(
-                                  icon: Icon(Icons.ios_share_rounded,
-                                      color: Colors.transparent),
-                                  onPressed: () => {}),
+                              // IconButton(
+                              //     icon: Icon(Icons.ios_share_rounded,
+                              //         color: Colors.transparent),
+                              //     onPressed: () => {}),
                               Column(
                                 children: [
-                                  IconButton(
-                                      icon: Icon(Icons.ios_share_rounded,
-                                          color: Colors.transparent),
-                                      onPressed: () => {}),
+                                  // IconButton(
+                                  //     icon: Icon(Icons.ios_share_rounded,
+                                  //         color: Colors.transparent),
+                                  //     onPressed: () => {}),
                                   Column(
                                     children: [
+                                      SizedBox(
+                                        height: height / 50,
+                                      ),
                                       Container(
                                         width: width / 1.85,
                                         child: Center(
@@ -543,11 +546,11 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                   )
                                 ],
                               ),
-                              IconButton(
-                                icon: Icon(Icons.ios_share_rounded),
-                                onPressed: () => Share.share(
-                                    "https://soshi.app/deeplink/user/${LocalDataService.getLocalUsername()}"),
-                              )
+                              // IconButton(
+                              //   icon: Icon(Icons.ios_share_rounded),
+                              //   onPressed: () => Share.share(
+                              //       "https://soshi.app/deeplink/user/${LocalDataService.getLocalUsername()}"),
+                              // )
                             ],
                           ),
                           PhysicalModel(
@@ -555,8 +558,8 @@ class _NewQRScreenState extends State<NewQRScreen> {
                             borderRadius: BorderRadius.circular(25.0),
                             // elevation: 5,
                             child: Container(
-                              height: width / 1.6,
-                              width: width / 1.6,
+                              height: width / 1.5,
+                              width: width / 1.5,
                               child: Stack(
                                 alignment: AlignmentDirectional.center,
                                 children: [
@@ -600,8 +603,8 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                     // bottom: width / 4.5,
                                     // right: width / 20,
                                     child: Container(
-                                      height: width / 7,
-                                      width: width / 7,
+                                      height: width / 9,
+                                      width: width / 9,
                                       decoration: BoxDecoration(
                                           color: Colors.white,
                                           shape: BoxShape.circle),
@@ -633,6 +636,9 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                 ],
                               ),
                             ),
+                          ),
+                          SizedBox(
+                            height: height / 80,
                           ),
                           Text("Share with others to instantly connect.",
                               style: TextStyle(fontSize: width / 27)),
@@ -705,7 +711,7 @@ class _NewQRScreenState extends State<NewQRScreen> {
                         height: height / 13,
                         width: width / 1.8,
                         child: Card(
-                          color: Colors.grey.shade800,
+                          //color: Colors.grey.shade800,
                           shape: RoundedRectangleBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(10))),

@@ -520,7 +520,7 @@ class ProfileState extends State<Profile> {
           } else {
             return SingleChildScrollView(
               child: Container(
-                  height: MediaQuery.of(context).size.height * 2.0,
+                  height: height * 1.5,
                   child: Stack(
                     children: [
                       Positioned(
@@ -653,6 +653,9 @@ class ProfileState extends State<Profile> {
                                                 ),
                                                 IconButton(
                                                     onPressed: () {
+                                                      print(LocalDataService
+                                                              .getVerifiedUsersLocal()
+                                                          .toString());
                                                       Navigator.push(context,
                                                           MaterialPageRoute(
                                                               builder:
@@ -688,7 +691,10 @@ class ProfileState extends State<Profile> {
                                                         style: TextStyle(
                                                             letterSpacing: 1.2,
                                                             fontSize:
-                                                                width / 25)),
+                                                                width / 25,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
                                                     LocalDataService
                                                                 .getFriendsListCount() ==
                                                             1
@@ -711,7 +717,7 @@ class ProfileState extends State<Profile> {
                                                   ]),
                                                 ),
                                                 ProfilePic(
-                                                    radius: 55,
+                                                    radius: width / 6.5,
                                                     url: LocalDataService
                                                         .getLocalProfilePictureURL()),
                                                 SizedBox(
@@ -733,7 +739,10 @@ class ProfileState extends State<Profile> {
                                                               letterSpacing:
                                                                   1.2,
                                                               fontSize:
-                                                                  width / 25)),
+                                                                  width / 25,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold)),
                                                       Row(
                                                         mainAxisAlignment:
                                                             MainAxisAlignment
@@ -802,7 +811,7 @@ class ProfileState extends State<Profile> {
                                             Padding(
                                                 padding: EdgeInsets.fromLTRB(
                                                     width / 5,
-                                                    height / bioSpacing,
+                                                    height / 50,
                                                     width / 5,
                                                     0),
                                                 child: bio == "" || bio == null
@@ -815,17 +824,18 @@ class ProfileState extends State<Profile> {
                                                           LocalDataService
                                                               .getBio(),
                                                           maxLines: 3,
+                                                          minFontSize: 17,
                                                           textAlign:
                                                               TextAlign.center,
                                                         ),
                                                       )),
                                             //SoshiPointsButton(height, width),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      0, 5, 10, 0),
-                                              child: PassionTileList(),
-                                            ),
+                                            // Padding(
+                                            //   padding:
+                                            //       const EdgeInsets.fromLTRB(
+                                            //           0, 5, 10, 0),
+                                            //   child: PassionTileList(),
+                                            // ),
                                             // Row(
                                             //   children: [Icon(Icons.abc, size: 50)],
                                             // )
@@ -857,8 +867,22 @@ class ProfileState extends State<Profile> {
                               padding: EdgeInsets.fromLTRB(
                                   width / 35, height / 150, width / 35, 0),
                               child: Column(
-                                mainAxisSize: MainAxisSize.min,
+                                //mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(left: width / 40),
+                                    child: Text(
+                                      "Passions",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: width / 17),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: height / 100,
+                                  ),
+                                  PassionTileList(),
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
