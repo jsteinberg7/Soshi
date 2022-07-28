@@ -1000,7 +1000,7 @@ class PassionBubble extends StatelessWidget {
             borderRadius: BorderRadius.circular(20.0)),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text(passion),
+          child: Text(passion, style: TextStyle(fontSize: 12)),
         ));
   }
 }

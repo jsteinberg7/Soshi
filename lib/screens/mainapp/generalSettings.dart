@@ -226,13 +226,13 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                     // color: Colors.cyan[600],
                                     fontWeight: FontWeight.bold,
                                   ),
-                                ),
-                                content: Text(
-                                  ("Are you sure you want to sign out?"),
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    // color: Colors.cyan[700],
-                                    // fontWeight: FontWeight.bold
+                                  content: Text(
+                                    ("Are you sure you want to sign out?"),
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      // color: Colors.cyan[700],
+                                      // fontWeight: FontWeight.bold
+                                    ),
                                   ),
                                 ),
                                 actions: <Widget>[
@@ -269,7 +269,8 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                         "Sign out",
                         style: TextStyle(color: Colors.red),
                       ),
-                    ),
+                      Icon(Icons.logout, color: Colors.grey)
+                    ],
                   )
                 ]),
           ]),

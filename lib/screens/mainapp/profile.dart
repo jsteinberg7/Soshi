@@ -142,7 +142,7 @@ class _SMTileState extends State<SMTile> {
     return Neumorphic(
       style: NeumorphicStyle(
           depth: 1,
-          shadowLightColor: Colors.cyan[300],
+          // shadowLightColor: Colors.cyan[300],
           color: Theme.of(context).cardColor,
           shape: NeumorphicShape.concave,
           boxShape: NeumorphicBoxShape.roundRect(
@@ -391,8 +391,8 @@ class ProfileState extends State<Profile> {
     var width = MediaQuery.of(context).size.width;
     if (bio == null || bio == "") {
       bioSpacing = 90;
-      soshiPointsButtonSpacing = 1000;
-      containerSize = 3.3;
+
+      containerSize = 3.1;
     } else {
       bioChars = bio.length;
       if (bioChars <= 25) {
@@ -402,12 +402,12 @@ class ProfileState extends State<Profile> {
         containerSize = 0.8;
       } else if (bioChars > 25 && bioChars <= 50) {
         bioSpacing = 80;
-        soshiPointsButtonSpacing = 150;
-        containerSize = 2.9;
+
+        containerSize = 2.7;
       } else {
         bioSpacing = 90;
-        soshiPointsButtonSpacing = 1000;
-        containerSize = 2.8;
+
+        containerSize = 2.6;
       }
     }
 
