@@ -725,8 +725,7 @@ class _FriendScreenState extends State<FriendScreen>
                           ),
                         ),
                         Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(16.0, 3.0, 16.0, 0.0),
+                            padding: EdgeInsets.fromLTRB(16.0, 3.0, 16.0, 0),
                             child: Text("A-Z")),
                         Column(
                           children: List.generate(
@@ -742,6 +741,9 @@ class _FriendScreenState extends State<FriendScreen>
                             },
                           ),
                         ),
+                        SizedBox(
+                          height: height / 100,
+                        )
                       ],
                     ),
                   )
@@ -752,10 +754,7 @@ class _FriendScreenState extends State<FriendScreen>
                         children: <Widget>[
                           Text(
                             "You have no friends :(",
-                            style: TextStyle(
-                                color: Colors.cyan[300],
-                                fontSize: 20,
-                                letterSpacing: 2),
+                            style: TextStyle(fontSize: 20, letterSpacing: 2),
                           ),
                         ],
                       ),

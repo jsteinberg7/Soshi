@@ -450,7 +450,6 @@ class _NewQRScreenState extends State<NewQRScreen> {
     double height = Utilities.getHeight(context);
     double width = Utilities.getWidth(context);
 
-    print(LocalDataService.getVerifiedUsersLocal().toString());
     return Scaffold(
       appBar: AppBar(
         elevation: 0,

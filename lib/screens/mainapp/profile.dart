@@ -381,7 +381,7 @@ class Profile extends StatefulWidget {
 }
 
 class ProfileState extends State<Profile> {
-  List verifiedUsers = [];
+  List verifiedUsers = LocalDataService.getVerifiedUsersLocal();
   bool isVerified = false;
   String soshiUsername = "";
   List profilePlatforms = [];
@@ -401,11 +401,12 @@ class ProfileState extends State<Profile> {
             ? ""
             : LocalDataService.getBio().toString());
 
-    isVerified = verifiedUsers.contains(soshiUsername);
     soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
-    databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
+    isVerified = verifiedUsers.contains(soshiUsername);
     LocalDataService.updateVerifiedStatus(isVerified);
     databaseService.updateVerifiedStatus(soshiUsername, isVerified);
+
+    databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
 
     profilePlatforms = await LocalDataService.getLocalProfilePlatformsSynced();
     print("⚠⚠⚠⚠ profile Screen is being refreshed!");

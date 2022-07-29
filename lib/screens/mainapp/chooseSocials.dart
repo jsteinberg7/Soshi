@@ -240,11 +240,11 @@ class _ChooseSocialsState extends State<ChooseSocials> {
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+        padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
         child: ListView.builder(
             itemBuilder: (BuildContext context, int index) {
               return Padding(
-                padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                padding: const EdgeInsets.fromLTRB(0, 12, 0, 12),
                 child: ChooseSocialsCard(
                     platformName: choosePlatforms[index],
                     soshiUsername: soshiUsername),

@@ -37,6 +37,7 @@ class _ResetPassword extends State<ResetPassword> {
     return Scaffold(
       //backgroundColor: Colors.grey[850],
       appBar: AppBar(
+        elevation: .5,
         leading: CupertinoBackButton(),
         title: Text(
           "Reset password",
