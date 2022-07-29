@@ -449,6 +449,8 @@ class _NewQRScreenState extends State<NewQRScreen> {
   Widget build(BuildContext context) {
     double height = Utilities.getHeight(context);
     double width = Utilities.getWidth(context);
+
+    print(LocalDataService.getVerifiedUsersLocal().toString());
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -558,8 +560,8 @@ class _NewQRScreenState extends State<NewQRScreen> {
                             borderRadius: BorderRadius.circular(25.0),
                             // elevation: 5,
                             child: Container(
-                              height: width / 1.5,
-                              width: width / 1.5,
+                              height: width / 1.8,
+                              width: width / 1.8,
                               child: Stack(
                                 alignment: AlignmentDirectional.center,
                                 children: [
@@ -603,8 +605,8 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                     // bottom: width / 4.5,
                                     // right: width / 20,
                                     child: Container(
-                                      height: width / 9,
-                                      width: width / 9,
+                                      height: width / 12,
+                                      width: width / 12,
                                       decoration: BoxDecoration(
                                           color: Colors.white,
                                           shape: BoxShape.circle),
@@ -623,7 +625,7 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                                 padding:
                                                     const EdgeInsets.all(0.0),
                                                 child: ProfilePic(
-                                                    radius: width / 5,
+                                                    radius: width / 4,
                                                     url: LocalDataService
                                                         .getLocalProfilePictureURL()),
                                               ),
@@ -638,7 +640,7 @@ class _NewQRScreenState extends State<NewQRScreen> {
                             ),
                           ),
                           SizedBox(
-                            height: height / 80,
+                            height: height / 30,
                           ),
                           Text("Share with others to instantly connect.",
                               style: TextStyle(fontSize: width / 27)),

@@ -557,7 +557,7 @@ class _RegisterSingleScreenState extends State<RegisterSingleScreen> {
           ? true
           : false,
       cursorHeight: 28,
-      textCapitalization: hintText == "Email" ? TextCapitalization.none : null,
+      textCapitalization: TextCapitalization.none,
       controller: controller,
       inputFormatters: widget.type == InputType.EMAIL
           ? [FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9_.-@]"))]
