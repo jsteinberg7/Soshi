@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:soshi/services/analytics.dart';
+import 'package:soshi/services/dataEngine.dart';
 import 'package:soshi/services/localData.dart';
 import 'services/auth.dart';
 import 'package:soshi/screens/wrapper.dart';
@@ -138,6 +139,7 @@ void main() async {
   await Firebase.initializeApp();
   // lock device in portrait mode
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
   // initialize SharedPreferences if user is logged in
   LocalDataService.preferences = await SharedPreferences.getInstance();
 
@@ -174,6 +176,9 @@ void main() async {
         await LocalDataService.reformatFriendsList(); // should only ever run once per user
       }
     }
+  } else {
+    String username = LocalDataService.getLocalUsername();
+    await DataEngine.initialize(username);
   }
 
   // else if (DatabaseService())  // check if "Contact" link has been corrupted by focus node bug (fix if necessary)

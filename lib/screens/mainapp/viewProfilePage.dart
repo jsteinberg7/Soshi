@@ -249,8 +249,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                     child: Wrap(
                                       alignment: WrapAlignment.center,
                                       spacing: width / 35,
-                                      children: List.generate(
-                                          passionsList.length, (i) {
+                                      children: List.generate(passionsList.length, (i) {
                                         return PassionBubble(
                                           passionsList[i],
                                         );
@@ -278,39 +277,10 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Visibility(
-<<<<<<< HEAD
-                            visible: passionsList.isNotEmpty,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.fromLTRB(
-                                      width / 15, height / 30, width / 25, width / 30),
-                                  child: Text(
-                                    "Passions",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold, fontSize: width / 20),
-                                  ),
-                                ),
-                                Center(
-                                  child: SizedBox(
-                                    width: width / 1.1,
-                                    child: Wrap(
-                                      alignment: WrapAlignment.center,
-                                      spacing: width / 35,
-                                      children: List.generate(passionsList.length, (i) {
-                                        return PassionBubble(passionsList[i]);
-                                      }),
-                                    ),
-                                  ),
-                                ),
-                              ],
-=======
-                            visible: !LocalDataService.isFriendAdded(
-                                friendSoshiUsername),
+                            visible: !LocalDataService.isFriendAdded(friendSoshiUsername),
                             child: Padding(
-                              padding: EdgeInsets.fromLTRB(
-                                  height / 30, height / 30, height / 30, 0),
+                              padding:
+                                  EdgeInsets.fromLTRB(height / 30, height / 30, height / 30, 0),
                               child: Align(
                                 alignment: Alignment.center,
                                 child: AddFriendButton(
@@ -319,7 +289,6 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                     height: height / 35,
                                     width: width / 2.75),
                               ),
->>>>>>> d52ee2f95651b127386203ca4f2f74bc928ba34f
                             ),
                           ),
                           Padding(
