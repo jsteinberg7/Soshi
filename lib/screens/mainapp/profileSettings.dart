@@ -107,14 +107,14 @@ class ProfileSettingsState extends State<ProfileSettings> {
 
                 // Checking if this is first time adding a bio
                 // if it is, it gives Soshi points
-                if (LocalDataService.getInjectionFlag("Bio") == false ||
-                    LocalDataService.getInjectionFlag("Bio") == null) {
-                  LocalDataService.updateInjectionFlag("Bio", true);
-                  databaseService.updateInjectionSwitch(
-                      soshiUsername, "Bio", true);
-                  LocalDataService.updateSoshiPoints(10);
-                  databaseService.updateSoshiPoints(soshiUsername, 10);
-                }
+                // if (LocalDataService.getInjectionFlag("Bio") == false ||
+                //     LocalDataService.getInjectionFlag("Bio") == null) {
+                //   LocalDataService.updateInjectionFlag("Bio", true);
+                //   databaseService.updateInjectionSwitch(
+                //       soshiUsername, "Bio", true);
+                //   LocalDataService.updateSoshiPoints(10);
+                //   databaseService.updateSoshiPoints(soshiUsername, 10);
+                // }
                 widget.importProfileNotifier.notifyListeners();
                 Navigator.pop(context);
               },
@@ -164,17 +164,17 @@ class ProfileSettingsState extends State<ProfileSettings> {
 
                       // Checking if this is first time adding a profile pic
                       // if it is, it gives Soshi points
-                      if (LocalDataService.getInjectionFlag("Profile Pic") ==
-                              false ||
-                          LocalDataService.getInjectionFlag("Profile Pic") ==
-                              null) {
-                        LocalDataService.updateInjectionFlag(
-                            "Profile Pic", true);
-                        dbService.updateInjectionSwitch(
-                            soshiUsername, "Profile Pic", true);
-                        databaseService.updateSoshiPoints(soshiUsername, 10);
-                        LocalDataService.updateSoshiPoints(10);
-                      }
+                      // if (LocalDataService.getInjectionFlag("Profile Pic") ==
+                      //         false ||
+                      //     LocalDataService.getInjectionFlag("Profile Pic") ==
+                      //         null) {
+                      //   LocalDataService.updateInjectionFlag(
+                      //       "Profile Pic", true);
+                      //   dbService.updateInjectionSwitch(
+                      //       soshiUsername, "Profile Pic", true);
+                      //   databaseService.updateSoshiPoints(soshiUsername, 10);
+                      //   LocalDataService.updateSoshiPoints(10);
+                      // }
 
                       //refreshScreen();
                     },
@@ -349,18 +349,18 @@ class ProfileSettingsState extends State<ProfileSettings> {
 
                             // Checking if this is first time adding a bio
                             // if it is, it gives Soshi points
-                            if (LocalDataService.getInjectionFlag("Bio") ==
-                                    false ||
-                                LocalDataService.getInjectionFlag("Bio") ==
-                                    null) {
-                              LocalDataService.updateInjectionFlag("Bio", true);
-                              databaseService.updateInjectionSwitch(
-                                  soshiUsername, "Bio", true);
+                            // if (LocalDataService.getInjectionFlag("Bio") ==
+                            //         false ||
+                            //     LocalDataService.getInjectionFlag("Bio") ==
+                            //         null) {
+                            //   LocalDataService.updateInjectionFlag("Bio", true);
+                            //   databaseService.updateInjectionSwitch(
+                            //       soshiUsername, "Bio", true);
 
-                              LocalDataService.updateSoshiPoints(10);
-                              databaseService.updateSoshiPoints(
-                                  soshiUsername, 10);
-                            }
+                            //   LocalDataService.updateSoshiPoints(10);
+                            //   databaseService.updateSoshiPoints(
+                            //       soshiUsername, 10);
+                            // }
                           },
                         ),
                       ),

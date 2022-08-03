@@ -383,7 +383,7 @@ class Profile extends StatefulWidget {
 class ProfileState extends State<Profile> {
   List verifiedUsers = LocalDataService.getVerifiedUsersLocal();
   bool isVerified = false;
-  String soshiUsername = "";
+  String soshiUsername = LocalDataService.getLocalUsername();
   List profilePlatforms = [];
   DatabaseService databaseService = new DatabaseService();
   TextEditingController profileBioController;
@@ -418,7 +418,7 @@ class ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     bool soshiPointsInjection =
-        LocalDataService.getInjectionFlag("Soshi Points");
+        LocalDataService.getInjectionFlag("Soshi Points") ?? false;
 
     if (soshiPointsInjection == false || soshiPointsInjection == null) {
       LocalDataService.updateInjectionFlag("Soshi Points", true);
@@ -431,43 +431,43 @@ class ProfileState extends State<Profile> {
       databaseService.updateSoshiPoints(soshiUsername, (numFriends * 8));
     }
 
-    bool profilePicFlagInjection =
-        LocalDataService.getInjectionFlag("Profile Pic");
-    print(profilePicFlagInjection.toString());
+    // bool profilePicFlagInjection =
+    //     LocalDataService.getInjectionFlag("Profile Pic");
+    // print(profilePicFlagInjection.toString());
 
-    if (profilePicFlagInjection == false || profilePicFlagInjection == null) {
-      if (LocalDataService.getLocalProfilePictureURL() != "null") {
-        LocalDataService.updateInjectionFlag("Profile Pic", true);
-        databaseService.updateInjectionSwitch(
-            soshiUsername, "Profile Pic", true);
-        LocalDataService.updateSoshiPoints(10);
+    // if (profilePicFlagInjection == false || profilePicFlagInjection == null) {
+    //   if (LocalDataService.getLocalProfilePictureURL() != "null") {
+    //     LocalDataService.updateInjectionFlag("Profile Pic", true);
+    //     databaseService.updateInjectionSwitch(
+    //         soshiUsername, "Profile Pic", true);
+    //     LocalDataService.updateSoshiPoints(10);
 
-        databaseService.updateSoshiPoints(soshiUsername, 10);
-      } else {
-        LocalDataService.updateInjectionFlag("Profile Pic", false);
-        databaseService.updateInjectionSwitch(
-            soshiUsername, "Profile Pic", false);
-      }
-    }
+    //     databaseService.updateSoshiPoints(soshiUsername, 10);
+    //   } else {
+    //     LocalDataService.updateInjectionFlag("Profile Pic", false);
+    //     databaseService.updateInjectionSwitch(
+    //         soshiUsername, "Profile Pic", false);
+    //   }
+    // }
 
-    bool bioFlagInjection = LocalDataService.getInjectionFlag("Bio");
-    if (bioFlagInjection == false || bioFlagInjection == null) {
-      if (LocalDataService.getBio() != "" ||
-          LocalDataService.getBio() == null) {
-        LocalDataService.updateInjectionFlag("Bio", true);
-        databaseService.updateInjectionSwitch(soshiUsername, "Bio", true);
-        LocalDataService.updateSoshiPoints(10);
+    // bool bioFlagInjection = LocalDataService.getInjectionFlag("Bio");
+    // if (bioFlagInjection == false || bioFlagInjection == null) {
+    //   if (LocalDataService.getBio() != "" ||
+    //       LocalDataService.getBio() == null) {
+    //     LocalDataService.updateInjectionFlag("Bio", true);
+    //     databaseService.updateInjectionSwitch(soshiUsername, "Bio", true);
+    //     LocalDataService.updateSoshiPoints(10);
 
-        databaseService.updateSoshiPoints(soshiUsername, 10);
-      } else {
-        LocalDataService.updateInjectionFlag("Bio", false);
-        databaseService.updateInjectionSwitch(soshiUsername, "Bio", false);
-      }
-    }
+    //     databaseService.updateSoshiPoints(soshiUsername, 10);
+    //   } else {
+    //     LocalDataService.updateInjectionFlag("Bio", false);
+    //     databaseService.updateInjectionSwitch(soshiUsername, "Bio", false);
+    //   }
+    // }
 
     // For now, just injecting passions flag field
-    LocalDataService.updateInjectionFlag("Passions", false);
-    databaseService.updateInjectionSwitch(soshiUsername, "Passions", false);
+    // LocalDataService.updateInjectionFlag("Passions", false);
+    // databaseService.updateInjectionSwitch(soshiUsername, "Passions", false);
 
     //       bool passionsFlagInjection =
     //     LocalDataService.getLocalStateForInjectionFlag("Passions");
@@ -521,7 +521,7 @@ class ProfileState extends State<Profile> {
           } else {
             return SingleChildScrollView(
               child: Container(
-                  height: height * 1.5,
+                  height: height * 3,
                   child: Stack(
                     children: [
                       Positioned(

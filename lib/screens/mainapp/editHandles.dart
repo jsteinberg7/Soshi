@@ -420,6 +420,9 @@ class _SMCardState extends State<SMCard> {
                             controller: usernameController,
                             maxLines: 1,
                             onSubmitted: (String username) async {
+                              username = username.trim();
+                              username = username.toLowerCase();
+                              // ^ these are crucial to avoid errors
                               LocalDataService.updateUsernameForPlatform(
                                   //for testing rn
                                   platform: platformName,
