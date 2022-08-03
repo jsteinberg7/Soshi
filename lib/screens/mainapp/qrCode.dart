@@ -603,30 +603,49 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                   Align(
                                     // bottom: width / 4.5,
                                     // right: width / 20,
-                                    child: Container(
-                                      height: width / 12,
-                                      width: width / 12,
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          shape: BoxShape.circle),
-                                      child: ClipOval(
-                                        child: Container(
-                                          height: width / 9,
-                                          width: width / 9,
-                                          decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              shape: BoxShape.circle),
-                                          child: ClipOval(
-                                            child: Container(
-                                              height: width / 10,
-                                              width: width / 10,
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(0.0),
-                                                child: ProfilePic(
-                                                    radius: width / 4,
-                                                    url: LocalDataService
-                                                        .getLocalProfilePictureURL()),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Clipboard.setData(ClipboardData(
+                                          text: "https://soshi.app/" +
+                                              LocalDataService
+                                                      .getLocalUsernameForPlatform(
+                                                          "Soshi")
+                                                  .toString(),
+                                        ));
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                          content: const Text(
+                                            'Copied link to clipboard :)',
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ));
+                                        Analytics.logCopyLinkToClipboard();
+                                      },
+                                      child: Container(
+                                        height: width / 12,
+                                        width: width / 12,
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            shape: BoxShape.circle),
+                                        child: ClipOval(
+                                          child: Container(
+                                            height: width / 9,
+                                            width: width / 9,
+                                            decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                shape: BoxShape.circle),
+                                            child: ClipOval(
+                                              child: Container(
+                                                height: width / 10,
+                                                width: width / 10,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(0.0),
+                                                  child: ProfilePic(
+                                                      radius: width / 4,
+                                                      url: LocalDataService
+                                                          .getLocalProfilePictureURL()),
+                                                ),
                                               ),
                                             ),
                                           ),
