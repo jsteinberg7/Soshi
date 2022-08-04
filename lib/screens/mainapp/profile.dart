@@ -182,6 +182,11 @@ class _SMTileState extends State<SMTile> {
                       String lastName = LocalDataService.getLocalLastName();
                       String photoUrl =
                           LocalDataService.getLocalProfilePictureURL();
+                      String email =
+                          LocalDataService.getLocalUsernameForPlatform("Email");
+                      String phoneNumber =
+                          LocalDataService.getLocalUsernameForPlatform("Phone");
+
                       Uint8List profilePicBytes;
                       try {
                         // try to load profile pic from url
@@ -217,8 +222,8 @@ class _SMTileState extends State<SMTile> {
                       await askPermissions(context);
                       ContactsService.addContact(contact)
                           .then((dynamic success) {
-                        Popups.showContactAddedPopup(
-                            context, width, firstName, lastName);
+                        Popups.showContactAddedPopup(context, width, photoUrl,
+                            firstName, lastName, phoneNumber, email);
                       });
                     } else if (platformName == "Cryptowallet") {
                       Clipboard.setData(ClipboardData(

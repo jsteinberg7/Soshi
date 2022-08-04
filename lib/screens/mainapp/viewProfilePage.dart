@@ -497,8 +497,11 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                             Popups.showContactAddedPopup(
                                                 context,
                                                 width,
+                                                photoUrl,
                                                 firstName,
-                                                lastName);
+                                                lastName,
+                                                phoneNumber,
+                                                email);
 
                                             //ContactsService.openContactForm();
                                             // ContactsService.addContact(newContact).then((dynamic success) {

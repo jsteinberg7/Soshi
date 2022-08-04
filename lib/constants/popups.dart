@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:glassmorphism/glassmorphism.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:soshi/constants/utilities.dart';
 import 'package:soshi/constants/widgets.dart';
 import 'package:soshi/screens/login/loading.dart';
@@ -159,69 +161,92 @@ class Popups {
   }
 
   static Future<dynamic> showContactAddedPopup(
-      BuildContext context, double width, String firstName, String lastName) {
+      BuildContext context,
+      double width,
+      String profilePicURL,
+      String firstName,
+      String lastName,
+      String phoneNumber,
+      String email) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
+            actions: [
+              TextButton(
+                child: Text("Done",
+                    style: TextStyle(color: Colors.blue, fontSize: width / 20)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(40.0))),
+                borderRadius: BorderRadius.all(Radius.circular(20.0))),
             // backgroundColor: Colors.grey[850],
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Image.asset(
-                        "assets/images/SMLogos/ContactLogo.png",
-                        height: width / 4,
-                        width: width / 4,
-                      ),
-                      Icon(Icons.check,
-                          color: Colors.green[600],
-                          size: MediaQuery.of(context).size.width / 4)
-                      // Positioned(
-                      //   top: width / 2 - width / 5,
-                      //   left: width / 2 - width / 5,
-                      //   child: Icon(Icons.check,
-                      //       color: Colors.green[600],
-                      //       size: MediaQuery.of(context).size.width / 4),
-                      // ),
-                    ],
+            content: Padding(
+              padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  ProfilePic(
+                    radius: width / 8,
+                    url: profilePicURL,
                   ),
-                ),
-                ListTile(
-                  title: Text(
-                    '$firstName $lastName was added to your device\'s contacts!',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      // color: Colors.white,
-                      //fontFamily: GoogleFonts.lato().fontFamily,
+                  SizedBox(
+                    height: height / 80,
+                  ),
+                  Center(
+                    child: Text(
+                      firstName + " " + lastName,
+                      maxLines: 1,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: width / 18,
+                          letterSpacing: 1.2),
                     ),
                   ),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                        child: Text(
-                          "Dismiss",
-                          style: TextStyle(fontSize: 15),
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        }),
-                  ],
-                )
-              ],
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(CupertinoIcons.phone),
+                      SizedBox(width: 5),
+                      Text(phoneNumber)
+                    ],
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(CupertinoIcons.mail),
+                      SizedBox(width: 5),
+                      Text(email)
+                    ],
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Divider(
+                    thickness: .5,
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    firstName +
+                        "'s information has been added to your devices contacts.",
+                    style: TextStyle(fontSize: width / 22),
+                    textAlign: TextAlign.center,
+                  )
+                ],
+              ),
             ),
           );
         });
@@ -955,7 +980,7 @@ class Popups {
                               String soshiUsername =
                                   LocalDataService.getLocalUsernameForPlatform(
                                       "Soshi");
-        
+
                               if (isFriendAdded ||
                                   friendSoshiUsername == userUsername) {
                                 // do nothing
@@ -978,7 +1003,7 @@ class Popups {
                                 bool isFriendAdded =
                                     await LocalDataService.isFriendAdded(
                                         friendSoshiUsername);
-                                
+
                                 Popups.showUserProfilePopupNew(context,
                                     friendSoshiUsername: friendSoshiUsername,
                                     refreshScreen: () {});

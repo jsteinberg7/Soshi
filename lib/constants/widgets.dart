@@ -1140,7 +1140,8 @@ class SMButton extends StatelessWidget {
 
           DialogBuilder(context).hideOpenDialog();
 
-          Popups.showContactAddedPopup(context, width, firstName, lastName);
+          Popups.showContactAddedPopup(context, width, photoUrl, firstName,
+              lastName, phoneNumber, email);
 
           //ContactsService.openContactForm();
           // ContactsService.addContact(newContact).then((dynamic success) {
