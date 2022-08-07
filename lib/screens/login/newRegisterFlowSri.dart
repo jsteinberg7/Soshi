@@ -42,6 +42,7 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
     print("reanimating with current apge: " + currentPage.toString());
     double width = Utilities.getWidth(context);
     double height = Utilities.getHeight(context);
+    bool validate_ = true;
 
     return SafeArea(
       child: Scaffold(
@@ -128,14 +129,16 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
                   print("Move to next screen - smooth animation REGISTER");
 
                   if (currentPage == 0) {
-                    print(
-                        "[!] email page processing! => ${widget.superController.email.text}");
+                    String convertedEmail =
+                        widget.superController.email.text.trim().toLowerCase();
+
+                    print("[!] email page processing! => ${convertedEmail}");
 
                     OnboardingLoader.showLoadingIndicator("", context);
 
                     DocumentSnapshot dRef = await FirebaseFirestore.instance
                         .collection("emailToUsername")
-                        .doc(widget.superController.email.text)
+                        .doc(convertedEmail)
                         .get();
                     print("DOC EXISTS? ❓ ${dRef.exists}");
                     if (dRef.exists) {
@@ -184,7 +187,9 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
                     final AuthService _authService = new AuthService();
                     dynamic user =
                         await _authService.signInWithEmailAndPassword(
-                            emailIn: widget.superController.email.text,
+                            emailIn: widget.superController.email.text
+                                .trim()
+                                .toLowerCase(),
                             passwordIn:
                                 widget.superController.passwordOldAcc.text);
 

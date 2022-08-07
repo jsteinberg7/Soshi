@@ -740,7 +740,7 @@ class _NewQRScreenState extends State<NewQRScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  "Scan QR Code",
+                                  "Scan Code",
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 20),

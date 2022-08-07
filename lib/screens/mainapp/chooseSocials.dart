@@ -125,6 +125,10 @@ class _ChooseSocialsCardState extends State<ChooseSocialsCard> {
 }
 
 class ChooseSocials extends StatefulWidget {
+  Function() refreshScreen;
+  ChooseSocials({Function() refreshScreen}) {
+    this.refreshScreen = refreshScreen;
+  }
   @override
   _ChooseSocialsState createState() => _ChooseSocialsState();
 }
@@ -220,6 +224,7 @@ class _ChooseSocialsState extends State<ChooseSocials> {
                     .removeFromChoosePlatforms(Queue.choosePlatformsQueue);
 
                 Navigator.pop(context);
+                widget.refreshScreen();
               },
             ),
           )

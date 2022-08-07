@@ -23,7 +23,15 @@ class ProfileSettings extends StatefulWidget {
   ProfileSettingsState createState() => ProfileSettingsState();
 }
 
+String profilePicURL;
+
 class ProfileSettingsState extends State<ProfileSettings> {
+  refreshScreen() {
+    setState(() {
+      profilePicURL = LocalDataService.getLocalProfilePictureURL();
+    });
+  }
+
   DatabaseService databaseService;
   int connectionCount = 0;
   Function refreshProfileScreen;
@@ -161,6 +169,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                       final PickedFile pickedImage = await imagePicker.getImage(
                           source: ImageSource.gallery, imageQuality: 20);
                       await dbService.cropAndUploadImage(pickedImage);
+                      refreshScreen();
 
                       // Checking if this is first time adding a profile pic
                       // if it is, it gives Soshi points
@@ -175,8 +184,6 @@ class ProfileSettingsState extends State<ProfileSettings> {
                       //   databaseService.updateSoshiPoints(soshiUsername, 10);
                       //   LocalDataService.updateSoshiPoints(10);
                       // }
-
-                      //refreshScreen();
                     },
                     child: Stack(
                       children: [

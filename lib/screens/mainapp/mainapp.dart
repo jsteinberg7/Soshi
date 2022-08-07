@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'package:soshi/constants/utilities.dart';
+import 'package:soshi/screens/mainapp/editHandles.dart';
 import 'package:soshi/screens/mainapp/friendsGroupsWrapper.dart';
 import 'package:soshi/screens/mainapp/profile.dart';
 import 'package:soshi/screens/mainapp/qrCode.dart';
@@ -68,7 +69,8 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
 
     NfcManager.instance.startSession(
       onDiscovered: (NfcTag tag) async {
-        var link = AsciiCodec().decode(Ndef.from(tag).cachedMessage.records.last.payload);
+        var link = AsciiCodec()
+            .decode(Ndef.from(tag).cachedMessage.records.last.payload);
         String username = link.toString().split("/").last;
 
         try {
@@ -96,13 +98,16 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
   }
 
   int currScreen = 1;
-  PageController pageController = new PageController(initialPage: 1, viewportFraction: 1.1);
+  PageController pageController =
+      new PageController(initialPage: 1, viewportFraction: 1.1);
   ValueNotifier controlsBottomNavBar = new ValueNotifier(1);
 
   @override
   Widget build(BuildContext context) {
-    String soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
-    DatabaseService databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
+    String soshiUsername =
+        LocalDataService.getLocalUsernameForPlatform("Soshi");
+    DatabaseService databaseService =
+        new DatabaseService(currSoshiUsernameIn: soshiUsername);
 
     return Scaffold(
       drawerEnableOpenDragGesture: false,
@@ -154,8 +159,9 @@ class LatestBottomNavBar extends StatelessWidget {
         scaleFactor: .05,
         elevation: 5,
         iconSize: Utilities.getWidth(context) / 10,
-        selectedColor:
-            Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+        selectedColor: Theme.of(context).brightness == Brightness.light
+            ? Colors.black
+            : Colors.white,
         strokeColor: Colors.transparent,
         unSelectedColor: Colors.grey,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -167,7 +173,9 @@ class LatestBottomNavBar extends StatelessWidget {
             ),
           ),
           CustomNavigationBarItem(
-              icon: ProfilePic(radius: 25, url: LocalDataService.getLocalProfilePictureURL())),
+              icon: ProfilePic(
+                  radius: 25,
+                  url: LocalDataService.getLocalProfilePictureURL())),
           CustomNavigationBarItem(
             icon: Icon(
               AntDesign.contacts,

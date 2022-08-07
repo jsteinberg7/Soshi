@@ -21,9 +21,11 @@ import 'package:http/http.dart' as http;
 
 class EditHandles extends StatefulWidget {
   String soshiUsername;
+  Function() refreshScreenParam;
 
-  EditHandles({String soshiUsername}) {
+  EditHandles({String soshiUsername, Function() refreshScreenParam}) {
     this.soshiUsername = soshiUsername;
+    this.refreshScreenParam = refreshScreenParam;
   }
 
   @override
@@ -62,6 +64,7 @@ class _EditHandlesState extends State<EditHandles> {
             // if they say "Discard" --> just pop
 
             Navigator.of(context).pop();
+            widget.refreshScreenParam();
           },
         ),
         actions: [
@@ -84,7 +87,9 @@ class _EditHandlesState extends State<EditHandles> {
                 //                         username: );
 
                 // }
+
                 Navigator.pop(context);
+                widget.refreshScreenParam();
               },
             ),
           )
@@ -157,7 +162,8 @@ class _EditHandlesState extends State<EditHandles> {
                 }
                 await Navigator.push(context,
                     MaterialPageRoute(builder: (context) {
-                  return Scaffold(body: ChooseSocials());
+                  return Scaffold(
+                      body: ChooseSocials(refreshScreen: refreshScreen));
                 }));
               },
             ),
@@ -529,11 +535,11 @@ class _SMCardState extends State<SMCard> {
                                                     .toString());
                                                 widget.refreshScreen();
                                               } else {
-                                                Navigator.pop(context);
                                                 await LocalDataService
                                                     .removePlatformsFromProfile(
                                                         platformName);
-                                                widget.refreshScreen();
+                                                Navigator.pop(context);
+                                                widget.refreshScreen;
                                               }
                                             },
                                           ),
@@ -601,3 +607,77 @@ class _SMCardState extends State<SMCard> {
     );
   }
 }
+
+// class GreenAddButton extends StatefulWidget {
+//   Function() refreshScreen;
+//   GreenAddButton({Function refreshScreen}) {
+//     this.refreshScreen = refreshScreen;
+//   }
+
+//   @override
+//   State<GreenAddButton> createState() => _GreenAddButtonState();
+// }
+
+// class _GreenAddButtonState extends State<GreenAddButton> {
+//   @override
+//   void initState() {
+//     super.initState();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     double width = Utilities.getWidth(context);
+//     return ElevatedButton(
+//       style: ElevatedButton.styleFrom(
+//           elevation: 5,
+//           primary: Colors.green,
+//           shape: RoundedRectangleBorder(
+//               //to set border radius to button
+//               borderRadius: BorderRadius.circular(15)),
+//           padding:
+//               EdgeInsets.fromLTRB(50, 0, 50, 0) //content padding inside button
+
+//           ),
+//       child: Text(
+//         "Add",
+//         style: TextStyle(
+//             fontWeight: FontWeight.bold,
+//             letterSpacing: 1.5,
+//             fontSize: width / 20,
+//             color: Colors.white),
+//       ),
+//       onPressed: () async {
+//         // check if user has all platforms (in case of update)
+//         if (Constants.originalPlatforms.length +
+//                 Constants.addedPlatforms.length >
+//             LocalDataService.getLocalChoosePlatforms().length +
+//                 LocalDataService.getLocalProfilePlatforms().length) {
+//           // check which platforms need to be added
+//           for (String platform in Constants.addedPlatforms) {
+//             if (!LocalDataService.getLocalProfilePlatforms()
+//                     .contains(platform) &&
+//                 !LocalDataService.getLocalChoosePlatforms()
+//                     .contains(platform)) {
+//               await LocalDataService.addToChoosePlatforms(
+//                   platform); // add new platform to choose platforms
+//               await LocalDataService.updateSwitchForPlatform(
+//                   platform: platform,
+//                   state:
+//                       false); // create switch for platform in and initialize to false
+//               if (LocalDataService.getLocalUsernameForPlatform(platform) ==
+//                   null) {
+//                 await LocalDataService.updateUsernameForPlatform(
+//                     platform: platform,
+//                     username:
+//                         ""); // create username mapping for platform if absent
+//               }
+//             }
+//           }
+//         }
+//         await Navigator.push(context, MaterialPageRoute(builder: (context) {
+//           return Scaffold(body: ChooseSocials());
+//         }));
+//       },
+//     );
+//   }
+// }

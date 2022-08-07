@@ -345,7 +345,7 @@ class _AddPlatformsTileState extends State<AddPlatformsTile> {
         await Navigator.push(context, MaterialPageRoute(builder: (context) {
           return Scaffold(body: ChooseSocials());
         })).then((value) {
-          print("✅ Done editing profile, time to refresh the screen");
+          print("✅ Done adding socials to profile, time to refresh the screen");
           widget.importProfileNotifier.notifyListeners();
         });
       },
@@ -386,6 +386,12 @@ class Profile extends StatefulWidget {
 }
 
 class ProfileState extends State<Profile> {
+  refreshScreen() {
+    setState(() {
+      profilePlatforms = LocalDataService.getLocalProfilePlatforms();
+    });
+  }
+
   List verifiedUsers = LocalDataService.getVerifiedUsersLocal();
   bool isVerified = false;
   String soshiUsername = LocalDataService.getLocalUsername();
@@ -913,6 +919,7 @@ class ProfileState extends State<Profile> {
                                             return Scaffold(
                                                 body: EditHandles(
                                               soshiUsername: soshiUsername,
+                                              refreshScreenParam: refreshScreen,
                                             ));
                                           }));
                                         },
