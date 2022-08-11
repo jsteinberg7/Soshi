@@ -5,10 +5,12 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:nfc_manager/nfc_manager.dart';
 
 import 'package:soshi/constants/popups.dart';
 import 'package:soshi/constants/utilities.dart';
@@ -18,6 +20,7 @@ import 'package:soshi/services/analytics.dart';
 import 'package:soshi/services/database.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:soshi/services/localData.dart';
+import 'package:soshi/services/nfc.dart';
 
 import 'package:vibration/vibration.dart';
 import 'package:share/share.dart';
@@ -452,6 +455,25 @@ class _NewQRScreenState extends State<NewQRScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: GestureDetector(
+          onTap: () {},
+        ),
+        actions: [
+          GestureDetector(
+            onTap: () {
+              NFCWriter(height, width);
+            },
+            child: Image.asset(
+              "assets/images/misc/NFCLogo.png",
+              //height: 50,
+              width: 25,
+            ),
+          ),
+          SizedBox(
+            width: width / 35,
+          )
+        ],
+
         elevation: 0,
         title: Image.asset(
           "assets/images/SoshiLogos/SoshiBubbleLogo.png",

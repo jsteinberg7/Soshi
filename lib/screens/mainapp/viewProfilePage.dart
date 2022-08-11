@@ -5,6 +5,7 @@ import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:soshi/screens/login/loading.dart';
 
 import '../../../constants/popups.dart';
@@ -77,11 +78,12 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
               String numFriendsString = numfriends.toString();
               String numGroupsString = "15";
               bool isContactEnabled;
-              // List<String> passionsList = databaseService.getPassions(userData);
-              List<String> passionsList = [
-                "Ice Hockey",
-                "Entrepreneurship",
-                "Fitness"
+              // List<String> passionsMap = databaseService.getPassions(userData);
+
+              List<Map> passionsMap = [
+                {"passion_emoji": "😋", "passion_name": "food"},
+                {"passion_emoji": "🏑", "passion_name": "hockey"},
+                {"passion_emoji": "🏃‍♀️", "passion_name": "running"}
               ];
               String photoUrl = databaseService.getPhotoURL(userData);
 
@@ -279,7 +281,33 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                     )
                                     //),
                                     ),
-                                AddFriendButton()
+                                SizedBox(
+                                  height: height / 30,
+                                ),
+                                Visibility(
+                                  visible: passionsMap != null ||
+                                      passionsMap.isNotEmpty,
+                                  child: Padding(
+                                    padding: EdgeInsets.fromLTRB(
+                                        width / 35, 0, width / 35, 0),
+                                    child: Center(
+                                      child: SizedBox(
+                                        width: width / 1.1,
+                                        child: Wrap(
+                                          alignment: WrapAlignment.center,
+                                          spacing: width / 65,
+                                          children: List.generate(
+                                              passionsMap.length, (i) {
+                                            return PassionBubble(
+                                              passionsMap[i]["passion_emoji"],
+                                              passionsMap[i]["passion_name"],
+                                            );
+                                          }),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -300,47 +328,14 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Visibility(
-                            visible: passionsList.isNotEmpty,
-                            child: Container(
-                              child: Padding(
-                                padding: EdgeInsets.fromLTRB(
-                                    width / 35, height / 75, width / 35, 0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding:
-                                          EdgeInsets.only(left: width / 40),
-                                      child: Text(
-                                        "Passions",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: width / 17),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: height / 100,
-                                    ),
-                                    Center(
-                                      child: SizedBox(
-                                        width: width / 1.1,
-                                        child: Wrap(
-                                          alignment: WrapAlignment.center,
-                                          spacing: width / 35,
-                                          children: List.generate(
-                                              passionsList.length, (i) {
-                                            return PassionBubble(
-                                                passionsList[i]);
-                                          }),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
+                          SizedBox(
+                            height: height / 45,
                           ),
+                          AddFriendButton(
+                              friendSoshiUsername: friendSoshiUsername,
+                              refreshFunction: refreshScreen,
+                              height: height,
+                              width: width),
                           Container(
                             child: Padding(
                               padding: EdgeInsets.fromLTRB(
@@ -609,67 +604,67 @@ class _AddFriendButtonState extends State<AddFriendButton> {
 
   @override
   Widget build(BuildContext context) {
-    return NeumorphicButton(
-        onPressed: () async {
-          if (isFriendAdded || friendSoshiUsername == soshiUsername) {
-            // do nothing
-            return;
-          } else {
-            setState(() {
-              isAdding = true;
-            });
+    return Center(
+      child: NeumorphicButton(
+          onPressed: () async {
+            if (isFriendAdded || friendSoshiUsername == soshiUsername) {
+              // do nothing
+              return;
+            } else {
+              setState(() {
+                isAdding = true;
+              });
 
-            Map friendData =
-                await databaseService.getUserFile(friendSoshiUsername);
-            Friend friend = databaseService.userDataToFriend(friendData);
-            bool isFriendAdded =
-                await LocalDataService.isFriendAdded(friendSoshiUsername);
+              Map friendData =
+                  await databaseService.getUserFile(friendSoshiUsername);
+              Friend friend = databaseService.userDataToFriend(friendData);
+              bool isFriendAdded =
+                  await LocalDataService.isFriendAdded(friendSoshiUsername);
 
-            if (!isFriendAdded &&
-                friendSoshiUsername != databaseService.currSoshiUsername) {
-              List<String> newFriendsList =
-                  await LocalDataService.addFriend(friend: friend);
+              if (!isFriendAdded &&
+                  friendSoshiUsername != databaseService.currSoshiUsername) {
+                List<String> newFriendsList =
+                    await LocalDataService.addFriend(friend: friend);
 
-              databaseService.overwriteFriendsList(newFriendsList);
+                databaseService.overwriteFriendsList(newFriendsList);
+              }
+
+              // bool friendHasTwoWaySharing =    *Two way sharing
+              //     await databaseService
+              //         .getTwoWaySharing(userData);
+              // if (friendHasTwoWaySharing == null ||
+              //     friendHasTwoWaySharing == true) {
+              //   // if user has two way sharing on, add self to user's friends list
+              //   databaseService.addFriend(
+              //       thisSoshiUsername: friendSoshiUsername,
+              //       friendSoshiUsername:
+              //           databaseService.currSoshiUsername);
+              // }
+
+              // Checking if Soshi points is injected
+              if (LocalDataService.getInjectionFlag("Soshi Points") == false ||
+                  LocalDataService.getInjectionFlag("Soshi Points") == null) {
+                LocalDataService.updateInjectionFlag("Soshi Points", true);
+                databaseService.updateInjectionSwitch(
+                    soshiUsername, "Soshi Points", true);
+              }
+              // Give 8 soshi points for every friend added
+              databaseService.updateSoshiPoints(soshiUsername, 8);
+              LocalDataService.updateSoshiPoints(8);
+
+              Analytics.logAddFriend(friendSoshiUsername);
+              setState(() {
+                isAdding = false;
+                isFriendAdded = true;
+              });
+              refreshFunction();
             }
-
-            // bool friendHasTwoWaySharing =    *Two way sharing
-            //     await databaseService
-            //         .getTwoWaySharing(userData);
-            // if (friendHasTwoWaySharing == null ||
-            //     friendHasTwoWaySharing == true) {
-            //   // if user has two way sharing on, add self to user's friends list
-            //   databaseService.addFriend(
-            //       thisSoshiUsername: friendSoshiUsername,
-            //       friendSoshiUsername:
-            //           databaseService.currSoshiUsername);
-            // }
-
-            // Checking if Soshi points is injected
-            if (LocalDataService.getInjectionFlag("Soshi Points") == false ||
-                LocalDataService.getInjectionFlag("Soshi Points") == null) {
-              LocalDataService.updateInjectionFlag("Soshi Points", true);
-              databaseService.updateInjectionSwitch(
-                  soshiUsername, "Soshi Points", true);
-            }
-            // Give 8 soshi points for every friend added
-            databaseService.updateSoshiPoints(soshiUsername, 8);
-            LocalDataService.updateSoshiPoints(8);
-
-            Analytics.logAddFriend(friendSoshiUsername);
-            setState(() {
-              isAdding = false;
-              isFriendAdded = true;
-            });
-            refreshFunction();
-          }
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(2.0),
-          child: Container(
-              height: height,
-              width: width,
-              child: Center(
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Container(
+                height: height / 40,
+                width: width / 1.7,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -680,27 +675,29 @@ class _AddFriendButtonState extends State<AddFriendButton> {
                                 "Friend Added",
                                 style: TextStyle(
                                     color: Colors.white,
-                                    fontFamily: "Montserrat",
+                                    fontFamily: GoogleFonts.inter().fontFamily,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: width / 10),
+                                    letterSpacing: 1.8,
+                                    fontSize: width / 22.5),
                               )
                             : Text(
                                 "Add Friend",
                                 style: TextStyle(
                                     color: Colors.white,
-                                    fontFamily: "Montserrat",
+                                    fontFamily: GoogleFonts.inter().fontFamily,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: width / 10),
+                                    letterSpacing: 1.8,
+                                    fontSize: width / 22.5),
                               ))
                   ],
-                ),
-              )),
-        ),
-        style: NeumorphicStyle(
-            shadowDarkColor: Colors.black12,
-            shadowLightColor: Colors.black12,
-            color: isFriendAdded ? Colors.black : Colors.grey,
-            boxShape:
-                NeumorphicBoxShape.roundRect(BorderRadius.circular(20.0))));
+                )),
+          ),
+          style: NeumorphicStyle(
+              shadowDarkColor: Colors.black,
+              shadowLightColor: Colors.black12,
+              color: isFriendAdded ? Colors.black : Colors.grey,
+              boxShape:
+                  NeumorphicBoxShape.roundRect(BorderRadius.circular(20.0)))),
+    );
   }
 }

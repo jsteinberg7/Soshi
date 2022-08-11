@@ -114,11 +114,11 @@ class _PassionTileListState extends State<PassionTileList> {
               pushAndUpdatePassions(index);
             },
             icon: Text(
-              '❓',
+              '➕',
               style: TextStyle(fontSize: 15),
             ),
             label: Text(
-              "Empty",
+              "Add",
               style: TextStyle(
                   color: Theme.of(context).brightness == Brightness.light
                       ? Colors.black

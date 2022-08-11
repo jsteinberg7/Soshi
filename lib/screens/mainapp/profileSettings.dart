@@ -96,7 +96,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                 "Done",
                 style: TextStyle(
                   color: Colors.blue,
-                  fontSize: width / 20,
+                  fontSize: width / 23,
                 ),
               ),
               onPressed: () {

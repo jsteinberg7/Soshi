@@ -23,7 +23,7 @@ class _NFCWriterState extends State<NFCWriter> {
     super.initState();
     this.height = widget.height;
     this.width = widget.width;
-    displayText = "Scanning for tags...";
+    displayText = "Searching for Soshi Portal...";
     animationUrl =
         "https://assets8.lottiefiles.com/packages/lf20_maxyrepx.json";
     ndefWrite();
@@ -35,7 +35,8 @@ class _NFCWriterState extends State<NFCWriter> {
       onDiscovered: (NfcTag tag) async {
         var ndef = Ndef.from(tag);
         if (ndef == null || !ndef.isWritable) {
-          NfcManager.instance.stopSession(errorMessage: ":(");
+          NfcManager.instance
+              .stopSession(errorMessage: "Please cancel and try again :(");
           return false;
         }
 
@@ -48,7 +49,7 @@ class _NFCWriterState extends State<NFCWriter> {
           await ndef.write(message);
 
           setState(() {
-            displayText = "Success!";
+            displayText = "Activated!";
             animationUrl =
                 "https://assets1.lottiefiles.com/packages/lf20_s2lryxtd.json";
           });
