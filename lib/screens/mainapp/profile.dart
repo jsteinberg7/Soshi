@@ -12,13 +12,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 
-import 'package:soshi/constants/constants.dart';
 import 'package:soshi/constants/popups.dart';
 import 'package:soshi/constants/utilities.dart';
 import 'package:soshi/constants/widgets.dart';
 import 'package:soshi/screens/mainapp/editHandles.dart';
 import 'package:soshi/screens/mainapp/passions.dart';
 import 'package:soshi/services/contacts.dart';
+import 'package:soshi/services/dataEngine.dart';
 import 'package:soshi/services/database.dart';
 import 'package:soshi/services/localData.dart';
 import 'package:soshi/services/url.dart';
@@ -33,38 +33,38 @@ A social media card used in the profile (one card per platform)
 */
 
 class SMTile extends StatefulWidget {
-  String platformName, soshiUsername;
-  SMTile({String platformName, String soshiUsername, Function refreshScreen}) {
-    this.platformName = platformName;
-    this.soshiUsername = soshiUsername;
-  }
-
+  SoshiUser user;
+  Social selectedSocial;
+  SMTile({@required this.user, @required this.selectedSocial});
   @override
   _SMTileState createState() => _SMTileState();
 }
 
 class _SMTileState extends State<SMTile> {
   DatabaseService databaseService;
-  String soshiUsername, platformName, hintText = "Username";
+  String platformName = "";
+  String hintText = "";
+
   // used to store local state of switch
   bool isSwitched;
   TextEditingController usernameController = new TextEditingController();
   FocusNode focusNode;
 
+  String soshiUsername;
+
   @override
   void initState() {
+    soshiUsername = widget.user.soshiUsername;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    soshiUsername = widget.soshiUsername;
-    platformName = widget.platformName;
+    platformName = widget.selectedSocial.platformName;
+
     if (platformName == "Phone") {
       hintText = "Phone Number";
-    } else if (platformName == "Linkedin" ||
-        platformName == "Facebook" ||
-        platformName == "Personal") {
+    } else if (["Linkedin", "Facebook", "Personal"].contains(platformName)) {
       hintText = "Link to Profile";
     } else if (platformName == "Cryptowallet") {
       hintText = "Wallet address";
@@ -72,10 +72,8 @@ class _SMTileState extends State<SMTile> {
       hintText = "Username";
     }
 
-    databaseService =
-        new DatabaseService(currSoshiUsernameIn: soshiUsername); // store ref to databaseService
-    isSwitched = LocalDataService.getLocalStateForPlatform(platformName) ??
-        false; // track state of platform switch
+    databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername); // store ref to databaseService
+    isSwitched = LocalDataService.getLocalStateForPlatform(platformName) ?? false; // track state of platform switch
     usernameController.text = LocalDataService.getLocalUsernameForPlatform(platformName) ?? null;
 
     if (platformName == "Contact") {
@@ -112,14 +110,10 @@ class _SMTileState extends State<SMTile> {
             Popups.platformSwitchesExplained(context);
           }
         }
-        // }
-
         String usernameControllerLower = usernameController.text.toLowerCase();
 
-        LocalDataService.updateUsernameForPlatform(
-            platform: platformName, username: usernameControllerLower.trim());
-        databaseService.updateUsernameForPlatform(
-            platform: platformName, username: usernameControllerLower.trim());
+        LocalDataService.updateUsernameForPlatform(platform: platformName, username: usernameControllerLower.trim());
+        databaseService.updateUsernameForPlatform(platform: platformName, username: usernameControllerLower.trim());
       }
     });
 
@@ -173,9 +167,11 @@ class _SMTileState extends State<SMTile> {
                   onPressed: () async {
                     if (platformName == "Contact") {
                       double width = Utilities.getWidth(context);
-                      String firstName = LocalDataService.getLocalFirstName();
-                      String lastName = LocalDataService.getLocalLastName();
-                      String photoUrl = LocalDataService.getLocalProfilePictureURL();
+
+                      String firstName = widget.user.firstName;
+                      String lastName = widget.user.lastName;
+                      String photoUrl = widget.user.photoURL;
+
                       Uint8List profilePicBytes;
                       try {
                         // try to load profile pic from url
@@ -184,8 +180,7 @@ class _SMTileState extends State<SMTile> {
                         });
                       } catch (e) {
                         // if url is invalid, use default profile pic
-                        ByteData data =
-                            await rootBundle.load("assets/images/SoshiLogos/soshi_icon.png");
+                        ByteData data = await rootBundle.load("assets/images/SoshiLogos/soshi_icon.png");
                         profilePicBytes = data.buffer.asUint8List();
                       }
                       Contact contact = new Contact(
@@ -193,14 +188,12 @@ class _SMTileState extends State<SMTile> {
                           familyName: lastName,
                           emails: [
                             Item(
-                              label: "Email",
-                              value: LocalDataService.getLocalUsernameForPlatform("Email"),
-                            ),
+                                label: "Email",
+                                // value: LocalDataService.getLocalUsernameForPlatform("Email"),
+                                value: widget.user.getUsernameGivenPlatform(platform: "Email")),
                           ],
                           phones: [
-                            Item(
-                                label: "Cell",
-                                value: LocalDataService.getLocalUsernameForPlatform("Phone")),
+                            Item(label: "Cell", value: widget.user.getUsernameGivenPlatform(platform: "Phone")),
                           ],
                           avatar: profilePicBytes);
                       await askPermissions(context);
@@ -209,23 +202,19 @@ class _SMTileState extends State<SMTile> {
                       });
                     } else if (platformName == "Cryptowallet") {
                       Clipboard.setData(ClipboardData(
-                        text:
-                            LocalDataService.getLocalUsernameForPlatform("Cryptowallet").toString(),
+                        text: widget.user.getUsernameGivenPlatform(platform: "Cryptowallet").toString(),
                       ));
+
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: const Text(
                           'Wallet address copied to clipboard!',
                           textAlign: TextAlign.center,
                         ),
                       ));
-
-                      // snackbar or popup that says:
-                      // "First name + last name's wallet address has been copied to clipboard"
-
                     } else {
                       URL.launchURL(URL.getPlatformURL(
                           platform: platformName,
-                          username: LocalDataService.getLocalUsernameForPlatform(platformName)));
+                          username: widget.user.getUsernameGivenPlatform(platform: platformName)));
                     }
                   },
                   iconSize: 60.0,
@@ -241,14 +230,19 @@ class _SMTileState extends State<SMTile> {
 
                       HapticFeedback.lightImpact();
 
-                      if (LocalDataService.getLocalUsernameForPlatform(platformName) == null ||
-                          LocalDataService.getLocalUsernameForPlatform(platformName) == "") {
-                        Popups.editUsernamePopup(context, soshiUsername, platformName,
-                            MediaQuery.of(context).size.width);
+                      if (widget.user.getUsernameGivenPlatform(platform: platformName) == null ||
+                          widget.user.getUsernameGivenPlatform(platform: platformName) == "") {
+                        Popups.editUsernamePopup(
+                            context, soshiUsername, platformName, MediaQuery.of(context).size.width);
                       }
-                      LocalDataService.updateSwitchForPlatform(
-                          platform: platformName, state: value);
-                      databaseService.updatePlatformSwitch(platform: platformName, state: value);
+
+                      widget.user.lookupSocial['platform'].switchStatus = value;
+                      // LocalDataService.updateSwitchForPlatform(platform: platformName, state: value);
+                      // databaseService.updatePlatformSwitch(platform: platformName, state: value);
+
+                      //{NOTE} Updating Firestore/local storage will occurr Asynchronously
+                      // DataEngine.applyUserChangesCloudAndLocal(widget.user);
+                      DataEngine.applyUserChanges(user: widget.user, cloud: true, local: true);
 
                       if (LocalDataService.getFirstSwitchTap()) {
                         LocalDataService.updateFirstSwitchTap(false);
@@ -271,8 +265,9 @@ A social media card used in the profile (one card per platform)
 
 class AddPlatformsTile extends StatefulWidget {
   ValueNotifier importProfileNotifier;
+  SoshiUser user;
 
-  AddPlatformsTile({@required this.importProfileNotifier});
+  AddPlatformsTile({@required this.importProfileNotifier, @required this.user});
 
   @override
   _AddPlatformsTileState createState() => _AddPlatformsTileState();
@@ -288,30 +283,14 @@ class _AddPlatformsTileState extends State<AddPlatformsTile> {
   Widget build(BuildContext context) {
     double height = Utilities.getHeight(context);
     double width = Utilities.getWidth(context);
+
     return NeumorphicButton(
       onPressed: () async {
-        if (Constants.originalPlatforms.length + Constants.addedPlatforms.length >
-            LocalDataService.getLocalChoosePlatforms().length +
-                LocalDataService.getLocalProfilePlatforms().length) {
-          // check which platforms need to be added
-          for (String platform in Constants.addedPlatforms) {
-            if (!LocalDataService.getLocalProfilePlatforms().contains(platform) &&
-                !LocalDataService.getLocalChoosePlatforms().contains(platform)) {
-              await LocalDataService.addToChoosePlatforms(
-                  platform); // add new platform to choose platforms
-              await LocalDataService.updateSwitchForPlatform(
-                  platform: platform,
-                  state: false); // create switch for platform in and initialize to false
-              if (LocalDataService.getLocalUsernameForPlatform(platform) == null) {
-                await LocalDataService.updateUsernameForPlatform(
-                    platform: platform,
-                    username: ""); // create username mapping for platform if absent
-              }
-            }
-          }
-        }
         await Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return Scaffold(body: ChooseSocials());
+          return Scaffold(
+              body: ChooseSocials(
+            user: widget.user,
+          ));
         })).then((value) {
           print("✅ Done editing profile, time to refresh the screen");
           widget.importProfileNotifier.notifyListeners();
@@ -354,66 +333,24 @@ class Profile extends StatefulWidget {
 }
 
 class ProfileState extends State<Profile> {
-  List verifiedUsers = [];
-  bool isVerified = false;
-  String soshiUsername = "";
-  List profilePlatforms = [];
-  DatabaseService databaseService = new DatabaseService();
-  TextEditingController profileBioController;
+  SoshiUser user;
+  List<Social> userSocials;
+  ValueNotifier controlsEditHandlesScreen = new ValueNotifier("CONTROL_EDIT_HANDLES");
 
-  double containerSize;
-  double soshiPointsButtonSpacing;
-
-  int bioChars;
-  double bioSpacing;
-  String bio;
-
-  loadLatestProfile() async {
-    profileBioController = TextEditingController(
-        text: LocalDataService.getBio() == null ? "" : LocalDataService.getBio().toString());
-
-    isVerified = verifiedUsers.contains(soshiUsername);
-    soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
-    databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
-    LocalDataService.updateVerifiedStatus(isVerified);
-    databaseService.updateVerifiedStatus(soshiUsername, isVerified);
-
-    profilePlatforms = await LocalDataService.getLocalProfilePlatformsSynced();
-    print("⚠⚠⚠⚠ profile Screen is being refreshed!");
-    // InjectionHander.checkInjections(soshiUsername, databaseService);
-    bio = LocalDataService.getBio();
-    profileBioController.text = LocalDataService.getBio();
+  loadDataEngine() async {
+    this.user = await DataEngine.getUserObject(firebaseOverride: false);
+    print(DataEngine.serializeUser(this.user));
+    this.userSocials = user.getChosenPlatforms();
   }
 
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-    if (bio == null || bio == "") {
-      bioSpacing = 90;
-
-      containerSize = 3.1;
-    } else {
-      bioChars = bio.length;
-      if (bioChars <= 25) {
-        bioSpacing = 50;
-        soshiPointsButtonSpacing = 100;
-        // {Messed with this sizing} change later to 3.0
-        containerSize = 0.8;
-      } else if (bioChars > 25 && bioChars <= 50) {
-        bioSpacing = 80;
-
-        containerSize = 2.7;
-      } else {
-        bioSpacing = 90;
-
-        containerSize = 2.6;
-      }
-    }
-
     print("height: ${height} ${width}");
+
     return FutureBuilder(
-        future: loadLatestProfile(),
+        future: loadDataEngine(),
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
             return Text("loading....");
@@ -433,11 +370,7 @@ class ProfileState extends State<Profile> {
                               width: width,
                               // height: height / containerSize,
                               height: MediaQuery.of(context).size.height / 2.3,
-                              child: Image.network(
-                                  (LocalDataService.getLocalProfilePictureURL() != "null"
-                                      ? LocalDataService.getLocalProfilePictureURL()
-                                      : "https://img.freepik.com/free-photo/abstract-luxury-plain-blur-grey-black-gradient-used-as-background-studio-wall-display-your-products_1258-58170.jpg?w=2000"),
-                                  fit: BoxFit.fill),
+                              child: Image.network(Defaults.defaultProfilePic, fit: BoxFit.fill),
                             ),
                             GlassmorphicContainer(
                               // height: height / containerSize,
@@ -448,33 +381,23 @@ class ProfileState extends State<Profile> {
                               alignment: Alignment.bottomCenter,
                               border: 2,
                               linearGradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    (Theme.of(context).brightness == Brightness.light
-                                            ? Colors.white
-                                            : Colors.black)
-                                        .withOpacity(0.8),
-                                    (Theme.of(context).brightness == Brightness.light
-                                            ? Colors.white
-                                            : Colors.black)
-                                        .withOpacity(0.4),
-                                  ],
-                                  stops: [
-                                    0.1,
-                                    1,
-                                  ]),
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  (Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black)
+                                      .withOpacity(0.8),
+                                  (Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black)
+                                      .withOpacity(0.4)
+                                ],
+                                stops: [0.1, 1],
+                              ),
                               borderGradient: LinearGradient(
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                                 colors: [
-                                  (Theme.of(context).brightness == Brightness.light
-                                          ? Colors.white
-                                          : Colors.black)
+                                  (Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black)
                                       .withOpacity(0.5),
-                                  (Theme.of(context).brightness == Brightness.light
-                                          ? Colors.white
-                                          : Colors.black)
+                                  (Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black)
                                       .withOpacity(0.5),
                                 ],
                               ),
@@ -486,11 +409,10 @@ class ProfileState extends State<Profile> {
                                   SafeArea(
                                     child: Container(
                                       // color: Colors.green,
-                                      height: height / containerSize,
+                                      // height: height / containerSize,
                                       width: width,
                                       child: Padding(
-                                        padding: EdgeInsets.fromLTRB(
-                                            width / 40, width / 40, width / 40, 0),
+                                        padding: EdgeInsets.fromLTRB(width / 40, width / 40, width / 40, 0),
                                         child: Column(
                                           children: [
                                             Row(
@@ -499,12 +421,6 @@ class ProfileState extends State<Profile> {
                                                 IconButton(
                                                     onPressed: () {
                                                       Scaffold.of(context).openDrawer();
-                                                      // Navigator.push(context,
-                                                      //     MaterialPageRoute(
-                                                      //         builder: (context) {
-                                                      //   return Scaffold(
-                                                      //       body: GeneralSettings());
-                                                      // }));
                                                     },
                                                     icon: Icon(CupertinoIcons.line_horizontal_3)),
                                                 Column(
@@ -513,9 +429,7 @@ class ProfileState extends State<Profile> {
                                                       width: width / 1.5,
                                                       child: Center(
                                                         child: AutoSizeText(
-                                                          LocalDataService.getLocalFirstName() +
-                                                              " " +
-                                                              LocalDataService.getLocalLastName(),
+                                                          user.firstName + " " + user.lastName,
                                                           maxLines: 1,
                                                           style: TextStyle(
                                                             fontWeight: FontWeight.bold,
@@ -525,23 +439,19 @@ class ProfileState extends State<Profile> {
                                                       ),
                                                     ),
                                                     Padding(
-                                                      padding: const EdgeInsets.only(
-                                                          top: 3.0, bottom: 2.0),
-                                                      child: SoshiUsernameText(soshiUsername,
-                                                          fontSize: width / 22,
-                                                          isVerified: isVerified),
+                                                      padding: const EdgeInsets.only(top: 3.0, bottom: 2.0),
+                                                      child: SoshiUsernameText(user.soshiUsername,
+                                                          fontSize: width / 22, isVerified: user.verified),
                                                     )
                                                   ],
                                                 ),
                                                 IconButton(
                                                     onPressed: () {
-                                                      Navigator.push(context,
-                                                          MaterialPageRoute(builder: (context) {
+                                                      Navigator.push(context, MaterialPageRoute(builder: (context) {
                                                         return Scaffold(
                                                             body: ProfileSettings(
-                                                                importProfileNotifier:
-                                                                    widget.importProfileNotifier,
-                                                                soshiUsername: soshiUsername));
+                                                                importProfileNotifier: widget.importProfileNotifier,
+                                                                soshiUsername: user.soshiUsername));
                                                       }));
                                                     },
                                                     icon: Icon(CupertinoIcons.pen)),
@@ -557,12 +467,8 @@ class ProfileState extends State<Profile> {
                                                 SizedBox(
                                                   width: width / 4,
                                                   child: Column(children: [
-                                                    Text(
-                                                        LocalDataService.getFriendsListCount()
-                                                            .toString(),
-                                                        style: TextStyle(
-                                                            letterSpacing: 1.2,
-                                                            fontSize: width / 25)),
+                                                    Text(LocalDataService.getFriendsListCount().toString(),
+                                                        style: TextStyle(letterSpacing: 1.2, fontSize: width / 25)),
                                                     LocalDataService.getFriendsListCount() == 1
                                                         ? Text(
                                                             "Friend",
@@ -572,41 +478,30 @@ class ProfileState extends State<Profile> {
                                                                 fontSize: width / 25),
                                                           )
                                                         : Text("Friends",
-                                                            style: TextStyle(
-                                                                letterSpacing: 1.2,
-                                                                fontSize: width / 25)),
+                                                            style: TextStyle(letterSpacing: 1.2, fontSize: width / 25)),
                                                   ]),
                                                 ),
                                                 ProfilePic(
-                                                    radius: 55,
-                                                    url: LocalDataService
-                                                        .getLocalProfilePictureURL()),
+                                                    radius: 55, url: LocalDataService.getLocalProfilePictureURL()),
                                                 SizedBox(
                                                   width: width / 4,
                                                   child: GestureDetector(
                                                     onTap: () {
-                                                      Popups.soshiPointsExplainedPopup(
-                                                          context, width, height);
+                                                      Popups.soshiPointsExplainedPopup(context, width, height);
                                                     },
                                                     child: Column(children: [
-                                                      Text(
-                                                          LocalDataService.getSoshiPoints()
-                                                              .toString(),
-                                                          style: TextStyle(
-                                                              letterSpacing: 1.2,
-                                                              fontSize: width / 25)),
+                                                      Text(LocalDataService.getSoshiPoints().toString(),
+                                                          style: TextStyle(letterSpacing: 1.2, fontSize: width / 25)),
                                                       Row(
                                                         mainAxisAlignment: MainAxisAlignment.center,
                                                         children: [
                                                           LocalDataService.getSoshiPoints() == 1
                                                               ? Text("Bolt",
                                                                   style: TextStyle(
-                                                                      letterSpacing: 1.2,
-                                                                      fontSize: width / 25))
+                                                                      letterSpacing: 1.2, fontSize: width / 25))
                                                               : Text("Bolts",
                                                                   style: TextStyle(
-                                                                      letterSpacing: 1.2,
-                                                                      fontSize: width / 25)),
+                                                                      letterSpacing: 1.2, fontSize: width / 25)),
                                                           Padding(
                                                             padding: const EdgeInsets.only(left: 2),
                                                             child: IconButton(
@@ -620,8 +515,7 @@ class ProfileState extends State<Profile> {
                                                                   maxWidth: width / 28,
                                                                   minHeight: 0,
                                                                   minWidth: 0),
-                                                              icon: Icon(CupertinoIcons.info_circle,
-                                                                  size: width / 28),
+                                                              icon: Icon(CupertinoIcons.info_circle, size: width / 28),
                                                             ),
                                                           )
                                                         ],
@@ -633,9 +527,8 @@ class ProfileState extends State<Profile> {
                                             ),
                                             //SizedBox(height: height / 1),
                                             Padding(
-                                                padding: EdgeInsets.fromLTRB(
-                                                    width / 5, height / bioSpacing, width / 5, 0),
-                                                child: bio == "" || bio == null
+                                                padding: EdgeInsets.fromLTRB(width / 5, height / 3, width / 5, 0),
+                                                child: user.bio == "" || user.bio == null
                                                     ? Container()
                                                     : Container(
                                                         child: //Padding(
@@ -647,14 +540,11 @@ class ProfileState extends State<Profile> {
                                                           textAlign: TextAlign.center,
                                                         ),
                                                       )),
-                                            //SoshiPointsButton(height, width),
+
                                             Padding(
                                               padding: const EdgeInsets.fromLTRB(0, 5, 10, 0),
                                               child: PassionTileList(),
                                             ),
-                                            // Row(
-                                            //   children: [Icon(Icons.abc, size: 50)],
-                                            // )
                                           ],
                                         ),
                                       ),
@@ -675,9 +565,8 @@ class ProfileState extends State<Profile> {
                             decoration: BoxDecoration(
                                 color: Theme.of(context).scaffoldBackgroundColor,
                                 // color: Colors.blue,
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(20.0),
-                                    topRight: Radius.circular(20.0))),
+                                borderRadius:
+                                    BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
                             child: Padding(
                               padding: EdgeInsets.fromLTRB(width / 35, height / 150, width / 35, 0),
                               child: Column(
@@ -690,27 +579,27 @@ class ProfileState extends State<Profile> {
                                         padding: EdgeInsets.only(left: width / 40),
                                         child: Text(
                                           "Socials",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold, fontSize: width / 17),
+                                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: width / 17),
                                         ),
                                       ),
                                       IconButton(
                                         icon: Icon(CupertinoIcons.pencil_ellipsis_rectangle),
-                                        onPressed: () {
-                                          Navigator.push(context,
-                                              MaterialPageRoute(builder: (context) {
+                                        onPressed: () async {
+                                          Navigator.push(context, MaterialPageRoute(builder: (context) {
                                             return Scaffold(
-                                                body: EditHandles(
-                                              soshiUsername: soshiUsername,
-                                            ));
+                                                body: ValueListenableBuilder(
+                                                    valueListenable: this.controlsEditHandlesScreen,
+                                                    builder: (context, value, _) {
+                                                      return EditHandles(
+                                                          editHandleMasterControl: controlsEditHandlesScreen,
+                                                          profileMasterControl: widget.importProfileNotifier);
+                                                    }));
                                           }));
                                         },
                                       )
                                     ],
                                   ),
                                   Container(
-                                    //decoration: BoxDecoration(color: Colors.green),
-                                    // color: Colors.red,
                                     child: Align(
                                       alignment: Alignment.topCenter,
                                       child: GridView.builder(
@@ -721,20 +610,14 @@ class ProfileState extends State<Profile> {
                                         itemBuilder: (BuildContext context, int index) {
                                           return Padding(
                                               padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                                              child: index != profilePlatforms.length
-                                                  ? SMTile(
-                                                      platformName: profilePlatforms[index],
-                                                      soshiUsername: soshiUsername)
+                                              child: index != userSocials.length
+                                                  ? SMTile(user: user, selectedSocial: userSocials[index])
                                                   : AddPlatformsTile(
-                                                      importProfileNotifier:
-                                                          widget.importProfileNotifier,
-                                                    ));
+                                                      importProfileNotifier: widget.importProfileNotifier, user: user));
                                         },
-                                        itemCount: profilePlatforms.length + 1,
+                                        itemCount: userSocials.length,
                                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: 3,
-                                            childAspectRatio: .8,
-                                            crossAxisSpacing: width / 40),
+                                            crossAxisCount: 3, childAspectRatio: .8, crossAxisSpacing: width / 40),
                                       ),
                                     ),
                                   ),
@@ -798,8 +681,7 @@ class _BioTextFieldState extends State<BioTextField> {
 
             // Checking if this is first time adding a bio
             // if it is, it gives Soshi points
-            if (LocalDataService.getInjectionFlag("Bio") == false ||
-                LocalDataService.getInjectionFlag("Bio") == null) {
+            if (LocalDataService.getInjectionFlag("Bio") == false || LocalDataService.getInjectionFlag("Bio") == null) {
               LocalDataService.updateInjectionFlag("Bio", true);
               tempDB.updateInjectionSwitch(soshiUsername, "Bio", true);
 

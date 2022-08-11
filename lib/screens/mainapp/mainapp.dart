@@ -1,10 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nfc_manager/nfc_manager.dart';
+// import 'package:nfc_manager/nfc_manager.dart';
 import 'package:soshi/constants/utilities.dart';
 import 'package:soshi/screens/mainapp/friendsGroupsWrapper.dart';
 import 'package:soshi/screens/mainapp/profile.dart';
@@ -12,7 +11,6 @@ import 'package:soshi/screens/mainapp/qrCode.dart';
 import 'package:soshi/services/database.dart';
 import 'package:soshi/services/dynamicLinks.dart';
 import 'package:soshi/services/localData.dart';
-import '../../constants/popups.dart';
 import '../../constants/widgets.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
@@ -62,23 +60,6 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     print(">> calling from init");
     DynamicLinkService.retrieveDynamicLink(context);
-    // Check availability
-
-// Start Session
-
-    NfcManager.instance.startSession(
-      onDiscovered: (NfcTag tag) async {
-        var link = AsciiCodec().decode(Ndef.from(tag).cachedMessage.records.last.payload);
-        String username = link.toString().split("/").last;
-
-        try {
-          await Popups.showUserProfilePopupNew(context,
-              friendSoshiUsername: username, refreshScreen: () {});
-        } catch (e) {
-          print(e);
-        }
-      },
-    );
   }
 
   @override
@@ -135,10 +116,7 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
 
 class LatestBottomNavBar extends StatelessWidget {
   const LatestBottomNavBar(
-      {Key key,
-      @required this.currScreen,
-      @required this.pageController,
-      @required this.importNotifier})
+      {Key key, @required this.currScreen, @required this.pageController, @required this.importNotifier})
       : super(key: key);
 
   final int currScreen;
@@ -154,8 +132,7 @@ class LatestBottomNavBar extends StatelessWidget {
         scaleFactor: .05,
         elevation: 5,
         iconSize: Utilities.getWidth(context) / 10,
-        selectedColor:
-            Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+        selectedColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
         strokeColor: Colors.transparent,
         unSelectedColor: Colors.grey,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -166,8 +143,7 @@ class LatestBottomNavBar extends StatelessWidget {
               size: 35,
             ),
           ),
-          CustomNavigationBarItem(
-              icon: ProfilePic(radius: 25, url: LocalDataService.getLocalProfilePictureURL())),
+          CustomNavigationBarItem(icon: ProfilePic(radius: 25, url: LocalDataService.getLocalProfilePictureURL())),
           CustomNavigationBarItem(
             icon: Icon(
               AntDesign.contacts,
