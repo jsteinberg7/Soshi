@@ -13,9 +13,6 @@ class DataEngine {
   static bool initializedStatus = false;
 
   static initialize(String soshiUsername) {
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // await prefs.setString("userObject", jsonEncode({}));
-    // await prefs.remove("userObject");
     DataEngine.soshiUsername = soshiUsername;
 
     log("[⚙ Data Engine ⚙] successfully initialzed with username: ${soshiUsername} ✅");
@@ -35,7 +32,7 @@ class DataEngine {
       'Bio': user.bio,
       'Soshi Points': user.soshiPoints,
       'Verified': user.verified,
-      'Passions': user.passsions,
+      'Passions': serializePassions,
       'Choose Platforms': user.getAvailablePlatforms().map((e) => e.platformName).toList(),
       'Profile Platforms': user.getChosenPlatforms().map((e) => e.platformName).toList()
     };
@@ -79,6 +76,8 @@ class DataEngine {
         "https://img.freepik.com/free-photo/abstract-luxury-plain-blur-grey-black-gradient-used-as-background-studio-wall-display-your-products_1258-58170.jpg?w=2000";
     bool Verified = fetch['Verified'] ?? false;
     List<Passion> passions = [];
+
+    // //remove socials array
     List<Social> socials = [];
     Map<String, Social> lookupSocial = {};
     int soshiPoints = fetch['Soshi Points'] ?? 0;
@@ -133,7 +132,7 @@ class DataEngine {
 
   // }
 
-  static applyUserChanges({@required SoshiUser user, @required bool cloud, @required local}) async {
+  static applyUserChanges({@required SoshiUser user, @required bool cloud, @required bool local}) async {
     // {!} These tasks can happen asynchronously to save time!
     if (cloud || local) {
       Map afterSerialized = serializeUser(user);
@@ -146,7 +145,7 @@ class DataEngine {
       }
 
       if (cloud) {
-        await FirebaseFirestore.instance.collection("Users").doc(soshiUsername).set(afterSerialized);
+        await FirebaseFirestore.instance.collection("users").doc(soshiUsername).set(afterSerialized);
         log("[⚙ Data Engine ⚙] update Cloud {Firestore} success! ✅");
       }
     }
@@ -165,6 +164,7 @@ class SoshiUser {
   int soshiPoints;
   List friends;
   Map<String, Social> lookupSocial;
+  // List<Friend> friends;
 
   SoshiUser(
       {@required this.soshiUsername,

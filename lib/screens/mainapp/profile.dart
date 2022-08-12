@@ -237,8 +237,6 @@ class _SMTileState extends State<SMTile> {
                       }
 
                       widget.user.lookupSocial['platform'].switchStatus = value;
-                      // LocalDataService.updateSwitchForPlatform(platform: platformName, state: value);
-                      // databaseService.updatePlatformSwitch(platform: platformName, state: value);
 
                       //{NOTE} Updating Firestore/local storage will occurr Asynchronously
                       // DataEngine.applyUserChangesCloudAndLocal(widget.user);
