@@ -136,7 +136,7 @@ class _SMTileState extends State<SMTile> {
     return Neumorphic(
       style: NeumorphicStyle(
           depth: 1,
-          // shadowLightColor: Colors.cyan[300],
+          //shadowLightColor: Colors.cyan[300],
           color: Theme.of(context).cardColor,
           shape: NeumorphicShape.concave,
           boxShape: NeumorphicBoxShape.roundRect(
@@ -198,7 +198,8 @@ class _SMTileState extends State<SMTile> {
                           avatar: profilePicBytes);
                       await askPermissions(context);
                       ContactsService.addContact(contact).then((dynamic success) {
-                        Popups.showContactAddedPopup(context, width, firstName, lastName);
+                        Popups.showContactAddedPopup(
+                            context, width, photoUrl, firstName, lastName, "phoneNumber", "email");
                       });
                     } else if (platformName == "Cryptowallet") {
                       Clipboard.setData(ClipboardData(
@@ -222,7 +223,7 @@ class _SMTileState extends State<SMTile> {
                 CupertinoSwitch(
                     thumbColor: Colors.white,
                     value: isSwitched,
-                    activeColor: Colors.black,
+                    activeColor: Colors.cyan,
                     onChanged: (bool value) {
                       setState(() {
                         isSwitched = value;
@@ -290,7 +291,7 @@ class _AddPlatformsTileState extends State<AddPlatformsTile> {
             user: widget.user,
           ));
         })).then((value) {
-          print("✅ Done editing profile, time to refresh the screen");
+          print("✅ Done adding socials to profile, time to refresh the screen");
           widget.importProfileNotifier.notifyListeners();
         });
       },
@@ -347,6 +348,10 @@ class ProfileState extends State<Profile> {
     var width = MediaQuery.of(context).size.width;
     print("height: ${height} ${width}");
 
+    //     containerSize = 2.7;
+    //   } else {
+    //     bioSpacing = 90;
+
     return FutureBuilder(
         future: loadDataEngine(),
         builder: (context, snapshot) {
@@ -355,7 +360,7 @@ class ProfileState extends State<Profile> {
           } else {
             return SingleChildScrollView(
               child: Container(
-                  height: MediaQuery.of(context).size.height * 2.0,
+                  height: height * 3,
                   child: Stack(
                     children: [
                       Positioned(
@@ -480,7 +485,8 @@ class ProfileState extends State<Profile> {
                                                   ]),
                                                 ),
                                                 ProfilePic(
-                                                    radius: 55, url: LocalDataService.getLocalProfilePictureURL()),
+                                                    radius: width / 6.5,
+                                                    url: LocalDataService.getLocalProfilePictureURL()),
                                                 SizedBox(
                                                   width: width / 4,
                                                   child: GestureDetector(
@@ -489,7 +495,10 @@ class ProfileState extends State<Profile> {
                                                     },
                                                     child: Column(children: [
                                                       Text(LocalDataService.getSoshiPoints().toString(),
-                                                          style: TextStyle(letterSpacing: 1.2, fontSize: width / 25)),
+                                                          style: TextStyle(
+                                                              letterSpacing: 1.2,
+                                                              fontSize: width / 25,
+                                                              fontWeight: FontWeight.bold)),
                                                       Row(
                                                         mainAxisAlignment: MainAxisAlignment.center,
                                                         children: [
@@ -535,14 +544,17 @@ class ProfileState extends State<Profile> {
                                                             AutoSizeText(
                                                           LocalDataService.getBio(),
                                                           maxLines: 3,
+                                                          minFontSize: 17,
                                                           textAlign: TextAlign.center,
                                                         ),
                                                       )),
 
-                                            Padding(
-                                              padding: const EdgeInsets.fromLTRB(0, 5, 10, 0),
-                                              child: PassionTileList(),
-                                            ),
+                                            // Padding(
+                                            //   padding:
+                                            //       const EdgeInsets.fromLTRB(
+                                            //           0, 5, 10, 0),
+                                            //   child: PassionTileList(),
+                                            // ),
                                           ],
                                         ),
                                       ),
@@ -568,8 +580,20 @@ class ProfileState extends State<Profile> {
                             child: Padding(
                               padding: EdgeInsets.fromLTRB(width / 35, height / 150, width / 35, 0),
                               child: Column(
-                                mainAxisSize: MainAxisSize.min,
+                                //mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(left: width / 40),
+                                    child: Text(
+                                      "Passions",
+                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: width / 17),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: height / 100,
+                                  ),
+                                  PassionTileList(),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [

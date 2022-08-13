@@ -82,8 +82,10 @@ class _PassionTileListState extends State<PassionTileList> {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString("passions", jsonEncode(passionsThree));
         // await LocalDataService.updatePassions(passionsThree);
-        String soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
-        DatabaseService dbService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
+        String soshiUsername =
+            LocalDataService.getLocalUsernameForPlatform("Soshi");
+        DatabaseService dbService =
+            new DatabaseService(currSoshiUsernameIn: soshiUsername);
         await dbService.updateUserPassions(soshiUsername, passionsThree);
         setState(() {});
       }
@@ -112,12 +114,16 @@ class _PassionTileListState extends State<PassionTileList> {
               pushAndUpdatePassions(index);
             },
             icon: Text(
-              '❓',
+              '➕',
               style: TextStyle(fontSize: 15),
             ),
             label: Text(
-              "Empty",
-              style: TextStyle(fontSize: 15),
+              "Add",
+              style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.black
+                      : Colors.white,
+                  fontSize: 15),
             ));
   }
 }

@@ -25,8 +25,10 @@ class _GeneralSettingsState extends State<GeneralSettings> {
     double height = Utilities.getHeight(context);
     double width = Utilities.getWidth(context);
 
-    String soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
-    DatabaseService dbService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
+    String soshiUsername =
+        LocalDataService.getLocalUsernameForPlatform("Soshi");
+    DatabaseService dbService =
+        new DatabaseService(currSoshiUsernameIn: soshiUsername);
 
     bool isVerified = LocalDataService.getVerifiedStatus();
 
@@ -52,7 +54,8 @@ class _GeneralSettingsState extends State<GeneralSettings> {
           Padding(
             padding: EdgeInsets.only(right: width / 150),
             child: TextButton(
-              style: ButtonStyle(overlayColor: MaterialStateProperty.all(Colors.transparent)),
+              style: ButtonStyle(
+                  overlayColor: MaterialStateProperty.all(Colors.transparent)),
               child: Text(
                 "Done",
                 style: TextStyle(color: Colors.blue, fontSize: width / 23),
@@ -63,7 +66,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
             ),
           )
         ],
-        elevation: 0,
+        elevation: .5,
 
         // backgroundColor: Colors.grey[850],
         centerTitle: false,
@@ -77,7 +80,8 @@ class _GeneralSettingsState extends State<GeneralSettings> {
               //top: 20,
               //left: 30,
               child: ProfilePic(
-                  radius: height / 17, url: LocalDataService.getLocalProfilePictureURL()),
+                  radius: height / 17,
+                  url: LocalDataService.getLocalProfilePictureURL()),
             ),
             Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,22 +116,27 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                         child: Divider(
                             indent: 0,
                             endIndent: 0,
-                            color: Theme.of(context).brightness == Brightness.light
-                                ? Colors.black
-                                : Colors.white),
+                            color:
+                                Theme.of(context).brightness == Brightness.light
+                                    ? Colors.black
+                                    : Colors.white),
                       ),
                       GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
                             return Scaffold(
                                 body: ProfileSettings(
-                              soshiUsername: LocalDataService.getLocalUsernameForPlatform("Soshi"),
+                              soshiUsername:
+                                  LocalDataService.getLocalUsernameForPlatform(
+                                      "Soshi"),
                             ));
                           }));
                         },
                         child: Padding(
-                          padding: EdgeInsets.fromLTRB(0, height / 100, 0, height / 80),
+                          padding: EdgeInsets.fromLTRB(
+                              0, height / 100, 0, height / 80),
                           child: Row(
                               //mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
@@ -146,7 +155,8 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                           URL.launchURL("sms:" + "5713351885");
                         },
                         child: Padding(
-                          padding: EdgeInsets.fromLTRB(0, height / 60, 0, height / 80),
+                          padding: EdgeInsets.fromLTRB(
+                              0, height / 60, 0, height / 80),
                           child: Row(
                               //mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
@@ -164,10 +174,12 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                         onTap: () {
                           final InAppReview inAppReview = InAppReview.instance;
 
-                          inAppReview.openStoreListing(appStoreId: '1595515750');
+                          inAppReview.openStoreListing(
+                              appStoreId: '1595515750');
                         },
                         child: Padding(
-                          padding: EdgeInsets.fromLTRB(0, height / 60, 0, height / 80),
+                          padding: EdgeInsets.fromLTRB(
+                              0, height / 60, 0, height / 80),
                           child: Row(
                               //mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
@@ -183,12 +195,14 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                       GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
                             return Scaffold(body: ResetPassword());
                           }));
                         },
                         child: Padding(
-                          padding: EdgeInsets.fromLTRB(0, height / 60, 0, height / 80),
+                          padding: EdgeInsets.fromLTRB(
+                              0, height / 60, 0, height / 80),
                           child: Row(
                               //mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
@@ -214,65 +228,90 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                       onPressed: () {
                         AuthService authService = new AuthService();
 
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(40.0))),
-                                // backgroundColor: Colors.blueGrey[900],
-                                title: Text(
-                                  "Sign Out",
-                                  style: TextStyle(
-                                    // color: Colors.cyan[600],
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                content: Text(
-                                  ("Are you sure you want to sign out?"),
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    // color: Colors.cyan[700],
-                                    // fontWeight: FontWeight.bold
-                                  ),
-                                ),
-                                actions: <Widget>[
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    children: <Widget>[
-                                      TextButton(
-                                        child: Text(
-                                          'No',
-                                          style: TextStyle(fontSize: 20, color: Colors.red),
-                                        ),
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                      TextButton(
-                                        child: Text(
-                                          'Yes',
-                                          style: TextStyle(fontSize: 20, color: Colors.blue),
-                                        ),
-                                        onPressed: () async {
-                                          await authService.signOut();
-                                          Navigator.pop(context); // close popup
-                                          // Navigator.pop(context); // pop to login screen
-                                          //        Navigator.push(
-                                          //   context,
-                                          //   MaterialPageRoute(builder: (context) => MainApp()),
-                                          // );
-                                          Navigator.pushReplacement(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: ((context) => NewIntroFlow())));
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              );
-                            });
+                        CustomAlertDialog.showCustomAlertDialog(
+                            "Sign out",
+                            "Are you sure you want to sign out?",
+                            "Yes",
+                            "No", () async {
+                          await authService.signOut();
+                          Navigator.pop(context); // close popup
+                          // Navigator.pop(context); // pop to login screen
+                          //        Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(builder: (context) => MainApp()),
+                          // );
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: ((context) => NewIntroFlow())));
+                        }, () {
+                          Navigator.pop(context);
+                        }, context);
+
+                        // showDialog(
+                        //     context: context,
+                        //     builder: (BuildContext context) {
+                        //       return AlertDialog(
+                        //         shape: RoundedRectangleBorder(
+                        //             borderRadius: BorderRadius.all(
+                        //                 Radius.circular(40.0))),
+                        //         // backgroundColor: Colors.blueGrey[900],
+                        //         title: Text(
+                        //           "Sign Out",
+                        //           style: TextStyle(
+                        //             // color: Colors.cyan[600],
+                        //             fontWeight: FontWeight.bold,
+                        //           ),
+                        //         ),
+                        //         content: Text(
+                        //           ("Are you sure you want to sign out?"),
+                        //           style: TextStyle(
+                        //             fontSize: 20,
+                        //             // color: Colors.cyan[700],
+                        //             // fontWeight: FontWeight.bold
+                        //           ),
+                        //         ),
+                        //         actions: <Widget>[
+                        //           Row(
+                        //             mainAxisAlignment:
+                        //                 MainAxisAlignment.spaceEvenly,
+                        //             children: <Widget>[
+                        //               TextButton(
+                        //                 child: Text(
+                        //                   'No',
+                        //                   style: TextStyle(
+                        //                       fontSize: 20, color: Colors.red),
+                        //                 ),
+                        //                 onPressed: () {
+                        //                   Navigator.pop(context);
+                        //                 },
+                        //               ),
+                        //               TextButton(
+                        //                 child: Text(
+                        //                   'Yes',
+                        //                   style: TextStyle(
+                        //                       fontSize: 20, color: Colors.blue),
+                        //                 ),
+                        //                 onPressed: () async {
+                        //                   await authService.signOut();
+                        //                   Navigator.pop(context); // close popup
+                        //                   // Navigator.pop(context); // pop to login screen
+                        //                   //        Navigator.push(
+                        //                   //   context,
+                        //                   //   MaterialPageRoute(builder: (context) => MainApp()),
+                        //                   // );
+                        //                   Navigator.pushReplacement(
+                        //                       context,
+                        //                       MaterialPageRoute(
+                        //                           builder: ((context) =>
+                        //                               NewIntroFlow())));
+                        //                 },
+                        //               ),
+                        //             ],
+                        //           ),
+                        //         ],
+                        //       );
+                        //     });
                       },
                       label: Text(
                         "Sign out",

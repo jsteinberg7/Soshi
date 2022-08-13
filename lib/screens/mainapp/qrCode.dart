@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:nfc_manager/nfc_manager.dart';
 
 import 'package:soshi/constants/popups.dart';
 import 'package:soshi/constants/utilities.dart';
@@ -33,8 +34,28 @@ class _NewQRScreenState extends State<NewQRScreen> {
   Widget build(BuildContext context) {
     double height = Utilities.getHeight(context);
     double width = Utilities.getWidth(context);
+
     return Scaffold(
       appBar: AppBar(
+        leading: GestureDetector(
+          onTap: () {},
+        ),
+        actions: [
+          GestureDetector(
+            onTap: () {
+              NFCWriter(height, width);
+            },
+            child: Image.asset(
+              "assets/images/misc/NFCLogo.png",
+              //height: 50,
+              width: 25,
+            ),
+          ),
+          SizedBox(
+            width: width / 35,
+          )
+        ],
+
         elevation: 0,
         title: Image.asset(
           "assets/images/SoshiLogos/SoshiBubbleLogo.png",

@@ -47,7 +47,7 @@ class ProfilePic extends StatelessWidget {
         placeHolder: (b, c) {
           return Image.asset('assets/images/misc/default_pic.png');
         },
-        borderColor: Colors.black,
+        borderColor: Colors.white,
         borderWidth: radius / 40,
         elevation: 0,
         radius: radius,
@@ -137,7 +137,7 @@ class CustomAlertDialog {
         builder: (BuildContext context) {
           return AlertDialog(
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30.0))),
-            backgroundColor: Colors.grey.shade800,
+            //backgroundColor: Colors.grey.shade800,
             // backgroundColor: Colors.blueGrey[900],
             title: Text(
               title,
@@ -169,7 +169,9 @@ class CustomAlertDialog {
                 TextButton(
                     child: Text(
                       secondaryText,
-                      style: TextStyle(fontSize: 16, color: Colors.white),
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white),
                     ),
                     onPressed: secondaryAction),
               ],
@@ -955,21 +957,37 @@ class SoshiAppBar extends StatelessWidget {
 }
 
 class PassionBubble extends StatelessWidget {
-  String passion;
+  String passionString;
+  String passionEmoji;
 
-  PassionBubble(this.passion);
+  PassionBubble(this.passionEmoji, this.passionString);
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+
     return Container(
         decoration: BoxDecoration(
-            border: Border.all(
-              color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
-            ),
-            borderRadius: BorderRadius.circular(20.0)),
+            color: Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black,
+            borderRadius: BorderRadius.circular(10.0)),
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(passion, style: TextStyle(fontSize: 12)),
+          padding: const EdgeInsets.fromLTRB(8, 2, 8, 5),
+          child: Container(
+            child: Text(
+              passionEmoji + passionString,
+              style: TextStyle(fontSize: width / 25),
+            ),
+          ),
+          // child: Container(
+          //   width: width / 4.5,
+          //   height: height / 30,
+          //   decoration: BoxDecoration(color: Colors.blue),
+          //   child: AutoSizeText(
+          //     passionEmoji + passionString,
+          //     // style: TextStyle(fontSize: width / 28),
+          //   ),
+          // ),
         ));
   }
 }
@@ -1052,7 +1070,7 @@ class SMButton extends StatelessWidget {
 
           DialogBuilder(context).hideOpenDialog();
 
-          Popups.showContactAddedPopup(context, width, firstName, lastName);
+          Popups.showContactAddedPopup(context, width, photoUrl, firstName, lastName, phoneNumber, email);
 
           //ContactsService.openContactForm();
           // ContactsService.addContact(newContact).then((dynamic success) {

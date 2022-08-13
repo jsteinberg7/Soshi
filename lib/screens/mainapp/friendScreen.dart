@@ -515,8 +515,7 @@ class _FriendScreenState extends State<FriendScreen>
         currSoshiUsernameIn:
             LocalDataService.getLocalUsernameForPlatform("Soshi"));
 
-    String soshiUsername =
-        LocalDataService.getLocalUsernameForPlatform("Soshi");
+    String soshiUsername = LocalDataService.getLocalUsername();
 
     // These are used to reset the flag (testing cases)
     // LocalDataService.updateInjectionFlag("Soshi Points", false);
@@ -545,43 +544,43 @@ class _FriendScreenState extends State<FriendScreen>
       databaseService.updateSoshiPoints(soshiUsername, (numFriends * 8));
     }
 
-    bool profilePicFlagInjection =
-        LocalDataService.getInjectionFlag("Profile Pic");
-    print(profilePicFlagInjection.toString());
+    // bool profilePicFlagInjection =
+    //     LocalDataService.getInjectionFlag("Profile Pic");
+    // print(profilePicFlagInjection.toString());
 
-    if (profilePicFlagInjection == false || profilePicFlagInjection == null) {
-      if (LocalDataService.getLocalProfilePictureURL() != "null") {
-        LocalDataService.updateInjectionFlag("Profile Pic", true);
-        databaseService.updateInjectionSwitch(
-            soshiUsername, "Profile Pic", true);
-        LocalDataService.updateSoshiPoints(10);
+    // if (profilePicFlagInjection == false || profilePicFlagInjection == null) {
+    //   if (LocalDataService.getLocalProfilePictureURL() != "null") {
+    //     LocalDataService.updateInjectionFlag("Profile Pic", true);
+    //     databaseService.updateInjectionSwitch(
+    //         soshiUsername, "Profile Pic", true);
+    //     LocalDataService.updateSoshiPoints(10);
 
-        databaseService.updateSoshiPoints(soshiUsername, 10);
-      } else {
-        LocalDataService.updateInjectionFlag("Profile Pic", false);
-        databaseService.updateInjectionSwitch(
-            soshiUsername, "Profile Pic", false);
-      }
-    }
+    //     databaseService.updateSoshiPoints(soshiUsername, 10);
+    //   } else {
+    //     LocalDataService.updateInjectionFlag("Profile Pic", false);
+    //     databaseService.updateInjectionSwitch(
+    //         soshiUsername, "Profile Pic", false);
+    //   }
+    // }
 
-    bool bioFlagInjection = LocalDataService.getInjectionFlag("Bio");
-    if (bioFlagInjection == false || bioFlagInjection == null) {
-      if (LocalDataService.getBio() != "" ||
-          LocalDataService.getBio() == null) {
-        LocalDataService.updateInjectionFlag("Bio", true);
-        databaseService.updateInjectionSwitch(soshiUsername, "Bio", true);
-        LocalDataService.updateSoshiPoints(10);
+    // bool bioFlagInjection = LocalDataService.getInjectionFlag("Bio");
+    // if (bioFlagInjection == false || bioFlagInjection == null) {
+    //   if (LocalDataService.getBio() != "" ||
+    //       LocalDataService.getBio() == null) {
+    //     LocalDataService.updateInjectionFlag("Bio", true);
+    //     databaseService.updateInjectionSwitch(soshiUsername, "Bio", true);
+    //     LocalDataService.updateSoshiPoints(10);
 
-        databaseService.updateSoshiPoints(soshiUsername, 10);
-      } else {
-        LocalDataService.updateInjectionFlag("Bio", false);
-        databaseService.updateInjectionSwitch(soshiUsername, "Bio", false);
-      }
-    }
+    //     databaseService.updateSoshiPoints(soshiUsername, 10);
+    //   } else {
+    //     LocalDataService.updateInjectionFlag("Bio", false);
+    //     databaseService.updateInjectionSwitch(soshiUsername, "Bio", false);
+    //   }
+    // }
 
-    // For now, just injecting passions flag field
-    LocalDataService.updateInjectionFlag("Passions", false);
-    databaseService.updateInjectionSwitch(soshiUsername, "Passions", false);
+    // // For now, just injecting passions flag field
+    // LocalDataService.updateInjectionFlag("Passions", false);
+    // databaseService.updateInjectionSwitch(soshiUsername, "Passions", false);
 
     //       bool passionsFlagInjection =
     //     LocalDataService.getLocalStateForInjectionFlag("Passions");
@@ -710,7 +709,9 @@ class _FriendScreenState extends State<FriendScreen>
                                                     url: formattedRecentsList[i]
                                                         .photoURL),
                                               ),
-                                              SoshiUsernameText(soshiUsername,
+                                              SoshiUsernameText(
+                                                  formattedRecentsList[i]
+                                                      .soshiUsername,
                                                   fontSize: 14,
                                                   isVerified:
                                                       formattedFriendsList[i]
@@ -725,8 +726,7 @@ class _FriendScreenState extends State<FriendScreen>
                           ),
                         ),
                         Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(16.0, 3.0, 16.0, 0.0),
+                            padding: EdgeInsets.fromLTRB(16.0, 3.0, 16.0, 0),
                             child: Text("A-Z")),
                         Column(
                           children: List.generate(
@@ -742,6 +742,9 @@ class _FriendScreenState extends State<FriendScreen>
                             },
                           ),
                         ),
+                        SizedBox(
+                          height: height / 100,
+                        )
                       ],
                     ),
                   )
@@ -752,10 +755,7 @@ class _FriendScreenState extends State<FriendScreen>
                         children: <Widget>[
                           Text(
                             "You have no friends :(",
-                            style: TextStyle(
-                                color: Colors.cyan[300],
-                                fontSize: 20,
-                                letterSpacing: 2),
+                            style: TextStyle(fontSize: 20, letterSpacing: 2),
                           ),
                         ],
                       ),

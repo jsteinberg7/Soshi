@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:soshi/screens/login/loading.dart';
 import 'package:soshi/services/dataEngine.dart';
-import 'package:soshi/services/database.dart';
 import 'package:soshi/services/localData.dart';
 
 import '../../constants/widgets.dart';
@@ -41,9 +40,8 @@ class _ChooseSocialsCardState extends State<ChooseSocialsCard> {
         clipBehavior: Clip.none,
         children: [
           Card(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
-                side: isSwitched ? BorderSide(color: Colors.cyanAccent[100]) : BorderSide.none),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+
             elevation: 5,
             //color: Colors.grey[8,
             color: Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.grey[700],
@@ -65,15 +63,15 @@ class _ChooseSocialsCardState extends State<ChooseSocialsCard> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
                     child: Transform.scale(
-                      scale: 1.8,
+                      scale: 1.2,
                       child: Checkbox(
                         side: BorderSide(width: 1, color: Colors.grey),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
                         value: isSwitched,
-                        checkColor: Colors.cyan,
-                        activeColor: Colors.white.withOpacity(0.7),
+                        checkColor: Colors.cyan[400],
+                        activeColor: Colors.cyan[400],
                         onChanged: (bool value) {
                           setState(() {
                             isSwitched = !isSwitched;
@@ -113,7 +111,6 @@ class ChooseSocials extends StatefulWidget {
 }
 
 class _ChooseSocialsState extends State<ChooseSocials> {
-  DatabaseService databaseService;
   int numberSelected = 0;
 
   @override
@@ -160,7 +157,7 @@ class _ChooseSocialsState extends State<ChooseSocials> {
             ),
           )
         ],
-        elevation: 0,
+        elevation: .5,
 
         title: Text(
           "Add Platforms",
@@ -174,7 +171,7 @@ class _ChooseSocialsState extends State<ChooseSocials> {
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+        padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
         child: ListView.builder(
             itemBuilder: (BuildContext context, int index) {
               return Padding(

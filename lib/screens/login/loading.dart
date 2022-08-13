@@ -53,10 +53,12 @@ class OnboardingLoader {
       builder: (BuildContext context) {
         // return SpinKitChasingDots(color: Colors.cyan, size: 50);
         return Container(
-            width: 25,
-            height: 25,
-            child: Image.asset("assets/images/animations/rotatingSoshi.gif",
-                width: 25, height: 25, fit: BoxFit.scaleDown));
+          width: 25,
+          height: 25,
+          child: CircularProgressIndicator.adaptive(),
+          // Image.asset("assets/images/animations/rotatingSoshi.gif",
+          //     width: 25, height: 25, fit: BoxFit.scaleDown)
+        );
       },
     );
   }

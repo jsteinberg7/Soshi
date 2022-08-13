@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -61,8 +62,10 @@ class _PassionsPageState extends State<PassionsPage> {
     //     .doc("passionData")
     //     .update({'all_passions_list': emojiLookup});
 
-    DocumentSnapshot dsnap =
-        await FirebaseFirestore.instance.collection('metadata').doc('passionData').get();
+    DocumentSnapshot dsnap = await FirebaseFirestore.instance
+        .collection('metadata')
+        .doc('passionData')
+        .get();
     Map allPassionData = dsnap.get('all_passions_list');
 
     passionsUtility.emojiLookup = allPassionData;
@@ -105,6 +108,7 @@ class _PassionsPageState extends State<PassionsPage> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
     print("Current passions: ${renderPassions}");
     return Container(
       // height: 400,
@@ -118,7 +122,23 @@ class _PassionsPageState extends State<PassionsPage> {
             } else {
               return Scaffold(
                 appBar: AppBar(
-                  title: Text("Select your passion"),
+                  elevation: .5,
+                  title: Text(
+                    "Select your Passions",
+                    style: TextStyle(
+                      // color: Colors.cyan[200],
+                      letterSpacing: 1,
+                      fontSize: width / 18,
+                      fontWeight: FontWeight.bold,
+                      //fontStyle: FontStyle.italic
+                    ),
+                  ),
+                  leading: IconButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    icon: Icon(CupertinoIcons.back),
+                  ),
                 ),
                 body: Center(
                   child: Container(
@@ -131,7 +151,7 @@ class _PassionsPageState extends State<PassionsPage> {
                             controller: controller,
                             // autofocus: true,
                             decoration: InputDecoration(
-                              hintText: "Type to filter passions",
+                              hintText: "Type to search passions",
                               border: OutlineInputBorder(),
                             ),
                             onChanged: (newValue) async {
@@ -145,7 +165,8 @@ class _PassionsPageState extends State<PassionsPage> {
                             child: ValueListenableBuilder(
                                 valueListenable: controlsGridView,
                                 builder: (context, value, _) {
-                                  return RenderPassionList(passionsUtility: passionsUtility);
+                                  return RenderPassionList(
+                                      passionsUtility: passionsUtility);
                                 }),
                           )
                         ],
@@ -159,7 +180,8 @@ class _PassionsPageState extends State<PassionsPage> {
 }
 
 class RenderPassionList extends StatelessWidget {
-  RenderPassionList({Key key, @required this.passionsUtility}) : super(key: key);
+  RenderPassionList({Key key, @required this.passionsUtility})
+      : super(key: key);
 
   List renderPassions;
   PassionsUtility passionsUtility;
@@ -199,9 +221,11 @@ class RenderPassionList extends StatelessWidget {
                           child: Card(
                             elevation: 3,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(10))),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
                             child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Text("❌", style: TextStyle(fontSize: 35)),
                                   Text("Empty", style: TextStyle(fontSize: 14))
@@ -210,25 +234,33 @@ class RenderPassionList extends StatelessWidget {
                         )
                       : InkWell(
                           onTap: () {
-                            print("just tapped passion: ${renderPassions[index]}");
+                            print(
+                                "just tapped passion: ${renderPassions[index]}");
                             // String SoshiUsername = LocalDataService.getLocalUsername();
                             // DatabaseService DS = new DatabaseService(currSoshiUsernameIn: LocalDataService.getLocalUsername());
                             // DS.updateUserPassions(LocalDataService.getLocalUsername(), newPassions)
                             Navigator.pop(context, {
-                              'passion_emoji': passionsUtility.getEmoji(renderPassions[index]),
+                              'passion_emoji': passionsUtility
+                                  .getEmoji(renderPassions[index]),
                               'passion_name': renderPassions[index],
                             });
                           },
                           child: Card(
                             elevation: 3,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(10))),
-                            child:
-                                Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                              Text(passionsUtility.getEmoji(renderPassions[index]),
-                                  style: TextStyle(fontSize: 35)),
-                              Text(renderPassions[index], style: TextStyle(fontSize: 14))
-                            ]),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text(
+                                      passionsUtility
+                                          .getEmoji(renderPassions[index]),
+                                      style: TextStyle(fontSize: 35)),
+                                  Text(renderPassions[index],
+                                      style: TextStyle(fontSize: 14))
+                                ]),
                           ),
                         );
                 },

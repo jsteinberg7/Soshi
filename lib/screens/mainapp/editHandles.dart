@@ -72,7 +72,7 @@ class _EditHandlesState extends State<EditHandles> {
             ),
           )
         ],
-        elevation: 0,
+        elevation: .5,
         title: Text(
           "My Platforms",
           style: TextStyle(
@@ -228,6 +228,9 @@ class _SMCardState extends State<SMCard> {
                         String firstName = LocalDataService.getLocalFirstName();
                         String lastName = LocalDataService.getLocalLastName();
                         String photoUrl = LocalDataService.getLocalProfilePictureURL();
+                        String email = LocalDataService.getLocalUsernameForPlatform("Email");
+                        String phoneNumber = LocalDataService.getLocalUsernameForPlatform("Phone");
+
                         Uint8List profilePicBytes;
                         try {
                           // try to load profile pic from url
@@ -254,7 +257,8 @@ class _SMCardState extends State<SMCard> {
                             avatar: profilePicBytes);
                         await askPermissions(context);
                         ContactsService.addContact(contact).then((dynamic success) {
-                          Popups.showContactAddedPopup(context, width, firstName, lastName);
+                          Popups.showContactAddedPopup(
+                              context, width, photoUrl, firstName, lastName, phoneNumber, email);
                         });
                       } else if (platformName == "Cryptowallet") {
                         Clipboard.setData(ClipboardData(
@@ -436,3 +440,77 @@ class _SMCardState extends State<SMCard> {
     );
   }
 }
+
+// class GreenAddButton extends StatefulWidget {
+//   Function() refreshScreen;
+//   GreenAddButton({Function refreshScreen}) {
+//     this.refreshScreen = refreshScreen;
+//   }
+
+//   @override
+//   State<GreenAddButton> createState() => _GreenAddButtonState();
+// }
+
+// class _GreenAddButtonState extends State<GreenAddButton> {
+//   @override
+//   void initState() {
+//     super.initState();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     double width = Utilities.getWidth(context);
+//     return ElevatedButton(
+//       style: ElevatedButton.styleFrom(
+//           elevation: 5,
+//           primary: Colors.green,
+//           shape: RoundedRectangleBorder(
+//               //to set border radius to button
+//               borderRadius: BorderRadius.circular(15)),
+//           padding:
+//               EdgeInsets.fromLTRB(50, 0, 50, 0) //content padding inside button
+
+//           ),
+//       child: Text(
+//         "Add",
+//         style: TextStyle(
+//             fontWeight: FontWeight.bold,
+//             letterSpacing: 1.5,
+//             fontSize: width / 20,
+//             color: Colors.white),
+//       ),
+//       onPressed: () async {
+//         // check if user has all platforms (in case of update)
+//         if (Constants.originalPlatforms.length +
+//                 Constants.addedPlatforms.length >
+//             LocalDataService.getLocalChoosePlatforms().length +
+//                 LocalDataService.getLocalProfilePlatforms().length) {
+//           // check which platforms need to be added
+//           for (String platform in Constants.addedPlatforms) {
+//             if (!LocalDataService.getLocalProfilePlatforms()
+//                     .contains(platform) &&
+//                 !LocalDataService.getLocalChoosePlatforms()
+//                     .contains(platform)) {
+//               await LocalDataService.addToChoosePlatforms(
+//                   platform); // add new platform to choose platforms
+//               await LocalDataService.updateSwitchForPlatform(
+//                   platform: platform,
+//                   state:
+//                       false); // create switch for platform in and initialize to false
+//               if (LocalDataService.getLocalUsernameForPlatform(platform) ==
+//                   null) {
+//                 await LocalDataService.updateUsernameForPlatform(
+//                     platform: platform,
+//                     username:
+//                         ""); // create username mapping for platform if absent
+//               }
+//             }
+//           }
+//         }
+//         await Navigator.push(context, MaterialPageRoute(builder: (context) {
+//           return Scaffold(body: ChooseSocials());
+//         }));
+//       },
+//     );
+//   }
+// }
