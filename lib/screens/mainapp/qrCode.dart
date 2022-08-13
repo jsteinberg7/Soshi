@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:nfc_manager/nfc_manager.dart';
+// import 'package:nfc_manager/nfc_manager.dart';
 
 import 'package:soshi/constants/popups.dart';
 import 'package:soshi/constants/utilities.dart';
@@ -43,7 +43,7 @@ class _NewQRScreenState extends State<NewQRScreen> {
         actions: [
           GestureDetector(
             onTap: () {
-              NFCWriter(height, width);
+              // NFCWriter(height, width);
             },
             child: Image.asset(
               "assets/images/misc/NFCLogo.png",
