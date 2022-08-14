@@ -1,117 +1,72 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:soshi/screens/mainapp/passionsPage.dart';
-import 'package:soshi/services/database.dart';
-import 'package:soshi/services/localData.dart';
+import 'package:soshi/services/dataEngine.dart';
 
 class PassionTileList extends StatefulWidget {
-  const PassionTileList({Key key}) : super(key: key);
+  PassionTileList({Key key}) : super(key: key);
 
   @override
   State<PassionTileList> createState() => _PassionTileListState();
 }
 
 class _PassionTileListState extends State<PassionTileList> {
-  // List passionsThree = LocalDataService.getPassionsListLocal();
-  List passionsThree = [];
+  SoshiUser user;
 
-  passionsCleanup() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    // await prefs.setString("passions", jsonEncode([]));
-
-    int len = 0;
-    try {
-      passionsThree = jsonDecode(prefs.getString("passions"));
-      len = passionsThree.length;
-    } catch (e) {
-      passionsThree = [];
-    }
-
-    print("latest passions= ${passionsThree}");
-    print("⚠⚠⚠⚠⚠ " + passionsThree.toString());
-    for (int i = 0; i < 3 - len; i++) {
-      print("[i ${i}] adding !!!!");
-      passionsThree.add({'valid': false});
-    }
-    print('after for loop adding 👆👆👆👆👆 ${passionsThree}');
+  loadDataEngine() async {
+    user = await DataEngine.getUserObject(firebaseOverride: true);
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: passionsCleanup(),
+        future: loadDataEngine(),
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
-            return Icon(Icons.sync);
+            return Text("loading passions now...");
           } else {
-            return Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                // children: passionsThree.map((e) => makePassionTile(e)).toList());
-                children: [
-                  makePassionTile(
-                    passionsThree[0],
-                    0,
-                  ),
-                  makePassionTile(
-                    passionsThree[1],
-                    1,
-                  ),
-                  makePassionTile(
-                    passionsThree[2],
-                    2,
-                  ),
-                ]);
+            return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [0, 1, 2].map((int pIndex) => makePassionTile(user.passsions[pIndex], pIndex)).toList());
           }
         });
   }
 
-  pushAndUpdatePassions(int index) async {
+  pushAndUpdatePassions(Passion replace, int pIndex) async {
     Navigator.push(
         context,
         new MaterialPageRoute(
             builder: ((context) => PassionsPage(
-                  presetEmojis: this.passionsThree,
+                  alreadySelected: user.passsions,
                 )))).then((value) async {
       print(value.toString());
 
       if (value != null) {
-        passionsThree[index] = value;
-        print('after empty add: ${passionsThree}');
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString("passions", jsonEncode(passionsThree));
-        // await LocalDataService.updatePassions(passionsThree);
-        String soshiUsername =
-            LocalDataService.getLocalUsernameForPlatform("Soshi");
-        DatabaseService dbService =
-            new DatabaseService(currSoshiUsernameIn: soshiUsername);
-        await dbService.updateUserPassions(soshiUsername, passionsThree);
+        user.passsions[pIndex] = value;
+        await DataEngine.applyUserChanges(user: user, cloud: true, local: true);
         setState(() {});
       }
     });
   }
 
-  Widget makePassionTile(Map passion, int index) {
-    return passion.containsKey('passion_name')
+  Widget makePassionTile(Passion passion, int pIndex) {
+    return passion != Defaults.emptyPassion
         ? ElevatedButton.icon(
             style: ElevatedButton.styleFrom(elevation: 3),
             onPressed: () async {
-              pushAndUpdatePassions(index);
+              pushAndUpdatePassions(passion, pIndex);
             },
             icon: Text(
-              // PassionsUtility.getEmoji(passion),
-              passion['passion_emoji'].toString(),
+              passion.emoji,
               style: TextStyle(fontSize: 15),
             ),
             label: Text(
-              passion['passion_name'].toString(),
+              passion.name,
               style: TextStyle(fontSize: 15),
             ))
         : OutlinedButton.icon(
             style: OutlinedButton.styleFrom(primary: Colors.black),
             onPressed: () async {
-              pushAndUpdatePassions(index);
+              pushAndUpdatePassions(passion, pIndex);
             },
             icon: Text(
               '➕',
@@ -120,10 +75,7 @@ class _PassionTileListState extends State<PassionTileList> {
             label: Text(
               "Add",
               style: TextStyle(
-                  color: Theme.of(context).brightness == Brightness.light
-                      ? Colors.black
-                      : Colors.white,
-                  fontSize: 15),
+                  color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white, fontSize: 15),
             ));
   }
 }

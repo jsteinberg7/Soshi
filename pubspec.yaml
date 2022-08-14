@@ -69,7 +69,7 @@ dependencies:
   azlistview: ^2.0.0
   alphabet_list_scroll_view: ^2.0.0
   async: ^2.8.2
-  nfc_manager: ^3.1.1
+  # nfc_manager: ^3.1.1
 
 
   # mobile_scanner: ^1.0.0
@@ -83,6 +83,8 @@ dependencies:
   top_modal_sheet: ^1.0.0+1
   auto_size_text: ^3.0.0
   in_app_review: ^2.0.4
+
+  equatable: ^2.0.3
   
   
 

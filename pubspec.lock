@@ -190,6 +190,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
+  equatable:
+    dependency: "direct main"
+    description:
+      name: equatable
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.3"
   fake_async:
     dependency: transitive
     description:
@@ -611,13 +618,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
-  nfc_manager:
-    dependency: "direct main"
-    description:
-      name: nfc_manager
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.1.1"
   octo_image:
     dependency: transitive
     description:
