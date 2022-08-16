@@ -2,6 +2,7 @@ import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 
 import '../constants/popups.dart';
+import '../screens/mainapp/viewProfilePage.dart';
 
 abstract class DynamicLinkService {
   // static Future<void> retrieveDynamicLink(BuildContext context) async {
@@ -92,9 +93,12 @@ abstract class DynamicLinkService {
     } else {
       // handle user deeplink
       String username = params?.last;
-      await Popups.showUserProfilePopupNew(context,
-          friendSoshiUsername: username, refreshScreen: () {});
-
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return ViewProfilePage(
+          friendSoshiUsername: username,
+          refreshScreen: () {},
+        ); // show friend popup when tile is pressed
+      }));
       // print(">> returning now. $i");
       i += 1;
       return;

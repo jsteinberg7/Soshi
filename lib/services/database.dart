@@ -14,6 +14,7 @@ import 'package:soshi/screens/mainapp/groupScreen.dart';
 
 import '../screens/mainapp/friendScreen.dart';
 import 'contacts.dart';
+import 'dataEngine.dart';
 import 'dynamicLinks.dart';
 import 'localData.dart';
 
@@ -143,13 +144,12 @@ class DatabaseService {
   */
   Friend userDataToFriend(Map userData) {
     return new Friend(
-        fullName: getFullName(userData),
-        soshiUsername:
-            getUsernameForPlatform(userData: userData, platform: "Soshi"),
-        photoURL: getPhotoURL(userData),
-        isVerified: getVerifiedStatus(userData),
-        switches: getUserSwitches(userData),
-        usernames: getUserProfileNames(userData));
+      fullName: getFullName(userData),
+      soshiUsername:
+          getUsernameForPlatform(userData: userData, platform: "Soshi"),
+      photoURL: getPhotoURL(userData),
+      isVerified: getVerifiedStatus(userData),
+    );
   }
 
   /*

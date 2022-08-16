@@ -11,56 +11,7 @@ import 'package:soshi/screens/mainapp/viewProfilePage.dart';
 import 'package:soshi/services/database.dart';
 import 'package:soshi/services/localData.dart';
 
-/* Stores information for individual friend/connection */
-class Friend {
-  String soshiUsername, fullName, photoURL;
-  bool isVerified;
-  Map<String, dynamic> switches, usernames;
-  Map<String, dynamic> enabledUsernames;
-
-  Friend({
-    this.soshiUsername,
-    this.fullName,
-    this.photoURL,
-    this.isVerified,
-    this.switches,
-    this.usernames,
-    this.enabledUsernames, // only use when coming from json
-  });
-
-  // takes in a single json pertaining to a friend, returns Friend object
-  static Friend jsonToFriend(String json) {
-    Map<String, dynamic> map = jsonDecode(json);
-    return Friend(
-        soshiUsername: map["u"],
-        fullName: map["n"],
-        photoURL: map["url"],
-        isVerified: map["v"],
-        enabledUsernames: jsonDecode(map["s/u"]));
-  }
-
-  Map<String, dynamic> _getEnabledPlatformUsernamesMap() {
-    Map<String, dynamic> enabledUsernames = {};
-    switches.forEach((platform, state) {
-      if (state == true) {
-        enabledUsernames.addAll({platform: this.usernames[platform]});
-      }
-    });
-    return enabledUsernames;
-  }
-
-  // convert friend to map, then map to json
-  toJson() {
-    Map<String, dynamic> map = {
-      "u": soshiUsername,
-      "n": fullName,
-      "url": photoURL,
-      "v": isVerified,
-      "s/u": enabledUsernames ?? jsonEncode(_getEnabledPlatformUsernamesMap())
-    };
-    return jsonEncode(map);
-  }
-}
+import '../../services/dataEngine.dart';
 
 /* This widget displays a list of the user's friends. */
 class FriendScreen extends StatefulWidget {
@@ -160,7 +111,7 @@ class _FriendScreenState extends State<FriendScreen>
   // convert json friends list to list of Friend(s)
   List<Friend> generateFriendsList() {
     for (String json in friendsList) {
-      formattedFriendsList.add(Friend.jsonToFriend(json));
+      formattedFriendsList.add(Friend.decodeFriend(json));
     }
     // get recently added friends list
     String currUsername;

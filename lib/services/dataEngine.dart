@@ -21,8 +21,9 @@ class DataEngine {
   static Map serializeUser(SoshiUser user) {
     List serializePassions = [];
 
-    user.passsions.forEach((e) {
-      serializePassions.add({'passions_emoji': e.emoji, 'passions_name': e.name});
+    user.passions.forEach((e) {
+      serializePassions
+          .add({'passions_emoji': e.emoji, 'passions_name': e.name});
     });
 
     Map<String, dynamic> toReturn = {
@@ -33,8 +34,10 @@ class DataEngine {
       'Soshi Points': user.soshiPoints,
       'Verified': user.verified,
       'Passions': serializePassions,
-      'Choose Platforms': user.getAvailablePlatforms().map((e) => e.platformName).toList(),
-      'Profile Platforms': user.getChosenPlatforms().map((e) => e.platformName).toList()
+      'Choose Platforms':
+          user.getAvailablePlatforms().map((e) => e.platformName).toList(),
+      'Profile Platforms':
+          user.getChosenPlatforms().map((e) => e.platformName).toList()
     };
 
     Map switches = {};
@@ -62,7 +65,10 @@ class DataEngine {
 
     if (firebaseOverride || !prefs.containsKey("userObject")) {
       log("[⚙ Data Engine ⚙]  getUserObject() Firebase data burn ⚠ userFetch=> ${soshiUsername}");
-      DocumentSnapshot dSnap = await FirebaseFirestore.instance.collection("users").doc(soshiUsername).get();
+      DocumentSnapshot dSnap = await FirebaseFirestore.instance
+          .collection("users")
+          .doc(soshiUsername)
+          .get();
       fetch = dSnap.data();
       await prefs.setString("userObject", jsonEncode(fetch));
     } else {
@@ -71,7 +77,8 @@ class DataEngine {
       fetch = jsonDecode(prefs.getString("userObject"));
     }
 
-    bool hasPhoto = fetch['Photo URL'] != null && fetch['Photo URL'].contains("http");
+    bool hasPhoto =
+        fetch['Photo URL'] != null && fetch['Photo URL'].contains("http");
     String photoURL = fetch['Photo URL'] ??
         "https://img.freepik.com/free-photo/abstract-luxury-plain-blur-grey-black-gradient-used-as-background-studio-wall-display-your-products_1258-58170.jpg?w=2000";
     bool Verified = fetch['Verified'] ?? false;
@@ -87,13 +94,16 @@ class DataEngine {
 
     if (fetch['Passions'] != null) {
       List.of(fetch['Passions']).forEach((e) {
-        passions.add(Passion(emoji: e['passion_emoji'], name: e['passion_name']));
+        passions
+            .add(Passion(emoji: e['passion_emoji'], name: e['passion_name']));
       });
     }
 
     log("[⚙ Data Engine ⚙] passions info built ✅");
 
-    if (fetch['Usernames'] != null && fetch['Switches'] != null && fetch['Choose Platforms'] != null) {
+    if (fetch['Usernames'] != null &&
+        fetch['Switches'] != null &&
+        fetch['Choose Platforms'] != null) {
       Map.of(fetch['Usernames']).keys.forEach((key) {
         bool switchStatus = Map.of(fetch['Switches'])[key];
         bool isChosen = List.of(fetch['Profile Platforms']).contains(key);
@@ -104,7 +114,8 @@ class DataEngine {
             platformName: key.toString(),
             switchStatus: switchStatus,
             isChosen: isChosen,
-            usernameController: TextEditingController(text: fetch['Usernames'][key]));
+            usernameController:
+                TextEditingController(text: fetch['Usernames'][key]));
 
         socials.add(makeSocial);
         lookupSocial[key] = makeSocial;
@@ -121,7 +132,7 @@ class DataEngine {
         hasPhoto: hasPhoto,
         verified: Verified,
         socials: socials,
-        passsions: passions,
+        passions: passions,
         soshiPoints: soshiPoints,
         bio: bio,
         friends: friends,
@@ -132,7 +143,10 @@ class DataEngine {
 
   // }
 
-  static applyUserChanges({@required SoshiUser user, @required bool cloud, @required bool local}) async {
+  static applyUserChanges(
+      {@required SoshiUser user,
+      @required bool cloud,
+      @required bool local}) async {
     // {!} These tasks can happen asynchronously to save time!
     if (cloud || local) {
       Map afterSerialized = serializeUser(user);
@@ -145,7 +159,10 @@ class DataEngine {
       }
 
       if (cloud) {
-        await FirebaseFirestore.instance.collection("users").doc(soshiUsername).set(afterSerialized);
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(soshiUsername)
+            .set(afterSerialized);
         log("[⚙ Data Engine ⚙] update Cloud {Firestore} success! ✅");
       }
     }
@@ -160,7 +177,7 @@ class SoshiUser {
   bool hasPhoto;
   bool verified;
   List<Social> socials;
-  List<Passion> passsions;
+  List<Passion> passions;
   int soshiPoints;
   List friends;
   Map<String, Social> lookupSocial;
@@ -174,7 +191,7 @@ class SoshiUser {
       @required this.hasPhoto,
       @required this.verified,
       @required this.socials,
-      @required this.passsions,
+      @required this.passions,
       @required this.soshiPoints,
       @required this.bio,
       @required this.friends,
@@ -211,7 +228,6 @@ class SoshiUser {
   removeFromAvailablePlatforms({@required List listToRemove}) {
     listToRemove.forEach((platformName) {
       // this.socials.removeWhere((element) => element.platformName == platformName);
-
       log("[⚙ Data Engine ⚙] Attempt to delete social ${platformName} ❓");
       Social removed = this.lookupSocial.remove(platformName);
       if (removed == null) {
@@ -250,6 +266,58 @@ class Passion {
     @required this.emoji,
     @required this.name,
   });
+}
+
+/* Stores information for individual friend/connection */
+class Friend {
+  String soshiUsername, fullName, photoURL;
+  bool isVerified;
+
+  Friend({
+    this.soshiUsername,
+    this.fullName,
+    this.photoURL,
+    this.isVerified, // only use when coming from json
+  });
+
+  // takes in a single json pertaining to a friend, returns Friend object
+  static Friend decodeFriend(String json) {
+    Map<String, dynamic> map = jsonDecode(json);
+    return Friend(
+      soshiUsername: map["Username"],
+      fullName: map["Name"],
+      photoURL: map["Url"],
+      isVerified: map["Verified"],
+    );
+  }
+
+  static List<String> convertToStringList(List<Friend> friendsList) {
+    List<String> list = [];
+    for (Friend friend in friendsList) {
+      list.add(friend.soshiUsername);
+    }
+    return list;
+  }
+
+  static List<Friend> convertToFriendList(List<String> usernameList) async {
+    List<Friend> list = [];
+    for (String username in usernameList) {
+
+      
+      list.add(friend);
+    }
+  }
+
+  // convert friend to map, then map to json
+  String serialize() {
+    Map<String, dynamic> map = {
+      "Username": soshiUsername,
+      "Name": fullName,
+      "Url": photoURL,
+      "Verified": isVerified,
+    };
+    return jsonEncode(map);
+  }
 }
 
 class Defaults {

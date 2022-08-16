@@ -12,6 +12,7 @@ import '../../constants/popups.dart';
 import '../../constants/utilities.dart';
 import '../../constants/widgets.dart';
 import '../../services/analytics.dart';
+import '../../services/dataEngine.dart';
 import '../../services/database.dart';
 import '../../services/localData.dart';
 import 'friendScreen.dart';
@@ -96,9 +97,9 @@ class _ViewGroupPageState extends State<ViewGroupPage> {
 
     return ListTile(
         onTap: () async {
-          Popups.showUserProfilePopupNew(context,
-              friendSoshiUsername: friend.soshiUsername,
-              refreshScreen: () {}); // show friend popup when tile is pressed
+          // Popups.showUserProfilePopupNew(context,
+          //     friendSoshiUsername: friend.soshiUsername,
+          //     refreshScreen: () {}); // show friend popup when tile is pressed
         },
         leading: ProfilePic(radius: width / 14, url: friend.photoURL),
         title: Column(
