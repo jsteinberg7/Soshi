@@ -18,10 +18,7 @@ class AuthService {
 
   // sign in with email and password
   Future signInWithEmailAndPassword(
-      {String emailIn,
-      String passwordIn,
-      BuildContext contextIn,
-      @required Function refreshIn}) async {
+      {String emailIn, String passwordIn, BuildContext contextIn, @required Function refreshIn}) async {
     try {
       String soshiUsername = await DatabaseService().getSoshiUsernameForLogin(email: emailIn);
       await LocalDataService.initializeSharedPreferences(
@@ -100,8 +97,7 @@ class AuthService {
     final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
     // Create a new credential
-    final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
+    final credential = GoogleAuthProvider.credential(accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
 
     try {
       // check if user already exists with email
@@ -156,50 +152,19 @@ class AuthService {
         throw new ErrorDescription("Username is taken, try another one");
       }
 
-      await databaseService.createUserFile(
-          username: username, email: email, first: first, last: last);
+      await databaseService.createUserFile(username: username, email: email, first: first, last: last);
       print("file created");
       await LocalDataService.initializeSharedPreferences(currSoshiUsername: username);
       print("shared prefs initialized");
-      UserCredential registerResult =
-          await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      UserCredential registerResult = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       User user = registerResult.user;
       // refreshIn();
       print("✅ successfully created new account! ${email}");
 
-      print(
-          "◀◀◀ username ${username}\n email ${email} \n password ${password} \n ${first} \n ${last} ◀◀◀");
+      print("◀◀◀ username ${username}\n email ${email} \n password ${password} \n ${first} \n ${last} ◀◀◀");
 
       return user;
     } catch (e) {
-      // showDialog(
-      //     context: contextIn,
-      //     builder: (BuildContext context) {
-      //       return AlertDialog(
-      //         shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40.0))),
-      //         backgroundColor: Colors.blueGrey[900],
-      //         title: Text(
-      //           "Error",
-      //           style: TextStyle(color: Colors.cyan[600], fontWeight: FontWeight.bold),
-      //         ),
-      //         content: Text(
-      //           e.toString(),
-      //           style: TextStyle(color: Colors.cyan[700], fontWeight: FontWeight.bold),
-      //         ),
-      //         actions: <Widget>[
-      //           TextButton(
-      //             child: Text(
-      //               'Ok',
-      //               style: TextStyle(fontSize: 20),
-      //             ),
-      //             onPressed: () {
-      //               Navigator.of(context).pop();
-      //             },
-      //           ),
-      //         ],
-      //       );
-      //     });
-
       print("❌ Error unable to create new account, returning error");
       print(e.toString());
       return e.toString();

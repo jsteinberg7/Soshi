@@ -12,9 +12,10 @@ class DataEngine {
   static String soshiUsername;
   static bool initializedStatus = false;
 
-  static initialize(String soshiUsername) {
+  static initialize(String soshiUsername) async {
     DataEngine.soshiUsername = soshiUsername;
-
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove("userObject");
     log("[⚙ Data Engine ⚙] successfully initialzed with username: ${soshiUsername} ✅");
   }
 
@@ -27,7 +28,7 @@ class DataEngine {
 
     Map<String, dynamic> toReturn = {
       'Friends': [],
-      'Name': {'First': user.firstName, 'Last': user.lastName},
+      'Name': {'First': user.firstNameController.text, 'Last': user.lastNameController.text},
       'Photo URL': user.photoURL,
       'Bio': user.bioController.text,
       'Soshi Points': user.soshiPoints,
@@ -71,9 +72,10 @@ class DataEngine {
       fetch = jsonDecode(prefs.getString("userObject"));
     }
 
-    bool hasPhoto = fetch['Photo URL'] != null && fetch['Photo URL'].contains("http");
-    String photoURL = fetch['Photo URL'] ??
-        "https://img.freepik.com/free-photo/abstract-luxury-plain-blur-grey-black-gradient-used-as-background-studio-wall-display-your-products_1258-58170.jpg?w=2000";
+    String url = fetch['Photo URL'] ?? Defaults.defaultProfilePic;
+    bool hasPhoto = url != null && url.contains("http");
+    String photoURL = url;
+
     bool Verified = fetch['Verified'] ?? false;
     List<Passion> passions = [];
 
@@ -169,13 +171,13 @@ class DataEngine {
 
       if (local) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        log(afterSerialized.toString());
+        // log(afterSerialized.toString());
         prefs.setString("userObject", jsonEncode(afterSerialized));
         log("[⚙ Data Engine ⚙] update Local success! ✅");
       }
 
       if (cloud) {
-        await FirebaseFirestore.instance.collection("users").doc(soshiUsername).set(afterSerialized);
+        await FirebaseFirestore.instance.collection("users").doc(soshiUsername).update(afterSerialized);
         log("[⚙ Data Engine ⚙] update Cloud {Firestore} success! ✅");
       }
     }
