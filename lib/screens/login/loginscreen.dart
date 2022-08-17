@@ -222,7 +222,6 @@ class _LoginScreenState extends State<LoginScreen> {
             }
           }
         },
-
         style: showEnabled
             ? ElevatedButton.styleFrom(
                 primary: Colors.cyanAccent,

@@ -70,9 +70,7 @@ class _NewIntroFlowState extends State<NewIntroFlow> {
           SmoothPageIndicator(
             controller: controller, // PageController
             count: 3,
-            effect: WormEffect(
-                activeDotColor: Colors.cyan,
-                dotColor: Colors.grey), // your preferred effect
+            effect: WormEffect(activeDotColor: Colors.cyan, dotColor: Colors.grey), // your preferred effect
           ),
           SizedBox(height: 10),
           Padding(
@@ -83,14 +81,16 @@ class _NewIntroFlowState extends State<NewIntroFlow> {
 
                 if (currentPage != 2) {
                   await controller.animateToPage(currentPage + 1,
-                      duration: Duration(milliseconds: 500),
-                      curve: Curves.easeInOut);
+                      duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
                 } else {
                   SuperController superController = new SuperController();
+                  ScreenChecker screenChecker = new ScreenChecker();
+
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return Scaffold(
                         body: NewRegisterFlow(
-                      superController,
+                      superController: superController,
+                      screenChecker: screenChecker,
                     ));
                   }));
                 }
@@ -169,8 +169,7 @@ class IntroSingleScreen extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
           child: Text(
             this.message.split("\n")[0],
-            style: TextStyle(
-                fontSize: 30, fontWeight: FontWeight.bold, color: Colors.cyan),
+            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.cyan),
             textAlign: TextAlign.center,
           ),
         ),

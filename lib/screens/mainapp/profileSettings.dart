@@ -142,7 +142,6 @@ class ProfileSettingsState extends State<ProfileSettings> {
                               Expanded(
                                 child: TextFormField(
                                   style: TextStyle(fontSize: width / 23),
-                                  // keyboardType: TextInputType.datetime,
                                   decoration: InputDecoration(border: InputBorder.none, counterText: ""),
                                   controller: this.user.firstNameController,
                                   maxLines: 1,

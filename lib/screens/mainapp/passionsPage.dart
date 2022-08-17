@@ -13,7 +13,7 @@ class PassionsPage extends StatelessWidget {
 
   List<Passion> original = [];
 
-  // Need to pull passion data if you want latest set firebaseOverride to true;
+  // Need to pull passion data here. If you want latest set "firebaseOverride" to true;
   syncFirebasePassions() async {
     original = await DataEngine.getAvailablePassions(firebaseOverride: false);
     renderPassions = List.of(original);
@@ -81,8 +81,9 @@ class PassionsPage extends StatelessWidget {
                         TextFormField(
                           controller: searchController,
                           decoration: InputDecoration(
+                            contentPadding: EdgeInsets.fromLTRB(20, 5, 10, 20),
                             hintText: "Type to search passions",
-                            border: OutlineInputBorder(),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
                           ),
                           onChanged: (newValue) {
                             print("----> apply filters with ${newValue}");

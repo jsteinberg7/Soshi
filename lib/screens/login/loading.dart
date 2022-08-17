@@ -62,6 +62,10 @@ class OnboardingLoader {
       },
     );
   }
+
+  static killLoader(BuildContext context) {
+    Navigator.pop(context);
+  }
 }
 
 

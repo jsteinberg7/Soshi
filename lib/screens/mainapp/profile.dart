@@ -43,7 +43,6 @@ class _SMTileState extends State<SMTile> {
   String platformName = "";
   String hintText = "";
 
-  // used to store local state of switch
   bool isSwitched;
   TextEditingController usernameController = new TextEditingController();
   FocusNode focusNode;
@@ -53,6 +52,8 @@ class _SMTileState extends State<SMTile> {
   @override
   void initState() {
     soshiUsername = widget.user.soshiUsername;
+    platformName = widget.selectedSocial.platformName;
+    isSwitched = widget.selectedSocial.switchStatus;
     super.initState();
   }
 
@@ -70,22 +71,13 @@ class _SMTileState extends State<SMTile> {
       hintText = "Username";
     }
 
-    databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername); // store ref to databaseService
-    isSwitched = LocalDataService.getLocalStateForPlatform(platformName) ?? false; // track state of platform switch
-    usernameController.text = LocalDataService.getLocalUsernameForPlatform(platformName) ?? null;
-
     if (platformName == "Contact") {
       usernameController.text = "Contact Card";
     }
 
-    // FocusScope.of(context).unfocus();
-
     focusNode = new FocusNode();
     focusNode.addListener(() {
       if (!focusNode.hasFocus) {
-        // if (usernameController.text.length != "") {
-        // turn on switch if username is not empty (say, at least 3 chars)
-
         if (!isSwitched) {
           setState(() {
             isSwitched = true;
@@ -141,11 +133,7 @@ class _SMTileState extends State<SMTile> {
             BorderRadius.circular(20.0),
           )),
       child: Card(
-        //semanticContainer: true,
         elevation: 0,
-        // shape: RoundedRectangleBorder(
-        //   borderRadius: BorderRadius.circular(15.0),
-        // ),
         child: Container(
           height: MediaQuery.of(context).size.height / 6.5,
           width: MediaQuery.of(context).size.width / 3,
@@ -220,13 +208,9 @@ class _SMTileState extends State<SMTile> {
                 ),
                 CupertinoSwitch(
                     thumbColor: Colors.white,
-                    value: isSwitched,
+                    value: this.isSwitched,
                     activeColor: Colors.cyan,
                     onChanged: (bool value) {
-                      setState(() {
-                        isSwitched = value;
-                      });
-
                       HapticFeedback.lightImpact();
 
                       if (widget.user.getUsernameGivenPlatform(platform: platformName) == null ||
@@ -235,16 +219,19 @@ class _SMTileState extends State<SMTile> {
                             context, soshiUsername, platformName, MediaQuery.of(context).size.width);
                       }
 
-                      widget.user.lookupSocial['platform'].switchStatus = value;
+                      widget.user.lookupSocial[platformName].switchStatus = value;
+
+                      setState(() {
+                        this.isSwitched = value;
+                      });
 
                       //{NOTE} Updating Firestore/local storage will occurr Asynchronously
-                      // DataEngine.applyUserChangesCloudAndLocal(widget.user);
                       DataEngine.applyUserChanges(user: widget.user, cloud: true, local: true);
 
-                      if (LocalDataService.getFirstSwitchTap()) {
-                        LocalDataService.updateFirstSwitchTap(false);
-                        Popups.platformSwitchesExplained(context);
-                      }
+                      // if (LocalDataService.getFirstSwitchTap()) {
+                      //   LocalDataService.updateFirstSwitchTap(false);
+                      //   Popups.platformSwitchesExplained(context);
+                      // }
                     }),
               ]),
         ),

@@ -14,7 +14,6 @@ import 'package:soshi/services/localData.dart';
 
 import 'package:vibration/vibration.dart';
 import 'package:share/share.dart';
-
 import 'friendScreen.dart';
 
 class NewQRScreen extends StatefulWidget {
@@ -55,17 +54,11 @@ class _NewQRScreenState extends State<NewQRScreen> {
             width: width / 35,
           )
         ],
-
         elevation: 0,
         title: Image.asset(
           "assets/images/SoshiLogos/SoshiBubbleLogo.png",
-          // Theme.of(context).brightness == Brightness.light
-          //     ? "assets/images/SoshiLogos/soshi_logo_black.png"
-          //     : "assets/images/SoshiLogos/soshi_logo.png",
-
           height: Utilities.getHeight(context) / 18,
         ),
-        // backgroundColor: Colors.grey[850],
         centerTitle: true,
       ),
       body: FutureBuilder(
@@ -77,16 +70,6 @@ class _NewQRScreenState extends State<NewQRScreen> {
             return Center(
               child: SafeArea(
                 child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                  //SizedBox(height: height / 20),
-                  // Image.asset(
-                  //   "assets/images/SoshiLogos/SoshiBubbleLogo.png",
-                  //   // Theme.of(context).brightness == Brightness.light
-                  //   //     ? "assets/images/SoshiLogos/soshi_logo_black.png"
-                  //   //     : "assets/images/SoshiLogos/soshi_logo.png",
-
-                  //   height: Utilities.getHeight(context) / 15,
-                  // ),
-                  //SizedBox(height: height / 70),
                   Neumorphic(
                     style: NeumorphicStyle(
                         depth: 2,
@@ -242,7 +225,7 @@ class _NewQRScreenState extends State<NewQRScreen> {
                           height: height / 13,
                           width: width / 1.8,
                           child: Card(
-                            color: Colors.grey.shade800,
+                            // color: Colors.grey.shade800,
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                             child: Center(
                               child: Row(

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,10 +14,8 @@ import 'package:soshi/services/auth.dart';
 
 class NewRegisterFlow extends StatefulWidget {
   SuperController superController;
-
-  NewRegisterFlow(SuperController superController) {
-    this.superController = superController;
-  }
+  ScreenChecker screenChecker;
+  NewRegisterFlow({@required this.superController, @required this.screenChecker});
 
   @override
   State<NewRegisterFlow> createState() => _NewRegisterFlowState();
@@ -46,23 +46,10 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
 
     return SafeArea(
       child: Scaffold(
-        // appBar: PreferredSize(
-        //     //Create "Beta" icon on left
-        //     preferredSize: Size(Utilities.getWidth(context), Utilities.getHeight(context) / 16),
-        //     child: SoshiAppBar()),
         appBar: AppBar(
-          //toolbarHeight: 130,
           elevation: 0,
           centerTitle: true,
-          title:
-
-              //  Text(
-              //   "Soshi ${currentPage}",
-              //   textAlign: TextAlign.center,
-              //   style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
-              // ),
-
-              Image.asset(
+          title: Image.asset(
             "assets/images/SoshiLogos/SoshiBubbleLogo.png",
             width: width / 3,
           ),
@@ -75,14 +62,12 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
                           await controller.jumpToPage(0);
                         }
                         await controller.animateToPage(currentPage - 1,
-                            duration: Duration(milliseconds: 500),
-                            curve: Curves.easeInOut);
+                            duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
                       },
                       icon: Icon(Icons.chevron_left, size: 40)),
                 )
               : Container(),
         ),
-
         body: Column(
           children: [
             Expanded(
@@ -99,26 +84,29 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
                 children: [
                   RegisterSingleScreen(
                       type: InputType.EMAIL,
-                      superController: widget.superController),
+                      superController: widget.superController,
+                      screenChecker: widget.screenChecker), //0
                   RegisterSingleScreen(
                       type: InputType.ALL_PASSWORDS,
-                      superController: widget.superController),
+                      superController: widget.superController,
+                      screenChecker: widget.screenChecker), //1
                   RegisterSingleScreen(
                       type: InputType.ALL_NAMES,
-                      superController: widget.superController),
+                      superController: widget.superController,
+                      screenChecker: widget.screenChecker), //2
                   RegisterSingleScreen(
-                    type: InputType.SOSHI_USERNAME,
-                    superController: widget.superController,
-                    registerError: registerError,
-                    registerErrorMessaage: registerErrorMessage,
-                  ),
+                      type: InputType.SOSHI_USERNAME,
+                      superController: widget.superController,
+                      registerError: registerError,
+                      registerErrorMessaage: registerErrorMessage,
+                      screenChecker: widget.screenChecker), //3
                   RegisterSingleScreen(
-                    type: InputType.PASSWORD,
-                    userMetaData: this.fetchUserData,
-                    superController: widget.superController,
-                    registerError: registerError,
-                    registerErrorMessaage: registerErrorMessage,
-                  ),
+                      type: InputType.PASSWORD,
+                      userMetaData: this.fetchUserData,
+                      superController: widget.superController,
+                      registerError: registerError,
+                      registerErrorMessaage: registerErrorMessage,
+                      screenChecker: widget.screenChecker), //4
                 ],
               ),
             ),
@@ -126,76 +114,49 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
               padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
               child: GestureDetector(
                 onTap: () async {
-                  print("Move to next screen - smooth animation REGISTER");
-
-                  if (currentPage == 0) {
-                    String convertedEmail =
-                        widget.superController.email.text.trim().toLowerCase();
-
-                    print("[!] email page processing! => ${convertedEmail}");
-
+                  // ✅ EMAIL
+                  if (currentPage == 0 && widget.screenChecker.isValidScreen(inputType: InputType.EMAIL)) {
+                    String convertedEmail = widget.superController.email.text.trim().toLowerCase();
                     OnboardingLoader.showLoadingIndicator("", context);
+                    DocumentSnapshot dRef =
+                        await FirebaseFirestore.instance.collection("emailToUsername").doc(convertedEmail).get();
 
-                    DocumentSnapshot dRef = await FirebaseFirestore.instance
-                        .collection("emailToUsername")
-                        .doc(convertedEmail)
-                        .get();
-                    print("DOC EXISTS? ❓ ${dRef.exists}");
                     if (dRef.exists) {
                       String username = dRef.get("soshiUsername");
-                      print(username);
-                      DocumentSnapshot dSnap = await FirebaseFirestore.instance
-                          .collection("users")
-                          .doc(username)
-                          .get();
-
+                      DocumentSnapshot dSnap = await FirebaseFirestore.instance.collection("users").doc(username).get();
                       Map fullUserPackage = dSnap.data();
                       setState(() {
-                        print("User package == > ${fullUserPackage}");
                         this.fetchUserData = fullUserPackage;
                       });
-
-                      // await controller.animateToPage(4,
-                      //     duration: Duration(milliseconds: 0), curve: Curves.easeInOut);
-
                       await controller.jumpToPage(4);
                     } else {
                       await controller.animateToPage(currentPage + 1,
-                          duration: Duration(milliseconds: 500),
-                          curve: Curves.easeInOut);
+                          duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
                     }
-
-                    Navigator.pop(context);
-                  } else if (currentPage == 1) {
-                    if (widget.superController.passwordNew.text ==
-                        widget.superController.passwordNewConfirm.text) {
-                      print(
-                          "✅password MATCH PASS  ${widget.superController.passwordNew.text} ||| ${widget.superController.passwordNewConfirm.text}");
-
+                    OnboardingLoader.killLoader(context);
+                  }
+                  // ✅ CREATE NEW PASSWORD
+                  else if (currentPage == 1 && widget.screenChecker.isValidScreen(inputType: InputType.ALL_PASSWORDS)) {
+                    if (widget.superController.passwordNew.text == widget.superController.passwordNewConfirm.text) {
                       await controller.animateToPage(currentPage + 1,
-                          duration: Duration(milliseconds: 500),
-                          curve: Curves.easeInOut);
+                          duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
                     } else {
                       print(
                           "❌ cant move to next, controller diff ${widget.superController.passwordNew.text} ||| ${widget.superController.passwordNewConfirm.text}");
                     }
-                  } else if (currentPage == 4) {
+                  }
+                  // ✅ REGULAR OLD PASSWORD
+                  else if (currentPage == 4) {
                     print("Sign in regularly into account!");
 
                     OnboardingLoader.showLoadingIndicator("", context);
 
                     final AuthService _authService = new AuthService();
-                    dynamic user =
-                        await _authService.signInWithEmailAndPassword(
-                            emailIn: widget.superController.email.text
-                                .trim()
-                                .toLowerCase(),
-                            passwordIn:
-                                widget.superController.passwordOldAcc.text);
+                    dynamic user = await _authService.signInWithEmailAndPassword(
+                        emailIn: widget.superController.email.text.trim().toLowerCase(),
+                        passwordIn: widget.superController.passwordOldAcc.text);
 
-                    await Future.delayed(Duration(seconds: 1));
-
-                    Navigator.pop(context);
+                    OnboardingLoader.killLoader(context);
 
                     if (user.runtimeType == String) {
                       print("❌ error caught in runTimetype (SIGN_IN)");
@@ -207,45 +168,43 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
                       setState(() {
                         this.registerError = false;
                       });
-                      print(
-                          "✅ sign-in success: pushing to main dashboard NOW!");
+                      print("✅ sign-in success: pushing to main dashboard NOW!");
 
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) => MainApp()),
                       );
                     }
-                  } else if (currentPage != 3) {
-                    await controller.animateToPage(currentPage + 1,
-                        duration: Duration(milliseconds: 500),
-                        curve: Curves.easeInOut);
                   }
+                  // ✅ CREATE FIRST/LAST NAME
+                  else if (currentPage == 2 && widget.screenChecker.isValidScreen(inputType: InputType.ALL_NAMES)) {
+                    await controller.animateToPage(currentPage + 1,
+                        duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+                  }
+                  //   // ✅ CREATE USERNAME
+                  // else if (currentPage == 3 &&
+                  //   ) {
+                  //   await controller.animateToPage(currentPage + 1,
+                  //       duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+                  // }
 
-                  //
-                  else {
+                  // ✅ FINAL
+                  else if (currentPage == 3 &&
+                      widget.screenChecker.isValidScreen(inputType: InputType.SOSHI_USERNAME)) {
                     final AuthService _authService = new AuthService();
 
                     OnboardingLoader.showLoadingIndicator("", context);
 
-                    dynamic user =
-                        await _authService.registerWithEmailAndPassword(
-                      email: widget.superController.email.text
-                          .trim()
-                          .toLowerCase(),
-                      username: widget.superController.soshiUsername.text
-                          .trim()
-                          .toLowerCase()
-                          .replaceAll(" ", ""),
-                      password:
-                          widget.superController.passwordNewConfirm.text.trim(),
+                    dynamic user = await _authService.registerWithEmailAndPassword(
+                      email: widget.superController.email.text.trim().toLowerCase(),
+                      username: widget.superController.soshiUsername.text.trim().toLowerCase().replaceAll(" ", ""),
+                      password: widget.superController.passwordNewConfirm.text.trim(),
                       first: widget.superController.firstName.text.trim(),
                       last: widget.superController.lastName.text.trim(),
                       contextIn: context,
                     );
-                    print(user);
-                    await Future.delayed(Duration(seconds: 2));
 
-                    Navigator.pop(context);
+                    OnboardingLoader.killLoader(context);
                     if (user.runtimeType == String) {
                       print("❌ error caught in runTimetype");
                       setState(() {
@@ -256,19 +215,14 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
                       setState(() {
                         this.registerError = false;
                       });
-                      print(
-                          "✅ sign-up success: pushing to main dashboard NOW!");
+                      print("✅ sign-up success: pushing to main dashboard NOW!");
 
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) {
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
                         return Scaffold(body: MainApp());
                       }));
                     }
-
-                    // After the 3 intro screens are done, push to registration onboarding process
-                    // Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    //   return Scaffold(body: RegisterScreen());
-                    // }));
+                  } else {
+                    log("cannot proceed to next screen sorry!");
                   }
                 },
                 child: Container(
@@ -294,14 +248,12 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
                       child: this.currentPage == 3
                           ? Text(
                               "Create Account",
-                              style:
-                                  TextStyle(fontSize: 20, color: Colors.black),
+                              style: TextStyle(fontSize: 20, color: Colors.black),
                             )
                           : this.currentPage == 4
                               ? Text(
                                   "Sign in",
-                                  style: TextStyle(
-                                      fontSize: 20, color: Colors.black),
+                                  style: TextStyle(fontSize: 20, color: Colors.black),
                                 )
                               : Text(
                                   "Continue",
@@ -322,6 +274,8 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
 class RegisterSingleScreen extends StatefulWidget {
   InputType type;
   SuperController superController;
+  ScreenChecker screenChecker;
+
   Map userMetaData = {};
   bool registerError = false;
   String registerErrorMessaage = "";
@@ -331,7 +285,8 @@ class RegisterSingleScreen extends StatefulWidget {
       this.superController,
       this.userMetaData,
       this.registerError,
-      this.registerErrorMessaage});
+      this.registerErrorMessaage,
+      this.screenChecker});
 
   @override
   State<RegisterSingleScreen> createState() => _RegisterSingleScreenState();
@@ -341,124 +296,126 @@ class _RegisterSingleScreenState extends State<RegisterSingleScreen> {
   String forgotPasswordText = "Forgot password?";
   bool validPassword = true;
   bool validEmail = true;
-  String emailValidation =
-      r"[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
-      r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
-      r"{0,253}[a-zA-Z0-9])?)*";
+
+  renderInputErrorMessage() {
+    String messageText = "";
+    bool badMessage = true;
+    String pass1 = widget.superController.passwordNew.text;
+    String pass2 = widget.superController.passwordNewConfirm.text;
+
+    String first = widget.superController.firstName.text;
+    String last = widget.superController.lastName.text;
+
+    if (widget.type == InputType.ALL_PASSWORDS && pass1 != "") {
+      if (pass1 != "" && pass2 != "" && pass1.length >= 8) {
+        if (pass1 != pass2) {
+          messageText = "Passwords don't match!";
+        } else {
+          messageText = "Passwords match!";
+          badMessage = false;
+        }
+      } else if (pass1.length < 8) {
+        messageText = "Password must be greater than 8 characters!";
+      }
+    } else if (widget.type == InputType.EMAIL && widget.superController.email.text != "") {
+      if (EmailValidator.validate(widget.superController.email.text)) {
+        messageText = "Valid email";
+        badMessage = false;
+      } else {
+        messageText = "Invalid email";
+      }
+    } else if (widget.type == InputType.ALL_NAMES) {
+      // if (first.length < 2 || last.length < 2) {
+      //   messageText = "Name too short";
+      //   badMessage = true;
+      // }
+
+      if (first != "" && last != "") {
+        badMessage = false;
+        messageText = "Cool name!";
+      }
+    } else if (widget.type == InputType.SOSHI_USERNAME) {
+      if (widget.superController.soshiUsername.text != "") {
+        badMessage = false;
+      }
+    }
+
+    if (badMessage == false) {
+      widget.screenChecker.markScreenDone(inputType: widget.type);
+    } else {
+      widget.screenChecker.markScreenInvalid(inputType: widget.type);
+    }
+
+    if (messageText != "") {
+      return TextButton.icon(
+          style: TextButton.styleFrom(primary: badMessage ? Colors.red : Colors.green),
+          onPressed: () {},
+          icon: badMessage ? Icon(Icons.cancel, color: Colors.red) : Icon(Icons.check, color: Colors.green),
+          label: Text(messageText,
+              style: TextStyle(
+                color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.grey[850],
+              )));
+    } else {
+      return Container();
+    }
+  }
+
+  renderAuthErrorMessage() {
+    if ([InputType.SOSHI_USERNAME, InputType.PASSWORD].contains(widget.type)) {
+      if (widget.registerError == true && getMapData('controller').text != "" && widget.registerErrorMessaage != "") {
+        return TextButton.icon(
+            onPressed: () {},
+            icon: Icon(
+              Icons.cancel,
+              color: Colors.red,
+            ),
+            label: Text(widget.registerErrorMessaage));
+      } else {
+        return Container();
+      }
+    } else {
+      return Container();
+    }
+  }
+
+  sendResetPassword() {
+    if (widget.type == InputType.PASSWORD) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          TextButton.icon(
+              onPressed: () async {
+                try {
+                  setState(() {
+                    forgotPasswordText = "Sent to ${widget.superController.email.text}. Resend?";
+                  });
+                  final FirebaseAuth _auth = FirebaseAuth.instance;
+                  await _auth.sendPasswordResetEmail(email: widget.superController.email.text);
+                } catch (e) {
+                  setState(() {
+                    forgotPasswordText = "Unable to send reset email, sorry";
+                  });
+                }
+              },
+              icon: forgotPasswordText.contains("Sent") ? Icon(Icons.check, color: Colors.green) : Container(),
+              label: Text(forgotPasswordText,
+                  style: TextStyle(color: forgotPasswordText.contains("Sent") ? Colors.green : Colors.white))),
+        ],
+      );
+    } else {
+      return Container();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = Utilities.getWidth(context);
     double height = Utilities.getHeight(context);
 
-    renderInputErrorMessage() {
-      String messageText = "";
-      bool badMessage = true;
-      String pass1 = widget.superController.passwordNew.text;
-      String pass2 = widget.superController.passwordNewConfirm.text;
-      if (widget.type == InputType.ALL_PASSWORDS && pass1 != "") {
-        print('✅✅✅✅ isnide check all passwords');
-
-        if (pass1 != "" && pass2 != "" && pass1.length >= 8) {
-          if (pass1 != pass2) {
-            messageText = "Passwords don't match!";
-          } else {
-            messageText = "Passwords match!";
-            badMessage = false;
-          }
-        } else if (pass1.length < 8) {
-          messageText = "Password must be greater than 8 characters!";
-        }
-      } else if (widget.type == InputType.EMAIL &&
-          widget.superController.email.text != "") {
-        if (validEmail) {
-          messageText = "Valid email";
-          badMessage = false;
-        } else {
-          messageText = "Invalid email";
-        }
-      }
-
-      if (messageText != "") {
-        return TextButton.icon(
-            style: TextButton.styleFrom(
-                primary: badMessage ? Colors.red : Colors.green),
-            onPressed: () {},
-            icon: badMessage
-                ? Icon(Icons.cancel, color: Colors.red)
-                : Icon(Icons.check, color: Colors.green),
-            label: Text(messageText,
-                style: TextStyle(
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.white
-                      : Colors.grey[850],
-                )));
-      } else {
-        return Container();
-      }
-    }
-
-    renderAuthErrorMessage() {
-      if ([InputType.SOSHI_USERNAME, InputType.PASSWORD]
-          .contains(widget.type)) {
-        if (widget.registerError == true &&
-            getMapData('controller').text != "") {
-          return TextButton.icon(
-              onPressed: () {},
-              icon: Icon(
-                Icons.cancel,
-                color: Colors.red,
-              ),
-              label: Text(widget.registerErrorMessaage));
-        } else {
-          return Container();
-        }
-      } else {
-        return Container();
-      }
-    }
-
-    sendResetPassword() {
-      if (widget.type == InputType.PASSWORD) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            TextButton.icon(
-                onPressed: () async {
-                  try {
-                    setState(() {
-                      forgotPasswordText =
-                          "Sent to ${widget.superController.email.text}. Resend?";
-                    });
-                    final FirebaseAuth _auth = FirebaseAuth.instance;
-                    await _auth.sendPasswordResetEmail(
-                        email: widget.superController.email.text);
-                  } catch (e) {
-                    setState(() {
-                      forgotPasswordText = "Unable to send reset email, sorry";
-                    });
-                  }
-                },
-                icon: forgotPasswordText.contains("Sent")
-                    ? Icon(Icons.check, color: Colors.green)
-                    : Container(),
-                label: Text(forgotPasswordText,
-                    style: TextStyle(
-                        color: forgotPasswordText.contains("Sent")
-                            ? Colors.green
-                            : Colors.white))),
-          ],
-        );
-      } else {
-        return Container();
-      }
-    }
-
     return Container(
-        // color: Colors.red,
         child: Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(
-        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           this.widget.userMetaData == null
               ? Padding(
@@ -467,8 +424,6 @@ class _RegisterSingleScreenState extends State<RegisterSingleScreen> {
                     getMapData('main_text'),
                     style: TextStyle(
                       fontSize: width / 20,
-                      //fontWeight: FontWeight.bold,
-                      //color: Colors.grey
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -480,9 +435,7 @@ class _RegisterSingleScreenState extends State<RegisterSingleScreen> {
                   child: Container(
                     child: Column(
                       children: [
-                        widget.userMetaData['Photo URL'] != null &&
-                                widget.userMetaData['Photo URL']
-                                    .contains("https")
+                        widget.userMetaData['Photo URL'] != null && widget.userMetaData['Photo URL'].contains("https")
                             ? ProfilePic(
                                 url: widget.userMetaData['Photo URL'],
                                 radius: 80,
@@ -491,22 +444,6 @@ class _RegisterSingleScreenState extends State<RegisterSingleScreen> {
                                 url: "assets/images/misc/default_pic.png",
                                 radius: 80,
                               ),
-
-                        // Card(
-                        //     shape: RoundedRectangleBorder(
-                        //       borderRadius:
-                        //           BorderRadius.all(Radius.circular(15)),
-                        //     ),
-                        //     elevation: 5,
-                        //     child: ClipRRect(
-                        //         borderRadius:
-                        //             BorderRadius.all(Radius.circular(15)),
-                        //         child: Image.network(
-                        //             widget.userMetaData['Photo URL'],
-                        //             height: 125,
-                        //             width: 125)),
-                        //   )
-                        // : Icon(Icons.person, size: 80),
                         SizedBox(height: 10),
                         Text(
                           "Welcome back,\n${this.widget.userMetaData['Name']['First']}!",
@@ -518,28 +455,27 @@ class _RegisterSingleScreenState extends State<RegisterSingleScreen> {
                   ),
                 )
               : Container(),
-          [InputType.ALL_PASSWORDS, InputType.ALL_NAMES]
-                  .contains(this.widget.type)
+          // Fields that have 2 Text Inputs
+          [InputType.ALL_PASSWORDS, InputType.ALL_NAMES].contains(this.widget.type)
               ? Column(
                   children: [
-                    makeTextField(getMapData('hint_text').split("%")[0],
-                        getMapData('controller_1')),
+                    makeTextField(getMapData('hint_text').split("%")[0], getMapData('controller_1')),
                     SizedBox(height: 10),
-                    makeTextField(getMapData('hint_text').split("%")[1],
-                        getMapData('controller_2')),
+                    makeTextField(getMapData('hint_text').split("%")[1], getMapData('controller_2')),
                     renderInputErrorMessage(),
                   ],
                 )
+
+              // Fields that only have only one text field input
               : Padding(
                   padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                   child: Column(
                     children: [
                       Container(
                         width: MediaQuery.of(context).size.width - 75,
-                        child: makeTextField(
-                            getMapData('hint_text'), getMapData('controller')),
+                        child: makeTextField(getMapData('hint_text'), getMapData('controller')),
                       ),
-
+                      renderInputErrorMessage(),
                       renderAuthErrorMessage(),
                       sendResetPassword()
                       // Forgot password functionality
@@ -550,17 +486,14 @@ class _RegisterSingleScreenState extends State<RegisterSingleScreen> {
     ));
   }
 
-  TextFormField makeTextField(
-      String hintText, TextEditingController controller) {
+  TextFormField makeTextField(String hintText, TextEditingController controller) {
     return TextFormField(
       keyboardType: hintText == "Email"
           ? TextInputType.emailAddress
           : hintText == "First Name" || hintText == "Last Name"
               ? TextInputType.name
               : null,
-      obscureText: hintText == "Password" || hintText == "Confirm password"
-          ? true
-          : false,
+      obscureText: hintText == "Password" || hintText == "Confirm password" ? true : false,
       cursorHeight: 28,
       textCapitalization: TextCapitalization.none,
       controller: controller,
@@ -568,33 +501,38 @@ class _RegisterSingleScreenState extends State<RegisterSingleScreen> {
           ? [FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9_.-@]"))]
           : widget.type == InputType.SOSHI_USERNAME
               ? [FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9_.]"))]
-              : null,
-      onChanged: widget.type == InputType.ALL_PASSWORDS
-          ? (String newValue) {
-              print("Updaintg password: " + newValue);
+              : widget.type == InputType.ALL_NAMES
+                  ? [FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]"))]
+                  : null,
+      // onChanged: widget.type == InputType.ALL_PASSWORDS
+      //     ? (String newValue) {
+      //         print("🔃 Updating password: " + newValue);
+      //         setState(() {});
+      //       }
+      //     : widget.type == InputType.EMAIL
+      //         ? (String newValue) {
+      //             print("📧 setting state for email 📧");
+      //             setState(() {
+      //               validEmail = EmailValidator.validate(newValue);
+      //               print("Email valid? ${validEmail}");
+      //             });
+      //           }
+      //         : null,
 
-              setState(() {});
-            }
-          : widget.type == InputType.EMAIL
-              ? (String newValue) {
-                  print("📧📧📧📧📧");
-                  setState(() {
-                    validEmail = EmailValidator.validate(newValue);
-                    print(" valid email::: ${validEmail}");
-                  });
-                }
-              : null,
+      onChanged: (value) {
+        setState(() {});
+      },
       style: TextStyle(fontSize: 24),
       decoration: InputDecoration(
           hintText: hintText,
           contentPadding: EdgeInsets.fromLTRB(20, 20, 20, 20),
           hintStyle: TextStyle(fontSize: 20),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            borderSide: BorderSide(color: Colors.grey, width: 1),
+            borderRadius: BorderRadius.all(Radius.circular(25)),
+            borderSide: BorderSide(color: Colors.cyan, width: 1),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
+            borderRadius: BorderRadius.all(Radius.circular(25)),
             borderSide: BorderSide(color: Colors.grey, width: 1),
           ),
           fillColor: Colors.grey,
@@ -655,13 +593,4 @@ class _RegisterSingleScreenState extends State<RegisterSingleScreen> {
   }
 }
 
-enum InputType {
-  EMAIL,
-  PASSWORD,
-  CONFIRM_PASSWORD,
-  SOSHI_USERNAME,
-  FIRST_NAME,
-  LAST_NAME,
-  ALL_NAMES,
-  ALL_PASSWORDS
-}
+enum InputType { EMAIL, PASSWORD, CONFIRM_PASSWORD, SOSHI_USERNAME, FIRST_NAME, LAST_NAME, ALL_NAMES, ALL_PASSWORDS }

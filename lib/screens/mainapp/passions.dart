@@ -51,7 +51,8 @@ class _PassionTileListState extends State<PassionTileList> {
   Widget makePassionTile(Passion passion, int pIndex) {
     return passion != Defaults.emptyPassion
         ? ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(elevation: 3),
+            style: ElevatedButton.styleFrom(
+                elevation: 1, shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15)))),
             onPressed: () async {
               pushAndUpdatePassions(passion, pIndex);
             },
@@ -64,7 +65,9 @@ class _PassionTileListState extends State<PassionTileList> {
               style: TextStyle(fontSize: 15),
             ))
         : OutlinedButton.icon(
-            style: OutlinedButton.styleFrom(primary: Colors.black),
+            style: OutlinedButton.styleFrom(
+                primary: Colors.black,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15)))),
             onPressed: () async {
               pushAndUpdatePassions(passion, pIndex);
             },
