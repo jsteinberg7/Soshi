@@ -26,8 +26,6 @@ import 'chooseSocials.dart';
 import 'profileSettings.dart';
 import 'package:http/http.dart' as http;
 
-// import 'package:keyboard_visibility/keyboard_visibility.dart';
-
 /*
 A social media card used in the profile (one card per platform)
 */
@@ -453,8 +451,9 @@ class ProfileState extends State<Profile> {
                                                       Navigator.push(context, MaterialPageRoute(builder: (context) {
                                                         return Scaffold(
                                                             body: ProfileSettings(
-                                                                importProfileNotifier: widget.importProfileNotifier,
-                                                                soshiUsername: user.soshiUsername));
+                                                                // importProfileNotifier: widget.importProfileNotifier
+
+                                                                ));
                                                       }));
                                                     },
                                                     icon: Icon(CupertinoIcons.pen)),
@@ -655,95 +654,71 @@ class ProfileState extends State<Profile> {
   }
 }
 
-class BioTextField extends StatefulWidget {
-  TextEditingController importController;
-  String soshiUsername;
+// class BioTextField extends StatefulWidget {
+//   SoshiUser user;
+//   BioTextField({@required this.user});
 
-  BioTextField({this.importController, this.soshiUsername});
+//   @override
+//   State<BioTextField> createState() => _BioTextFieldState();
+// }
 
-  @override
-  State<BioTextField> createState() => _BioTextFieldState();
-}
+// class _BioTextFieldState extends State<BioTextField> {
+//   FocusNode bioFocusNode;
 
-class _BioTextFieldState extends State<BioTextField> {
-  FocusNode bioFocusNode;
+//   @override
+//   void initState() {
+//     super.initState();
 
-  @override
-  void initState() {
-    super.initState();
+//     bioFocusNode = new FocusNode();
+//     bioFocusNode.addListener(() {
+//       if (!bioFocusNode.hasFocus) {
+//         // DataEngine.applyUserChanges(user: widget.user, cloud: false, local: true);
+//       }
+//     });
+//   }
 
-    bioFocusNode = new FocusNode();
-    bioFocusNode.addListener(() {
-      if (!bioFocusNode.hasFocus) {
-        LocalDataService.updateBio(widget.importController.text);
-        print(LocalDataService.getBio().toString());
-        DatabaseService databaseService = new DatabaseService();
-        databaseService.updateBio(widget.soshiUsername, widget.importController.text);
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: TextField(
-          focusNode: bioFocusNode,
-          maxLength: 40,
-          maxLengthEnforcement: MaxLengthEnforcement.enforced,
-          // keyboardType: TextInputType.multiline,
-          textInputAction: TextInputAction.done,
-          maxLines: 6,
-          autocorrect: true,
-          controller: widget.importController,
-          onSubmitted: (String bio) {
-            String soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
-            DatabaseService tempDB = new DatabaseService();
-            LocalDataService.updateBio(bio);
-            tempDB.updateBio(LocalDataService.getLocalUsernameForPlatform("Soshi"), bio);
-
-            // Checking if this is first time adding a bio
-            // if it is, it gives Soshi points
-            if (LocalDataService.getInjectionFlag("Bio") == false || LocalDataService.getInjectionFlag("Bio") == null) {
-              LocalDataService.updateInjectionFlag("Bio", true);
-              tempDB.updateInjectionSwitch(soshiUsername, "Bio", true);
-
-              LocalDataService.updateSoshiPoints(10);
-              tempDB.updateSoshiPoints(soshiUsername, 10);
-            }
-
-            // bioFocusNode.unfocus();
-            FocusScope.of(context).unfocus();
-          },
-          style: TextStyle(
-              height: 1.2,
-              fontWeight: FontWeight.bold,
-              fontSize: 15,
-              // color: Colors.white,
-              letterSpacing: 1.5),
-          decoration: InputDecoration(
-            floatingLabelBehavior: FloatingLabelBehavior.always,
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15.0),
-              borderSide: BorderSide(
-                color: Colors.blueGrey,
-              ),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15.0),
-              borderSide: BorderSide(
-                color: Colors.cyan[300],
-              ),
-            ),
-            labelStyle: TextStyle(
-                // color: Colors.cyanAccent,
-                fontSize: 20),
-            labelText: 'Bio',
-
-            hintText: "Enter your bio!",
-
-            hintStyle: TextStyle(color: Colors.grey, fontSize: 15),
-            // labelText: "Personal Bio"
-          )),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       child: TextField(
+//           focusNode: bioFocusNode,
+//           maxLength: 40,
+//           maxLengthEnforcement: MaxLengthEnforcement.enforced,
+//           // keyboardType: TextInputType.multiline,
+//           textInputAction: TextInputAction.done,
+//           maxLines: 6,
+//           autocorrect: true,
+//           controller: widget.user.bioController,
+//           onSubmitted: (String bio) {
+//             FocusScope.of(context).unfocus();
+//           },
+//           style: TextStyle(
+//               height: 1.2,
+//               fontWeight: FontWeight.bold,
+//               fontSize: 15,
+//               // color: Colors.white,
+//               letterSpacing: 1.5),
+//           decoration: InputDecoration(
+//             floatingLabelBehavior: FloatingLabelBehavior.always,
+//             enabledBorder: OutlineInputBorder(
+//               borderRadius: BorderRadius.circular(15.0),
+//               borderSide: BorderSide(
+//                 color: Colors.blueGrey,
+//               ),
+//             ),
+//             focusedBorder: OutlineInputBorder(
+//               borderRadius: BorderRadius.circular(15.0),
+//               borderSide: BorderSide(
+//                 color: Colors.cyan[300],
+//               ),
+//             ),
+//             labelStyle: TextStyle(
+//                 // color: Colors.cyanAccent,
+//                 fontSize: 20),
+//             labelText: 'Bio',
+//             hintText: "Enter your bio!",
+//             hintStyle: TextStyle(color: Colors.grey, fontSize: 15),
+//           )),
+//     );
+//   }
+// }

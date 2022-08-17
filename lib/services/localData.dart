@@ -228,7 +228,7 @@ abstract class LocalDataService {
       var userData = await databaseService.getUserFile(username);
       Friend friend = databaseService.userDataToFriend(userData);
 
-      friendsList[i] = friend.toJson();
+      friendsList[i] = friend.serialize();
     }
     // sort friendsList based on name
     friendsList.sort((String json1, String json2) {
@@ -406,7 +406,7 @@ abstract class LocalDataService {
     List<String> sortedFriendsList =
         await getLocalFriendsList(); // assume list is already sorted
 
-    String json = friend.toJson();
+    String json = friend.serialize();
     if (sortedFriendsList.isEmpty) {
       // if empty, simply add to beginning
       sortedFriendsList.add(json);
@@ -433,11 +433,10 @@ abstract class LocalDataService {
     return sortedFriendsList;
   }
 
-  static Future overwriteFriendSocials(Friend oldFriend, Friend) {}
 
   static Future<void> addToRecentFriends({@required Friend friend}) async {
     List<String> recentlyAddedFriends = getRecentlyAddedFriends();
-    String json = friend.toJson();
+    String json = friend.serialize();
     int len = recentlyAddedFriends.length;
     if (len < 5) {
       // if space, simply add to beginning of list

@@ -22,15 +22,14 @@ class DataEngine {
     List serializePassions = [];
 
     user.passions.forEach((e) {
-      serializePassions
-          .add({'passions_emoji': e.emoji, 'passions_name': e.name});
+      serializePassions.add({'passion_emoji': e.emoji, 'passion_name': e.name});
     });
 
     Map<String, dynamic> toReturn = {
       'Friends': [],
       'Name': {'First': user.firstName, 'Last': user.lastName},
       'Photo URL': user.photoURL,
-      'Bio': user.bio,
+      'Bio': user.bioController.text,
       'Soshi Points': user.soshiPoints,
       'Verified': user.verified,
       'Passions': serializePassions,
@@ -56,7 +55,15 @@ class DataEngine {
   }
 
   //{NOTE} If firebaseOverride is true, will fetch latest data again from firestore
-  static getUserObject({@required bool firebaseOverride}) async {
+  static getUserObject(
+      {@required bool firebaseOverride, String soshiUsernameOverride}) async {
+    if (soshiUsernameOverride == null) {
+      soshiUsernameOverride =
+          soshiUsername; // if no override, use local username
+    } else {
+      firebaseOverride =
+          true; // if username override, force cloud override (avoid accidental local fetch)
+    }
     Map fetch;
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -64,15 +71,15 @@ class DataEngine {
     log("{userObject Exists?} ==> ${prefs.containsKey("userObject")}");
 
     if (firebaseOverride || !prefs.containsKey("userObject")) {
-      log("[⚙ Data Engine ⚙]  getUserObject() Firebase data burn ⚠ userFetch=> ${soshiUsername}");
+      log("[⚙ Data Engine ⚙]  getUserObject() Firebase data burn ⚠ userFetch=> ${soshiUsernameOverride}");
       DocumentSnapshot dSnap = await FirebaseFirestore.instance
           .collection("users")
-          .doc(soshiUsername)
+          .doc(soshiUsernameOverride)
           .get();
       fetch = dSnap.data();
       await prefs.setString("userObject", jsonEncode(fetch));
     } else {
-      log("[⚙ Data Engine ⚙]  getUserObject() Using cache ✅");
+      log("[⚙ Data Engine ⚙]  getUserObject() Using cache 😃");
       SharedPreferences prefs = await SharedPreferences.getInstance();
       fetch = jsonDecode(prefs.getString("userObject"));
     }
@@ -92,12 +99,39 @@ class DataEngine {
     List friends = fetch['Friends'] ?? [];
     log("[⚙ Data Engine ⚙] basic info built ✅");
 
-    if (fetch['Passions'] != null) {
+    if (fetch['Passions'] == null) {
+      for (int i = 0; i < 3; i++) {
+        passions.add(Defaults.emptyPassion);
+      }
+    } else {
       List.of(fetch['Passions']).forEach((e) {
-        passions
-            .add(Passion(emoji: e['passion_emoji'], name: e['passion_name']));
+        if (e['passion_name'].toString().toUpperCase() == "EMPTY") {
+          passions.add(Defaults.emptyPassion);
+        } else {
+          passions
+              .add(Passion(emoji: e['passion_emoji'], name: e['passion_name']));
+        }
       });
     }
+
+    // if (fetch['Passions'] != null) {
+    //   List.of(fetch['Passions']).forEach((e) {
+    //     if (e['passion_name'].toString().toUpperCase() == "EMPTY") {
+    //       passions.add(Defaults.emptyPassion);
+    //     } else {
+    //       passions.add(Passion(emoji: e['passion_emoji'], name: e['passion_name']));
+    //     }
+    //   });
+
+    //   //add null for where there are empty passions, so there are always 3
+    //   for (int i = 0; i < 3 - fetch['Passions'].length; i++) {
+    //     passions.add(Defaults.emptyPassion);
+    //   }
+    // } else {
+    //   for (int i = 0; i < 3; i++) {
+    //     passions.add(Defaults.emptyPassion);
+    //   }
+    // }
 
     log("[⚙ Data Engine ⚙] passions info built ✅");
 
@@ -125,8 +159,12 @@ class DataEngine {
     }
 
     return SoshiUser(
-        soshiUsername: soshiUsername,
+        soshiUsername: soshiUsernameOverride,
         firstName: fetch['Name']['First'],
+        firstNameController:
+            new TextEditingController(text: fetch['Name']['First']),
+        lastNameController:
+            new TextEditingController(text: fetch['Name']['Last']),
         lastName: fetch['Name']['Last'],
         photoURL: photoURL,
         hasPhoto: hasPhoto,
@@ -135,6 +173,7 @@ class DataEngine {
         passions: passions,
         soshiPoints: soshiPoints,
         bio: bio,
+        bioController: new TextEditingController(text: bio),
         friends: friends,
         lookupSocial: lookupSocial);
   }
@@ -170,6 +209,34 @@ class DataEngine {
 
 //{NOTE} just use "applyUserChanges" and change boolean values
 
+  static Future<List<Passion>> getAvailablePassions(
+      {@required bool firebaseOverride}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map allPassionData = {};
+
+    if (!prefs.containsKey("available_passions") || firebaseOverride) {
+      log("[⚙ Data Engine ⚙] Firebase burn for available passions❌");
+
+      DocumentSnapshot dsnap = await FirebaseFirestore.instance
+          .collection('metadata')
+          .doc('passionData')
+          .get();
+      allPassionData = dsnap.get('all_passions_list');
+      await prefs.setString("available_passions", jsonEncode(allPassionData));
+    } else {
+      log("[⚙ Data Engine ⚙] using smart cache for available passions 😃");
+
+      allPassionData = jsonDecode(prefs.getString("available_passions"));
+    }
+
+    List<Passion> pList = allPassionData.keys
+        .map((key) => Passion(emoji: allPassionData[key], name: key))
+        .toList();
+
+    pList.add(Defaults.emptyPassion);
+    log("[⚙ Data Engine ⚙] Successfully fetched latest available passions ✅");
+    return pList;
+  }
 }
 
 class SoshiUser {
@@ -181,11 +248,18 @@ class SoshiUser {
   int soshiPoints;
   List friends;
   Map<String, Social> lookupSocial;
+
+  TextEditingController bioController;
+  TextEditingController firstNameController;
+  TextEditingController lastNameController;
+
   // List<Friend> friends;
 
   SoshiUser(
       {@required this.soshiUsername,
       @required this.firstName,
+      @required this.firstNameController,
+      @required this.lastNameController,
       @required this.lastName,
       @required this.photoURL,
       @required this.hasPhoto,
@@ -194,6 +268,7 @@ class SoshiUser {
       @required this.passions,
       @required this.soshiPoints,
       @required this.bio,
+      @required this.bioController,
       @required this.friends,
       @required this.lookupSocial});
 
@@ -245,6 +320,15 @@ class SoshiUser {
   addNewPlatforms() {}
 
   getSocialFromPlatform() {}
+
+// checks if user profile in profile settings has been updated to discard/save changes
+  bool userUpdated(SoshiUser other) {
+    return this.firstName == other.firstName &&
+        this.lastName == other.lastName &&
+        this.bio == other.bio &&
+        this.photoURL == other.photoURL &&
+        this.passions == other.passions;
+  }
 }
 
 class Social {
@@ -266,6 +350,11 @@ class Passion {
     @required this.emoji,
     @required this.name,
   });
+
+  @override
+  bool operator ==(other) {
+    return (other is Passion) && other.name == name && other.emoji == emoji;
+  }
 }
 
 /* Stores information for individual friend/connection */
@@ -299,13 +388,19 @@ class Friend {
     return list;
   }
 
-  static List<Friend> convertToFriendList(List<String> usernameList) async {
+  static Future<List<Friend>> convertToFriendList(
+      List<String> usernameList) async {
     List<Friend> list = [];
     for (String username in usernameList) {
-
-      
-      list.add(friend);
+      SoshiUser currUser = await DataEngine.getUserObject(
+          firebaseOverride: true, soshiUsernameOverride: username);
+      list.add(Friend(
+          soshiUsername: username,
+          fullName: currUser.firstName + ' ' + currUser.lastName,
+          photoURL: currUser.photoURL,
+          isVerified: currUser.verified));
     }
+    return list;
   }
 
   // convert friend to map, then map to json
@@ -323,4 +418,5 @@ class Friend {
 class Defaults {
   static String defaultProfilePic =
       "https://img.freepik.com/free-photo/abstract-luxury-plain-blur-grey-black-gradient-used-as-background-studio-wall-display-your-products_1258-58170.jpg?w=2000";
+  static Passion emptyPassion = Passion(emoji: "❌", name: "Empty");
 }
