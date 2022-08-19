@@ -83,8 +83,10 @@ class _SMTileState extends State<SMTile> {
             isSwitched = true;
           });
 
-          if (LocalDataService.getLocalUsernameForPlatform(platformName) == null ||
-              LocalDataService.getLocalUsernameForPlatform(platformName) == "") {
+          if (LocalDataService.getLocalUsernameForPlatform(platformName) ==
+                  null ||
+              LocalDataService.getLocalUsernameForPlatform(platformName) ==
+                  "") {
             // prompt user to enter username
             Popups.editUsernamePopup(
               context,
@@ -93,8 +95,10 @@ class _SMTileState extends State<SMTile> {
               MediaQuery.of(context).size.width,
             );
           }
-          LocalDataService.updateSwitchForPlatform(platform: platformName, state: true);
-          databaseService.updatePlatformSwitch(platform: platformName, state: true);
+          LocalDataService.updateSwitchForPlatform(
+              platform: platformName, state: true);
+          databaseService.updatePlatformSwitch(
+              platform: platformName, state: true);
           if (LocalDataService.getFirstSwitchTap()) {
             LocalDataService.updateFirstSwitchTap(false);
             Popups.platformSwitchesExplained(context);
@@ -102,8 +106,10 @@ class _SMTileState extends State<SMTile> {
         }
         String usernameControllerLower = usernameController.text.toLowerCase();
 
-        LocalDataService.updateUsernameForPlatform(platform: platformName, username: usernameControllerLower.trim());
-        databaseService.updateUsernameForPlatform(platform: platformName, username: usernameControllerLower.trim());
+        LocalDataService.updateUsernameForPlatform(
+            platform: platformName, username: usernameControllerLower.trim());
+        databaseService.updateUsernameForPlatform(
+            platform: platformName, username: usernameControllerLower.trim());
       }
     });
 
@@ -161,12 +167,15 @@ class _SMTileState extends State<SMTile> {
                       Uint8List profilePicBytes;
                       try {
                         // try to load profile pic from url
-                        await http.get(Uri.parse(photoUrl)).then((http.Response response) {
+                        await http
+                            .get(Uri.parse(photoUrl))
+                            .then((http.Response response) {
                           profilePicBytes = response.bodyBytes;
                         });
                       } catch (e) {
                         // if url is invalid, use default profile pic
-                        ByteData data = await rootBundle.load("assets/images/SoshiLogos/soshi_icon.png");
+                        ByteData data = await rootBundle
+                            .load("assets/images/SoshiLogos/soshi_icon.png");
                         profilePicBytes = data.buffer.asUint8List();
                       }
                       Contact contact = new Contact(
@@ -176,20 +185,27 @@ class _SMTileState extends State<SMTile> {
                             Item(
                                 label: "Email",
                                 // value: LocalDataService.getLocalUsernameForPlatform("Email"),
-                                value: widget.user.getUsernameGivenPlatform(platform: "Email")),
+                                value: widget.user.getUsernameGivenPlatform(
+                                    platform: "Email")),
                           ],
                           phones: [
-                            Item(label: "Cell", value: widget.user.getUsernameGivenPlatform(platform: "Phone")),
+                            Item(
+                                label: "Cell",
+                                value: widget.user.getUsernameGivenPlatform(
+                                    platform: "Phone")),
                           ],
                           avatar: profilePicBytes);
                       await askPermissions(context);
-                      ContactsService.addContact(contact).then((dynamic success) {
-                        Popups.showContactAddedPopup(
-                            context, width, photoUrl, firstName, lastName, "phoneNumber", "email");
+                      ContactsService.addContact(contact)
+                          .then((dynamic success) {
+                        Popups.showContactAddedPopup(context, width, photoUrl,
+                            firstName, lastName, "phoneNumber", "email");
                       });
                     } else if (platformName == "Cryptowallet") {
                       Clipboard.setData(ClipboardData(
-                        text: widget.user.getUsernameGivenPlatform(platform: "Cryptowallet").toString(),
+                        text: widget.user
+                            .getUsernameGivenPlatform(platform: "Cryptowallet")
+                            .toString(),
                       ));
 
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -201,7 +217,8 @@ class _SMTileState extends State<SMTile> {
                     } else {
                       URL.launchURL(URL.getPlatformURL(
                           platform: platformName,
-                          username: widget.user.getUsernameGivenPlatform(platform: platformName)));
+                          username: widget.user.getUsernameGivenPlatform(
+                              platform: platformName)));
                     }
                   },
                   iconSize: 60.0,
@@ -213,20 +230,26 @@ class _SMTileState extends State<SMTile> {
                     onChanged: (bool value) {
                       HapticFeedback.lightImpact();
 
-                      if (widget.user.getUsernameGivenPlatform(platform: platformName) == null ||
-                          widget.user.getUsernameGivenPlatform(platform: platformName) == "") {
-                        Popups.editUsernamePopup(
-                            context, soshiUsername, platformName, MediaQuery.of(context).size.width);
+                      if (widget.user.getUsernameGivenPlatform(
+                                  platform: platformName) ==
+                              null ||
+                          widget.user.getUsernameGivenPlatform(
+                                  platform: platformName) ==
+                              "") {
+                        Popups.editUsernamePopup(context, soshiUsername,
+                            platformName, MediaQuery.of(context).size.width);
                       }
 
-                      widget.user.lookupSocial[platformName].switchStatus = value;
+                      widget.user.lookupSocial[platformName].switchStatus =
+                          value;
 
                       setState(() {
                         this.isSwitched = value;
                       });
 
                       //{NOTE} Updating Firestore/local storage will occurr Asynchronously
-                      DataEngine.applyUserChanges(user: widget.user, cloud: true, local: true);
+                      DataEngine.applyUserChanges(
+                          user: widget.user, cloud: true, local: true);
 
                       // if (LocalDataService.getFirstSwitchTap()) {
                       //   LocalDataService.updateFirstSwitchTap(false);
@@ -319,7 +342,8 @@ class Profile extends StatefulWidget {
 class ProfileState extends State<Profile> {
   SoshiUser user;
   List<Social> userSocials;
-  ValueNotifier controlsEditHandlesScreen = new ValueNotifier("CONTROL_EDIT_HANDLES");
+  ValueNotifier controlsEditHandlesScreen =
+      new ValueNotifier("CONTROL_EDIT_HANDLES");
 
   loadDataEngine() async {
     this.user = await DataEngine.getUserObject(firebaseOverride: false);
@@ -341,7 +365,7 @@ class ProfileState extends State<Profile> {
         future: loadDataEngine(),
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
-            return Text("loading....");
+            return Center(child: CircularProgressIndicator.adaptive());
           } else {
             return SingleChildScrollView(
               child: Container(
@@ -358,11 +382,14 @@ class ProfileState extends State<Profile> {
                               width: width,
                               // height: height / containerSize,
                               height: MediaQuery.of(context).size.height / 2.3,
-                              child: Image.network(Defaults.defaultProfilePic, fit: BoxFit.fill),
+                              child: Image.network(Defaults.defaultProfilePic,
+                                  fit: BoxFit.fill),
                             ),
+                            ProfilePicBackdrop(user.photoURL,
+                                height: height / 2, width: width),
                             GlassmorphicContainer(
                               // height: height / containerSize,
-                              height: height / 2.3,
+                              height: height / 2,
                               width: width,
                               borderRadius: 0,
                               blur: 8,
@@ -372,9 +399,15 @@ class ProfileState extends State<Profile> {
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                                 colors: [
-                                  (Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black)
+                                  (Theme.of(context).brightness ==
+                                              Brightness.light
+                                          ? Colors.white
+                                          : Colors.black)
                                       .withOpacity(0.8),
-                                  (Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black)
+                                  (Theme.of(context).brightness ==
+                                              Brightness.light
+                                          ? Colors.white
+                                          : Colors.black)
                                       .withOpacity(0.4)
                                 ],
                                 stops: [0.1, 1],
@@ -383,9 +416,15 @@ class ProfileState extends State<Profile> {
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                                 colors: [
-                                  (Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black)
+                                  (Theme.of(context).brightness ==
+                                              Brightness.light
+                                          ? Colors.white
+                                          : Colors.black)
                                       .withOpacity(0.5),
-                                  (Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black)
+                                  (Theme.of(context).brightness ==
+                                              Brightness.light
+                                          ? Colors.white
+                                          : Colors.black)
                                       .withOpacity(0.5),
                                 ],
                               ),
@@ -400,42 +439,59 @@ class ProfileState extends State<Profile> {
                                       // height: height / containerSize,
                                       width: width,
                                       child: Padding(
-                                        padding: EdgeInsets.fromLTRB(width / 40, width / 40, width / 40, 0),
+                                        padding: EdgeInsets.fromLTRB(width / 40,
+                                            width / 40, width / 40, 0),
                                         child: Column(
                                           children: [
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
                                               children: <Widget>[
                                                 IconButton(
                                                     onPressed: () {
-                                                      Scaffold.of(context).openDrawer();
+                                                      Scaffold.of(context)
+                                                          .openDrawer();
                                                     },
-                                                    icon: Icon(CupertinoIcons.line_horizontal_3)),
+                                                    icon: Icon(CupertinoIcons
+                                                        .line_horizontal_3)),
                                                 Column(
                                                   children: [
                                                     Container(
                                                       width: width / 1.5,
                                                       child: Center(
                                                         child: AutoSizeText(
-                                                          user.firstName + " " + user.lastName,
+                                                          user.firstName +
+                                                              " " +
+                                                              user.lastName,
                                                           maxLines: 1,
                                                           style: TextStyle(
-                                                            fontWeight: FontWeight.bold,
-                                                            fontSize: width / 16,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize:
+                                                                width / 16,
                                                           ),
                                                         ),
                                                       ),
                                                     ),
                                                     Padding(
-                                                      padding: const EdgeInsets.only(top: 3.0, bottom: 2.0),
-                                                      child: SoshiUsernameText(user.soshiUsername,
-                                                          fontSize: width / 22, isVerified: user.verified),
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 3.0,
+                                                              bottom: 2.0),
+                                                      child: SoshiUsernameText(
+                                                          user.soshiUsername,
+                                                          fontSize: width / 22,
+                                                          isVerified:
+                                                              user.verified),
                                                     )
                                                   ],
                                                 ),
                                                 IconButton(
                                                     onPressed: () {
-                                                      Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                                      Navigator.push(context,
+                                                          MaterialPageRoute(
+                                                              builder:
+                                                                  (context) {
                                                         return Scaffold(
                                                             body: ProfileSettings(
                                                                 // importProfileNotifier: widget.importProfileNotifier
@@ -443,7 +499,8 @@ class ProfileState extends State<Profile> {
                                                                 ));
                                                       }));
                                                     },
-                                                    icon: Icon(CupertinoIcons.pen)),
+                                                    icon: Icon(
+                                                        CupertinoIcons.pen)),
                                               ],
                                             ),
                                             SizedBox(
@@ -451,64 +508,123 @@ class ProfileState extends State<Profile> {
                                             ),
 
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
                                               children: [
                                                 SizedBox(
                                                   width: width / 4,
                                                   child: Column(children: [
-                                                    Text(LocalDataService.getFriendsListCount().toString(),
-                                                        style: TextStyle(letterSpacing: 1.2, fontSize: width / 25)),
-                                                    LocalDataService.getFriendsListCount() == 1
+                                                    Text(
+                                                        user.friends.length
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                            letterSpacing: 1.2,
+                                                            fontSize:
+                                                                width / 25,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                    user.friends.length == 1
                                                         ? Text(
                                                             "Friend",
                                                             style: TextStyle(
                                                                 //fontWeight: FontWeight.bold,
-                                                                letterSpacing: 1.2,
-                                                                fontSize: width / 25),
+                                                                letterSpacing:
+                                                                    1.2,
+                                                                fontSize:
+                                                                    width / 25),
                                                           )
                                                         : Text("Friends",
-                                                            style: TextStyle(letterSpacing: 1.2, fontSize: width / 25)),
+                                                            style: TextStyle(
+                                                                letterSpacing:
+                                                                    1.2,
+                                                                fontSize:
+                                                                    width /
+                                                                        25)),
                                                   ]),
                                                 ),
                                                 ProfilePic(
                                                     radius: width / 6.5,
-                                                    url: LocalDataService.getLocalProfilePictureURL()),
+                                                    url: LocalDataService
+                                                        .getLocalProfilePictureURL()),
                                                 SizedBox(
                                                   width: width / 4,
                                                   child: GestureDetector(
                                                     onTap: () {
-                                                      Popups.soshiPointsExplainedPopup(context, width, height);
+                                                      Popups
+                                                          .soshiPointsExplainedPopup(
+                                                              context,
+                                                              width,
+                                                              height);
                                                     },
                                                     child: Column(children: [
-                                                      Text(LocalDataService.getSoshiPoints().toString(),
+                                                      Text(
+                                                          LocalDataService
+                                                                  .getSoshiPoints()
+                                                              .toString(),
                                                           style: TextStyle(
-                                                              letterSpacing: 1.2,
-                                                              fontSize: width / 25,
-                                                              fontWeight: FontWeight.bold)),
+                                                              letterSpacing:
+                                                                  1.2,
+                                                              fontSize:
+                                                                  width / 25,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold)),
                                                       Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
                                                         children: [
-                                                          LocalDataService.getSoshiPoints() == 1
+                                                          LocalDataService
+                                                                      .getSoshiPoints() ==
+                                                                  1
                                                               ? Text("Bolt",
                                                                   style: TextStyle(
-                                                                      letterSpacing: 1.2, fontSize: width / 25))
+                                                                      letterSpacing:
+                                                                          1.2,
+                                                                      fontSize:
+                                                                          width /
+                                                                              25))
                                                               : Text("Bolts",
                                                                   style: TextStyle(
-                                                                      letterSpacing: 1.2, fontSize: width / 25)),
+                                                                      letterSpacing:
+                                                                          1.2,
+                                                                      fontSize:
+                                                                          width /
+                                                                              25)),
                                                           Padding(
-                                                            padding: const EdgeInsets.only(left: 2),
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    left: 2),
                                                             child: IconButton(
                                                               onPressed: () {
-                                                                Popups.soshiPointsExplainedPopup(
-                                                                    context, width, height);
+                                                                Popups
+                                                                    .soshiPointsExplainedPopup(
+                                                                        context,
+                                                                        width,
+                                                                        height);
                                                               },
-                                                              padding: EdgeInsets.zero,
-                                                              constraints: BoxConstraints(
-                                                                  maxHeight: width / 28,
-                                                                  maxWidth: width / 28,
-                                                                  minHeight: 0,
-                                                                  minWidth: 0),
-                                                              icon: Icon(CupertinoIcons.info_circle, size: width / 28),
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .zero,
+                                                              constraints:
+                                                                  BoxConstraints(
+                                                                      maxHeight:
+                                                                          width /
+                                                                              28,
+                                                                      maxWidth:
+                                                                          width /
+                                                                              28,
+                                                                      minHeight:
+                                                                          0,
+                                                                      minWidth:
+                                                                          0),
+                                                              icon: Icon(
+                                                                  CupertinoIcons
+                                                                      .info_circle,
+                                                                  size: width /
+                                                                      28),
                                                             ),
                                                           )
                                                         ],
@@ -518,22 +634,25 @@ class ProfileState extends State<Profile> {
                                                 ),
                                               ],
                                             ),
-                                            //SizedBox(height: height / 1),
-                                            Padding(
-                                                padding: EdgeInsets.fromLTRB(width / 5, height / 3, width / 5, 0),
-                                                child: user.bio == "" || user.bio == null
-                                                    ? Container()
-                                                    : Container(
-                                                        child: //Padding(
-                                                            //padding: EdgeInsets.fromLTRB(width / 5, 0, width / 5, 0),
-                                                            //child:
-                                                            AutoSizeText(
-                                                          LocalDataService.getBio(),
-                                                          maxLines: 3,
-                                                          minFontSize: 17,
-                                                          textAlign: TextAlign.center,
-                                                        ),
-                                                      )),
+                                            SizedBox(height: height / 60),
+                                            user.bio == "" || user.bio == null
+                                                ? Container()
+                                                : Container(
+                                                    child: Padding(
+                                                    padding:
+                                                        EdgeInsets.fromLTRB(
+                                                            width / 7,
+                                                            0,
+                                                            width / 7,
+                                                            0),
+                                                    child: AutoSizeText(
+                                                      user.bio,
+                                                      maxLines: 4,
+                                                      minFontSize: 17,
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                    ),
+                                                  )),
 
                                             // Padding(
                                             //   padding:
@@ -559,12 +678,15 @@ class ProfileState extends State<Profile> {
                         child: Container(
                             //height: height / 2,
                             decoration: BoxDecoration(
-                                color: Theme.of(context).scaffoldBackgroundColor,
+                                color:
+                                    Theme.of(context).scaffoldBackgroundColor,
                                 // color: Colors.blue,
-                                borderRadius:
-                                    BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(20.0),
+                                    topRight: Radius.circular(20.0))),
                             child: Padding(
-                              padding: EdgeInsets.fromLTRB(width / 35, height / 150, width / 35, 0),
+                              padding: EdgeInsets.fromLTRB(
+                                  width / 35, height / 90, width / 35, 0),
                               child: Column(
                                 //mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -573,7 +695,9 @@ class ProfileState extends State<Profile> {
                                     padding: EdgeInsets.only(left: width / 40),
                                     child: Text(
                                       "Passions",
-                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: width / 17),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: width / 17),
                                     ),
                                   ),
                                   SizedBox(
@@ -581,26 +705,38 @@ class ProfileState extends State<Profile> {
                                   ),
                                   PassionTileList(),
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Padding(
-                                        padding: EdgeInsets.only(left: width / 40),
+                                        padding:
+                                            EdgeInsets.only(left: width / 40),
                                         child: Text(
                                           "Socials",
-                                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: width / 17),
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: width / 17),
                                         ),
                                       ),
                                       IconButton(
-                                        icon: Icon(CupertinoIcons.pencil_ellipsis_rectangle),
+                                        icon: Icon(CupertinoIcons
+                                            .pencil_ellipsis_rectangle),
                                         onPressed: () async {
-                                          Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                          Navigator.push(context,
+                                              MaterialPageRoute(
+                                                  builder: (context) {
                                             return Scaffold(
                                                 body: ValueListenableBuilder(
-                                                    valueListenable: this.controlsEditHandlesScreen,
-                                                    builder: (context, value, _) {
+                                                    valueListenable: this
+                                                        .controlsEditHandlesScreen,
+                                                    builder:
+                                                        (context, value, _) {
                                                       return EditHandles(
-                                                          editHandleMasterControl: controlsEditHandlesScreen,
-                                                          profileMasterControl: widget.importProfileNotifier);
+                                                          editHandleMasterControl:
+                                                              controlsEditHandlesScreen,
+                                                          profileMasterControl:
+                                                              widget
+                                                                  .importProfileNotifier);
                                                     }));
                                           }));
                                         },
@@ -613,19 +749,31 @@ class ProfileState extends State<Profile> {
                                       child: GridView.builder(
                                         // add an extra tile with the "+" that can be used always to add morem platforms
                                         padding: EdgeInsets.zero,
-                                        physics: const NeverScrollableScrollPhysics(),
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
                                         shrinkWrap: true,
-                                        itemBuilder: (BuildContext context, int index) {
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
                                           return Padding(
-                                              padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      5, 5, 5, 5),
                                               child: index != userSocials.length
-                                                  ? SMTile(user: user, selectedSocial: userSocials[index])
+                                                  ? SMTile(
+                                                      user: user,
+                                                      selectedSocial:
+                                                          userSocials[index])
                                                   : AddPlatformsTile(
-                                                      importProfileNotifier: widget.importProfileNotifier, user: user));
+                                                      importProfileNotifier: widget
+                                                          .importProfileNotifier,
+                                                      user: user));
                                         },
                                         itemCount: userSocials.length,
-                                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: 3, childAspectRatio: .8, crossAxisSpacing: width / 40),
+                                        gridDelegate:
+                                            SliverGridDelegateWithFixedCrossAxisCount(
+                                                crossAxisCount: 3,
+                                                childAspectRatio: .8,
+                                                crossAxisSpacing: width / 40),
                                       ),
                                     ),
                                   ),

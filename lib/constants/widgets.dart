@@ -37,10 +37,10 @@ class ProfilePic extends StatelessWidget {
     return Container(
       decoration: new BoxDecoration(
         shape: BoxShape.circle,
-        // border: new Border.all(
-        //   color: Colors.cyanAccent,
-        //   width: radius / 30,
-        // ),
+        border: new Border.all(
+          color: Colors.white,
+          width: radius / 30,
+        ),
       ),
       child: CircularProfileAvatar(
         url,
