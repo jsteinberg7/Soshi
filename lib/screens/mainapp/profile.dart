@@ -768,7 +768,7 @@ class ProfileState extends State<Profile> {
                                                           .importProfileNotifier,
                                                       user: user));
                                         },
-                                        itemCount: userSocials.length,
+                                        itemCount: userSocials.length + 1,
                                         gridDelegate:
                                             SliverGridDelegateWithFixedCrossAxisCount(
                                                 crossAxisCount: 3,

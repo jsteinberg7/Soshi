@@ -22,11 +22,14 @@ class _PassionTileListState extends State<PassionTileList> {
         future: loadDataEngine(),
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
-            return Text("loading passions now...");
+            return Center(child: CircularProgressIndicator.adaptive());
           } else {
             return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [0, 1, 2].map((int pIndex) => makePassionTile(user.passions[pIndex], pIndex)).toList());
+                children: [0, 1, 2]
+                    .map((int pIndex) =>
+                        makePassionTile(user.passions[pIndex], pIndex))
+                    .toList());
           }
         });
   }
@@ -52,7 +55,9 @@ class _PassionTileListState extends State<PassionTileList> {
     return passion != Defaults.emptyPassion
         ? ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
-                elevation: 1, shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15)))),
+                elevation: 1,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(15)))),
             onPressed: () async {
               pushAndUpdatePassions(passion, pIndex);
             },
@@ -67,7 +72,8 @@ class _PassionTileListState extends State<PassionTileList> {
         : OutlinedButton.icon(
             style: OutlinedButton.styleFrom(
                 primary: Colors.black,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15)))),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(15)))),
             onPressed: () async {
               pushAndUpdatePassions(passion, pIndex);
             },
@@ -78,7 +84,10 @@ class _PassionTileListState extends State<PassionTileList> {
             label: Text(
               "Add",
               style: TextStyle(
-                  color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white, fontSize: 15),
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.black
+                      : Colors.white,
+                  fontSize: 15),
             ));
   }
 }

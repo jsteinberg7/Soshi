@@ -161,10 +161,10 @@ class DataEngine {
       log("[⚙ Data Engine ⚙] SoshiUser Object built ✅");
     }
 
-    if (friends != null && friends.isNotEmpty && friends[0] is String) {
-      // convert local friends list from String list to Friend list if just pulled from db
-      friends = await Friend.convertToFriendList(friends);
-    }
+    // if (friends != null && friends.isNotEmpty && friends[0] is String) {
+    //   // convert local friends list from String list to Friend list if just pulled from db
+    //   friends = await Friend.convertToFriendList(friends);
+    // }
 
     return SoshiUser(
         soshiUsername: soshiUsernameOverride,
@@ -206,7 +206,7 @@ class DataEngine {
       }
 
       if (cloud) {
-        afterSerialized["Friends"] = Friend.convertToStringList(user.friends);
+        //afterSerialized["Friends"] = Friend.convertToStringList(user.friends); **ADD THIS BACK ONCE JASON ADDS FRIENDS
         await FirebaseFirestore.instance
             .collection("users")
             .doc(soshiUsername)

@@ -691,7 +691,7 @@ class _AddFriendButtonState extends State<AddFriendButton> {
           style: NeumorphicStyle(
               shadowDarkColor: Colors.black,
               shadowLightColor: Colors.black12,
-              color: isFriendAdded ? Colors.black : Colors.grey,
+              color: isFriendAdded ? Colors.black : Colors.blue,
               boxShape:
                   NeumorphicBoxShape.roundRect(BorderRadius.circular(20.0)))),
     );

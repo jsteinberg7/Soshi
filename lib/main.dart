@@ -26,12 +26,13 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle(statusBarColor: Colors.transparent));
     return StreamProvider<User>.value(
         value: AuthService().user,
         child: MaterialApp(
             debugShowCheckedModeBanner: false,
-            themeMode: ThemeMode.light,
+            themeMode: ThemeMode.dark,
             theme: ThemeData(
               fontFamily: GoogleFonts.inter().fontFamily,
 
@@ -64,11 +65,14 @@ class _MyAppState extends State<MyApp> {
               bottomAppBarColor: Color.fromARGB(255, 0, 0, 0),
               appBarTheme: AppBarTheme(color: Colors.grey[50]),
               cardColor: Colors.white,
-              dividerTheme: DividerThemeData(thickness: .2, indent: 0, endIndent: 0, color: Colors.grey),
+              dividerTheme: DividerThemeData(
+                  thickness: .2, indent: 0, endIndent: 0, color: Colors.grey),
               focusColor: Color(0x1aF5E0C3),
-              textSelectionTheme: TextSelectionThemeData(cursorColor: Colors.cyan[500]),
+              textSelectionTheme:
+                  TextSelectionThemeData(cursorColor: Colors.cyan[500]),
               elevatedButtonTheme: ElevatedButtonThemeData(style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+                backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
                   return Colors.white;
                 }),
               )),
@@ -99,26 +103,31 @@ class _MyAppState extends State<MyApp> {
                 ),
                 primaryColor: Colors.grey[850],
                 primaryColorLight: Color(0x1a311F06),
-                dividerTheme: DividerThemeData(thickness: .2, indent: 0, endIndent: 0, color: Colors.grey),
+                dividerTheme: DividerThemeData(
+                    thickness: .2, indent: 0, endIndent: 0, color: Colors.grey),
                 primaryColorDark: Colors.black,
                 canvasColor: Colors.grey[850],
                 scaffoldBackgroundColor: Colors.grey[900],
                 bottomAppBarColor: Color(0xff6D42CE),
                 cardColor: Colors.grey[900],
-                textSelectionTheme: TextSelectionThemeData(cursorColor: Colors.cyan[500]),
+                textSelectionTheme:
+                    TextSelectionThemeData(cursorColor: Colors.cyan[500]),
                 elevatedButtonTheme: ElevatedButtonThemeData(
                     style: ButtonStyle(
                   // MaterialStateProperty.resolveWith<TextStyle>(Set<MaterialState> states) {
                   //   return TextStyle(color: Colors.white);
                   // }
 
-                  backgroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                      (Set<MaterialState> states) {
                     return Colors.grey[900];
                   }),
-                  elevation: MaterialStateProperty.resolveWith<double>((Set<MaterialState> states) {
+                  elevation: MaterialStateProperty.resolveWith<double>(
+                      (Set<MaterialState> states) {
                     return 5.0;
                   }),
-                  foregroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+                  foregroundColor: MaterialStateProperty.resolveWith<Color>(
+                      (Set<MaterialState> states) {
                     return Colors.white;
                   }),
                 )),
@@ -139,7 +148,8 @@ void main() async {
   LocalDataService.preferences = await SharedPreferences.getInstance();
 
   firstLaunch = (!LocalDataService.hasLaunched() ||
-      LocalDataService.hasLaunched() == null); // firstLaunched true if hasLaunched is false (first time running app)
+      LocalDataService.hasLaunched() ==
+          null); // firstLaunched true if hasLaunched is false (first time running app)
 
   /*
     1. Check if first time running app
@@ -147,7 +157,8 @@ void main() async {
     */
   FirebaseDynamicLinks links = FirebaseDynamicLinks.instance;
 
-  if ((LocalDataService.getLocalUsername() == "null" || LocalDataService.getLocalUsername() == null)) {
+  if ((LocalDataService.getLocalUsername() == "null" ||
+      LocalDataService.getLocalUsername() == null)) {
     // check if user is signed in
     if (firstLaunch) {
       AuthService tempAuth = new AuthService();
@@ -162,10 +173,12 @@ void main() async {
       //     .setBool("Created Dynamic Link", true); // update field
     } else {
       // if signed in and not first launch
-      if (LocalDataService.friendsListReformatted() == null && !LocalDataService.getLocalFriendsList().isEmpty) {
+      if (LocalDataService.friendsListReformatted() == null &&
+          !LocalDataService.getLocalFriendsList().isEmpty) {
         // check if friendsList has been reformatted
         // if null, reformated friends list
-        await LocalDataService.reformatFriendsList(); // should only ever run once per user
+        await LocalDataService
+            .reformatFriendsList(); // should only ever run once per user
       }
     }
   }
@@ -184,7 +197,8 @@ void main() async {
 
   runApp(MyApp(linkData));
 
-  await LocalDataService.preferences.setBool("hasLaunched", true); // user has launched app
+  await LocalDataService.preferences
+      .setBool("hasLaunched", true); // user has launched app
 
   if (linkData != null) {
     print(linkData.utmParameters);
