@@ -18,13 +18,18 @@ class AuthService {
 
   // sign in with email and password
   Future signInWithEmailAndPassword(
-      {String emailIn, String passwordIn, BuildContext contextIn, @required Function refreshIn}) async {
+      {String emailIn,
+      String passwordIn,
+      BuildContext contextIn,
+      @required Function refreshIn}) async {
     try {
-      String soshiUsername = await DatabaseService().getSoshiUsernameForLogin(email: emailIn);
+      String soshiUsername =
+          await DatabaseService().getSoshiUsernameForLogin(email: emailIn);
       await LocalDataService.initializeSharedPreferences(
           currSoshiUsername: soshiUsername); // sync all local data with cloud
       UserCredential loginResult = await _auth.signInWithEmailAndPassword(
-          email: emailIn, password: passwordIn); // signs user in, initiates login
+          email: emailIn,
+          password: passwordIn); // signs user in, initiates login
       User user = loginResult.user;
       Analytics.setUserAttributes(userId: user.uid);
       Analytics.logSignIn('email');
@@ -94,14 +99,17 @@ class AuthService {
     final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
 
     // Obtain the auth details from the request
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
 
     // Create a new credential
-    final credential = GoogleAuthProvider.credential(accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
+    final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
 
     try {
       // check if user already exists with email
-      soshiUsername = await DatabaseService().getSoshiUsernameForLogin(email: googleUser.email);
+      soshiUsername = await DatabaseService()
+          .getSoshiUsernameForLogin(email: googleUser.email);
       soshiUsername = soshiUsername.toLowerCase().trim();
       Analytics.logSignIn('google');
     } catch (e) {
@@ -115,7 +123,8 @@ class AuthService {
       soshiUsername = googleUser.email.split('@')[0];
 
       // use username to create user file
-      DatabaseService databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
+      DatabaseService databaseService =
+          new DatabaseService(currSoshiUsernameIn: soshiUsername);
       await databaseService.createUserFile(
           username: soshiUsername.toLowerCase().trim(),
           email: googleUser.email,
@@ -130,7 +139,8 @@ class AuthService {
     }
 
     // initialize shared preferences
-    await LocalDataService.initializeSharedPreferences(currSoshiUsername: soshiUsername);
+    await LocalDataService.initializeSharedPreferences(
+        currSoshiUsername: soshiUsername);
 
     // LocalDataService.initializeSharedPreferences(soshiUsername: googleUser.displayName);
     // Once signed in, return the UserCredential
@@ -147,21 +157,26 @@ class AuthService {
     BuildContext contextIn,
   }) async {
     try {
-      DatabaseService databaseService = DatabaseService(currSoshiUsernameIn: username);
+      DatabaseService databaseService =
+          DatabaseService(currSoshiUsernameIn: username);
       if (await databaseService.isUsernameTaken(username)) {
         throw new ErrorDescription("Username is taken, try another one");
       }
 
-      await databaseService.createUserFile(username: username, email: email, first: first, last: last);
+      await databaseService.createUserFile(
+          username: username, email: email, first: first, last: last);
       print("file created");
-      await LocalDataService.initializeSharedPreferences(currSoshiUsername: username);
+      await LocalDataService.initializeSharedPreferences(
+          currSoshiUsername: username);
       print("shared prefs initialized");
-      UserCredential registerResult = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      UserCredential registerResult = await _auth
+          .createUserWithEmailAndPassword(email: email, password: password);
       User user = registerResult.user;
       // refreshIn();
       print("✅ successfully created new account! ${email}");
 
-      print("◀◀◀ username ${username}\n email ${email} \n password ${password} \n ${first} \n ${last} ◀◀◀");
+      print(
+          "◀◀◀ username ${username}\n email ${email} \n password ${password} \n ${first} \n ${last} ◀◀◀");
 
       return user;
     } catch (e) {

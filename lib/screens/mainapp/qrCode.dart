@@ -118,8 +118,11 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                             ),
                                           ),
                                         ),
+                                        SizedBox(
+                                          height: 2,
+                                        ),
                                         SoshiUsernameText(user.soshiUsername,
-                                            fontSize: width / 22,
+                                            fontSize: width / 23,
                                             isVerified: user.verified)
                                       ],
                                     ),

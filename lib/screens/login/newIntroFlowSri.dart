@@ -148,23 +148,23 @@ class IntroSingleScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+
     return Container(
         // color: Colors.red,
         child: Column(
       // mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         //Big Image here
-        Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Container(
-            // height: MediaQuery.of(context).size.height - 500,
-            // width: MediaQuery.of(context).size.height - 200,
-            height: 400,
-            width: 500,
-            // color: Colors.grey,
+        Container(
+          // height: MediaQuery.of(context).size.height - 500,
+          // width: MediaQuery.of(context).size.height - 200,
+          height: height / 1.8,
+          //width: 500,
+          // color: Colors.grey,
 
-            child: Image.asset(imageUrl),
-          ),
+          child: Image.asset(imageUrl),
         ),
         // SizedBox(height: 30),
 

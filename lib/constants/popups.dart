@@ -302,7 +302,7 @@ class Popups {
         builder: (BuildContext context) {
           return AlertDialog(
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(30.0))),
+                borderRadius: BorderRadius.all(Radius.circular(25.0))),
             // backgroundColor: Colors.blueGrey[900],
             title: Text(
               platformName.contains("Cryptowallet")
@@ -971,68 +971,66 @@ class Popups {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return Container(
-            child: AlertDialog(
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(40.0))),
-              title: Text(
-                "My Soshi Bolts",
-                style: TextStyle(fontSize: 25),
-                textAlign: TextAlign.center,
-              ),
-              content: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: NeumorphicIcon(CupertinoIcons.bolt_circle_fill,
-                        style: NeumorphicStyle(
-                            depth: 4,
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                            shadowLightColor:
-                                Theme.of(context).brightness == Brightness.light
-                                    ? Colors.white
-                                    : Colors.black),
-                        size: width / 6),
-                  ),
+          return AlertDialog(
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(40.0))),
+            title: Text(
+              "My Soshi Bolts",
+              style: TextStyle(fontSize: 25),
+              textAlign: TextAlign.center,
+            ),
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: NeumorphicIcon(CupertinoIcons.bolt_circle_fill,
+                      style: NeumorphicStyle(
+                          depth: 4,
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          shadowLightColor:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? Colors.white
+                                  : Colors.black),
+                      size: width / 6),
+                ),
 
-                  Text("You have " +
-                      LocalDataService.getSoshiPoints().toString() +
-                      " Soshi bolts.\n"),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "Customize your profile and make new friends to earn bolts!",
-                      textAlign: TextAlign.center,
+                Text("You have " +
+                    LocalDataService.getSoshiPoints().toString() +
+                    " Soshi bolts.\n"),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "Customize your profile and make new friends to earn bolts!",
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.blue),
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(15.0))),
+                      height: height / 20,
+                      width: width / 1.1,
+                      child: Center(
+                          child: Text("Close",
+                              style: TextStyle(
+                                  color: Colors.blue, fontSize: width / 22))),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.blue),
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(15.0))),
-                        height: height / 20,
-                        width: width / 1.1,
-                        child: Center(
-                            child: Text("Close",
-                                style: TextStyle(
-                                    color: Colors.blue, fontSize: width / 22))),
-                      ),
-                    ),
-                  ),
-                  // Text(
-                  //     "Who knows what you can get with these points in the future!")
-                ],
-              ),
+                ),
+                // Text(
+                //     "Who knows what you can get with these points in the future!")
+              ],
             ),
           );
         });

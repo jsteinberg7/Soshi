@@ -32,7 +32,7 @@ class GroupScreenComingSoon extends StatelessWidget {
             child: Text("Coming Soon!"),
           ),
           SizedBox(
-              width: Utilities.getWidth(context) / 1.3,
+              width: Utilities.getWidth(context) / 1.6,
               child: Image.asset("assets/images/misc/groups_preview.png"))
         ],
       ))),

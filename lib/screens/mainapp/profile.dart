@@ -355,6 +355,26 @@ class ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
+    double addedContainerSize = 0;
+
+    // int numSocialsPlusAddTile = this.userSocials.length + 1;
+    // int numI = (numSocialsPlusAddTile / 3).ceil();
+
+    // if (numSocialsPlusAddTile > 3) {
+    //   for (int i = 0; i < numI; i += 1) {
+    //     containerSize += .2;
+    //     // if (height < 800) {
+    //     //   containerSize += .2;
+    //     // } else {
+    //     //   containerSize += .19;
+    //     // }
+    //   }
+    // }
+
+    // if (numSocialsPlusAddTile > 3) {
+    //   containerSize = 1.05;
+    // }
+
     print("height: ${height} ${width}");
 
     //     containerSize = 2.7;
@@ -367,9 +387,28 @@ class ProfileState extends State<Profile> {
           if (snapshot.connectionState != ConnectionState.done) {
             return Center(child: CircularProgressIndicator.adaptive());
           } else {
+            int numSocialsPlusAddTile = this.userSocials.length + 1;
+            int rows = (numSocialsPlusAddTile / 3).ceil();
+
+            if (numSocialsPlusAddTile > 3) {
+              print(rows);
+              if (rows > 1) {
+                for (int i = 0; i < rows; i++) {
+                  addedContainerSize += 30;
+                  // if (height < 800) {
+                  //   containerSize += .2;
+                  // } else {
+                  //   containerSize += .19;
+                  // }
+                }
+              }
+            }
+
+            print(addedContainerSize);
+
             return SingleChildScrollView(
               child: Container(
-                  height: height * 3,
+                  height: height + addedContainerSize,
                   child: Stack(
                     children: [
                       Positioned(
@@ -674,7 +713,7 @@ class ProfileState extends State<Profile> {
                       Positioned(
                         left: 0,
                         right: 0,
-                        top: height / 2.2,
+                        top: height / 2.4,
                         child: Container(
                             //height: height / 2,
                             decoration: BoxDecoration(

@@ -25,8 +25,10 @@ class _GeneralSettingsState extends State<GeneralSettings> {
     double height = Utilities.getHeight(context);
     double width = Utilities.getWidth(context);
 
-    String soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
-    DatabaseService dbService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
+    String soshiUsername =
+        LocalDataService.getLocalUsernameForPlatform("Soshi");
+    DatabaseService dbService =
+        new DatabaseService(currSoshiUsernameIn: soshiUsername);
 
     bool isVerified = LocalDataService.getVerifiedStatus();
 
@@ -52,7 +54,8 @@ class _GeneralSettingsState extends State<GeneralSettings> {
           Padding(
             padding: EdgeInsets.only(right: width / 150),
             child: TextButton(
-              style: ButtonStyle(overlayColor: MaterialStateProperty.all(Colors.transparent)),
+              style: ButtonStyle(
+                  overlayColor: MaterialStateProperty.all(Colors.transparent)),
               child: Text(
                 "Done",
                 style: TextStyle(color: Colors.blue, fontSize: width / 23),
@@ -76,9 +79,13 @@ class _GeneralSettingsState extends State<GeneralSettings> {
             Positioned(
               //top: 20,
               //left: 30,
-              child: ProfilePic(radius: height / 17, url: LocalDataService.getLocalProfilePictureURL()),
+              child: ProfilePic(
+                  radius: height / 17,
+                  url: LocalDataService.getLocalProfilePictureURL()),
             ),
-            Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
                 //mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -90,7 +97,9 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          LocalDataService.getLocalFirstName() + " " + LocalDataService.getLocalLastName(),
+                          LocalDataService.getLocalFirstName() +
+                              " " +
+                              LocalDataService.getLocalLastName(),
                           maxLines: 1,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -100,23 +109,29 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                         ),
                       ),
                       SizedBox(height: 5),
-                      SoshiUsernameText(soshiUsername, fontSize: width / 26, isVerified: isVerified),
+                      SoshiUsernameText(soshiUsername,
+                          fontSize: width / 26, isVerified: isVerified),
                       Padding(
                         padding: EdgeInsets.fromLTRB(0, height / 100, 0, 0),
                         child: Divider(
                             indent: 0,
                             endIndent: 0,
-                            color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white),
+                            color:
+                                Theme.of(context).brightness == Brightness.light
+                                    ? Colors.black
+                                    : Colors.white),
                       ),
                       GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
                             return Scaffold(body: ProfileSettings());
                           }));
                         },
                         child: Padding(
-                          padding: EdgeInsets.fromLTRB(0, height / 100, 0, height / 80),
+                          padding: EdgeInsets.fromLTRB(
+                              0, height / 100, 0, height / 80),
                           child: Row(
                               //mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
@@ -135,7 +150,8 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                           URL.launchURL("sms:" + "5713351885");
                         },
                         child: Padding(
-                          padding: EdgeInsets.fromLTRB(0, height / 60, 0, height / 80),
+                          padding: EdgeInsets.fromLTRB(
+                              0, height / 60, 0, height / 80),
                           child: Row(
                               //mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
@@ -153,10 +169,12 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                         onTap: () {
                           final InAppReview inAppReview = InAppReview.instance;
 
-                          inAppReview.openStoreListing(appStoreId: '1595515750');
+                          inAppReview.openStoreListing(
+                              appStoreId: '1595515750');
                         },
                         child: Padding(
-                          padding: EdgeInsets.fromLTRB(0, height / 60, 0, height / 80),
+                          padding: EdgeInsets.fromLTRB(
+                              0, height / 60, 0, height / 80),
                           child: Row(
                               //mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
@@ -172,12 +190,14 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                       GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
                             return Scaffold(body: ResetPassword());
                           }));
                         },
                         child: Padding(
-                          padding: EdgeInsets.fromLTRB(0, height / 60, 0, height / 80),
+                          padding: EdgeInsets.fromLTRB(
+                              0, height / 60, 0, height / 80),
                           child: Row(
                               //mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
@@ -204,7 +224,10 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                         AuthService authService = new AuthService();
 
                         CustomAlertDialog.showCustomAlertDialog(
-                            "Sign out", "Are you sure you want to sign out?", "Yes", "No", () async {
+                            "Sign out",
+                            "Are you sure you want to sign out?",
+                            "Yes",
+                            "No", () async {
                           await authService.signOut();
                           Navigator.pop(context); // close popup
                           // Navigator.pop(context); // pop to login screen
@@ -212,10 +235,13 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                           //   context,
                           //   MaterialPageRoute(builder: (context) => MainApp()),
                           // );
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: ((context) => NewIntroFlow())));
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: ((context) => NewIntroFlow())));
                         }, () {
                           Navigator.pop(context);
-                        }, context);
+                        }, context, height, width);
 
                         // showDialog(
                         //     context: context,
