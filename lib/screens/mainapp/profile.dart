@@ -88,22 +88,23 @@ class _SMTileState extends State<SMTile> {
             // prompt user to enter username
             Popups.editUsernamePopup(
               context,
-              soshiUsername,
-              platformName,
+              widget.user,
+              widget.selectedSocial,
               MediaQuery.of(context).size.width,
             );
           }
-          LocalDataService.updateSwitchForPlatform(platform: platformName, state: true);
-          databaseService.updatePlatformSwitch(platform: platformName, state: true);
+
+          widget.selectedSocial.switchStatus = true;
+
           if (LocalDataService.getFirstSwitchTap()) {
             LocalDataService.updateFirstSwitchTap(false);
             Popups.platformSwitchesExplained(context);
           }
         }
         String usernameControllerLower = usernameController.text.toLowerCase();
+        widget.selectedSocial.username = usernameControllerLower.trim();
 
-        LocalDataService.updateUsernameForPlatform(platform: platformName, username: usernameControllerLower.trim());
-        databaseService.updateUsernameForPlatform(platform: platformName, username: usernameControllerLower.trim());
+        DataEngine.applyUserChanges(user: widget.user, cloud: true, local: true);
       }
     });
 
@@ -137,103 +138,92 @@ class _SMTileState extends State<SMTile> {
         child: Container(
           height: MediaQuery.of(context).size.height / 6.5,
           width: MediaQuery.of(context).size.width / 3,
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                IconButton(
-                  splashRadius: Utilities.getWidth(context) / 25,
-                  icon: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.asset(
-                      'assets/images/SMLogos/' + platformName + 'Logo.png',
-                      fit: BoxFit.fill,
-                    ),
-                  ),
-                  onPressed: () async {
-                    if (platformName == "Contact") {
-                      double width = Utilities.getWidth(context);
-
-                      String firstName = widget.user.firstName;
-                      String lastName = widget.user.lastName;
-                      String photoUrl = widget.user.photoURL;
-
-                      Uint8List profilePicBytes;
-                      try {
-                        // try to load profile pic from url
-                        await http.get(Uri.parse(photoUrl)).then((http.Response response) {
-                          profilePicBytes = response.bodyBytes;
-                        });
-                      } catch (e) {
-                        // if url is invalid, use default profile pic
-                        ByteData data = await rootBundle.load("assets/images/SoshiLogos/soshi_icon.png");
-                        profilePicBytes = data.buffer.asUint8List();
-                      }
-                      Contact contact = new Contact(
-                          givenName: firstName,
-                          familyName: lastName,
-                          emails: [
-                            Item(
-                                label: "Email",
-                                // value: LocalDataService.getLocalUsernameForPlatform("Email"),
-                                value: widget.user.getUsernameGivenPlatform(platform: "Email")),
-                          ],
-                          phones: [
-                            Item(label: "Cell", value: widget.user.getUsernameGivenPlatform(platform: "Phone")),
-                          ],
-                          avatar: profilePicBytes);
-                      await askPermissions(context);
-                      ContactsService.addContact(contact).then((dynamic success) {
-                        Popups.showContactAddedPopup(
-                            context, width, photoUrl, firstName, lastName, "phoneNumber", "email");
-                      });
-                    } else if (platformName == "Cryptowallet") {
-                      Clipboard.setData(ClipboardData(
-                        text: widget.user.getUsernameGivenPlatform(platform: "Cryptowallet").toString(),
-                      ));
-
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: const Text(
-                          'Wallet address copied to clipboard!',
-                          textAlign: TextAlign.center,
-                        ),
-                      ));
-                    } else {
-                      URL.launchURL(URL.getPlatformURL(
-                          platform: platformName,
-                          username: widget.user.getUsernameGivenPlatform(platform: platformName)));
-                    }
-                  },
-                  iconSize: 60.0,
+          child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
+            IconButton(
+              splashRadius: Utilities.getWidth(context) / 25,
+              icon: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.asset(
+                  'assets/images/SMLogos/' + platformName + 'Logo.png',
+                  fit: BoxFit.fill,
                 ),
-                CupertinoSwitch(
-                    thumbColor: Colors.white,
-                    value: this.isSwitched,
-                    activeColor: Colors.cyan,
-                    onChanged: (bool value) {
-                      HapticFeedback.lightImpact();
+              ),
+              onPressed: () async {
+                if (platformName == "Contact") {
+                  double width = Utilities.getWidth(context);
 
-                      if (widget.user.getUsernameGivenPlatform(platform: platformName) == null ||
-                          widget.user.getUsernameGivenPlatform(platform: platformName) == "") {
-                        Popups.editUsernamePopup(
-                            context, soshiUsername, platformName, MediaQuery.of(context).size.width);
-                      }
+                  String firstName = widget.user.firstName;
+                  String lastName = widget.user.lastName;
+                  String photoUrl = widget.user.photoURL;
 
-                      widget.user.lookupSocial[platformName].switchStatus = value;
+                  Uint8List profilePicBytes;
+                  try {
+                    // try to load profile pic from url
+                    await http.get(Uri.parse(photoUrl)).then((http.Response response) {
+                      profilePicBytes = response.bodyBytes;
+                    });
+                  } catch (e) {
+                    // if url is invalid, use default profile pic
+                    ByteData data = await rootBundle.load("assets/images/SoshiLogos/soshi_icon.png");
+                    profilePicBytes = data.buffer.asUint8List();
+                  }
+                  Contact contact = new Contact(
+                      givenName: firstName,
+                      familyName: lastName,
+                      emails: [
+                        Item(
+                            label: "Email",
+                            // value: LocalDataService.getLocalUsernameForPlatform("Email"),
+                            value: widget.user.getUsernameGivenPlatform(platform: "Email")),
+                      ],
+                      phones: [
+                        Item(label: "Cell", value: widget.user.getUsernameGivenPlatform(platform: "Phone")),
+                      ],
+                      avatar: profilePicBytes);
+                  await askPermissions(context);
+                  ContactsService.addContact(contact).then((dynamic success) {
+                    Popups.showContactAddedPopup(context, width, photoUrl, firstName, lastName, "phoneNumber", "email");
+                  });
+                } else if (platformName == "Cryptowallet") {
+                  Clipboard.setData(ClipboardData(
+                    text: widget.user.getUsernameGivenPlatform(platform: "Cryptowallet").toString(),
+                  ));
 
-                      setState(() {
-                        this.isSwitched = value;
-                      });
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: const Text(
+                      'Wallet address copied to clipboard!',
+                      textAlign: TextAlign.center,
+                    ),
+                  ));
+                } else {
+                  URL.launchURL(URL.getPlatformURL(platform: platformName, username: widget.user.getUsernameGivenPlatform(platform: platformName)));
+                }
+              },
+              iconSize: 60.0,
+            ),
+            CupertinoSwitch(
+                thumbColor: Colors.white,
+                value: this.isSwitched,
+                activeColor: Colors.cyan,
+                onChanged: (bool value) {
+                  HapticFeedback.lightImpact();
 
-                      //{NOTE} Updating Firestore/local storage will occurr Asynchronously
-                      DataEngine.applyUserChanges(user: widget.user, cloud: true, local: true);
+                  if (widget.user.getUsernameGivenPlatform(platform: platformName) == null ||
+                      widget.user.getUsernameGivenPlatform(platform: platformName) == "" && value == true) {
+                    Popups.editUsernamePopup(context, widget.user, widget.selectedSocial, MediaQuery.of(context).size.width);
+                  }
 
-                      // if (LocalDataService.getFirstSwitchTap()) {
-                      //   LocalDataService.updateFirstSwitchTap(false);
-                      //   Popups.platformSwitchesExplained(context);
-                      // }
-                    }),
-              ]),
+                  if (widget.selectedSocial.username != "" || value == false) {
+                    widget.user.lookupSocial[platformName].switchStatus = value;
+                    setState(() {
+                      this.isSwitched = value;
+                    });
+
+                    //{NOTE} Updating Firestore/local storage will occurr Asynchronously
+                    DataEngine.applyUserChanges(user: widget.user, cloud: true, local: true);
+                  }
+                }),
+          ]),
         ),
       ),
     );
@@ -333,10 +323,6 @@ class ProfileState extends State<Profile> {
     var width = MediaQuery.of(context).size.width;
     print("height: ${height} ${width}");
 
-    //     containerSize = 2.7;
-    //   } else {
-    //     bioSpacing = 90;
-
     return FutureBuilder(
         future: loadDataEngine(),
         builder: (context, snapshot) {
@@ -372,10 +358,8 @@ class ProfileState extends State<Profile> {
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                                 colors: [
-                                  (Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black)
-                                      .withOpacity(0.8),
-                                  (Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black)
-                                      .withOpacity(0.4)
+                                  (Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black).withOpacity(0.8),
+                                  (Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black).withOpacity(0.4)
                                 ],
                                 stops: [0.1, 1],
                               ),
@@ -383,10 +367,8 @@ class ProfileState extends State<Profile> {
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                                 colors: [
-                                  (Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black)
-                                      .withOpacity(0.5),
-                                  (Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black)
-                                      .withOpacity(0.5),
+                                  (Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black).withOpacity(0.5),
+                                  (Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black).withOpacity(0.5),
                                 ],
                               ),
                             ),
@@ -428,8 +410,7 @@ class ProfileState extends State<Profile> {
                                                     ),
                                                     Padding(
                                                       padding: const EdgeInsets.only(top: 3.0, bottom: 2.0),
-                                                      child: SoshiUsernameText(user.soshiUsername,
-                                                          fontSize: width / 22, isVerified: user.verified),
+                                                      child: SoshiUsernameText(user.soshiUsername, fontSize: width / 22, isVerified: user.verified),
                                                     )
                                                   ],
                                                 ),
@@ -441,7 +422,10 @@ class ProfileState extends State<Profile> {
                                                                 // importProfileNotifier: widget.importProfileNotifier
 
                                                                 ));
-                                                      }));
+                                                      })).then((value) {
+                                                        print("☹️☹️☹️☹️☹️ returnign from profile settings, must refresh screen state");
+                                                        setState(() {});
+                                                      });
                                                     },
                                                     icon: Icon(CupertinoIcons.pen)),
                                               ],
@@ -466,13 +450,10 @@ class ProfileState extends State<Profile> {
                                                                 letterSpacing: 1.2,
                                                                 fontSize: width / 25),
                                                           )
-                                                        : Text("Friends",
-                                                            style: TextStyle(letterSpacing: 1.2, fontSize: width / 25)),
+                                                        : Text("Friends", style: TextStyle(letterSpacing: 1.2, fontSize: width / 25)),
                                                   ]),
                                                 ),
-                                                ProfilePic(
-                                                    radius: width / 6.5,
-                                                    url: LocalDataService.getLocalProfilePictureURL()),
+                                                ProfilePic(radius: width / 6.5, url: LocalDataService.getLocalProfilePictureURL()),
                                                 SizedBox(
                                                   width: width / 4,
                                                   child: GestureDetector(
@@ -481,33 +462,22 @@ class ProfileState extends State<Profile> {
                                                     },
                                                     child: Column(children: [
                                                       Text(LocalDataService.getSoshiPoints().toString(),
-                                                          style: TextStyle(
-                                                              letterSpacing: 1.2,
-                                                              fontSize: width / 25,
-                                                              fontWeight: FontWeight.bold)),
+                                                          style: TextStyle(letterSpacing: 1.2, fontSize: width / 25, fontWeight: FontWeight.bold)),
                                                       Row(
                                                         mainAxisAlignment: MainAxisAlignment.center,
                                                         children: [
                                                           LocalDataService.getSoshiPoints() == 1
-                                                              ? Text("Bolt",
-                                                                  style: TextStyle(
-                                                                      letterSpacing: 1.2, fontSize: width / 25))
-                                                              : Text("Bolts",
-                                                                  style: TextStyle(
-                                                                      letterSpacing: 1.2, fontSize: width / 25)),
+                                                              ? Text("Bolt", style: TextStyle(letterSpacing: 1.2, fontSize: width / 25))
+                                                              : Text("Bolts", style: TextStyle(letterSpacing: 1.2, fontSize: width / 25)),
                                                           Padding(
                                                             padding: const EdgeInsets.only(left: 2),
                                                             child: IconButton(
                                                               onPressed: () {
-                                                                Popups.soshiPointsExplainedPopup(
-                                                                    context, width, height);
+                                                                Popups.soshiPointsExplainedPopup(context, width, height);
                                                               },
                                                               padding: EdgeInsets.zero,
                                                               constraints: BoxConstraints(
-                                                                  maxHeight: width / 28,
-                                                                  maxWidth: width / 28,
-                                                                  minHeight: 0,
-                                                                  minWidth: 0),
+                                                                  maxHeight: width / 28, maxWidth: width / 28, minHeight: 0, minWidth: 0),
                                                               icon: Icon(CupertinoIcons.info_circle, size: width / 28),
                                                             ),
                                                           )
@@ -534,13 +504,6 @@ class ProfileState extends State<Profile> {
                                                           textAlign: TextAlign.center,
                                                         ),
                                                       )),
-
-                                            // Padding(
-                                            //   padding:
-                                            //       const EdgeInsets.fromLTRB(
-                                            //           0, 5, 10, 0),
-                                            //   child: PassionTileList(),
-                                            // ),
                                           ],
                                         ),
                                       ),
@@ -561,8 +524,7 @@ class ProfileState extends State<Profile> {
                             decoration: BoxDecoration(
                                 color: Theme.of(context).scaffoldBackgroundColor,
                                 // color: Colors.blue,
-                                borderRadius:
-                                    BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
+                                borderRadius: BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
                             child: Padding(
                               padding: EdgeInsets.fromLTRB(width / 35, height / 150, width / 35, 0),
                               child: Column(
@@ -579,7 +541,7 @@ class ProfileState extends State<Profile> {
                                   SizedBox(
                                     height: height / 100,
                                   ),
-                                  PassionTileList(),
+                                  PassionTileList(user: this.user),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
@@ -620,8 +582,7 @@ class ProfileState extends State<Profile> {
                                               padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
                                               child: index != userSocials.length
                                                   ? SMTile(user: user, selectedSocial: userSocials[index])
-                                                  : AddPlatformsTile(
-                                                      importProfileNotifier: widget.importProfileNotifier, user: user));
+                                                  : AddPlatformsTile(importProfileNotifier: widget.importProfileNotifier, user: user));
                                         },
                                         itemCount: userSocials.length,
                                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

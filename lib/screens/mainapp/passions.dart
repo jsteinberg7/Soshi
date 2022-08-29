@@ -3,7 +3,8 @@ import 'package:soshi/screens/mainapp/passionsPage.dart';
 import 'package:soshi/services/dataEngine.dart';
 
 class PassionTileList extends StatefulWidget {
-  PassionTileList({Key key}) : super(key: key);
+  SoshiUser user;
+  PassionTileList({@required SoshiUser user});
 
   @override
   State<PassionTileList> createState() => _PassionTileListState();
@@ -13,7 +14,7 @@ class _PassionTileListState extends State<PassionTileList> {
   SoshiUser user;
 
   loadDataEngine() async {
-    user = await DataEngine.getUserObject(firebaseOverride: true);
+    user = await DataEngine.getUserObject(firebaseOverride: false);
   }
 
   @override
@@ -26,7 +27,7 @@ class _PassionTileListState extends State<PassionTileList> {
           } else {
             return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [0, 1, 2].map((int pIndex) => makePassionTile(user.passsions[pIndex], pIndex)).toList());
+                children: [0, 1, 2].map((int pIndex) => makePassionTile(this.user.passions[pIndex], pIndex)).toList());
           }
         });
   }
@@ -36,12 +37,12 @@ class _PassionTileListState extends State<PassionTileList> {
         context,
         new MaterialPageRoute(
             builder: ((context) => PassionsPage(
-                  alreadySelected: user.passsions,
+                  alreadySelected: user.passions,
                 )))).then((value) async {
       print(value.toString());
 
       if (value != null) {
-        user.passsions[pIndex] = value;
+        user.passions[pIndex] = value;
         await DataEngine.applyUserChanges(user: user, cloud: true, local: true);
         setState(() {});
       }
@@ -51,8 +52,7 @@ class _PassionTileListState extends State<PassionTileList> {
   Widget makePassionTile(Passion passion, int pIndex) {
     return passion != Defaults.emptyPassion
         ? ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(
-                elevation: 1, shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15)))),
+            style: ElevatedButton.styleFrom(elevation: 1, shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15)))),
             onPressed: () async {
               pushAndUpdatePassions(passion, pIndex);
             },
@@ -65,9 +65,8 @@ class _PassionTileListState extends State<PassionTileList> {
               style: TextStyle(fontSize: 15),
             ))
         : OutlinedButton.icon(
-            style: OutlinedButton.styleFrom(
-                primary: Colors.black,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15)))),
+            style:
+                OutlinedButton.styleFrom(primary: Colors.black, shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15)))),
             onPressed: () async {
               pushAndUpdatePassions(passion, pIndex);
             },
@@ -77,8 +76,7 @@ class _PassionTileListState extends State<PassionTileList> {
             ),
             label: Text(
               "Add",
-              style: TextStyle(
-                  color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white, fontSize: 15),
+              style: TextStyle(color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white, fontSize: 15),
             ));
   }
 }

@@ -15,14 +15,14 @@ class DataEngine {
   static initialize(String soshiUsername) async {
     DataEngine.soshiUsername = soshiUsername;
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove("userObject");
+    await prefs.remove("userObject");
     log("[⚙ Data Engine ⚙] successfully initialzed with username: ${soshiUsername} ✅");
   }
 
   static Map serializeUser(SoshiUser user) {
     List serializePassions = [];
 
-    user.passsions.forEach((e) {
+    user.passions.forEach((e) {
       serializePassions.add({'passion_emoji': e.emoji, 'passion_name': e.name});
     });
 
@@ -152,7 +152,7 @@ class DataEngine {
         hasPhoto: hasPhoto,
         verified: Verified,
         socials: socials,
-        passsions: passions,
+        passions: passions,
         soshiPoints: soshiPoints,
         bio: bio,
         bioController: new TextEditingController(text: bio),
@@ -203,7 +203,7 @@ class DataEngine {
 
     List<Passion> pList = allPassionData.keys.map((key) => Passion(emoji: allPassionData[key], name: key)).toList();
 
-    pList.add(Defaults.emptyPassion);
+
     log("[⚙ Data Engine ⚙] Successfully fetched latest available passions ✅");
     return pList;
   }
@@ -214,7 +214,7 @@ class SoshiUser {
   bool hasPhoto;
   bool verified;
   List<Social> socials;
-  List<Passion> passsions;
+  List<Passion> passions;
   int soshiPoints;
   List friends;
   Map<String, Social> lookupSocial;
@@ -235,7 +235,7 @@ class SoshiUser {
       @required this.hasPhoto,
       @required this.verified,
       @required this.socials,
-      @required this.passsions,
+      @required this.passions,
       @required this.soshiPoints,
       @required this.bio,
       @required this.bioController,
@@ -298,7 +298,7 @@ class SoshiUser {
         this.lastName == other.lastName &&
         this.bio == other.bio &&
         this.photoURL == other.photoURL &&
-        this.passsions == other.passsions;
+        this.passions == other.passions;
   }
 }
 

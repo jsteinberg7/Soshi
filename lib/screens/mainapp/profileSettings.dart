@@ -40,8 +40,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
         leading: CupertinoBackButton(
           onPressed: () {
             print("verify discard changes?");
-            CustomAlertDialog.showCustomAlertDialog("Confirm exit", "Unsaved changes will be discarded", "Yes", "No",
-                () {
+            CustomAlertDialog.showCustomAlertDialog("Confirm exit", "Unsaved changes will be discarded", "Yes", "No", () {
               Navigator.pop(context);
               Navigator.pop(context);
             }, () {
@@ -61,8 +60,10 @@ class ProfileSettingsState extends State<ProfileSettings> {
                   fontSize: width / 23,
                 ),
               ),
-              onPressed: () {
-                DataEngine.applyUserChanges(user: user, cloud: true, local: true);
+              onPressed: () async {
+                SoshiUser latestUser = await DataEngine.getUserObject(firebaseOverride: false);
+                user.passions = latestUser.passions;
+                await DataEngine.applyUserChanges(user: user, cloud: true, local: true);
                 // Need alternative to refresh the profile!!!!
 
                 // widget.importProfileNotifier.notifyListeners();
@@ -101,8 +102,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                           GestureDetector(
                             onTap: () async {
                               final ImagePicker imagePicker = ImagePicker();
-                              final PickedFile pickedImage =
-                                  await imagePicker.getImage(source: ImageSource.gallery, imageQuality: 20);
+                              final PickedFile pickedImage = await imagePicker.getImage(source: ImageSource.gallery, imageQuality: 20);
                               // await dbService.cropAndUploadImage(pickedImage);
                             },
                             child: Stack(
@@ -253,7 +253,9 @@ class ProfileSettingsState extends State<ProfileSettings> {
                               ),
                             ),
                           ),
-                          PassionTileList(),
+                          PassionTileList(
+                            user: this.user,
+                          ),
                           Divider(),
                           SizedBox(
                             height: height / 15,
