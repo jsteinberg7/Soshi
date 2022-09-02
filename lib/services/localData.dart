@@ -134,17 +134,17 @@ abstract class LocalDataService {
     for (dynamic friend in friendsListDynamic) {
       friendsListString.add(friend.toString());
     }
-    await preferences.setStringList("Sorted Friends List", friendsListString);
-    await preferences.setStringList("Recently Added Friends", []);
-    await preferences.setBool(
-        "Friends List Reformatted",
-        userData["Friends List Reformatted"] ??
-            false); // get friends list reformatted from db
-    if (preferences.getBool("Friends List Reformatted") == null ||
-        preferences.getBool("Friends List Reformatted") == false) {
-      // reformat friends list if necessary
-      await reformatFriendsList();
-    }
+    // await preferences.setStringList("Sorted Friends List", friendsListString);
+    // await preferences.setStringList("Recently Added Friends", []);
+    // await preferences.setBool(
+    //     "Friends List Reformatted",
+    //     userData["Friends List Reformatted"] ??
+    //         false); // get friends list reformatted from db
+    // if (preferences.getBool("Friends List Reformatted") == null ||
+    //     preferences.getBool("Friends List Reformatted") == false) {
+    //   // reformat friends list if necessary
+    //   await reformatFriendsList();
+    // }
   }
 
   // clear all local data stored in SharedPreferences
@@ -216,35 +216,35 @@ abstract class LocalDataService {
     return namesList;
   }
 
-  static Future<void> reformatFriendsList() async {
-    DatabaseService databaseService = new DatabaseService(
-        currSoshiUsernameIn: LocalDataService.getLocalUsername());
-    List<String> friendsList =
-        preferences.getStringList("Sorted Friends List") ??
-            preferences.getStringList("Friends List");
-    // replace each username w/ json
-    for (int i = 0; i < friendsList.length; i++) {
-      String username = friendsList[i];
-      var userData = await databaseService.getUserFile(username);
-      Friend friend = databaseService.userDataToFriend(userData);
+  // static Future<void> reformatFriendsList() async {
+  //   DatabaseService databaseService = new DatabaseService(
+  //       currSoshiUsernameIn: LocalDataService.getLocalUsername());
+  //   List<String> friendsList =
+  //       preferences.getStringList("Sorted Friends List") ??
+  //           preferences.getStringList("Friends List");
+  //   // replace each username w/ json
+  //   for (int i = 0; i < friendsList.length; i++) {
+  //     String username = friendsList[i];
+  //     var userData = await databaseService.getUserFile(username);
+  //     Friend friend = databaseService.userDataToFriend(userData);
 
-      friendsList[i] = friend.serialize();
-    }
-    // sort friendsList based on name
-    friendsList.sort((String json1, String json2) {
-      String name1 = jsonDecode(json1)["n"].toString().toLowerCase();
-      String name2 = jsonDecode(json2)["n"].toString().toLowerCase();
-      return (name1.compareTo(name2));
-    });
-    await preferences.setStringList(
-        "Sorted Friends List", friendsList); // inject sorted friends list
-    await preferences
-        .setStringList("Recently Added Friends", []); // inject recently added
-    await databaseService.overwriteFriendsList(friendsList);
-    await preferences.setBool("Friends List Reformatted", true);
-    databaseService
-        .setFriendsListReformatted(true); // update in db to save if logged out
-  }
+  //     friendsList[i] = friend.serialize();
+  //   }
+  //   // sort friendsList based on name
+  //   friendsList.sort((String json1, String json2) {
+  //     String name1 = jsonDecode(json1)["n"].toString().toLowerCase();
+  //     String name2 = jsonDecode(json2)["n"].toString().toLowerCase();
+  //     return (name1.compareTo(name2));
+  //   });
+  //   await preferences.setStringList(
+  //       "Sorted Friends List", friendsList); // inject sorted friends list
+  //   await preferences
+  //       .setStringList("Recently Added Friends", []); // inject recently added
+  //   await databaseService.overwriteFriendsList(friendsList);
+  //   await preferences.setBool("Friends List Reformatted", true);
+  //   databaseService
+  //       .setFriendsListReformatted(true); // update in db to save if logged out
+  // }
 
   static int getFriendsListCount() {
     List friendsList = getLocalFriendsList();
@@ -303,9 +303,9 @@ abstract class LocalDataService {
     return false;
   }
 
-  static bool friendsListReformatted() {
-    return preferences.getBool("Friends List Reformatted");
-  }
+  // static bool friendsListReformatted() {
+  //   return preferences.getBool("Friends List Reformatted");
+  // }
 
   static bool hasLaunched() {
     return preferences.getBool("hasLaunched") ?? false;
@@ -432,7 +432,6 @@ abstract class LocalDataService {
     await preferences.setStringList("Sorted Friends List", sortedFriendsList);
     return sortedFriendsList;
   }
-
 
   static Future<void> addToRecentFriends({@required Friend friend}) async {
     List<String> recentlyAddedFriends = getRecentlyAddedFriends();

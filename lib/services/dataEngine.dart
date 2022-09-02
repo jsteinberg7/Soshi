@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:soshi/services/dynamicLinks.dart';
 
 class DataEngine {
   // String defaultUsername;
@@ -27,7 +28,8 @@ class DataEngine {
     });
 
     Map<String, dynamic> toReturn = {
-      'Friends': user.friends,
+      'FriendsStr': user.friendsStr,
+      'FriendsObj': user.friendsObj,
       'Name': {
         'First': user.firstNameController.text,
         'Last': user.lastNameController.text
@@ -40,7 +42,8 @@ class DataEngine {
       'Choose Platforms':
           user.getAvailablePlatforms().map((e) => e.platformName).toList(),
       'Profile Platforms':
-          user.getChosenPlatforms().map((e) => e.platformName).toList()
+          user.getChosenPlatforms().map((e) => e.platformName).toList(),
+      'Dynamic Link': user.dynamicLink
     };
 
     Map switches = {};
@@ -61,10 +64,11 @@ class DataEngine {
   //{NOTE} If firebaseOverride is true, will fetch latest data again from firestore
   static getUserObject(
       {@required bool firebaseOverride, String soshiUsernameOverride}) async {
+    String currUsername;
     if (soshiUsernameOverride == null) {
-      soshiUsernameOverride =
-          soshiUsername; // if no override, use local username
+      currUsername = soshiUsername; // if no override, use local username
     } else {
+      currUsername = soshiUsernameOverride;
       firebaseOverride = true; // force firebase override if other user
     }
     Map fetch;
@@ -74,10 +78,10 @@ class DataEngine {
     log("{userObject Exists?} ==> ${prefs.containsKey("userObject")}");
 
     if (firebaseOverride || !prefs.containsKey("userObject")) {
-      log("[⚙ Data Engine ⚙]  getUserObject() Firebase data burn ⚠ userFetch=> ${soshiUsernameOverride}");
+      log("[⚙ Data Engine ⚙]  getUserObject() Firebase data burn ⚠ userFetch=> ${currUsername}");
       DocumentSnapshot dSnap = await FirebaseFirestore.instance
           .collection("users")
-          .doc(soshiUsernameOverride)
+          .doc(currUsername)
           .get();
       fetch = dSnap.data();
       await prefs.setString("userObject", jsonEncode(fetch));
@@ -99,7 +103,18 @@ class DataEngine {
     Map<String, Social> lookupSocial = {};
     int soshiPoints = fetch['Soshi Points'] ?? 0;
     String bio = fetch['Bio'] ?? "";
-    List friends = fetch['Friends'] ?? [];
+    List<String> friendsStr =
+        (fetch['Friends'] ?? fetch['FriendsStr'] ?? []).cast<String>();
+    List<Friend> friendsObj = (fetch['FriendsObj'] ??
+                ((soshiUsernameOverride == null)
+                    ? await SoshiUser.convertStrToFriendList(friendsStr)
+                    : []))
+            .cast<Friend>() ??
+        [];
+    [];
+    String dynamicLink = fetch['Dynamic Link'] ??
+        await DynamicLinkService.createDynamicLink(soshiUsername);
+    print(dynamicLink);
     log("[⚙ Data Engine ⚙] basic info built ✅");
 
     if (fetch['Passions'] == null) {
@@ -161,29 +176,34 @@ class DataEngine {
       log("[⚙ Data Engine ⚙] SoshiUser Object built ✅");
     }
 
-    // if (friends != null && friends.isNotEmpty && friends[0] is String) {
+    // if (friendsStr != null &&
+    //     friendsStr.isNotEmpty &&
+    //     friendsStr[0] is String) {
     //   // convert local friends list from String list to Friend list if just pulled from db
-    //   friends = await Friend.convertToFriendList(friends);
+    //   friendsStr = await SoshiUser.convertStrToFriendList(friendsStr);
     // }
 
     return SoshiUser(
-        soshiUsername: soshiUsernameOverride,
-        firstName: fetch['Name']['First'],
-        firstNameController:
-            new TextEditingController(text: fetch['Name']['First']),
-        lastNameController:
-            new TextEditingController(text: fetch['Name']['Last']),
-        lastName: fetch['Name']['Last'],
-        photoURL: photoURL,
-        hasPhoto: hasPhoto,
-        verified: Verified,
-        socials: socials,
-        passions: passions,
-        soshiPoints: soshiPoints,
-        bio: bio,
-        bioController: new TextEditingController(text: bio),
-        friends: friends,
-        lookupSocial: lookupSocial);
+      soshiUsername: soshiUsernameOverride,
+      firstName: fetch['Name']['First'],
+      firstNameController:
+          new TextEditingController(text: fetch['Name']['First']),
+      lastNameController:
+          new TextEditingController(text: fetch['Name']['Last']),
+      lastName: fetch['Name']['Last'],
+      photoURL: photoURL,
+      hasPhoto: hasPhoto,
+      verified: Verified,
+      socials: socials,
+      passions: passions,
+      soshiPoints: soshiPoints,
+      bio: bio,
+      bioController: new TextEditingController(text: bio),
+      friendsStr: friendsStr,
+      friendsObj: friendsObj,
+      lookupSocial: lookupSocial,
+      dynamicLink: dynamicLink,
+    );
   }
 
   // static overrideWithTextControllerData(){
@@ -206,7 +226,8 @@ class DataEngine {
       }
 
       if (cloud) {
-        //afterSerialized["Friends"] = Friend.convertToStringList(user.friends); **ADD THIS BACK ONCE JASON ADDS FRIENDS
+        afterSerialized
+            .remove("FriendsObj"); // do not push cached friends to cloud
         await FirebaseFirestore.instance
             .collection("users")
             .doc(soshiUsername)
@@ -249,13 +270,14 @@ class DataEngine {
 }
 
 class SoshiUser {
-  String soshiUsername, firstName, lastName, photoURL, bio;
+  String soshiUsername, firstName, lastName, photoURL, bio, dynamicLink;
   bool hasPhoto;
   bool verified;
   List<Social> socials;
   List<Passion> passions;
   int soshiPoints;
-  List friends;
+  List<String> friendsStr;
+  List<Friend> friendsObj;
   Map<String, Social> lookupSocial;
 
   TextEditingController bioController;
@@ -276,8 +298,10 @@ class SoshiUser {
       @required this.soshiPoints,
       @required this.bio,
       @required this.bioController,
-      @required this.friends,
-      @required this.lookupSocial});
+      @required this.friendsStr,
+      @required this.friendsObj,
+      @required this.lookupSocial,
+      @required this.dynamicLink});
 
   //Will ignore case in input platform String
   getUsernameGivenPlatform({@required String platform}) {
@@ -336,6 +360,22 @@ class SoshiUser {
         this.photoURL == other.photoURL &&
         this.passions == other.passions;
   }
+
+  // takes string list, converts to friends list
+  static Future<List<Friend>> convertStrToFriendList(
+      List<String> usernameList) async {
+    List<Friend> list = [];
+    for (String username in usernameList) {
+      SoshiUser currUser = await DataEngine.getUserObject(
+          firebaseOverride: true, soshiUsernameOverride: username);
+      list.add(Friend(
+          soshiUsername: username,
+          fullName: currUser.firstName + ' ' + currUser.lastName,
+          photoURL: currUser.photoURL,
+          isVerified: currUser.verified));
+    }
+    return list;
+  }
 }
 
 class Social {
@@ -387,28 +427,13 @@ class Friend {
     );
   }
 
-  static List<String> convertToStringList(List<Friend> friendsList) {
-    List<String> list = [];
-    for (Friend friend in friendsList) {
-      list.add(friend.soshiUsername);
-    }
-    return list;
-  }
-
-  static Future<List<Friend>> convertToFriendList(
-      List<String> usernameList) async {
-    List<Friend> list = [];
-    for (String username in usernameList) {
-      SoshiUser currUser = await DataEngine.getUserObject(
-          firebaseOverride: true, soshiUsernameOverride: username);
-      list.add(Friend(
-          soshiUsername: username,
-          fullName: currUser.firstName + ' ' + currUser.lastName,
-          photoURL: currUser.photoURL,
-          isVerified: currUser.verified));
-    }
-    return list;
-  }
+  // static List<String> convertToStringList(List<Friend> friendsList) {
+  //   List<String> list = [];
+  //   for (Friend friend in friendsList) {
+  //     list.add(friend.soshiUsername);
+  //   }
+  //   return list;
+  // }
 
   // convert friend to map, then map to json
   String serialize() {

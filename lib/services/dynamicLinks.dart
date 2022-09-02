@@ -1,5 +1,6 @@
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
+import 'package:soshi/services/url.dart';
 
 import '../constants/popups.dart';
 import '../screens/mainapp/viewProfilePage.dart';
@@ -42,42 +43,47 @@ abstract class DynamicLinkService {
   // }
 
   // create deep link for user
-  static Future<void> createDeepLink(String username) async {
-    await FirebaseDynamicLinks.instance.buildShortLink(DynamicLinkParameters(
-        // longDynamicLink: Uri.parse("https://soshi.app/deeplink/user/$username"),
-        link: Uri.parse(
-          "https://soshi.app/$username",
-        ),
-        uriPrefix: "https://soshi.app/deeplink/user",
-        androidParameters: const AndroidParameters(
-          packageName: "com.swoledevs.soshi",
-          minimumVersion: 30,
-        ),
-        iosParameters: const IOSParameters(
-          bundleId: "com.swoledevs.soshi",
-          appStoreId: "1595515750",
-          minimumVersion: "11.0.0",
-        ),
-        socialMetaTagParameters: SocialMetaTagParameters(
-          title: "Example of a Dynamic Link",
-          imageUrl: Uri.parse(
-              "https://is1-ssl.mzstatic.com/image/thumb/Purple126/v4/4c/d0/83/4cd083e4-ae76-7061-a794-1e0120ddbf93/AppIcon-0-0-1x_U007emarketing-0-0-0-7-0-0-sRGB-0-0-0-GLES2_U002c0-512MB-85-220-0-0.png/1200x630wa.png"),
-        ),
-        navigationInfoParameters:
-            NavigationInfoParameters(forcedRedirectEnabled: true)));
+  static Future<dynamic> createDynamicLink(String username) async {
+    ShortDynamicLink link = await FirebaseDynamicLinks.instance.buildShortLink(
+        DynamicLinkParameters(
+            // longDynamicLink:
+            //     Uri.parse("https://soshi.app/deeplink/user/$username"),
+            link: Uri.parse(
+              "https://soshi.app/$username",
+            ),
+            uriPrefix: "https://soshi.app/deeplink/user",
+            androidParameters: AndroidParameters(
+              packageName: "com.swoledevs.soshi",
+              fallbackUrl: Uri.parse(
+                "https://soshi.app/$username",
+              ),
+            ),
+            iosParameters: IOSParameters(
+              fallbackUrl: Uri.parse(
+                "https://soshi.app/$username",
+              ),
+              bundleId: "com.example.strippedsoshi",
+              minimumVersion: "11.0.0",
+            ),
+            socialMetaTagParameters: SocialMetaTagParameters(
+              title: "Example of a Dynamic Link",
+              imageUrl: Uri.parse(
+                  "https://is1-ssl.mzstatic.com/image/thumb/Purple126/v4/4c/d0/83/4cd083e4-ae76-7061-a794-1e0120ddbf93/AppIcon-0-0-1x_U007emarketing-0-0-0-7-0-0-sRGB-0-0-0-GLES2_U002c0-512MB-85-220-0-0.png/1200x630wa.png"),
+            ),
+            navigationInfoParameters:
+                NavigationInfoParameters(forcedRedirectEnabled: true)));
+    return link.shortUrl.toString();
   }
 
   static Future<void> retrieveDynamicLink(BuildContext context) async {
-    int i = 0;
     // print(">> method call");
     List params;
     Stream stream = FirebaseDynamicLinks.instance.onLink;
     stream.listen((data) async {
       final Uri deepLink = data?.link;
-
       if (deepLink != null) {
         params = deepLink.toString().split("/");
-        // print(">> inside function: params: " + params.toString());
+        print(">> inside function: params: " + params.toString());
       }
     }, onError: (e) async {
       print("onLinkError");
@@ -100,7 +106,6 @@ abstract class DynamicLinkService {
         ); // show friend popup when tile is pressed
       }));
       // print(">> returning now. $i");
-      i += 1;
       return;
     }
   }

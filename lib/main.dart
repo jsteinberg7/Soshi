@@ -172,14 +172,14 @@ void main() async {
       // LocalDataService.preferences
       //     .setBool("Created Dynamic Link", true); // update field
     } else {
-      // if signed in and not first launch
-      if (LocalDataService.friendsListReformatted() == null &&
-          !LocalDataService.getLocalFriendsList().isEmpty) {
-        // check if friendsList has been reformatted
-        // if null, reformated friends list
-        await LocalDataService
-            .reformatFriendsList(); // should only ever run once per user
-      }
+      // // if signed in and not first launch
+      // if (LocalDataService.friendsListReformatted() == null &&
+      //     !LocalDataService.getLocalFriendsList().isEmpty) {
+      //   // check if friendsList has been reformatted
+      //   // if null, reformated friends list
+      //   await LocalDataService
+      //       .reformatFriendsList(); // should only ever run once per user
+      // }
     }
   }
   // else if (DatabaseService())  // check if "Contact" link has been corrupted by focus node bug (fix if necessary)

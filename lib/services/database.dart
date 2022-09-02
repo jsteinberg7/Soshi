@@ -136,7 +136,7 @@ class DatabaseService {
       "INJECTION Passions Flag": false,
       "Groups": []
     });
-    await DynamicLinkService.createDeepLink(username);
+    await DynamicLinkService.createDynamicLink(username);
   }
 
   /*
@@ -306,11 +306,11 @@ class DatabaseService {
         .update({"Friends": newFriendsList});
   }
 
-  Future<void> setFriendsListReformatted(bool hasReformatted) async {
-    await usersCollection
-        .doc(this.currSoshiUsername)
-        .update({"Friends List Reformatted": hasReformatted});
-  }
+  // Future<void> setFriendsListReformatted(bool hasReformatted) async {
+  //   await usersCollection
+  //       .doc(this.currSoshiUsername)
+  //       .update({"Friends List Reformatted": hasReformatted});
+  // }
 
   // remove friend from current user's friend list
   Future<void> removeFriend({String friendSoshiUsername}) async {
