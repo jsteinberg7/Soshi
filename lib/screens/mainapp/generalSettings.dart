@@ -223,11 +223,12 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                       onPressed: () {
                         AuthService authService = new AuthService();
 
-                        CustomAlertDialog.showCustomAlertDialog(
-                            "Sign out",
-                            "Are you sure you want to sign out?",
-                            "Yes",
-                            "No", () async {
+                        CustomAlertDialogDoubleChoice
+                            .showCustomAlertDialogDoubleChoice(
+                                "Sign out",
+                                "Are you sure you want to sign out?",
+                                "Yes",
+                                "No", () async {
                           await authService.signOut();
                           Navigator.pop(context); // close popup
                           // Navigator.pop(context); // pop to login screen

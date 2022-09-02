@@ -323,8 +323,12 @@ abstract class LocalDataService {
     return preferences.getInt("Soshi Points") ?? 0;
   }
 
-  static bool hasCreatedDynamicLink() {
-    return preferences.getBool("Created Dynamic Link") ?? false;
+  static bool hasCreatedShortDynamicLink() {
+    return preferences.getBool("Created Short Dynamic Link") ?? false;
+  }
+
+  static bool hasCreatedLongDynamicLink() {
+    return preferences.getBool("Created Long Dynamic Link") ?? false;
   }
 
   static List<String> getRecentlyAddedFriends() {
@@ -432,7 +436,6 @@ abstract class LocalDataService {
     await preferences.setStringList("Sorted Friends List", sortedFriendsList);
     return sortedFriendsList;
   }
-
 
   static Future<void> addToRecentFriends({@required Friend friend}) async {
     List<String> recentlyAddedFriends = getRecentlyAddedFriends();

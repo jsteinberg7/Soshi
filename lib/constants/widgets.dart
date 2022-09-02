@@ -186,8 +186,8 @@ class CustomAlertDialogSingleChoice {
   }
 }
 
-class CustomAlertDialog {
-  static showCustomAlertDialog(
+class CustomAlertDialogDoubleChoice {
+  static showCustomAlertDialogDoubleChoice(
       String title,
       String message,
       String primaryText,
@@ -223,6 +223,73 @@ class CustomAlertDialog {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: width / 25,
+                  ),
+                ),
+                SizedBox(height: height / 50),
+                TextButton(
+                    child: Text(
+                      primaryText,
+                      style: TextStyle(
+                          fontSize: width / 25,
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    onPressed: primaryAction),
+                Divider(),
+                TextButton(
+                    child: Text(
+                      secondaryText,
+                      style: TextStyle(
+                          fontSize: width / 25,
+                          color:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? Colors.black
+                                  : Colors.white),
+                    ),
+                    onPressed: secondaryAction),
+              ],
+            ),
+          );
+        });
+  }
+}
+
+class CustomAlertDialogDoubleChoiceWithAsset {
+  static showCustomAlertDialogDoubleChoiceWithAsset(
+      String title,
+      String assetUrl,
+      String primaryText,
+      String secondaryText,
+      Function primaryAction,
+      Function secondaryAction,
+      BuildContext context,
+      double height,
+      double width) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(30.0))),
+            //backgroundColor: Colors.grey.shade800,
+            // backgroundColor: Colors.blueGrey[900],
+            title: Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                // color: Colors.cyan[600],
+                fontWeight: FontWeight.bold,
+                fontSize: width / 20,
+              ),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  height: height / 5,
+                  child: Image.asset(
+                    assetUrl,
                   ),
                 ),
                 SizedBox(height: height / 50),
@@ -667,14 +734,14 @@ class ShareButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(shape: CircleBorder()),
       onPressed: () {
         if (groupId == null) {
-          Share.share("https://soshi.app/deeplink/user/" + soshiUsername,
+          Share.share("https://strippedsoshi.page.link" + soshiUsername,
               subject: LocalDataService.getLocalFirstName() +
                   " " +
                   LocalDataService.getLocalLastName() +
                   "'s Soshi Contact Card");
         } else {
           Share.share(
-            "https://soshi.app/deeplink/group/" + groupId,
+            "https://strippedsoshi.page.link" + groupId,
           );
         }
       },

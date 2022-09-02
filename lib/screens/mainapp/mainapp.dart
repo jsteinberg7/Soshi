@@ -77,13 +77,16 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
   }
 
   int currScreen = 1;
-  PageController pageController = new PageController(initialPage: 1, viewportFraction: 1.1);
+  PageController pageController =
+      new PageController(initialPage: 1, viewportFraction: 1.1);
   ValueNotifier controlsBottomNavBar = new ValueNotifier(1);
 
   @override
   Widget build(BuildContext context) {
-    String soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
-    DatabaseService databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
+    String soshiUsername =
+        LocalDataService.getLocalUsernameForPlatform("Soshi");
+    DatabaseService databaseService =
+        new DatabaseService(currSoshiUsernameIn: soshiUsername);
 
     return Scaffold(
       drawerEnableOpenDragGesture: false,
@@ -116,7 +119,10 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
 
 class LatestBottomNavBar extends StatelessWidget {
   const LatestBottomNavBar(
-      {Key key, @required this.currScreen, @required this.pageController, @required this.importNotifier})
+      {Key key,
+      @required this.currScreen,
+      @required this.pageController,
+      @required this.importNotifier})
       : super(key: key);
 
   final int currScreen;
@@ -132,7 +138,9 @@ class LatestBottomNavBar extends StatelessWidget {
         scaleFactor: .05,
         elevation: 5,
         iconSize: Utilities.getWidth(context) / 10,
-        selectedColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+        selectedColor: Theme.of(context).brightness == Brightness.light
+            ? Colors.black
+            : Colors.white,
         strokeColor: Colors.transparent,
         unSelectedColor: Colors.grey,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -143,7 +151,10 @@ class LatestBottomNavBar extends StatelessWidget {
               size: 35,
             ),
           ),
-          CustomNavigationBarItem(icon: ProfilePic(radius: 25, url: LocalDataService.getLocalProfilePictureURL())),
+          CustomNavigationBarItem(
+              icon: ProfilePic(
+                  radius: 25,
+                  url: LocalDataService.getLocalProfilePictureURL())),
           CustomNavigationBarItem(
             icon: Icon(
               AntDesign.contacts,

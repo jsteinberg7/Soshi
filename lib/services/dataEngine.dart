@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:soshi/services/dynamicLinks.dart';
 
 class DataEngine {
   // String defaultUsername;
@@ -40,7 +41,9 @@ class DataEngine {
       'Choose Platforms':
           user.getAvailablePlatforms().map((e) => e.platformName).toList(),
       'Profile Platforms':
-          user.getChosenPlatforms().map((e) => e.platformName).toList()
+          user.getChosenPlatforms().map((e) => e.platformName).toList(),
+      'Long Dynamic Link': user.longDynamicLink,
+      'Short Dynamic Link': user.shortDynamicLink
     };
 
     Map switches = {};
@@ -100,6 +103,12 @@ class DataEngine {
     int soshiPoints = fetch['Soshi Points'] ?? 0;
     String bio = fetch['Bio'] ?? "";
     List friends = fetch['Friends'] ?? [];
+    String longDynamicLink = fetch['Long Dynamic Link'] ??
+        await DynamicLinkService.createLongDynamicLink(soshiUsername);
+    String shortDynamicLink = fetch['Short Dynamic Link'] ??
+        await DynamicLinkService.createShortDynamicLink(soshiUsername);
+    print(shortDynamicLink);
+    print(longDynamicLink);
     log("[⚙ Data Engine ⚙] basic info built ✅");
 
     if (fetch['Passions'] == null) {
@@ -183,7 +192,9 @@ class DataEngine {
         bio: bio,
         bioController: new TextEditingController(text: bio),
         friends: friends,
-        lookupSocial: lookupSocial);
+        lookupSocial: lookupSocial,
+        shortDynamicLink: shortDynamicLink,
+        longDynamicLink: longDynamicLink);
   }
 
   // static overrideWithTextControllerData(){
@@ -206,7 +217,7 @@ class DataEngine {
       }
 
       if (cloud) {
-        //afterSerialized["Friends"] = Friend.convertToStringList(user.friends); **ADD THIS BACK ONCE JASON ADDS FRIENDS
+        //afterSerialized["Friends"] = Friend.convertToStringList(user.friends);
         await FirebaseFirestore.instance
             .collection("users")
             .doc(soshiUsername)
@@ -249,7 +260,13 @@ class DataEngine {
 }
 
 class SoshiUser {
-  String soshiUsername, firstName, lastName, photoURL, bio;
+  String soshiUsername,
+      firstName,
+      lastName,
+      photoURL,
+      bio,
+      shortDynamicLink,
+      longDynamicLink;
   bool hasPhoto;
   bool verified;
   List<Social> socials;
@@ -277,7 +294,9 @@ class SoshiUser {
       @required this.bio,
       @required this.bioController,
       @required this.friends,
-      @required this.lookupSocial});
+      @required this.lookupSocial,
+      @required this.shortDynamicLink,
+      @required this.longDynamicLink});
 
   //Will ignore case in input platform String
   getUsernameGivenPlatform({@required String platform}) {
@@ -395,8 +414,9 @@ class Friend {
     return list;
   }
 
+  // takes string list, converts to friends list
   static Future<List<Friend>> convertToFriendList(
-      List<String> usernameList) async {
+      List<dynamic> usernameList) async {
     List<Friend> list = [];
     for (String username in usernameList) {
       SoshiUser currUser = await DataEngine.getUserObject(

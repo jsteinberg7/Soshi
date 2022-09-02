@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:soshi/services/dataEngine.dart';
@@ -83,7 +84,9 @@ class PassionsPage extends StatelessWidget {
                           decoration: InputDecoration(
                             contentPadding: EdgeInsets.fromLTRB(20, 5, 10, 20),
                             hintText: "Type to search passions",
-                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(30))),
                           ),
                           onChanged: (newValue) {
                             print("----> apply filters with ${newValue}");
@@ -121,6 +124,9 @@ class RenderPassionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+
     print("[✔] rebuilding gridView now!");
 
     return GridView.builder(
@@ -134,14 +140,28 @@ class RenderPassionList extends StatelessWidget {
               elevation: 3,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10))),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text(renderPassions[index].emoji,
-                        style: TextStyle(fontSize: 35)),
-                    Text(renderPassions[index].name,
-                        style: TextStyle(fontSize: 14))
-                  ]),
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text(renderPassions[index].emoji,
+                          style: TextStyle(fontSize: width / 15)),
+                      Container(
+                        // color: Colors.black,
+                        width: width / 5,
+                        //height: height / 45,
+                        child: AutoSizeText(
+                          renderPassions[index].name,
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          style: TextStyle(fontSize: width / 30),
+                          minFontSize: 1,
+                          //maxFontSize: width / 10,
+                        ),
+                      )
+                    ]),
+              ),
             ),
           );
         },

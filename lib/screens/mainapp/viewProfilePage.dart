@@ -167,13 +167,16 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                         children: [
                                           Container(
                                             width: width / 1.5,
+                                            // color: Colors.grey,
                                             child: Center(
                                               child: AutoSizeText(
                                                 fullName,
+                                                maxLines: 1,
+                                                minFontSize: 1,
+                                                //maxFontSize: width / ,
                                                 style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: width / 16,
-                                                ),
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: width / 16),
                                               ),
                                             ),
                                           ),

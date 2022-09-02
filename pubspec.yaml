@@ -69,7 +69,6 @@ dependencies:
   azlistview: ^2.0.0
   alphabet_list_scroll_view: ^2.0.0
   async: ^2.8.2
-  # nfc_manager: ^3.1.1
 
 
   flutter_feather_icons: ^2.0.0+1
@@ -83,6 +82,8 @@ dependencies:
   in_app_review: ^2.0.4
 
   equatable: ^2.0.3
+  flutter_share: ^2.0.0
+  flutter_nfc_kit: ^3.3.1
   
   
 

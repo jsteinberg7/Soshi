@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:soshi/screens/mainapp/passionsPage.dart';
 import 'package:soshi/services/dataEngine.dart';
@@ -18,6 +19,9 @@ class _PassionTileListState extends State<PassionTileList> {
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+
     return FutureBuilder(
         future: loadDataEngine(),
         builder: (context, snapshot) {
@@ -52,6 +56,8 @@ class _PassionTileListState extends State<PassionTileList> {
   }
 
   Widget makePassionTile(Passion passion, int pIndex) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
     return passion != Defaults.emptyPassion
         ? ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
@@ -65,9 +71,11 @@ class _PassionTileListState extends State<PassionTileList> {
               passion.emoji,
               style: TextStyle(fontSize: 15),
             ),
-            label: Text(
-              passion.name,
-              style: TextStyle(fontSize: 15),
+            label: Container(
+              child: AutoSizeText(
+                passion.name,
+                style: TextStyle(fontSize: 15),
+              ),
             ))
         : OutlinedButton.icon(
             style: OutlinedButton.styleFrom(

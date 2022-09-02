@@ -136,7 +136,8 @@ class DatabaseService {
       "INJECTION Passions Flag": false,
       "Groups": []
     });
-    await DynamicLinkService.createDeepLink(username);
+    await DynamicLinkService.createLongDynamicLink(username);
+    await DynamicLinkService.createShortDynamicLink(username);
   }
 
   /*

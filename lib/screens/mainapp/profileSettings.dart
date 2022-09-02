@@ -41,8 +41,11 @@ class ProfileSettingsState extends State<ProfileSettings> {
         leading: CupertinoBackButton(
           onPressed: () {
             print("verify discard changes?");
-            CustomAlertDialog.showCustomAlertDialog("Confirm exit",
-                "Unsaved changes will be discarded", "Yes", "No", () {
+            CustomAlertDialogDoubleChoice.showCustomAlertDialogDoubleChoice(
+                "Confirm exit",
+                "Unsaved changes will be discarded",
+                "Yes",
+                "No", () {
               Navigator.pop(context);
               Navigator.pop(context);
             }, () {
