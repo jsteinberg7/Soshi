@@ -91,15 +91,11 @@ class _NewQRScreenState extends State<NewQRScreen> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                IconButton(
-                                    icon: Icon(Icons.ios_share_rounded, color: Colors.transparent),
-                                    onPressed: () => {}),
+                                IconButton(icon: Icon(Icons.ios_share_rounded, color: Colors.transparent), onPressed: () => {}),
                                 Column(
                                   children: [
-                                    Text(user.firstName + " " + user.lastName,
-                                        style: TextStyle(fontSize: width / 15, fontWeight: FontWeight.bold)),
-                                    SoshiUsernameText(user.soshiUsername,
-                                        fontSize: width / 22, isVerified: user.verified)
+                                    Text(user.firstName + " " + user.lastName, style: TextStyle(fontSize: width / 15, fontWeight: FontWeight.bold)),
+                                    SoshiUsernameText(user.soshiUsername, fontSize: width / 22, isVerified: user.verified)
                                   ],
                                 ),
                                 IconButton(
@@ -142,8 +138,7 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                         borderRadius: BorderRadius.circular(30.0),
                                         child: QrImage(
                                             size: width / 1.5,
-                                            dataModuleStyle: QrDataModuleStyle(
-                                                dataModuleShape: QrDataModuleShape.circle, color: Colors.black),
+                                            dataModuleStyle: QrDataModuleStyle(dataModuleShape: QrDataModuleShape.circle, color: Colors.black),
                                             data: "https://soshi.app/deeplink/user/${user.soshiUsername}"),
                                       ),
                                     ),
@@ -184,6 +179,8 @@ class _NewQRScreenState extends State<NewQRScreen> {
                         if (QRScanResult.length > 5) {
                           // vibrate when QR code is successfully scanned
                           Vibration.vibrate();
+                
+
                           try {
                             if (QRScanResult.contains("https://soshi.app/group/")) {
                               String groupId = QRScanResult.split("/").last;

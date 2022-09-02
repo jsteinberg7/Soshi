@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:soshi/screens/login/loading.dart';
 import 'package:soshi/services/dataEngine.dart';
 import 'package:soshi/services/localData.dart';
+import 'package:vibration/vibration.dart';
 
 import '../../constants/widgets.dart';
 
@@ -15,88 +16,125 @@ class ChooseSocialsCard extends StatefulWidget {
   _ChooseSocialsCardState createState() => _ChooseSocialsCardState();
 }
 
-class _ChooseSocialsCardState extends State<ChooseSocialsCard> {
-  @override
-  void initState() {
-    // isSwitched = widget.user.lookupSocial[widget.platformName].switchStatus;
-    super.initState();
-  }
+class _ChooseSocialsCardState extends State<ChooseSocialsCard> with SingleTickerProviderStateMixin {
+  double _scale;
+  AnimationController _controller;
 
   bool isSwitched = false;
 
   @override
+  void initState() {
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(
+        milliseconds: 50,
+      ),
+      lowerBound: 0.0,
+      upperBound: 0.1,
+    )..addListener(() {
+        setState(() {});
+      });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
+
+  void _tapDown(TapDownDetails details) {
+    _controller.forward();
+    Vibration.vibrate(duration: 50);
+    setState(() {
+      isSwitched = !isSwitched;
+      widget.user.lookupSocial[widget.platformName].isChosen = true;
+    });
+  }
+
+  void _tapUp(TapUpDetails details) {
+    _controller.reverse();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    _scale = 1 - _controller.value;
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          isSwitched = !isSwitched;
-          widget.user.lookupSocial[widget.platformName].isChosen = true;
-        });
-      },
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Card(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+      onTapDown: _tapDown,
+      onTapUp: _tapUp,
+      // onTap: () {
+      //   Vibration.vibrate(duration: 60);
+      //   setState(() {
+      //     isSwitched = !isSwitched;
+      //     widget.user.lookupSocial[widget.platformName].isChosen = true;
+      //   });
+      // },
+      child: Transform.scale(
+        scale: _scale,
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Card(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
 
-            elevation: 5,
-            //color: Colors.grey[8,
-            color: Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.grey[700],
-            child: Padding(
-              // padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
-              padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  SizedBox(
-                    width: 60,
-                  ),
-                  // SizedBox(width: width / 30),
-                  Image.asset(
-                    'assets/images/SMWriting/' + widget.platformName + 'Writing.png',
-                    height: (width * .31) / 1.8,
-                    width: (width * .69) / 1.8,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                    child: Transform.scale(
-                      scale: 1.2,
-                      child: Checkbox(
-                        side: BorderSide(width: 1, color: Colors.grey),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+              elevation: 5,
+              //color: Colors.grey[8,
+              color: Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.grey[700],
+              child: Padding(
+                // padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+                padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    SizedBox(
+                      width: 60,
+                    ),
+                    // SizedBox(width: width / 30),
+                    Image.asset(
+                      'assets/images/SMWriting/' + widget.platformName + 'Writing.png',
+                      height: (width * .31) / 1.8,
+                      width: (width * .69) / 1.8,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                      child: Transform.scale(
+                        scale: 1.2,
+                        child: Checkbox(
+                          side: BorderSide(width: 1, color: Colors.grey),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          value: isSwitched,
+                          checkColor: Colors.cyan[400],
+                          activeColor: Colors.cyan[400],
+                          onChanged: (bool value) {
+                            setState(() {
+                              isSwitched = !isSwitched;
+                              if (!Queue.choosePlatformsQueue.contains(widget.platformName)) {
+                                Queue.choosePlatformsQueue.add(widget.platformName);
+                              } else {
+                                Queue.choosePlatformsQueue.remove(widget.platformName);
+                              }
+                            });
+                          },
                         ),
-                        value: isSwitched,
-                        checkColor: Colors.cyan[400],
-                        activeColor: Colors.cyan[400],
-                        onChanged: (bool value) {
-                          setState(() {
-                            isSwitched = !isSwitched;
-                            if (!Queue.choosePlatformsQueue.contains(widget.platformName)) {
-                              Queue.choosePlatformsQueue.add(widget.platformName);
-                            } else {
-                              Queue.choosePlatformsQueue.remove(widget.platformName);
-                            }
-                          });
-                        },
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          Positioned(
-            // alignment: Alignment.centerLeft,
-            left: 0,
-            top: 0,
-            child: Image.asset('assets/images/SMLogos/' + widget.platformName + 'Logo.png',
-                height: width / 4.5, width: width / 4.5),
-          ),
-        ],
+            Positioned(
+              // alignment: Alignment.centerLeft,
+              left: 0,
+              top: 0,
+              child: Image.asset('assets/images/SMLogos/' + widget.platformName + 'Logo.png', height: width / 4.5, width: width / 4.5),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -134,7 +172,6 @@ class _ChooseSocialsState extends State<ChooseSocials> {
     return Scaffold(
       appBar: AppBar(
         leading: CupertinoBackButton(),
-
         actions: [
           Padding(
             padding: EdgeInsets.only(right: width / 150),
@@ -147,9 +184,7 @@ class _ChooseSocialsState extends State<ChooseSocials> {
               onPressed: () async {
                 DialogBuilder dialogBuilder = new DialogBuilder(context);
                 dialogBuilder.showLoadingIndicator();
-
                 await DataEngine.applyUserChanges(user: widget.user, cloud: true, local: true);
-
                 dialogBuilder.hideOpenDialog(); // disable loading indicator
 
                 Navigator.pop(context);
@@ -158,7 +193,6 @@ class _ChooseSocialsState extends State<ChooseSocials> {
           )
         ],
         elevation: .5,
-
         title: Text(
           "Add Platforms",
           style: TextStyle(
@@ -167,7 +201,6 @@ class _ChooseSocialsState extends State<ChooseSocials> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        // backgroundColor: Colors.grey[850],
         centerTitle: true,
       ),
       body: Padding(

@@ -1072,16 +1072,7 @@ class SMButton extends StatelessWidget {
 
           Popups.showContactAddedPopup(context, width, photoUrl, firstName, lastName, phoneNumber, email);
 
-          //ContactsService.openContactForm();
-          // ContactsService.addContact(newContact).then((dynamic success) {
-          // });
-          //         ContactsService.addContact(newContact).then(dynamic success)
-          // {             ContactsService.openExistingContact(newContact);
-          //       };
-
-          // .then((dynamic success) {
-          //   Popups.showContactAddedPopup(context, width, firstName, lastName);
-          // });
+       
         } else if (platform == "Cryptowallet") {
           Clipboard.setData(ClipboardData(
             text: username.toString(),
