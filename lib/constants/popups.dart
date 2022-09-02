@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:glassmorphism/glassmorphism.dart';
+// import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:soshi/constants/utilities.dart';
 import 'package:soshi/constants/widgets.dart';
 import 'package:soshi/screens/login/loading.dart';
@@ -23,7 +24,6 @@ import 'package:top_modal_sheet/top_modal_sheet.dart';
 import '../screens/mainapp/friendScreen.dart';
 import '../screens/mainapp/groupScreen.dart';
 import '../screens/mainapp/viewGroupPage.dart';
-import '../services/dataEngine.dart';
 import 'constants.dart';
 //import 'package:google_fonts/google_fonts.dart';
 
@@ -636,8 +636,8 @@ class Popups {
       usernames = databaseService.getUserProfileNames(userData);
     } else {
       // STATIC SHARING
-      visiblePlatforms = friend.enabledUsernames.keys.toList();
-      usernames = friend.enabledUsernames;
+      // visiblePlatforms = friend.enabledUsernames.keys.toList();
+      // usernames = friend.enabledUsernames;
     }
 
     double popupHeightDivisor;

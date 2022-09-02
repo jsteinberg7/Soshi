@@ -167,20 +167,6 @@ class DataEngine {
         log("[⚙ Data Engine ⚙] Missing ${platform}, just added it don't worry ⚠️ ✅");
       });
     }
-    Set added = socials.map((e) => e.platformName).toList().toSet();
-    Set allPlatforms = Defaults.blankUsernames.keys.toSet();
-
-    if (added == allPlatforms) {
-      log("[⚙ Data Engine ⚙] No Missing platforms from firestore! ✅");
-    } else {
-      allPlatforms.difference(added).toList().forEach((platform) {
-        Social makeSocial =
-            Social(isChosen: false, username: "", switchStatus: false, usernameController: TextEditingController(text: ""), platformName: platform);
-        socials.add(makeSocial);
-        lookupSocial[platform] = makeSocial;
-        log("[⚙ Data Engine ⚙] Missing ${platform}, just added it don't worry ⚠️ ✅");
-      });
-    }
 
 // <<<<<<< HEAD
 //     // if (friends != null && friends.isNotEmpty && friends[0] is String) {
