@@ -28,19 +28,14 @@ class DataEngine {
 
     Map<String, dynamic> toReturn = {
       'Friends': user.friends,
-      'Name': {
-        'First': user.firstNameController.text,
-        'Last': user.lastNameController.text
-      },
+      'Name': {'First': user.firstNameController.text, 'Last': user.lastNameController.text},
       'Photo URL': user.photoURL,
       'Bio': user.bioController.text,
       'Soshi Points': user.soshiPoints,
       'Verified': user.verified,
       'Passions': serializePassions,
-      'Choose Platforms':
-          user.getAvailablePlatforms().map((e) => e.platformName).toList(),
-      'Profile Platforms':
-          user.getChosenPlatforms().map((e) => e.platformName).toList()
+      'Choose Platforms': user.getAvailablePlatforms().map((e) => e.platformName).toList(),
+      'Profile Platforms': user.getChosenPlatforms().map((e) => e.platformName).toList()
     };
 
     Map switches = {};
@@ -59,11 +54,9 @@ class DataEngine {
   }
 
   //{NOTE} If firebaseOverride is true, will fetch latest data again from firestore
-  static getUserObject(
-      {@required bool firebaseOverride, String soshiUsernameOverride}) async {
+  static getUserObject({@required bool firebaseOverride, String soshiUsernameOverride}) async {
     if (soshiUsernameOverride == null) {
-      soshiUsernameOverride =
-          soshiUsername; // if no override, use local username
+      soshiUsernameOverride = soshiUsername; // if no override, use local username
     } else {
       firebaseOverride = true; // force firebase override if other user
     }
@@ -75,10 +68,7 @@ class DataEngine {
 
     if (firebaseOverride || !prefs.containsKey("userObject")) {
       log("[⚙ Data Engine ⚙]  getUserObject() Firebase data burn ⚠ userFetch=> ${soshiUsernameOverride}");
-      DocumentSnapshot dSnap = await FirebaseFirestore.instance
-          .collection("users")
-          .doc(soshiUsernameOverride)
-          .get();
+      DocumentSnapshot dSnap = await FirebaseFirestore.instance.collection("users").doc(soshiUsernameOverride).get();
       fetch = dSnap.data();
       await prefs.setString("userObject", jsonEncode(fetch));
     } else {
@@ -111,8 +101,7 @@ class DataEngine {
         if (e['passion_name'].toString().toUpperCase() == "EMPTY") {
           passions.add(Defaults.emptyPassion);
         } else {
-          passions
-              .add(Passion(emoji: e['passion_emoji'], name: e['passion_name']));
+          passions.add(Passion(emoji: e['passion_emoji'], name: e['passion_name']));
         }
       });
     }
@@ -138,9 +127,7 @@ class DataEngine {
 
     log("[⚙ Data Engine ⚙] passions info built ✅");
 
-    if (fetch['Usernames'] != null &&
-        fetch['Switches'] != null &&
-        fetch['Choose Platforms'] != null) {
+    if (fetch['Usernames'] != null && fetch['Switches'] != null && fetch['Choose Platforms'] != null) {
       Map.of(fetch['Usernames']).keys.forEach((key) {
         bool switchStatus = Map.of(fetch['Switches'])[key];
         bool isChosen = List.of(fetch['Profile Platforms']).contains(key);
@@ -151,8 +138,7 @@ class DataEngine {
             platformName: key.toString(),
             switchStatus: switchStatus,
             isChosen: isChosen,
-            usernameController:
-                TextEditingController(text: fetch['Usernames'][key]));
+            usernameController: TextEditingController(text: fetch['Usernames'][key]));
 
         socials.add(makeSocial);
         lookupSocial[key] = makeSocial;
@@ -196,26 +182,24 @@ class DataEngine {
       });
     }
 
-<<<<<<< HEAD
-    // if (friends != null && friends.isNotEmpty && friends[0] is String) {
-    //   // convert local friends list from String list to Friend list if just pulled from db
-    //   friends = await Friend.convertToFriendList(friends);
-    // }
-=======
-    //Regression Testing -
-    //If a social platform is missing in firestore - AUTO-ADD it!
->>>>>>> sri_fixes_before_merge
+// <<<<<<< HEAD
+//     // if (friends != null && friends.isNotEmpty && friends[0] is String) {
+//     //   // convert local friends list from String list to Friend list if just pulled from db
+//     //   friends = await Friend.convertToFriendList(friends);
+//     // }
+// =======
+//     //Regression Testing -
+//     //If a social platform is missing in firestore - AUTO-ADD it!
+// >>>>>>> sri_fixes_before_merge
 
-    //Regression Testing -
-    //If a social platform is missing in firestore - AUTO-ADD it!
+//     //Regression Testing -
+//     //If a social platform is missing in firestore - AUTO-ADD it!
 
     return SoshiUser(
         soshiUsername: soshiUsernameOverride,
         firstName: fetch['Name']['First'],
-        firstNameController:
-            new TextEditingController(text: fetch['Name']['First']),
-        lastNameController:
-            new TextEditingController(text: fetch['Name']['Last']),
+        firstNameController: new TextEditingController(text: fetch['Name']['First']),
+        lastNameController: new TextEditingController(text: fetch['Name']['Last']),
         lastName: fetch['Name']['Last'],
         photoURL: photoURL,
         hasPhoto: hasPhoto,
@@ -243,10 +227,7 @@ class DataEngine {
 
       if (cloud) {
         //afterSerialized["Friends"] = Friend.convertToStringList(user.friends); **ADD THIS BACK ONCE JASON ADDS FRIENDS
-        await FirebaseFirestore.instance
-            .collection("users")
-            .doc(soshiUsername)
-            .update(afterSerialized);
+        await FirebaseFirestore.instance.collection("users").doc(soshiUsername).update(afterSerialized);
         log("[⚙ Data Engine ⚙] update Cloud {Firestore} success! ✅");
       }
     }
@@ -254,18 +235,14 @@ class DataEngine {
 
 //{NOTE} just use "applyUserChanges" and change boolean values
 
-  static Future<List<Passion>> getAvailablePassions(
-      {@required bool firebaseOverride}) async {
+  static Future<List<Passion>> getAvailablePassions({@required bool firebaseOverride}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map allPassionData = {};
 
     if (!prefs.containsKey("available_passions") || firebaseOverride) {
       log("[⚙ Data Engine ⚙] Firebase burn for available passions❌");
 
-      DocumentSnapshot dsnap = await FirebaseFirestore.instance
-          .collection('metadata')
-          .doc('passionData')
-          .get();
+      DocumentSnapshot dsnap = await FirebaseFirestore.instance.collection('metadata').doc('passionData').get();
       allPassionData = dsnap.get('all_passions_list');
       await prefs.setString("available_passions", jsonEncode(allPassionData));
     } else {
@@ -274,9 +251,7 @@ class DataEngine {
       allPassionData = jsonDecode(prefs.getString("available_passions"));
     }
 
-    List<Passion> pList = allPassionData.keys
-        .map((key) => Passion(emoji: allPassionData[key], name: key))
-        .toList();
+    List<Passion> pList = allPassionData.keys.map((key) => Passion(emoji: allPassionData[key], name: key)).toList();
 
     log("[⚙ Data Engine ⚙] Successfully fetched latest available passions ✅");
     return pList;
@@ -430,12 +405,10 @@ class Friend {
     return list;
   }
 
-  static Future<List<Friend>> convertToFriendList(
-      List<String> usernameList) async {
+  static Future<List<Friend>> convertToFriendList(List<String> usernameList) async {
     List<Friend> list = [];
     for (String username in usernameList) {
-      SoshiUser currUser = await DataEngine.getUserObject(
-          firebaseOverride: true, soshiUsernameOverride: username);
+      SoshiUser currUser = await DataEngine.getUserObject(firebaseOverride: true, soshiUsernameOverride: username);
       list.add(Friend(
           soshiUsername: username,
           fullName: currUser.firstName + ' ' + currUser.lastName,
@@ -478,6 +451,5 @@ class Defaults {
     'Youtube': '',
     'Venmo': '',
     'Cryptowallet': '',
- 
   };
 }
