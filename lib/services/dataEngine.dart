@@ -15,7 +15,7 @@ class DataEngine {
   static initialize(String soshiUsername) async {
     DataEngine.soshiUsername = soshiUsername;
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove("userObject");
+    await prefs.remove("userObject");
     log("[⚙ Data Engine ⚙] successfully initialzed with username: ${soshiUsername} ✅");
   }
 
@@ -159,12 +159,55 @@ class DataEngine {
       });
 
       log("[⚙ Data Engine ⚙] SoshiUser Object built ✅");
+    } else {
+      Defaults.blankUsernames.forEach((key, value) {
+        Social makeSocial = Social(
+            username: "", platformName: key.toString(), switchStatus: false, isChosen: false, usernameController: TextEditingController(text: ""));
+        socials.add(makeSocial);
+        lookupSocial[key] = makeSocial;
+      });
+    }
+    Set added = socials.map((e) => e.platformName).toList().toSet();
+    Set allPlatforms = Defaults.blankUsernames.keys.toSet();
+
+    if (added == allPlatforms) {
+      log("[⚙ Data Engine ⚙] No Missing platforms from firestore! ✅");
+    } else {
+      allPlatforms.difference(added).toList().forEach((platform) {
+        Social makeSocial =
+            Social(isChosen: false, username: "", switchStatus: false, usernameController: TextEditingController(text: ""), platformName: platform);
+        socials.add(makeSocial);
+        lookupSocial[platform] = makeSocial;
+        log("[⚙ Data Engine ⚙] Missing ${platform}, just added it don't worry ⚠️ ✅");
+      });
+    }
+    Set added = socials.map((e) => e.platformName).toList().toSet();
+    Set allPlatforms = Defaults.blankUsernames.keys.toSet();
+
+    if (added == allPlatforms) {
+      log("[⚙ Data Engine ⚙] No Missing platforms from firestore! ✅");
+    } else {
+      allPlatforms.difference(added).toList().forEach((platform) {
+        Social makeSocial =
+            Social(isChosen: false, username: "", switchStatus: false, usernameController: TextEditingController(text: ""), platformName: platform);
+        socials.add(makeSocial);
+        lookupSocial[platform] = makeSocial;
+        log("[⚙ Data Engine ⚙] Missing ${platform}, just added it don't worry ⚠️ ✅");
+      });
     }
 
+<<<<<<< HEAD
     // if (friends != null && friends.isNotEmpty && friends[0] is String) {
     //   // convert local friends list from String list to Friend list if just pulled from db
     //   friends = await Friend.convertToFriendList(friends);
     // }
+=======
+    //Regression Testing -
+    //If a social platform is missing in firestore - AUTO-ADD it!
+>>>>>>> sri_fixes_before_merge
+
+    //Regression Testing -
+    //If a social platform is missing in firestore - AUTO-ADD it!
 
     return SoshiUser(
         soshiUsername: soshiUsernameOverride,
@@ -186,14 +229,7 @@ class DataEngine {
         lookupSocial: lookupSocial);
   }
 
-  // static overrideWithTextControllerData(){
-
-  // }
-
-  static applyUserChanges(
-      {@required SoshiUser user,
-      @required bool cloud,
-      @required bool local}) async {
+  static applyUserChanges({@required SoshiUser user, @required bool cloud, @required bool local}) async {
     // {!} These tasks can happen asynchronously to save time!
     if (cloud || local) {
       Map afterSerialized = serializeUser(user);
@@ -242,7 +278,6 @@ class DataEngine {
         .map((key) => Passion(emoji: allPassionData[key], name: key))
         .toList();
 
-    pList.add(Defaults.emptyPassion);
     log("[⚙ Data Engine ⚙] Successfully fetched latest available passions ✅");
     return pList;
   }
@@ -426,4 +461,23 @@ class Defaults {
   static String defaultProfilePic =
       "https://img.freepik.com/free-photo/abstract-luxury-plain-blur-grey-black-gradient-used-as-background-studio-wall-display-your-products_1258-58170.jpg?w=2000";
   static Passion emptyPassion = Passion(emoji: "❌", name: "Empty");
+
+  static Map blankUsernames = {
+    'Contact': 'Contact Card',
+    'Discord': '',
+    'Email': '',
+    'Facebook': '',
+    'Instagram': '',
+    'Linkedin': '',
+    'Phone': '',
+    'Snapchat': '',
+    'Soshi': '',
+    'Spotify': '',
+    'TikTok': '',
+    'Twitter': '',
+    'Youtube': '',
+    'Venmo': '',
+    'Cryptowallet': '',
+ 
+  };
 }

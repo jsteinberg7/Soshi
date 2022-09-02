@@ -21,6 +21,8 @@ class PassionsPage extends StatelessWidget {
     renderPassions.removeWhere((element) {
       return alreadySelected.contains(element);
     });
+
+    renderPassions.add(Defaults.emptyPassion);
     // searchController.clear();
   }
 
