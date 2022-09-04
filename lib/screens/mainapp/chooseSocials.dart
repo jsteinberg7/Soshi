@@ -40,11 +40,14 @@ class _ChooseSocialsCardState extends State<ChooseSocialsCard> {
         clipBehavior: Clip.none,
         children: [
           Card(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)),
 
             elevation: 5,
             //color: Colors.grey[8,
-            color: Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.grey[700],
+            color: Theme.of(context).brightness == Brightness.light
+                ? Colors.white
+                : Colors.grey[850],
             child: Padding(
               // padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
               padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
@@ -56,7 +59,9 @@ class _ChooseSocialsCardState extends State<ChooseSocialsCard> {
                   ),
                   // SizedBox(width: width / 30),
                   Image.asset(
-                    'assets/images/SMWriting/' + widget.platformName + 'Writing.png',
+                    'assets/images/SMWriting/' +
+                        widget.platformName +
+                        'Writing.png',
                     height: (width * .31) / 1.8,
                     width: (width * .69) / 1.8,
                   ),
@@ -75,10 +80,13 @@ class _ChooseSocialsCardState extends State<ChooseSocialsCard> {
                         onChanged: (bool value) {
                           setState(() {
                             isSwitched = !isSwitched;
-                            if (!Queue.choosePlatformsQueue.contains(widget.platformName)) {
-                              Queue.choosePlatformsQueue.add(widget.platformName);
+                            if (!Queue.choosePlatformsQueue
+                                .contains(widget.platformName)) {
+                              Queue.choosePlatformsQueue
+                                  .add(widget.platformName);
                             } else {
-                              Queue.choosePlatformsQueue.remove(widget.platformName);
+                              Queue.choosePlatformsQueue
+                                  .remove(widget.platformName);
                             }
                           });
                         },
@@ -93,8 +101,10 @@ class _ChooseSocialsCardState extends State<ChooseSocialsCard> {
             // alignment: Alignment.centerLeft,
             left: 0,
             top: 0,
-            child: Image.asset('assets/images/SMLogos/' + widget.platformName + 'Logo.png',
-                height: width / 4.5, width: width / 4.5),
+            child: Image.asset(
+                'assets/images/SMLogos/' + widget.platformName + 'Logo.png',
+                height: width / 4.5,
+                width: width / 4.5),
           ),
         ],
       ),
@@ -139,7 +149,8 @@ class _ChooseSocialsState extends State<ChooseSocials> {
           Padding(
             padding: EdgeInsets.only(right: width / 150),
             child: TextButton(
-              style: ButtonStyle(overlayColor: MaterialStateProperty.all(Colors.transparent)),
+              style: ButtonStyle(
+                  overlayColor: MaterialStateProperty.all(Colors.transparent)),
               child: Text(
                 "Done",
                 style: TextStyle(color: Colors.blue, fontSize: width / 23),
@@ -148,7 +159,8 @@ class _ChooseSocialsState extends State<ChooseSocials> {
                 DialogBuilder dialogBuilder = new DialogBuilder(context);
                 dialogBuilder.showLoadingIndicator();
 
-                await DataEngine.applyUserChanges(user: widget.user, cloud: true, local: true);
+                await DataEngine.applyUserChanges(
+                    user: widget.user, cloud: true, local: true);
 
                 dialogBuilder.hideOpenDialog(); // disable loading indicator
 
@@ -176,7 +188,8 @@ class _ChooseSocialsState extends State<ChooseSocials> {
             itemBuilder: (BuildContext context, int index) {
               return Padding(
                 padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-                child: ChooseSocialsCard(platformName: choosePlatforms[index], user: widget.user),
+                child: ChooseSocialsCard(
+                    platformName: choosePlatforms[index], user: widget.user),
               );
             },
             itemCount: choosePlatforms.length),

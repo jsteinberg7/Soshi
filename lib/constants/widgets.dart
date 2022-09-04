@@ -132,15 +132,15 @@ class RectangularProfilePic extends StatelessWidget {
   }
 }
 
-class CustomAlertDialog {
-  static showCustomAlertDialog(
+class CustomAlertDialogSingleChoice {
+  static showCustomAlertDialogSingleChoice(
       String title,
       String message,
       String primaryText,
-      String secondaryText,
       Function primaryAction,
-      Function secondaryAction,
-      BuildContext context) {
+      BuildContext context,
+      double height,
+      double width) {
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -156,7 +156,7 @@ class CustomAlertDialog {
               style: TextStyle(
                 // color: Colors.cyan[600],
                 fontWeight: FontWeight.bold,
-                fontSize: 19,
+                fontSize: width / 20,
               ),
             ),
             content: Column(
@@ -166,15 +166,71 @@ class CustomAlertDialog {
                   message,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: width / 25,
                   ),
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: height / 50),
                 TextButton(
                     child: Text(
                       primaryText,
                       style: TextStyle(
-                          fontSize: 16,
+                          fontSize: width / 25,
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    onPressed: primaryAction),
+              ],
+            ),
+          );
+        });
+  }
+}
+
+class CustomAlertDialog {
+  static showCustomAlertDialog(
+      String title,
+      String message,
+      String primaryText,
+      String secondaryText,
+      Function primaryAction,
+      Function secondaryAction,
+      BuildContext context,
+      double height,
+      double width) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(30.0))),
+            //backgroundColor: Colors.grey.shade800,
+            // backgroundColor: Colors.blueGrey[900],
+            title: Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                // color: Colors.cyan[600],
+                fontWeight: FontWeight.bold,
+                fontSize: width / 20,
+              ),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  message,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: width / 25,
+                  ),
+                ),
+                SizedBox(height: height / 50),
+                TextButton(
+                    child: Text(
+                      primaryText,
+                      style: TextStyle(
+                          fontSize: width / 25,
                           color: Colors.blue,
                           fontWeight: FontWeight.bold),
                     ),
@@ -184,7 +240,7 @@ class CustomAlertDialog {
                     child: Text(
                       secondaryText,
                       style: TextStyle(
-                          fontSize: 16,
+                          fontSize: width / 25,
                           color:
                               Theme.of(context).brightness == Brightness.light
                                   ? Colors.black
@@ -275,6 +331,7 @@ class SignOutButton extends StatelessWidget {
 
 //     return Constants.makeBlueShadowButton("Activate Portal", Icons.tap_and_play, () async {
 //       showModalBottomSheet(
+  
 //           constraints: BoxConstraints(minWidth: width / 1.1, maxWidth: width / 1.1),
 //           backgroundColor: Colors.transparent,
 //           context: context,

@@ -107,92 +107,22 @@ class _ResetPassword extends State<ResetPassword> {
                         resetPasswordEmailController.text.trim().toLowerCase();
                     try {
                       await auth.sendPasswordResetEmail(email: email);
-
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(40.0))),
-                              //backgroundColor: Colors.blueGrey[900],
-                              title: Text(
-                                "Email Successfully Sent",
-                                // style: TextStyle(
-                                //   color: Colors.cyan[600],
-                                //   fontWeight: FontWeight.bold,
-                                // ),
-                              ),
-                              content: Text(
-                                ("A password reset email has been sent to $email"),
-                                style: TextStyle(
-                                  fontSize: width / 25,
-                                ),
-                              ),
-
-                              actions: <Widget>[
-                                Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: <Widget>[
-                                    TextButton(
-                                      child: Text(
-                                        'Done',
-                                        style: TextStyle(
-                                            fontSize: width / 25,
-                                            color: Colors.blue),
-                                      ),
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            );
-                          });
+                      CustomAlertDialogSingleChoice
+                          .showCustomAlertDialogSingleChoice(
+                              "Email Sent Successfully",
+                              "A password reset email has been sent to " +
+                                  resetPasswordEmailController.text,
+                              "Done", () {
+                        Navigator.of(context).pop();
+                      }, context, height, width);
                     } catch (e) {
-                      //Navigator.of(context).pop();
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(40.0))),
-                              //backgroundColor: Colors.blueGrey[900],
-                              title: Text(
-                                "Email Could Not Be Sent",
-                                style: TextStyle(
-                                    // color: Colors.cyan[600],
-                                    //fontWeight: FontWeight.bold,
-                                    ),
-                              ),
-                              content: Text(
-                                ("Please enter a valid email and try again."),
-                                style: TextStyle(
-                                  fontSize: width / 25,
-                                  //color: Colors.cyan[700],
-                                  //fontWeight: FontWeight.bold
-                                ),
-                              ),
-                              actions: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.only(right: 8),
-                                  child: TextButton(
-                                    child: Text(
-                                      'Ok',
-                                      style: TextStyle(
-                                          fontSize: 20, color: Colors.blue),
-                                    ),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                ),
-                              ],
-                            );
-                          });
+                      CustomAlertDialogSingleChoice
+                          .showCustomAlertDialogSingleChoice(
+                              "Unable to Reset Password",
+                              "Please enter your valid email and try again.",
+                              "Done", () {
+                        Navigator.of(context).pop();
+                      }, context, height, width);
                     }
                   })
             ],

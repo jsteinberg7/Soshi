@@ -184,7 +184,7 @@ class DataEngine {
     // }
 
     return SoshiUser(
-      soshiUsername: soshiUsernameOverride,
+      soshiUsername: currUsername,
       firstName: fetch['Name']['First'],
       firstNameController:
           new TextEditingController(text: fetch['Name']['First']),

@@ -395,7 +395,7 @@ class _SMCardState extends State<SMCard> {
                     context: context,
                     builder: (BuildContext context) {
                       return Container(
-                        height: height / 5,
+                        height: height / 4.85,
                         color: Colors.transparent,
                         child: Center(
                           child: Column(
