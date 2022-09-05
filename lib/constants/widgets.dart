@@ -19,6 +19,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:soshi/services/url.dart';
 import '../screens/login/loading.dart';
 import '../services/contacts.dart';
+import '../services/nfc.dart';
 import 'constants.dart';
 import 'package:http/http.dart' as http;
 
@@ -323,24 +324,25 @@ class SignOutButton extends StatelessWidget {
   }
 }
 
-// class ActivatePortalButton extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     double width = MediaQuery.of(context).size.width;
-//     double height = MediaQuery.of(context).size.height;
+class ActivatePortalButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
 
-//     return Constants.makeBlueShadowButton("Activate Portal", Icons.tap_and_play, () async {
-//       showModalBottomSheet(
-  
-//           constraints: BoxConstraints(minWidth: width / 1.1, maxWidth: width / 1.1),
-//           backgroundColor: Colors.transparent,
-//           context: context,
-//           builder: (BuildContext context) {
-//             return NFCWriter(height, width);
-//           });
-//     });
-//   }
-// }
+    return Constants.makeBlueShadowButton("Activate Portal", Icons.tap_and_play,
+        () async {
+      showModalBottomSheet(
+          constraints:
+              BoxConstraints(minWidth: width / 1.1, maxWidth: width / 1.1),
+          backgroundColor: Colors.transparent,
+          context: context,
+          builder: (BuildContext context) {
+            return NFCWriter(height, width);
+          });
+    });
+  }
+}
 
 class DeleteProfileButton extends StatelessWidget {
   @override

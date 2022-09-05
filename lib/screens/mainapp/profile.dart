@@ -554,7 +554,7 @@ class ProfileState extends State<Profile> {
                                                   width: width / 4,
                                                   child: Column(children: [
                                                     Text(
-                                                        user.friendsStr.length
+                                                        user.friends.length
                                                             .toString(),
                                                         style: TextStyle(
                                                             letterSpacing: 1.2,
@@ -563,7 +563,7 @@ class ProfileState extends State<Profile> {
                                                             fontWeight:
                                                                 FontWeight
                                                                     .bold)),
-                                                    user.friendsStr.length == 1
+                                                    user.friends.length == 1
                                                         ? Text(
                                                             "Friend",
                                                             style: TextStyle(

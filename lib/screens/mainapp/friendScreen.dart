@@ -67,7 +67,7 @@ class _FriendScreenState extends State<FriendScreen>
 
   loadDataEngine() async {
     this.user = await DataEngine.getUserObject(firebaseOverride: false);
-
+    this.formattedFriendsList = await DataEngine.getCachedFriendsList();
     print(DataEngine.serializeUser(this.user));
   }
 
@@ -269,7 +269,6 @@ class _FriendScreenState extends State<FriendScreen>
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.done) {
                         {
-                          formattedFriendsList = user.friendsObj;
                           if (formattedFriendsList.isNotEmpty) {
                             return Column(
                               children: List.generate(
@@ -566,13 +565,13 @@ class FriendTile extends StatelessWidget {
                                               ),
                                             ),
                                             onTap: () async {
-                                              List<String> newFriendsList =
-                                                  await LocalDataService.removeFriend(
-                                                      friendsoshiUsername: friend
-                                                          .soshiUsername); // update local list
-                                              databaseService.overwriteFriendsList(
-                                                  newFriendsList); // update cloud list
-
+                                              // List<String> newFriendsList =
+                                              //     await LocalDataService.removeFriend(
+                                              //         friendsoshiUsername: friend
+                                              //             .soshiUsername); // update local list
+                                              // databaseService.overwriteFriendsList(
+                                              //     newFriendsList); // update cloud list
+                                              // DataEngine.applyUserChanges(user:  user, cloud: true, local: true)
                                               refreshFriendScreen();
                                               Navigator.pop(context);
                                             },

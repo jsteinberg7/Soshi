@@ -28,8 +28,7 @@ class DataEngine {
     });
 
     Map<String, dynamic> toReturn = {
-      'FriendsStr': user.friendsStr,
-      'FriendsObj': user.friendsObj,
+      'Friends': user.friends,
       'Name': {
         'First': user.firstNameController.text,
         'Last': user.lastNameController.text
@@ -43,7 +42,7 @@ class DataEngine {
           user.getAvailablePlatforms().map((e) => e.platformName).toList(),
       'Profile Platforms':
           user.getChosenPlatforms().map((e) => e.platformName).toList(),
-      'Dynamic Link': user.dynamicLink
+      'Dynamic Link': user.dynamicLink,
     };
 
     Map switches = {};
@@ -87,7 +86,6 @@ class DataEngine {
       await prefs.setString("userObject", jsonEncode(fetch));
     } else {
       log("[⚙ Data Engine ⚙]  getUserObject() Using cache 😃");
-      SharedPreferences prefs = await SharedPreferences.getInstance();
       fetch = jsonDecode(prefs.getString("userObject"));
     }
 
@@ -103,15 +101,8 @@ class DataEngine {
     Map<String, Social> lookupSocial = {};
     int soshiPoints = fetch['Soshi Points'] ?? 0;
     String bio = fetch['Bio'] ?? "";
-    List<String> friendsStr =
-        (fetch['Friends'] ?? fetch['FriendsStr'] ?? []).cast<String>();
-    List<Friend> friendsObj = (fetch['FriendsObj'] ??
-                ((soshiUsernameOverride == null)
-                    ? await SoshiUser.convertStrToFriendList(friendsStr)
-                    : []))
-            .cast<Friend>() ??
-        [];
-    [];
+    List<String> friends = (fetch['Friends'].cast<String>() ?? []);
+
     String dynamicLink = fetch['Dynamic Link'] ??
         await DynamicLinkService.createDynamicLink(soshiUsername);
     print(dynamicLink);
@@ -176,13 +167,6 @@ class DataEngine {
       log("[⚙ Data Engine ⚙] SoshiUser Object built ✅");
     }
 
-    // if (friendsStr != null &&
-    //     friendsStr.isNotEmpty &&
-    //     friendsStr[0] is String) {
-    //   // convert local friends list from String list to Friend list if just pulled from db
-    //   friendsStr = await SoshiUser.convertStrToFriendList(friendsStr);
-    // }
-
     return SoshiUser(
       soshiUsername: currUsername,
       firstName: fetch['Name']['First'],
@@ -199,8 +183,7 @@ class DataEngine {
       soshiPoints: soshiPoints,
       bio: bio,
       bioController: new TextEditingController(text: bio),
-      friendsStr: friendsStr,
-      friendsObj: friendsObj,
+      friends: friends,
       lookupSocial: lookupSocial,
       dynamicLink: dynamicLink,
     );
@@ -226,8 +209,6 @@ class DataEngine {
       }
 
       if (cloud) {
-        afterSerialized
-            .remove("FriendsObj"); // do not push cached friends to cloud
         await FirebaseFirestore.instance
             .collection("users")
             .doc(soshiUsername)
@@ -235,6 +216,27 @@ class DataEngine {
         log("[⚙ Data Engine ⚙] update Cloud {Firestore} success! ✅");
       }
     }
+  }
+
+  static updateCachedFriendsList({@required List<Friend> friends}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("cachedFriendsList", jsonEncode(friends));
+    log("[⚙ Data Engine ⚙] update friends Local success! ✅");
+  }
+
+  static Future<List<Friend>> getCachedFriendsList() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<Friend> friends;
+    if (!prefs.containsKey("cachedFriendsList")) {
+      log("[⚙ Data Engine ⚙]  getCachedFriendsList() Firebase data burn ⚠ userFetch=> ${soshiUsername}");
+      SoshiUser user = await getUserObject(firebaseOverride: false);
+      friends = await SoshiUser.convertStrToFriendList(user.friends);
+      await prefs.setString("cachedFriendsList", jsonEncode(friends));
+    } else {
+      log("[⚙ Data Engine ⚙]  getCachedFriends() Using cache 😃");
+      friends = Friend.decodeFriendsList(prefs.getString("cachedFriendsList"));
+    }
+    return friends;
   }
 
 //{NOTE} just use "applyUserChanges" and change boolean values
@@ -276,8 +278,7 @@ class SoshiUser {
   List<Social> socials;
   List<Passion> passions;
   int soshiPoints;
-  List<String> friendsStr;
-  List<Friend> friendsObj;
+  List<String> friends;
   Map<String, Social> lookupSocial;
 
   TextEditingController bioController;
@@ -298,8 +299,7 @@ class SoshiUser {
       @required this.soshiPoints,
       @required this.bio,
       @required this.bioController,
-      @required this.friendsStr,
-      @required this.friendsObj,
+      @required this.friends,
       @required this.lookupSocial,
       @required this.dynamicLink});
 
@@ -416,6 +416,13 @@ class Friend {
     this.isVerified, // only use when coming from json
   });
 
+  Map toJson() => {
+        "Username": soshiUsername,
+        "Name": fullName,
+        "Url": photoURL,
+        "Verified": isVerified,
+      };
+
   // takes in a single json pertaining to a friend, returns Friend object
   static Friend decodeFriend(String json) {
     Map<String, dynamic> map = jsonDecode(json);
@@ -425,6 +432,20 @@ class Friend {
       photoURL: map["Url"],
       isVerified: map["Verified"],
     );
+  }
+
+  static List<Friend> decodeFriendsList(String json) {
+    var data = jsonDecode(json);
+    List<Friend> friends = [];
+    for (var entry in data) {
+      friends.add(Friend(
+          fullName: entry["Name"],
+          soshiUsername: entry["Username"],
+          photoURL: entry["Url"],
+          isVerified: entry["Verified"]));
+    }
+    print(data);
+    return friends;
   }
 
   // static List<String> convertToStringList(List<Friend> friendsList) {
@@ -437,13 +458,7 @@ class Friend {
 
   // convert friend to map, then map to json
   String serialize() {
-    Map<String, dynamic> map = {
-      "Username": soshiUsername,
-      "Name": fullName,
-      "Url": photoURL,
-      "Verified": isVerified,
-    };
-    return jsonEncode(map);
+    return jsonEncode(this.toJson());
   }
 }
 
