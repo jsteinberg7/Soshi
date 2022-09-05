@@ -21,10 +21,11 @@ import 'friendScreen.dart';
 import 'package:http/http.dart' as http;
 
 class ViewProfilePage extends StatefulWidget {
+  SoshiUser user;
   String friendSoshiUsername;
-  Friend friend;
   Function refreshScreen;
-  ViewProfilePage({this.friendSoshiUsername, this.friend, this.refreshScreen});
+  ViewProfilePage(
+      {@required this.user, this.friendSoshiUsername, this.refreshScreen});
 
   @override
   State<ViewProfilePage> createState() => _ViewProfilePageState();
@@ -33,8 +34,6 @@ class ViewProfilePage extends StatefulWidget {
 class _ViewProfilePageState extends State<ViewProfilePage> {
   String friendSoshiUsername;
 
-  Friend friend;
-
   Function refreshScreen;
   DatabaseService databaseService;
 
@@ -42,7 +41,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
   void initState() {
     super.initState();
     friendSoshiUsername = widget.friendSoshiUsername;
-    friend = widget.friend;
+
     refreshScreen = widget.refreshScreen;
     databaseService = new DatabaseService(
         currSoshiUsernameIn: LocalDataService.getLocalUsername());
@@ -328,7 +327,12 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                             height: height / 45,
                           ),
                           AddFriendButton(
-                              friendSoshiUsername: friendSoshiUsername,
+                              user: widget.user,
+                              friend: Friend(
+                                  soshiUsername: friendSoshiUsername,
+                                  fullName: fullName,
+                                  photoURL: photoUrl,
+                                  isVerified: isVerified),
                               refreshFunction: refreshScreen,
                               height: height,
                               width: width),
@@ -567,12 +571,14 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
 class AddFriendButton extends StatefulWidget {
   @override
   State<AddFriendButton> createState() => _AddFriendButtonState();
+  SoshiUser user;
 
-  String friendSoshiUsername;
+  Friend friend;
   Function refreshFunction;
   double height, width;
   AddFriendButton(
-      {@required this.friendSoshiUsername,
+      {@required this.user,
+      @required this.friend,
       @required this.refreshFunction,
       @required this.height,
       @required this.width});
@@ -591,9 +597,9 @@ class _AddFriendButtonState extends State<AddFriendButton> {
   void initState() {
     height = widget.height;
     width = widget.width;
-    friendSoshiUsername = widget.friendSoshiUsername;
+    friendSoshiUsername = widget.friend.soshiUsername;
     refreshFunction = widget.refreshFunction;
-    isFriendAdded = LocalDataService.isFriendAdded(friendSoshiUsername);
+    isFriendAdded = widget.user.friends.contains(friendSoshiUsername);
     databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
     super.initState();
   }
@@ -611,18 +617,20 @@ class _AddFriendButtonState extends State<AddFriendButton> {
                 isAdding = true;
               });
 
-              Map friendData =
-                  await databaseService.getUserFile(friendSoshiUsername);
-              Friend friend = databaseService.userDataToFriend(friendData);
-              bool isFriendAdded =
-                  await LocalDataService.isFriendAdded(friendSoshiUsername);
+              // Map friendData =
+              //     await databaseService.getUserFile(friendSoshiUsername);
+              // Friend friend = databaseService.userDataToFriend(friendData);
+              isFriendAdded = widget.user.friends.contains(friendSoshiUsername);
 
               if (!isFriendAdded &&
                   friendSoshiUsername != databaseService.currSoshiUsername) {
-                List<String> newFriendsList =
-                    await LocalDataService.addFriend(friend: friend);
-
-                databaseService.overwriteFriendsList(newFriendsList);
+                List<Friend> friends = await DataEngine.getCachedFriendsList();
+                friends.add(widget.friend); // update cached list
+                DataEngine.updateCachedFriendsList(friends: friends);
+                widget.user.friends
+                    .add(friendSoshiUsername); // update string list
+                DataEngine.applyUserChanges(
+                    user: widget.user, cloud: true, local: true);
               }
 
               // bool friendHasTwoWaySharing =    *Two way sharing

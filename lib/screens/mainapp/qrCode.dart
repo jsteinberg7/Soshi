@@ -219,70 +219,57 @@ class _NewQRScreenState extends State<NewQRScreen> {
                       Container(
                         child: GestureDetector(
                           onTap: () async {
-                            ShortDynamicLink link =
-                                await DynamicLinkService.createDynamicLink(
-                                    user.soshiUsername);
-                            print(link.previewLink);
-                            // String username =
-                            //     LocalDataService.getLocalUsername();
-                            // DatabaseService databaseService =
-                            //     new DatabaseService(
-                            //         currSoshiUsernameIn: username);
-                            // String QRScanResult =
-                            //     await Utilities.scanQR(mounted);
-                            // if (QRScanResult.length > 5) {
-                            //   // vibrate when QR code is successfully scanned
-                            //   Vibration.vibrate();
-                            //   try {
-                            //     if (QRScanResult.contains(
-                            //         "https://soshi.app/group/")) {
-                            //       String groupId = QRScanResult.split("/").last;
-                            //       Popups.showJoinGroupPopup(context, groupId);
-                            //     } else {
-                            //       String friendSoshiUsername =
-                            //           QRScanResult.split("/").last;
-                            //       Map friendData = await databaseService
-                            //           .getUserFile(friendSoshiUsername);
-                            //       Friend friend = databaseService
-                            //           .userDataToFriend(friendData);
-                            //       bool isFriendAdded =
-                            //           await LocalDataService.isFriendAdded(
-                            //               friendSoshiUsername);
+                            String username =
+                                LocalDataService.getLocalUsername();
+                            DatabaseService databaseService =
+                                new DatabaseService(
+                                    currSoshiUsernameIn: username);
+                            String QRScanResult =
+                                await Utilities.scanQR(mounted);
+                            if (QRScanResult.length > 5) {
+                              // vibrate when QR code is successfully scanned
+                              Vibration.vibrate();
+                              try {
+                                if (QRScanResult.contains(
+                                    "https://soshi.app/group/")) {
+                                  String groupId = QRScanResult.split("/").last;
+                                  Popups.showJoinGroupPopup(context, groupId);
+                                } else {
+                                  String friendSoshiUsername =
+                                      QRScanResult.split("/").last;
+                                  Map friendData = await databaseService
+                                      .getUserFile(friendSoshiUsername);
+                                  Friend friend = databaseService
+                                      .userDataToFriend(friendData);
+                                  bool isFriendAdded =
+                                      await LocalDataService.isFriendAdded(
+                                          friendSoshiUsername);
 
-                            //       Navigator.push(context,
-                            //           MaterialPageRoute(builder: (context) {
-                            //         return ViewProfilePage(
-                            //           friendSoshiUsername: friend.soshiUsername,
-                            //           refreshScreen: () {},
-                            //         ); // show friend popup when tile is pressed
-                            //       }));
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    return ViewProfilePage(
+                                      user: user,
+                                      friendSoshiUsername: friend.soshiUsername,
+                                      refreshScreen: () {},
+                                    ); // show friend popup when tile is pressed
+                                  }));
 
-                            //       if (!isFriendAdded &&
-                            //           friendSoshiUsername != username) {
-                            //         // add new friend if necessary
-                            //         List<String> newFriendsList =
-                            //             await LocalDataService.addFriend(
-                            //                 friend: friend);
-                            //         databaseService
-                            //             .overwriteFriendsList(newFriendsList);
-                            //       }
+                                  // bool friendHasTwoWaySharing = await databaseService.getTwoWaySharing(friendData);
+                                  // if (friendHasTwoWaySharing == null || friendHasTwoWaySharing == true) {
+                                  //   // if user has two way sharing on, add self to user's friends list
+                                  //   databaseService.addFriend(thisSoshiUsername: friendSoshiUsername, friendSoshiUsername: databaseService.currSoshiUsername);
+                                  // }
+                                  //add friend right here
 
-                            //       // bool friendHasTwoWaySharing = await databaseService.getTwoWaySharing(friendData);
-                            //       // if (friendHasTwoWaySharing == null || friendHasTwoWaySharing == true) {
-                            //       //   // if user has two way sharing on, add self to user's friends list
-                            //       //   databaseService.addFriend(thisSoshiUsername: friendSoshiUsername, friendSoshiUsername: databaseService.currSoshiUsername);
-                            //       // }
-                            //       //add friend right here
-
-                            //       Analytics.logQRScan(
-                            //           QRScanResult, true, "qrCode.dart");
-                            //     }
-                            //   } catch (e) {
-                            //     Analytics.logQRScan(
-                            //         QRScanResult, false, "qrCode.dart");
-                            //     print(e);
-                            //   }
-                            // }
+                                  Analytics.logQRScan(
+                                      QRScanResult, true, "qrCode.dart");
+                                }
+                              } catch (e) {
+                                Analytics.logQRScan(
+                                    QRScanResult, false, "qrCode.dart");
+                                print(e);
+                              }
+                            }
                           },
                           child: Container(
                               height: height / 13,

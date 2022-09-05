@@ -278,6 +278,8 @@ class _FriendScreenState extends State<FriendScreen>
                                     return Container();
                                   }
                                   return FriendTile(
+                                      friends: formattedFriendsList,
+                                      user: user,
                                       refreshFriendScreen: refreshFriendScreen,
                                       friend: formattedFriendsList[i],
                                       databaseService: databaseService);
@@ -439,8 +441,14 @@ class FriendTile extends StatelessWidget {
   Friend friend;
   DatabaseService databaseService;
   Function refreshFriendScreen;
-
-  FriendTile({this.friend, this.databaseService, this.refreshFriendScreen});
+  SoshiUser user;
+  List<Friend> friends;
+  FriendTile(
+      {@required this.user,
+      @required this.friends,
+      this.friend,
+      this.databaseService,
+      this.refreshFriendScreen});
   /* Creates a single "friend tile" (an element of the ListView of Friends) */
 
   Widget build(BuildContext context) {
@@ -453,9 +461,10 @@ class FriendTile extends StatelessWidget {
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return ViewProfilePage(
-                  friendSoshiUsername: friend.soshiUsername,
-                  refreshScreen: refreshFriendScreen,
-                  friend: friend); // show friend popup when tile is pressed
+                user: user,
+                friendSoshiUsername: friend.soshiUsername,
+                refreshScreen: refreshFriendScreen,
+              ); // show friend popup when tile is pressed
             }));
           },
           leading: Hero(
@@ -572,6 +581,19 @@ class FriendTile extends StatelessWidget {
                                               // databaseService.overwriteFriendsList(
                                               //     newFriendsList); // update cloud list
                                               // DataEngine.applyUserChanges(user:  user, cloud: true, local: true)
+                                              friends.removeWhere((friend) =>
+                                                  friend.soshiUsername ==
+                                                  friend
+                                                      .soshiUsername); // update cached list
+                                              DataEngine
+                                                  .updateCachedFriendsList(
+                                                      friends: friends);
+                                              user.friends.remove(friend
+                                                  .soshiUsername); // update string list
+                                              DataEngine.applyUserChanges(
+                                                  user: user,
+                                                  cloud: true,
+                                                  local: true);
                                               refreshFriendScreen();
                                               Navigator.pop(context);
                                             },

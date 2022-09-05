@@ -396,42 +396,42 @@ abstract class LocalDataService {
         "Platform Switches", jsonEncode(switchesDecoded));
   }
 
-  static Future<List<String>> addFriend({@required Friend friend}) async {
-    // 2 parts:
-    // - add to recents
-    // - insert into sorted list
-    print(">> adding friend");
+  // static Future<List<String>> addFriend({@required Friend friend}) async {
+  //   // 2 parts:
+  //   // - add to recents
+  //   // - insert into sorted list
+  //   print(">> adding friend");
 
-    await addToRecentFriends(friend: friend);
-    List<String> sortedFriendsList =
-        await getLocalFriendsList(); // assume list is already sorted
+  //   await addToRecentFriends(friend: friend);
+  //   List<String> sortedFriendsList =
+  //       await getLocalFriendsList(); // assume list is already sorted
 
-    String json = friend.serialize();
-    if (sortedFriendsList.isEmpty) {
-      // if empty, simply add to beginning
-      sortedFriendsList.add(json);
-    } else {
-      friend.fullName = friend.fullName
-          .toUpperCase(); // convert fullName to uppercase for comparison
-      // find correct place for new friend
-      int insertIndex = sortedFriendsList.length;
-      print(">> in else");
-      for (int i = 0; i < sortedFriendsList.length; i++) {
-        // find index to insert to element
-        Map currFriend = jsonDecode(sortedFriendsList[i]);
-        String currFullName = currFriend["n"].toString().toUpperCase();
-        print(">> comparing ${friend.fullName} to $currFullName");
-        if (friend.fullName.compareTo(currFullName) <= 0) {
-          insertIndex = i;
-          break;
-        }
-      }
-      print(">> INSERTING " + friend.soshiUsername);
-      sortedFriendsList.insert(insertIndex, json); // insert new friend
-    }
-    await preferences.setStringList("Sorted Friends List", sortedFriendsList);
-    return sortedFriendsList;
-  }
+  //   String json = friend.serialize();
+  //   if (sortedFriendsList.isEmpty) {
+  //     // if empty, simply add to beginning
+  //     sortedFriendsList.add(json);
+  //   } else {
+  //     friend.fullName = friend.fullName
+  //         .toUpperCase(); // convert fullName to uppercase for comparison
+  //     // find correct place for new friend
+  //     int insertIndex = sortedFriendsList.length;
+  //     print(">> in else");
+  //     for (int i = 0; i < sortedFriendsList.length; i++) {
+  //       // find index to insert to element
+  //       Map currFriend = jsonDecode(sortedFriendsList[i]);
+  //       String currFullName = currFriend["n"].toString().toUpperCase();
+  //       print(">> comparing ${friend.fullName} to $currFullName");
+  //       if (friend.fullName.compareTo(currFullName) <= 0) {
+  //         insertIndex = i;
+  //         break;
+  //       }
+  //     }
+  //     print(">> INSERTING " + friend.soshiUsername);
+  //     sortedFriendsList.insert(insertIndex, json); // insert new friend
+  //   }
+  //   await preferences.setStringList("Sorted Friends List", sortedFriendsList);
+  //   return sortedFriendsList;
+  // }
 
   static Future<void> addToRecentFriends({@required Friend friend}) async {
     List<String> recentlyAddedFriends = getRecentlyAddedFriends();
