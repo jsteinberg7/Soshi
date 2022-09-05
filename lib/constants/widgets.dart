@@ -19,6 +19,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:soshi/services/url.dart';
 import '../screens/login/loading.dart';
 import '../services/contacts.dart';
+import '../services/nfc.dart';
 import 'constants.dart';
 import 'package:http/http.dart' as http;
 
@@ -390,23 +391,74 @@ class SignOutButton extends StatelessWidget {
   }
 }
 
-// class ActivatePortalButton extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     double width = MediaQuery.of(context).size.width;
-//     double height = MediaQuery.of(context).size.height;
+class ActivatePortalButton extends StatelessWidget {
+  String shortDynamicLink;
 
-//     return Constants.makeBlueShadowButton("Activate Portal", Icons.tap_and_play, () async {
-//       showModalBottomSheet(
-//           constraints: BoxConstraints(minWidth: width / 1.1, maxWidth: width / 1.1),
-//           backgroundColor: Colors.transparent,
-//           context: context,
-//           builder: (BuildContext context) {
-//             return NFCWriter(height, width);
-//           });
-//     });
-//   }
-// }
+  ActivatePortalButton({String shortDynamicLink}) {
+    this.shortDynamicLink = shortDynamicLink;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+
+    return Container(
+        child: GestureDetector(
+      onTap: () {
+        CustomAlertDialogDoubleChoiceWithAsset
+            .showCustomAlertDialogDoubleChoiceWithAsset(
+                "Soshi Portal",
+                "assets/images/misc/NFCTemp.png", // To be replaced with NFC activating gif
+                "Activate!",
+                "Done", () {
+          Navigator.pop(context);
+          print("NFC writer pops up");
+          showModalBottomSheet(
+              constraints:
+                  BoxConstraints(minWidth: width / 1.1, maxWidth: width / 1.1),
+              backgroundColor: Colors.transparent,
+              context: context,
+              builder: (BuildContext context) {
+                return NFCWriter(height, width, this.shortDynamicLink);
+              });
+
+          // showModalBottomSheetApp(builder: NFCWriter(height, width, user.shortDynamicLink));
+
+          // Call NFC writer and write user.shortDynamicLink
+        }, () {
+          Navigator.pop(context);
+        }, context, height, width);
+      },
+      child: Container(
+          height: height / 15,
+          width: width / 2.1,
+          child: Card(
+            // color: Colors.grey.shade800,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Activate Soshi Portal",
+                    style: TextStyle(
+                        //fontWeight: FontWeight.bold,
+                        fontSize: width / 30),
+                  ),
+                  SizedBox(width: 5),
+                  Icon(
+                    CupertinoIcons.info_circle,
+                    size: width / 20,
+                  )
+                ],
+              ),
+            ),
+          )),
+    ));
+  }
+}
 
 class DeleteProfileButton extends StatelessWidget {
   @override
@@ -1278,17 +1330,6 @@ class SMButton extends StatelessWidget {
 
           Popups.showContactAddedPopup(context, width, photoUrl, firstName,
               lastName, phoneNumber, email);
-
-          //ContactsService.openContactForm();
-          // ContactsService.addContact(newContact).then((dynamic success) {
-          // });
-          //         ContactsService.addContact(newContact).then(dynamic success)
-          // {             ContactsService.openExistingContact(newContact);
-          //       };
-
-          // .then((dynamic success) {
-          //   Popups.showContactAddedPopup(context, width, firstName, lastName);
-          // });
         } else if (platform == "Cryptowallet") {
           Clipboard.setData(ClipboardData(
             text: username.toString(),

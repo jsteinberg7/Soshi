@@ -141,13 +141,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.3"
-  convert:
-    dependency: transitive
-    description:
-      name: convert
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.2"
   cross_file:
     dependency: transitive
     description:
@@ -405,13 +398,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.2.0"
-  flutter_nfc_kit:
-    dependency: "direct main"
-    description:
-      name: flutter_nfc_kit
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.3.1"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -590,20 +576,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.4"
-  json_annotation:
-    dependency: transitive
-    description:
-      name: json_annotation
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.6.0"
-  logging:
-    dependency: transitive
-    description:
-      name: logging
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.2"
   lottie:
     dependency: "direct main"
     description:
@@ -639,13 +611,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
-  ndef:
-    dependency: transitive
-    description:
-      name: ndef
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.3.1"
   nested:
     dependency: transitive
     description:
@@ -653,6 +618,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
+  nfc_manager:
+    dependency: "direct main"
+    description:
+      name: nfc_manager
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.1.1"
   octo_image:
     dependency: transitive
     description:

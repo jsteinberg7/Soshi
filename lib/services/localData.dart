@@ -171,9 +171,9 @@ abstract class LocalDataService {
     return preferences.getBool("Two Way Sharing");
   }
 
-  static getInjectionFlag(String injectionName) {
-    return preferences.getBool("INJECTION $injectionName Flag") ?? false;
-  }
+  // static getInjectionFlag(String injectionName) {
+  //   return preferences.getBool("INJECTION $injectionName Flag") ?? false;
+  // }
 
   static getVerifiedUsersLocal() {
     return preferences.getStringList("Verified Users") ?? [];
@@ -366,10 +366,10 @@ abstract class LocalDataService {
     await preferences.setBool("Two Way Sharing", state);
   }
 
-  static Future<void> updateInjectionFlag(
-      String injectionName, bool state) async {
-    await preferences.setBool("INJECTION $injectionName Flag", state);
-  }
+  // static Future<void> updateInjectionFlag(
+  //     String injectionName, bool state) async {
+  //   await preferences.setBool("INJECTION $injectionName Flag", state);
+  // }
 
   static Future<void> updateUsernameForPlatform(
       {String platform, String username}) async {

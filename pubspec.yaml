@@ -83,7 +83,8 @@ dependencies:
 
   equatable: ^2.0.3
   flutter_share: ^2.0.0
-  flutter_nfc_kit: ^3.3.1
+  nfc_manager: ^3.1.1
+  # flutter_nfc_kit: ^3.3.1
   
   
 

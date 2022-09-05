@@ -1,4 +1,3 @@
-//import 'dart:html';
 // ignore_for_file: must_be_immutable
 
 import 'dart:typed_data';
@@ -33,7 +32,11 @@ A social media card used in the profile (one card per platform)
 class SMTile extends StatefulWidget {
   SoshiUser user;
   Social selectedSocial;
-  SMTile({@required this.user, @required this.selectedSocial});
+  ValueNotifier importProfileNotifier;
+  SMTile(
+      {@required this.user,
+      @required this.selectedSocial,
+      @required this.importProfileNotifier});
   @override
   _SMTileState createState() => _SMTileState();
 }
@@ -72,7 +75,6 @@ class _SMTileState extends State<SMTile> {
     } else {
       hintText = "Username";
     }
-
     if (platformName == "Contact") {
       usernameController.text = "Contact Card";
     }
@@ -85,22 +87,21 @@ class _SMTileState extends State<SMTile> {
             isSwitched = true;
           });
 
-          if (LocalDataService.getLocalUsernameForPlatform(platformName) ==
+          if (widget.user.getUsernameGivenPlatform(platform: platformName) ==
                   null ||
-              LocalDataService.getLocalUsernameForPlatform(platformName) ==
+              widget.user.getUsernameGivenPlatform(platform: platformName) ==
                   "") {
             // prompt user to enter username
             Popups.editUsernamePopup(
               context,
-              soshiUsername,
-              platformName,
+              widget.user,
+              widget.selectedSocial,
               MediaQuery.of(context).size.width,
             );
           }
-          LocalDataService.updateSwitchForPlatform(
-              platform: platformName, state: true);
-          databaseService.updatePlatformSwitch(
-              platform: platformName, state: true);
+
+          widget.selectedSocial.switchStatus = true;
+
           if (LocalDataService.getFirstSwitchTap()) {
             LocalDataService.updateFirstSwitchTap(false);
             CustomAlertDialogSingleChoice.showCustomAlertDialogSingleChoice(
@@ -112,11 +113,10 @@ class _SMTileState extends State<SMTile> {
           }
         }
         String usernameControllerLower = usernameController.text.toLowerCase();
+        widget.selectedSocial.username = usernameControllerLower.trim();
 
-        LocalDataService.updateUsernameForPlatform(
-            platform: platformName, username: usernameControllerLower.trim());
-        databaseService.updateUsernameForPlatform(
-            platform: platformName, username: usernameControllerLower.trim());
+        DataEngine.applyUserChanges(
+            user: widget.user, cloud: true, local: true);
       }
     });
 
@@ -241,27 +241,30 @@ class _SMTileState extends State<SMTile> {
                                   platform: platformName) ==
                               null ||
                           widget.user.getUsernameGivenPlatform(
-                                  platform: platformName) ==
-                              "") {
-                        Popups.editUsernamePopup(context, soshiUsername,
-                            platformName, MediaQuery.of(context).size.width);
+                                      platform: platformName) ==
+                                  "" &&
+                              value == true) {
+                        Popups.editUsernamePopup(
+                            context,
+                            widget.user,
+                            widget.selectedSocial,
+                            MediaQuery.of(context).size.width);
                       }
 
-                      widget.user.lookupSocial[platformName].switchStatus =
-                          value;
+                      if (widget.selectedSocial.username != ""
+                          //value == false
+                          ) {
+                        widget.user.lookupSocial[platformName].switchStatus =
+                            value;
+                        setState(() {
+                          this.isSwitched = value;
+                        });
 
-                      setState(() {
-                        this.isSwitched = value;
-                      });
-
-                      //{NOTE} Updating Firestore/local storage will occurr Asynchronously
-                      DataEngine.applyUserChanges(
-                          user: widget.user, cloud: true, local: true);
-
-                      // if (LocalDataService.getFirstSwitchTap()) {
-                      //   LocalDataService.updateFirstSwitchTap(false);
-                      //   Popups.platformSwitchesExplained(context);
-                      // }
+                        //{NOTE} Updating Firestore/local storage will occurr Asynchronously
+                        DataEngine.applyUserChanges(
+                            user: widget.user, cloud: true, local: true);
+                        // not working because of the .tghen, where to put??
+                      }
                     }),
               ]),
         ),
@@ -362,31 +365,9 @@ class ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-    double addedContainerSize = 0;
-
-    // int numSocialsPlusAddTile = this.userSocials.length + 1;
-    // int numI = (numSocialsPlusAddTile / 3).ceil();
-
-    // if (numSocialsPlusAddTile > 3) {
-    //   for (int i = 0; i < numI; i += 1) {
-    //     containerSize += .2;
-    //     // if (height < 800) {
-    //     //   containerSize += .2;
-    //     // } else {
-    //     //   containerSize += .19;
-    //     // }
-    //   }
-    // }
-
-    // if (numSocialsPlusAddTile > 3) {
-    //   containerSize = 1.05;
-    // }
-
+    // UV tried to use the dynamic container size. Will neeed to find a better way.
+    int addedContainerSize = 30;
     print("height: ${height} ${width}");
-
-    //     containerSize = 2.7;
-    //   } else {
-    //     bioSpacing = 90;
 
     return FutureBuilder(
         future: loadDataEngine(),
@@ -542,8 +523,24 @@ class ProfileState extends State<Profile> {
                                                               // importProfileNotifier: widget.importProfileNotifier
 
                                                               ));
-                                                    }));
+                                                    })).then((value) {
+                                                      print(
+                                                          "☹️☹️☹️☹️☹️ returnign from profile settings, must refresh screen state");
+                                                      setState(() {});
+                                                    });
                                                   },
+
+                                                  // {
+                                                  //   Navigator.push(context,
+                                                  //       MaterialPageRoute(
+                                                  //           builder: (context) {
+                                                  //     return Scaffold(
+                                                  //         body: ProfileSettings(
+                                                  //             // importProfileNotifier: widget.importProfileNotifier
+
+                                                  //             ));
+                                                  //   }));
+                                                  // },
                                                   icon:
                                                       Icon(CupertinoIcons.pen)),
                                             ],
@@ -587,8 +584,7 @@ class ProfileState extends State<Profile> {
                                               ),
                                               ProfilePic(
                                                   radius: width / 6.5,
-                                                  url: LocalDataService
-                                                      .getLocalProfilePictureURL()),
+                                                  url: user.photoURL),
                                               SizedBox(
                                                 width: width / 4,
                                                 child: GestureDetector(
@@ -699,6 +695,184 @@ class ProfileState extends State<Profile> {
                                           //   child: PassionTileList(),
                                           // ),
                                         ],
+// =======
+//                   height: height + addedContainerSize,
+//                   child: Stack(
+//                     children: [
+//                       Positioned(
+//                         top: 0,
+//                         left: 0,
+//                         right: 0,
+//                         child: Stack(
+//                           children: [
+//                             Container(
+//                               width: width,
+//                               // height: height / containerSize,
+//                               height: MediaQuery.of(context).size.height / 2.3,
+//                               child: Image.network(Defaults.defaultProfilePic, fit: BoxFit.fill),
+//                             ),
+//                             ProfilePicBackdrop(user.photoURL, height: height / 2, width: width),
+//                             GlassmorphicContainer(
+//                               // height: height / containerSize,
+//                               height: height / 2,
+//                               width: width,
+//                               borderRadius: 0,
+//                               blur: 8,
+//                               alignment: Alignment.bottomCenter,
+//                               border: 2,
+//                               linearGradient: LinearGradient(
+//                                 begin: Alignment.topLeft,
+//                                 end: Alignment.bottomRight,
+//                                 colors: [
+//                                   (Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black).withOpacity(0.8),
+//                                   (Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black).withOpacity(0.4)
+//                                 ],
+//                                 stops: [0.1, 1],
+//                               ),
+//                               borderGradient: LinearGradient(
+//                                 begin: Alignment.topLeft,
+//                                 end: Alignment.bottomRight,
+//                                 colors: [
+//                                   (Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black).withOpacity(0.5),
+//                                   (Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black).withOpacity(0.5),
+//                                 ],
+//                               ),
+//                             ),
+//                             Container(
+//                               child: Column(
+//                                 mainAxisSize: MainAxisSize.min,
+//                                 children: [
+//                                   SafeArea(
+//                                     child: Container(
+//                                       // color: Colors.green,
+//                                       // height: height / containerSize,
+//                                       width: width,
+//                                       child: Padding(
+//                                         padding: EdgeInsets.fromLTRB(width / 40, width / 40, width / 40, 0),
+//                                         child: Column(
+//                                           children: [
+//                                             Row(
+//                                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//                                               children: <Widget>[
+//                                                 IconButton(
+//                                                     onPressed: () {
+//                                                       Scaffold.of(context).openDrawer();
+//                                                     },
+//                                                     icon: Icon(CupertinoIcons.line_horizontal_3)),
+//                                                 Column(
+//                                                   children: [
+//                                                     Container(
+//                                                       width: width / 1.5,
+//                                                       child: Center(
+//                                                         child: AutoSizeText(
+//                                                           user.firstName + " " + user.lastName,
+//                                                           maxLines: 1,
+//                                                           style: TextStyle(
+//                                                             fontWeight: FontWeight.bold,
+//                                                             fontSize: width / 16,
+//                                                           ),
+//                                                         ),
+//                                                       ),
+//                                                     ),
+//                                                     Padding(
+//                                                       padding: const EdgeInsets.only(top: 3.0, bottom: 2.0),
+//                                                       child: SoshiUsernameText(user.soshiUsername, fontSize: width / 22, isVerified: user.verified),
+//                                                     )
+//                                                   ],
+//                                                 ),
+//                                                 IconButton(
+//                                                     onPressed: () {
+//                                                       Navigator.push(context, MaterialPageRoute(builder: (context) {
+//                                                         return Scaffold(
+//                                                             body: ProfileSettings(
+//                                                                 // importProfileNotifier: widget.importProfileNotifier
+
+//                                                                 ));
+//                                                       })).then((value) {
+//                                                         print("☹️☹️☹️☹️☹️ returnign from profile settings, must refresh screen state");
+//                                                         setState(() {});
+//                                                       });
+//                                                     },
+//                                                     icon: Icon(CupertinoIcons.pen)),
+//                                               ],
+//                                             ),
+//                                             SizedBox(
+//                                               height: height / 100,
+//                                             ),
+
+//                                             Row(
+//                                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//                                               children: [
+//                                                 SizedBox(
+//                                                   width: width / 4,
+//                                                   child: Column(children: [
+//                                                     Text(user.friends.length.toString(),
+//                                                         style: TextStyle(letterSpacing: 1.2, fontSize: width / 25, fontWeight: FontWeight.bold)),
+//                                                     user.friends.length == 1
+//                                                         ? Text(
+//                                                             "Friend",
+//                                                             style: TextStyle(
+//                                                                 //fontWeight: FontWeight.bold,
+//                                                                 letterSpacing: 1.2,
+//                                                                 fontSize: width / 25),
+//                                                           )
+//                                                         : Text("Friends", style: TextStyle(letterSpacing: 1.2, fontSize: width / 25)),
+//                                                   ]),
+//                                                 ),
+//                                                 ProfilePic(radius: width / 6.5, url: LocalDataService.getLocalProfilePictureURL()),
+//                                                 SizedBox(
+//                                                   width: width / 4,
+//                                                   child: GestureDetector(
+//                                                     onTap: () {
+//                                                       Popups.soshiPointsExplainedPopup(context, width, height);
+//                                                     },
+//                                                     child: Column(children: [
+//                                                       Text(LocalDataService.getSoshiPoints().toString(),
+//                                                           style: TextStyle(letterSpacing: 1.2, fontSize: width / 25, fontWeight: FontWeight.bold)),
+//                                                       Row(
+//                                                         mainAxisAlignment: MainAxisAlignment.center,
+//                                                         children: [
+//                                                           LocalDataService.getSoshiPoints() == 1
+//                                                               ? Text("Bolt", style: TextStyle(letterSpacing: 1.2, fontSize: width / 25))
+//                                                               : Text("Bolts", style: TextStyle(letterSpacing: 1.2, fontSize: width / 25)),
+//                                                           Padding(
+//                                                             padding: const EdgeInsets.only(left: 2),
+//                                                             child: IconButton(
+//                                                               onPressed: () {
+//                                                                 Popups.soshiPointsExplainedPopup(context, width, height);
+//                                                               },
+//                                                               padding: EdgeInsets.zero,
+//                                                               constraints: BoxConstraints(
+//                                                                   maxHeight: width / 28, maxWidth: width / 28, minHeight: 0, minWidth: 0),
+//                                                               icon: Icon(CupertinoIcons.info_circle, size: width / 28),
+//                                                             ),
+//                                                           )
+//                                                         ],
+//                                                       ),
+//                                                     ]),
+//                                                   ),
+//                                                 ),
+//                                               ],
+//                                             ),
+//                                             //SizedBox(height: height / 1),
+//                                             Padding(
+//                                                 padding: EdgeInsets.fromLTRB(width / 5, height / 3, width / 5, 0),
+//                                                 child: user.bio == "" || user.bio == null
+//                                                     ? Container()
+//                                                     : Container(
+//                                                         child: //Padding(
+//                                                             //padding: EdgeInsets.fromLTRB(width / 5, 0, width / 5, 0),
+//                                                             //child:
+//                                                             AutoSizeText(
+//                                                           LocalDataService.getBio(),
+//                                                           maxLines: 3,
+//                                                           minFontSize: 17,
+//                                                           textAlign: TextAlign.center,
+//                                                         ),
+//                                                       )),
+//                                           ],
+//                                         ),
+// >>>>>>> merged_main
                                       ),
                                     ),
                                   ),
@@ -796,7 +970,10 @@ class ProfileState extends State<Profile> {
                                                 ? SMTile(
                                                     user: user,
                                                     selectedSocial:
-                                                        userSocials[index])
+                                                        userSocials[index],
+                                                    importProfileNotifier: widget
+                                                        .importProfileNotifier,
+                                                  )
                                                 : AddPlatformsTile(
                                                     importProfileNotifier: widget
                                                         .importProfileNotifier,

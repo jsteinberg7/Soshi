@@ -130,10 +130,10 @@ class DatabaseService {
         // "Reddit",
       ],
       "Profile Platforms": <String>["Phone"],
-      "INJECTION Soshi Points Flag": true,
-      "INJECTION Profile Pic Flag": false,
-      "INJECTION Bio Flag": false,
-      "INJECTION Passions Flag": false,
+      // "INJECTION Soshi Points Flag": true,
+      // "INJECTION Profile Pic Flag": false,
+      // "INJECTION Bio Flag": false,
+      // "INJECTION Passions Flag": false,
       "Groups": []
     });
     await DynamicLinkService.createLongDynamicLink(username);
@@ -606,7 +606,7 @@ class DatabaseService {
 
   // for use with profile (not groups)
   Future<void> cropAndUploadImage(
-    PickedFile passedInImage,
+    XFile passedInImage,
   ) async {
     if (passedInImage != null) {
       File croppedImage = await cropImage(passedInImage.path);
@@ -696,17 +696,17 @@ class DatabaseService {
         .update({"Soshi Points": newSoshiPoints});
   }
 
-  Future<bool> getInjectionFlagStatus(
-      String injectionName, Map userData) async {
-    return userData["INJECTION $injectionName Flag"];
-  }
+  // Future<bool> getInjectionFlagStatus(
+  //     String injectionName, Map userData) async {
+  //   return userData["INJECTION $injectionName Flag"];
+  // }
 
-  Future<void> updateInjectionSwitch(
-      String soshiUsername, String injectionName, bool state) async {
-    await usersCollection
-        .doc(soshiUsername)
-        .update({"INJECTION $injectionName Flag": state});
-  }
+  // Future<void> updateInjectionSwitch(
+  //     String soshiUsername, String injectionName, bool state) async {
+  //   await usersCollection
+  //       .doc(soshiUsername)
+  //       .update({"INJECTION $injectionName Flag": state});
+  // }
 
   /*
   Create group file, add pointer to file in user file 

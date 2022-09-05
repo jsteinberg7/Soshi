@@ -4,7 +4,8 @@ import 'package:soshi/screens/mainapp/passionsPage.dart';
 import 'package:soshi/services/dataEngine.dart';
 
 class PassionTileList extends StatefulWidget {
-  PassionTileList({Key key}) : super(key: key);
+  SoshiUser user;
+  PassionTileList({@required SoshiUser user});
 
   @override
   State<PassionTileList> createState() => _PassionTileListState();
@@ -14,7 +15,7 @@ class _PassionTileListState extends State<PassionTileList> {
   SoshiUser user;
 
   loadDataEngine() async {
-    user = await DataEngine.getUserObject(firebaseOverride: true);
+    user = await DataEngine.getUserObject(firebaseOverride: false);
   }
 
   @override
@@ -32,7 +33,7 @@ class _PassionTileListState extends State<PassionTileList> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [0, 1, 2]
                     .map((int pIndex) =>
-                        makePassionTile(user.passions[pIndex], pIndex))
+                        makePassionTile(this.user.passions[pIndex], pIndex))
                     .toList());
           }
         });
@@ -63,20 +64,42 @@ class _PassionTileListState extends State<PassionTileList> {
             style: ElevatedButton.styleFrom(
                 elevation: 1,
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(15)))),
+                    borderRadius: BorderRadius.all(Radius.circular(10)))),
             onPressed: () async {
               pushAndUpdatePassions(passion, pIndex);
             },
             icon: Text(
               passion.emoji,
-              style: TextStyle(fontSize: 15),
+              style: TextStyle(fontSize: width / 20),
             ),
             label: Container(
+              //color: Colors.green,
+              width: width / 7,
               child: AutoSizeText(
                 passion.name,
-                style: TextStyle(fontSize: 15),
+                textAlign: TextAlign.center,
+                maxLines: 1, //passion.name.contains(" ") ? 2 : 1,
+                style: TextStyle(fontSize: width / 25),
+                minFontSize: 1,
               ),
-            ))
+            ),
+
+            // Text(
+            //   passion.emoji,
+            //   style: TextStyle(fontSize: width / 25),
+            // ),
+            // label: Container(
+            //   color: Colors.green,
+            //   width: width / 6,
+            //   child: AutoSizeText(
+            //     passion.name,
+            //     textAlign: TextAlign.center,
+            //     maxLines: 1, //passion.name.contains(" ") ? 2 : 1,
+            //     style: TextStyle(fontSize: width / 25),
+            //     minFontSize: 1,
+            //   ),
+            // )
+          )
         : OutlinedButton.icon(
             style: OutlinedButton.styleFrom(
                 primary: Colors.black,

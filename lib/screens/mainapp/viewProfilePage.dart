@@ -641,12 +641,12 @@ class _AddFriendButtonState extends State<AddFriendButton> {
               // }
 
               // Checking if Soshi points is injected
-              if (LocalDataService.getInjectionFlag("Soshi Points") == false ||
-                  LocalDataService.getInjectionFlag("Soshi Points") == null) {
-                LocalDataService.updateInjectionFlag("Soshi Points", true);
-                databaseService.updateInjectionSwitch(
-                    soshiUsername, "Soshi Points", true);
-              }
+              // if (LocalDataService.getInjectionFlag("Soshi Points") == false ||
+              //     LocalDataService.getInjectionFlag("Soshi Points") == null) {
+              //   LocalDataService.updateInjectionFlag("Soshi Points", true);
+              //   databaseService.updateInjectionSwitch(
+              //       soshiUsername, "Soshi Points", true);
+              // }
               // Give 8 soshi points for every friend added
               databaseService.updateSoshiPoints(soshiUsername, 8);
               LocalDataService.updateSoshiPoints(8);

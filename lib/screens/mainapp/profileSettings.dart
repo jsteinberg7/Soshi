@@ -1,14 +1,16 @@
-//import 'dart:html';
-
 import 'dart:developer';
+import 'dart:io';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:soshi/screens/mainapp/passions.dart';
 import 'package:soshi/services/dataEngine.dart';
 import 'package:soshi/constants/widgets.dart';
 import 'package:soshi/constants/utilities.dart';
 import 'package:soshi/services/database.dart';
+import 'package:image_cropper/image_cropper.dart';
 
 /* 
 * Widget allows users to access their profile settings 
@@ -25,11 +27,71 @@ class ProfileSettings extends StatefulWidget {
 
 class ProfileSettingsState extends State<ProfileSettings> {
   SoshiUser user;
+  File image;
+  String tempNewURL;
 
   loadDataEngine() async {
     print("loading data engine inside profileSettings");
     this.user = await DataEngine.getUserObject(firebaseOverride: false);
-    log(user.toString());
+    if (tempNewURL == null) {
+      tempNewURL = user.photoURL;
+    }
+    //log(user.toString());
+  }
+
+  Future pickImage() async {
+    try {
+      final profilePic =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (profilePic == null) {
+        return user.photoURL;
+      } else {
+        final profilePicTemp = File(profilePic.path);
+        await cropAndUploadImage(profilePicTemp);
+      }
+    } on PlatformException catch (e) {
+      print("failed to pick image: $e");
+    }
+  }
+
+  Future<File> cropImage(String path,
+      {CropStyle cropStyle = CropStyle.circle}) async {
+    return (await ImageCropper().cropImage(
+        cropStyle: cropStyle,
+        sourcePath: path,
+        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+        maxHeight: 700,
+        maxWidth: 700,
+        compressFormat: ImageCompressFormat.jpg,
+        androidUiSettings: AndroidUiSettings(toolbarTitle: "Crop Image"),
+        iosUiSettings: IOSUiSettings(
+          title: "Crop Image",
+        )));
+  }
+
+  Future<void> cropAndUploadImage(
+    File passedInImage,
+  ) async {
+    if (passedInImage != null) {
+      File croppedImage = await cropImage(passedInImage.path);
+      FirebaseStorage firebaseStorage = FirebaseStorage.instance;
+
+      await firebaseStorage
+          .ref()
+          .child("Profile Pictures/" + user.soshiUsername)
+          .putFile(croppedImage);
+
+      // upload image to firebase to get URL
+      String urlNew = await FirebaseStorage.instance
+          .ref()
+          .child("Profile Pictures/" + user.soshiUsername)
+          .getDownloadURL();
+
+      setState(() => tempNewURL = urlNew);
+    } else {
+      print("No image picked");
+      return;
+    }
   }
 
   Widget build(BuildContext context) {
@@ -66,8 +128,10 @@ class ProfileSettingsState extends State<ProfileSettings> {
                   fontSize: width / 23,
                 ),
               ),
-              onPressed: () {
-                DataEngine.applyUserChanges(
+              onPressed: () async {
+                user.photoURL = tempNewURL;
+                user.passions = user.passions;
+                await DataEngine.applyUserChanges(
                     user: user, cloud: true, local: true);
                 // Need alternative to refresh the profile!!!!
 
@@ -107,19 +171,26 @@ class ProfileSettingsState extends State<ProfileSettings> {
                         children: <Widget>[
                           GestureDetector(
                             onTap: () async {
-                              final ImagePicker imagePicker = ImagePicker();
-                              var pickedImage = await imagePicker.pickImage(
-                                  source: ImageSource.gallery);
+                              // final ImagePicker imagePicker = ImagePicker();
+                              // var pickedImage = await imagePicker.pickImage(
+                              //     source: ImageSource.gallery);
+
+                              pickImage();
+                              // final ImagePicker imagePicker = ImagePicker();
+                              // var pickedImage = await imagePicker.pickImage(
+                              //     source: ImageSource.gallery);
 
                               // await imagePicker.getImage(
                               //     source: ImageSource.gallery,
                               //     imageQuality: 20);
+                              // DatabaseService dbService = new DatabaseService(
+                              //     currSoshiUsernameIn: user.soshiUsername);
 
-                              //await dbService.cropAndUploadImage(pickedImage);
+                              // await dbService.cropAndUploadImage(pickedImage);
                             },
                             child: Stack(
                               children: [
-                                ProfilePic(radius: 55, url: user.photoURL),
+                                ProfilePic(radius: 55, url: tempNewURL),
                                 Positioned(
                                   right: width / 15,
                                   top: height / 30,
@@ -288,11 +359,13 @@ class ProfileSettingsState extends State<ProfileSettings> {
                               ),
                             ),
                           ),
-                          PassionTileList(),
+                          PassionTileList(
+                            user: this.user,
+                          ),
                           Divider(),
                           SizedBox(
                             height: height / 15,
-                          )
+                          ),
                         ]),
                   ),
                 ),

@@ -148,19 +148,19 @@ class _FriendScreenState extends State<FriendScreen>
 
     String soshiUsername = LocalDataService.getLocalUsername();
 
-    bool soshiPointsInjection =
-        LocalDataService.getInjectionFlag("Soshi Points");
+    // bool soshiPointsInjection =
+    //     LocalDataService.getInjectionFlag("Soshi Points");
 
-    if (soshiPointsInjection == false || soshiPointsInjection == null) {
-      LocalDataService.updateInjectionFlag("Soshi Points", true);
-      databaseService.updateInjectionSwitch(
-          soshiUsername, "Soshi Points", true);
+    // if (soshiPointsInjection == false || soshiPointsInjection == null) {
+    //   LocalDataService.updateInjectionFlag("Soshi Points", true);
+    //   databaseService.updateInjectionSwitch(
+    //       soshiUsername, "Soshi Points", true);
 
-      int numFriends = LocalDataService.getFriendsListCount();
-      LocalDataService.updateSoshiPoints(numFriends * 8);
+    //   int numFriends = LocalDataService.getFriendsListCount();
+    //   LocalDataService.updateSoshiPoints(numFriends * 8);
 
-      databaseService.updateSoshiPoints(soshiUsername, (numFriends * 8));
-    }
+    //   databaseService.updateSoshiPoints(soshiUsername, (numFriends * 8));
+    // }
 
     return SingleChildScrollView(
         child: Column(

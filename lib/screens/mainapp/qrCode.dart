@@ -13,6 +13,7 @@ import 'package:soshi/services/dataEngine.dart';
 import 'package:soshi/services/database.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:soshi/services/localData.dart';
+import 'package:soshi/services/nfc.dart';
 
 import 'package:vibration/vibration.dart';
 import 'package:share/share.dart';
@@ -218,51 +219,9 @@ class _NewQRScreenState extends State<NewQRScreen> {
                               ],
                             )),
                       ),
-                      //SizedBox(height: height / 11),
-                      Container(
-                          child: GestureDetector(
-                        onTap: () {
-                          CustomAlertDialogDoubleChoiceWithAsset
-                              .showCustomAlertDialogDoubleChoiceWithAsset(
-                                  "Soshi Portal",
-                                  "assets/images/misc/NFCTemp.png", // To be replaced with NFC activating gif
-                                  "Activate!",
-                                  "Done", () {
-                            Navigator.pop(context);
-                            print("NFC writer pops up");
-                            // Call NFC writer and write user.shortDynamicLink
-                          }, () {
-                            Navigator.pop(context);
-                          }, context, height, width);
-                        },
-                        child: Container(
-                            height: height / 15,
-                            width: width / 2.1,
-                            child: Card(
-                              // color: Colors.grey.shade800,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10))),
-                              child: Center(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "Activate Soshi Portal",
-                                      style: TextStyle(
-                                          //fontWeight: FontWeight.bold,
-                                          fontSize: width / 30),
-                                    ),
-                                    SizedBox(width: 5),
-                                    Icon(
-                                      CupertinoIcons.info_circle,
-                                      size: width / 20,
-                                    )
-                                  ],
-                                ),
-                              ),
-                            )),
-                      )),
+                      ActivatePortalButton(
+                        shortDynamicLink: user.shortDynamicLink,
+                      ),
 
                       Container(
                         child: GestureDetector(
