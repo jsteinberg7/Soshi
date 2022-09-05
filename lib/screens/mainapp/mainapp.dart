@@ -151,10 +151,11 @@ class LatestBottomNavBar extends StatelessWidget {
               size: 35,
             ),
           ),
-          CustomNavigationBarItem(
-              icon: ProfilePic(
-                  radius: 25,
-                  url: LocalDataService.getLocalProfilePictureURL())),
+          CustomNavigationBarItem(icon: Icon(Icons.person)),
+
+          // ProfilePic(
+          //     radius: 25,
+          //     url: LocalDataService.getLocalProfilePictureURL())),
           CustomNavigationBarItem(
             icon: Icon(
               AntDesign.contacts,
