@@ -313,12 +313,15 @@ class _SMCardState extends State<SMCard> {
                   ),
                 ),
               ),
+              SizedBox(
+                width: 5,
+              ),
               platformName != "Contact"
                   ? Text(indicator,
                       style:
                           TextStyle(fontSize: width / 25, color: Colors.grey))
                   : Text(
-                      "  ",
+                      "   ",
                     ),
               platformName != "Contact"
                   ? Padding(
@@ -331,25 +334,28 @@ class _SMCardState extends State<SMCard> {
               Container(
                 child: Expanded(
                     child: platformName != "Contact"
-                        ? TextField(
-                            keyboardType: platformName == "Phone"
-                                ? TextInputType.numberWithOptions(
-                                    decimal: true, signed: true)
-                                : TextInputType.text,
-                            inputFormatters: platformName == "Phone"
-                                ? [FilteringTextInputFormatter.digitsOnly]
-                                : null,
-                            style: TextStyle(
-                                fontSize: width / 20, letterSpacing: 1.3),
-                            // scribbleEnabled: true,
-                            cursorColor: Colors.blue,
-                            decoration: InputDecoration(
-                                hintText: hintText,
-                                hintStyle: TextStyle(color: Colors.grey),
-                                border: InputBorder.none,
-                                counterText: ""),
-                            controller: usernameController,
-                            maxLines: 1,
+                        ? Padding(
+                            padding: EdgeInsets.only(right: width / 40),
+                            child: TextField(
+                              keyboardType: platformName == "Phone"
+                                  ? TextInputType.numberWithOptions(
+                                      decimal: true, signed: true)
+                                  : TextInputType.text,
+                              inputFormatters: platformName == "Phone"
+                                  ? [FilteringTextInputFormatter.digitsOnly]
+                                  : null,
+                              style: TextStyle(
+                                  fontSize: width / 20, letterSpacing: 1.3),
+                              // scribbleEnabled: true,
+                              cursorColor: Colors.blue,
+                              decoration: InputDecoration(
+                                  hintText: hintText,
+                                  hintStyle: TextStyle(color: Colors.grey),
+                                  border: InputBorder.none,
+                                  counterText: ""),
+                              controller: usernameController,
+                              maxLines: 1,
+                            ),
                           )
                         : TextField(
                             style: TextStyle(fontSize: width / 20),
