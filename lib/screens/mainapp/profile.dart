@@ -682,8 +682,10 @@ class ProfileState extends State<Profile> {
                                                       0),
                                                   child: AutoSizeText(
                                                     user.bio,
-                                                    maxLines: 4,
-                                                    minFontSize: 17,
+                                                    maxLines: 3,
+                                                    minFontSize: 1,
+                                                    style: TextStyle(
+                                                        fontSize: width / 22),
                                                     textAlign: TextAlign.center,
                                                   ),
                                                 )),
@@ -886,7 +888,7 @@ class ProfileState extends State<Profile> {
                     Positioned(
                       left: 0,
                       right: 0,
-                      top: height / 2.4,
+                      top: height / 2.2,
                       child: Container(
                           //height: height / 2,
                           decoration: BoxDecoration(

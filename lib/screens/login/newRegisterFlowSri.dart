@@ -64,7 +64,9 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
                         if (this.currentPage == 4) {
                           await controller.jumpToPage(0);
                         }
-                        await controller.animateToPage(currentPage - 1, duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+                        await controller.animateToPage(currentPage - 1,
+                            duration: Duration(milliseconds: 500),
+                            curve: Curves.easeInOut);
                       },
                       icon: Icon(Icons.chevron_left, size: 40)),
                 )
@@ -84,10 +86,18 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
                 controller: this.controller,
                 // physics: const NeverScrollableScrollPhysics(),
                 children: [
-                  RegisterSingleScreen(type: InputType.EMAIL, superController: widget.superController, screenChecker: widget.screenChecker), //0
                   RegisterSingleScreen(
-                      type: InputType.ALL_PASSWORDS, superController: widget.superController, screenChecker: widget.screenChecker), //1
-                  RegisterSingleScreen(type: InputType.ALL_NAMES, superController: widget.superController, screenChecker: widget.screenChecker), //2
+                      type: InputType.EMAIL,
+                      superController: widget.superController,
+                      screenChecker: widget.screenChecker), //0
+                  RegisterSingleScreen(
+                      type: InputType.ALL_PASSWORDS,
+                      superController: widget.superController,
+                      screenChecker: widget.screenChecker), //1
+                  RegisterSingleScreen(
+                      type: InputType.ALL_NAMES,
+                      superController: widget.superController,
+                      screenChecker: widget.screenChecker), //2
                   RegisterSingleScreen(
                       type: InputType.SOSHI_USERNAME,
                       superController: widget.superController,
@@ -115,7 +125,10 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
                     String convertedEmail =
                         widget.superController.email.text.trim().toLowerCase();
                     OnboardingLoader.showLoadingIndicator("", context);
-                    DocumentSnapshot dRef = await FirebaseFirestore.instance.collection("emailToUsername").doc(convertedEmail).get();
+                    DocumentSnapshot dRef = await FirebaseFirestore.instance
+                        .collection("emailToUsername")
+                        .doc(convertedEmail)
+                        .get();
 
                     if (dRef.exists) {
                       String username = dRef.get("soshiUsername");
@@ -129,14 +142,21 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
                       });
                       await controller.jumpToPage(4);
                     } else {
-                      await controller.animateToPage(currentPage + 1, duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+                      await controller.animateToPage(currentPage + 1,
+                          duration: Duration(milliseconds: 500),
+                          curve: Curves.easeInOut);
                     }
                     OnboardingLoader.killLoader(context);
                   }
                   // ✅ CREATE NEW PASSWORD
-                  else if (currentPage == 1 && widget.screenChecker.isValidScreen(inputType: InputType.ALL_PASSWORDS)) {
-                    if (widget.superController.passwordNew.text == widget.superController.passwordNewConfirm.text) {
-                      await controller.animateToPage(currentPage + 1, duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+                  else if (currentPage == 1 &&
+                      widget.screenChecker
+                          .isValidScreen(inputType: InputType.ALL_PASSWORDS)) {
+                    if (widget.superController.passwordNew.text ==
+                        widget.superController.passwordNewConfirm.text) {
+                      await controller.animateToPage(currentPage + 1,
+                          duration: Duration(milliseconds: 500),
+                          curve: Curves.easeInOut);
                     } else {
                       print(
                           "❌ cant move to next, controller diff ${widget.superController.passwordNew.text} ||| ${widget.superController.passwordNewConfirm.text}");
@@ -149,8 +169,13 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
                     OnboardingLoader.showLoadingIndicator("", context);
 
                     final AuthService _authService = new AuthService();
-                    dynamic user = await _authService.signInWithEmailAndPassword(
-                        emailIn: widget.superController.email.text.trim().toLowerCase(), passwordIn: widget.superController.passwordOldAcc.text);
+                    dynamic user =
+                        await _authService.signInWithEmailAndPassword(
+                            emailIn: widget.superController.email.text
+                                .trim()
+                                .toLowerCase(),
+                            passwordIn:
+                                widget.superController.passwordOldAcc.text);
 
                     OnboardingLoader.killLoader(context);
 
@@ -167,7 +192,6 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
                       print(
                           "✅ sign-in success: pushing to main dashboard NOW!");
 
-
                       //To to remove old instances of DataEngine in case they sign in with new account!
                       User createdUser = user;
                       await DataEngine.initialize(createdUser.uid);
@@ -179,8 +203,12 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
                     }
                   }
                   // ✅ CREATE FIRST/LAST NAME
-                  else if (currentPage == 2 && widget.screenChecker.isValidScreen(inputType: InputType.ALL_NAMES)) {
-                    await controller.animateToPage(currentPage + 1, duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+                  else if (currentPage == 2 &&
+                      widget.screenChecker
+                          .isValidScreen(inputType: InputType.ALL_NAMES)) {
+                    await controller.animateToPage(currentPage + 1,
+                        duration: Duration(milliseconds: 500),
+                        curve: Curves.easeInOut);
                   }
                   //   // ✅ CREATE USERNAME
                   // else if (currentPage == 3 &&
@@ -190,7 +218,9 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
                   // }
 
                   // ✅ FINAL
-                  else if (currentPage == 3 && widget.screenChecker.isValidScreen(inputType: InputType.SOSHI_USERNAME)) {
+                  else if (currentPage == 3 &&
+                      widget.screenChecker
+                          .isValidScreen(inputType: InputType.SOSHI_USERNAME)) {
                     final AuthService _authService = new AuthService();
 
                     OnboardingLoader.showLoadingIndicator("", context);
@@ -291,7 +321,13 @@ class RegisterSingleScreen extends StatefulWidget {
   bool registerError = false;
   String registerErrorMessaage = "";
 
-  RegisterSingleScreen({this.type, this.superController, this.userMetaData, this.registerError, this.registerErrorMessaage, this.screenChecker});
+  RegisterSingleScreen(
+      {this.type,
+      this.superController,
+      this.userMetaData,
+      this.registerError,
+      this.registerErrorMessaage,
+      this.screenChecker});
 
   @override
   State<RegisterSingleScreen> createState() => _RegisterSingleScreenState();
@@ -458,7 +494,9 @@ class _RegisterSingleScreenState extends State<RegisterSingleScreen> {
                     child: Container(
                       child: Column(
                         children: [
-                          widget.userMetaData['Photo URL'] != null && widget.userMetaData['Photo URL'].contains("https")
+                          widget.userMetaData['Photo URL'] != null &&
+                                  widget.userMetaData['Photo URL']
+                                      .contains("https")
                               ? ProfilePic(
                                   url: widget.userMetaData['Photo URL'],
                                   radius: 60,
@@ -479,12 +517,15 @@ class _RegisterSingleScreenState extends State<RegisterSingleScreen> {
                   )
                 : Container(),
             // Fields that have 2 Text Inputs
-            [InputType.ALL_PASSWORDS, InputType.ALL_NAMES].contains(this.widget.type)
+            [InputType.ALL_PASSWORDS, InputType.ALL_NAMES]
+                    .contains(this.widget.type)
                 ? Column(
                     children: [
-                      makeTextField(getMapData('hint_text').split("%")[0], getMapData('controller_1')),
+                      makeTextField(getMapData('hint_text').split("%")[0],
+                          getMapData('controller_1')),
                       SizedBox(height: 10),
-                      makeTextField(getMapData('hint_text').split("%")[1], getMapData('controller_2')),
+                      makeTextField(getMapData('hint_text').split("%")[1],
+                          getMapData('controller_2')),
                       renderInputErrorMessage(),
                     ],
                   )
@@ -496,7 +537,8 @@ class _RegisterSingleScreenState extends State<RegisterSingleScreen> {
                       children: [
                         Container(
                           width: MediaQuery.of(context).size.width - 75,
-                          child: makeTextField(getMapData('hint_text'), getMapData('controller')),
+                          child: makeTextField(getMapData('hint_text'),
+                              getMapData('controller')),
                         ),
                         renderInputErrorMessage(),
                         renderAuthErrorMessage(),
@@ -513,6 +555,7 @@ class _RegisterSingleScreenState extends State<RegisterSingleScreen> {
   TextFormField makeTextField(
       String hintText, TextEditingController controller) {
     return TextFormField(
+      autofillHints: hintText == "Email" ? [AutofillHints.email] : null,
       keyboardType: hintText == "Email"
           ? TextInputType.emailAddress
           : hintText == "First Name" || hintText == "Last Name"
@@ -588,7 +631,12 @@ class _RegisterSingleScreenState extends State<RegisterSingleScreen> {
         'main_text': 'Enter your last name',
         'controller_2': widget.superController.lastName
       },
-      InputType.PASSWORD: {'validator': null, 'hint_text': 'Password', 'main_text': '', 'controller': widget.superController.passwordOldAcc},
+      InputType.PASSWORD: {
+        'validator': null,
+        'hint_text': 'Password',
+        'main_text': '',
+        'controller': widget.superController.passwordOldAcc
+      },
       InputType.SOSHI_USERNAME: {
         'validator': null,
         'hint_text': 'Soshi Username',
