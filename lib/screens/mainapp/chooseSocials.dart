@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:soshi/screens/login/loading.dart';
 import 'package:soshi/services/dataEngine.dart';
 import 'package:soshi/services/localData.dart';
@@ -16,7 +17,8 @@ class ChooseSocialsCard extends StatefulWidget {
   _ChooseSocialsCardState createState() => _ChooseSocialsCardState();
 }
 
-class _ChooseSocialsCardState extends State<ChooseSocialsCard> with SingleTickerProviderStateMixin {
+class _ChooseSocialsCardState extends State<ChooseSocialsCard>
+    with SingleTickerProviderStateMixin {
   double _scale;
   AnimationController _controller;
 
@@ -45,7 +47,7 @@ class _ChooseSocialsCardState extends State<ChooseSocialsCard> with SingleTicker
 
   void _tapDown(TapDownDetails details) {
     _controller.forward();
-    Vibration.vibrate(duration: 50);
+    HapticFeedback.lightImpact();
     setState(() {
       isSwitched = !isSwitched;
       widget.user.lookupSocial[widget.platformName].isChosen = true;
@@ -78,11 +80,14 @@ class _ChooseSocialsCardState extends State<ChooseSocialsCard> with SingleTicker
           clipBehavior: Clip.none,
           children: [
             Card(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0)),
 
               elevation: 5,
               //color: Colors.grey[8,
-              color: Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.grey[700],
+              color: Theme.of(context).brightness == Brightness.light
+                  ? Colors.white
+                  : Colors.grey[850],
               child: Padding(
                 // padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
                 padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
@@ -94,7 +99,9 @@ class _ChooseSocialsCardState extends State<ChooseSocialsCard> with SingleTicker
                     ),
                     // SizedBox(width: width / 30),
                     Image.asset(
-                      'assets/images/SMWriting/' + widget.platformName + 'Writing.png',
+                      'assets/images/SMWriting/' +
+                          widget.platformName +
+                          'Writing.png',
                       height: (width * .31) / 1.8,
                       width: (width * .69) / 1.8,
                     ),
@@ -113,10 +120,13 @@ class _ChooseSocialsCardState extends State<ChooseSocialsCard> with SingleTicker
                           onChanged: (bool value) {
                             setState(() {
                               isSwitched = !isSwitched;
-                              if (!Queue.choosePlatformsQueue.contains(widget.platformName)) {
-                                Queue.choosePlatformsQueue.add(widget.platformName);
+                              if (!Queue.choosePlatformsQueue
+                                  .contains(widget.platformName)) {
+                                Queue.choosePlatformsQueue
+                                    .add(widget.platformName);
                               } else {
-                                Queue.choosePlatformsQueue.remove(widget.platformName);
+                                Queue.choosePlatformsQueue
+                                    .remove(widget.platformName);
                               }
                             });
                           },
@@ -131,7 +141,10 @@ class _ChooseSocialsCardState extends State<ChooseSocialsCard> with SingleTicker
               // alignment: Alignment.centerLeft,
               left: 0,
               top: 0,
-              child: Image.asset('assets/images/SMLogos/' + widget.platformName + 'Logo.png', height: width / 4.5, width: width / 4.5),
+              child: Image.asset(
+                  'assets/images/SMLogos/' + widget.platformName + 'Logo.png',
+                  height: width / 4.5,
+                  width: width / 4.5),
             ),
           ],
         ),
@@ -185,7 +198,8 @@ class _ChooseSocialsState extends State<ChooseSocials> {
               onPressed: () async {
                 DialogBuilder dialogBuilder = new DialogBuilder(context);
                 dialogBuilder.showLoadingIndicator();
-                await DataEngine.applyUserChanges(user: widget.user, cloud: true, local: true);
+                await DataEngine.applyUserChanges(
+                    user: widget.user, cloud: true, local: true);
                 dialogBuilder.hideOpenDialog(); // disable loading indicator
 
                 Navigator.pop(context);

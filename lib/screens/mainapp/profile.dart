@@ -378,25 +378,29 @@ class ProfileState extends State<Profile> {
             int numSocialsPlusAddTile = this.userSocials.length + 1;
             int rows = (numSocialsPlusAddTile / 3).ceil();
 
-            if (numSocialsPlusAddTile > 3) {
-              print(rows);
-              if (rows > 1) {
-                for (int i = 0; i < rows; i++) {
-                  addedContainerSize += 30;
-                  // if (height < 800) {
-                  //   containerSize += .2;
-                  // } else {
-                  //   containerSize += .19;
-                  // }
-                }
-              }
+            if (rows == 1) {
+              addedContainerSize = 0;
             }
+
+            // if (numSocialsPlusAddTile > 3) {
+            //   print(rows);
+            //   if (rows > 1) {
+            //     for (int i = 0; i < rows; i++) {
+            //       addedContainerSize += 70;
+            //       // if (height < 800) {
+            //       //   containerSize += .2;
+            //       // } else {
+            //       //   containerSize += .19;
+            //       // }
+            //     }
+            //   }
+            // }
 
             print(addedContainerSize);
 
             return SingleChildScrollView(
               child: Container(
-                height: height * 2,
+                height: height * addedContainerSize,
                 child: Stack(
                   children: [
                     Positioned(

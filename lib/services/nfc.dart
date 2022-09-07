@@ -61,7 +61,9 @@ class _NFCWriterState extends State<NFCWriter> {
           Navigator.pop(context);
           return true;
         } catch (e) {
-          NfcManager.instance.stopSession(errorMessage: ":(");
+          NfcManager.instance.stopSession(
+              errorMessage:
+                  "Portal is not compatible or has already been written to :(");
           return false;
         }
       },
@@ -71,55 +73,59 @@ class _NFCWriterState extends State<NFCWriter> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Container(
-              width: width / 1.1,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(25.0))),
-              height: 250,
-              // color: Colors.white,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Container(
-                    height: 150,
-                    child: Lottie.network(
-                      animationUrl,
-                    ),
-                  ),
-                  Text(
-                    displayText,
-                    style: TextStyle(color: Colors.black, fontSize: 25.0),
-                  ),
-                ],
-              )),
-          SizedBox(
-            height: height / 50,
-          ),
-          GestureDetector(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(15.0))),
-              height: height / 15,
-              width: width / 1.1,
-              child: Center(
-                child: Text("Close",
-                    style: TextStyle(
-                        color: Colors.blue, fontSize: widget.width / 22)),
-              ),
-            ),
-          ),
-          SizedBox(height: height / 40)
-        ],
-      ),
-    );
+    print("writing");
+    Navigator.of(context).pop();
+
+    //it");
+    // return Container(
+    //   child: Column(
+    //     mainAxisAlignment: MainAxisAlignment.end,
+    //     children: [
+    //       Container(
+    //           width: width / 1.1,
+    //           decoration: BoxDecoration(
+    //               color: Colors.white,
+    //               borderRadius: BorderRadius.all(Radius.circular(25.0))),
+    //           height: 250,
+    //           // color: Colors.white,
+    //           child: Column(
+    //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    //             children: [
+    //               Container(
+    //                 height: 150,
+    //                 child: Lottie.network(
+    //                   animationUrl,
+    //                 ),
+    //               ),
+    //               Text(
+    //                 displayText,
+    //                 style: TextStyle(color: Colors.black, fontSize: 25.0),
+    //               ),
+    //             ],
+    //           )),
+    //       SizedBox(
+    //         height: height / 50,
+    //       ),
+    //       GestureDetector(
+    //         onTap: () {
+    //           Navigator.pop(context);
+    //         },
+    //         child: Container(
+    //           decoration: BoxDecoration(
+    //               color: Colors.white,
+    //               borderRadius: BorderRadius.all(Radius.circular(15.0))),
+    //           height: height / 15,
+    //           width: width / 1.1,
+    //           child: Center(
+    //             child: Text("Close",
+    //                 style: TextStyle(
+    //                     color: Colors.blue, fontSize: widget.width / 22)),
+    //           ),
+    //         ),
+    //       ),
+    //       SizedBox(height: height / 40)
+    //     ],
+    //   ),
+    // );
   }
 }
