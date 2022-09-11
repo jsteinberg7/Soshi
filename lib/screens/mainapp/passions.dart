@@ -3,7 +3,8 @@ import 'package:soshi/screens/mainapp/passionsPage.dart';
 import 'package:soshi/services/dataEngine.dart';
 
 class PassionTileList extends StatefulWidget {
-  PassionTileList({Key key}) : super(key: key);
+  ValueNotifier profileScreenRefresher;
+  PassionTileList({Key key, ValueNotifier profileScreenRefresher}) : super(key: key);
 
   @override
   State<PassionTileList> createState() => _PassionTileListState();
@@ -13,7 +14,8 @@ class _PassionTileListState extends State<PassionTileList> {
   SoshiUser user;
 
   loadDataEngine() async {
-    user = await DataEngine.getUserObject(firebaseOverride: true);
+    // user = await DataEngine.getUserObject(firebaseOverride: false);
+    user = DataEngine.globalUser;
   }
 
   @override
@@ -26,10 +28,7 @@ class _PassionTileListState extends State<PassionTileList> {
           } else {
             return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [0, 1, 2]
-                    .map((int pIndex) =>
-                        makePassionTile(user.passions[pIndex], pIndex))
-                    .toList());
+                children: [0, 1, 2].map((int pIndex) => makePassionTile(user.passions[pIndex], pIndex)).toList());
           }
         });
   }
@@ -47,6 +46,9 @@ class _PassionTileListState extends State<PassionTileList> {
         user.passions[pIndex] = value;
         await DataEngine.applyUserChanges(user: user, cloud: true, local: true);
         setState(() {});
+        if (widget.profileScreenRefresher != null) {
+          widget.profileScreenRefresher.notifyListeners();
+        }
       }
     });
   }
@@ -55,9 +57,7 @@ class _PassionTileListState extends State<PassionTileList> {
     return passion != Defaults.emptyPassion
         ? ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
-                elevation: 1,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(15)))),
+                elevation: 1, shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15)))),
             onPressed: () async {
               pushAndUpdatePassions(passion, pIndex);
             },
@@ -72,8 +72,7 @@ class _PassionTileListState extends State<PassionTileList> {
         : OutlinedButton.icon(
             style: OutlinedButton.styleFrom(
                 primary: Colors.black,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(15)))),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15)))),
             onPressed: () async {
               pushAndUpdatePassions(passion, pIndex);
             },
@@ -84,10 +83,7 @@ class _PassionTileListState extends State<PassionTileList> {
             label: Text(
               "Add",
               style: TextStyle(
-                  color: Theme.of(context).brightness == Brightness.light
-                      ? Colors.black
-                      : Colors.white,
-                  fontSize: 15),
+                  color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white, fontSize: 15),
             ));
   }
 }

@@ -8,16 +8,14 @@ import 'package:soshi/screens/mainapp/passions.dart';
 import 'package:soshi/services/dataEngine.dart';
 import 'package:soshi/constants/widgets.dart';
 import 'package:soshi/constants/utilities.dart';
-import 'package:soshi/services/database.dart';
 
 /* 
 * Widget allows users to access their profile settings 
 * (name, password, etc) 
 */
 class ProfileSettings extends StatefulWidget {
-  // ValueNotifier importProfileNotifier;
-
-  // ProfileSettings({@required this.importProfileNotifier});
+  ValueNotifier importProfileNotifier;
+  ProfileSettings({this.importProfileNotifier});
 
   @override
   ProfileSettingsState createState() => ProfileSettingsState();
@@ -27,8 +25,9 @@ class ProfileSettingsState extends State<ProfileSettings> {
   SoshiUser user;
 
   loadDataEngine() async {
-    print("loading data engine inside profileSettings");
-    this.user = await DataEngine.getUserObject(firebaseOverride: false);
+    print("🌐 GLOBAL USER loading data engine inside profileSettings");
+    // this.user = await DataEngine.getUserObject(firebaseOverride: false);
+    this.user = DataEngine.globalUser;
     log(user.toString());
   }
 
@@ -41,8 +40,8 @@ class ProfileSettingsState extends State<ProfileSettings> {
         leading: CupertinoBackButton(
           onPressed: () {
             print("verify discard changes?");
-            CustomAlertDialog.showCustomAlertDialog("Confirm exit",
-                "Unsaved changes will be discarded", "Yes", "No", () {
+            CustomAlertDialog.showCustomAlertDialog("Confirm exit", "Unsaved changes will be discarded", "Yes", "No",
+                () {
               Navigator.pop(context);
               Navigator.pop(context);
             }, () {
@@ -54,8 +53,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
           Padding(
             padding: EdgeInsets.only(right: width / 150),
             child: TextButton(
-              style: ButtonStyle(
-                  overlayColor: MaterialStateProperty.all(Colors.transparent)),
+              style: ButtonStyle(overlayColor: MaterialStateProperty.all(Colors.transparent)),
               child: Text(
                 "Done",
                 style: TextStyle(
@@ -64,11 +62,8 @@ class ProfileSettingsState extends State<ProfileSettings> {
                 ),
               ),
               onPressed: () {
-                DataEngine.applyUserChanges(
-                    user: user, cloud: true, local: true);
+                DataEngine.applyUserChanges(user: DataEngine.globalUser, cloud: true, local: true);
                 // Need alternative to refresh the profile!!!!
-
-                // widget.importProfileNotifier.notifyListeners();
                 Navigator.pop(context);
               },
             ),
@@ -97,16 +92,14 @@ class ProfileSettingsState extends State<ProfileSettings> {
               return SingleChildScrollView(
                 child: SafeArea(
                   child: Padding(
-                    padding: EdgeInsets.fromLTRB(
-                        width / 40, height / 50, width / 40, 0),
+                    padding: EdgeInsets.fromLTRB(width / 40, height / 50, width / 40, 0),
                     child: Column(
                         //crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           GestureDetector(
                             onTap: () async {
                               final ImagePicker imagePicker = ImagePicker();
-                              var pickedImage = await imagePicker.pickImage(
-                                  source: ImageSource.gallery);
+                              var pickedImage = await imagePicker.pickImage(source: ImageSource.gallery);
 
                               // await imagePicker.getImage(
                               //     source: ImageSource.gallery,
@@ -122,9 +115,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                                   top: height / 30,
                                   child: Container(
                                     padding: EdgeInsets.all(width / 100),
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.transparent),
+                                    decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.transparent),
                                     child: Icon(
                                       Icons.edit,
                                       size: 50,
@@ -145,9 +136,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                             children: [
                               Text(
                                 "First Name",
-                                style: TextStyle(
-                                    fontSize: width / 23,
-                                    fontWeight: FontWeight.bold),
+                                style: TextStyle(fontSize: width / 23, fontWeight: FontWeight.bold),
                               ),
                               SizedBox(
                                 width: width / 15,
@@ -155,9 +144,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                               Expanded(
                                 child: TextFormField(
                                   style: TextStyle(fontSize: width / 23),
-                                  decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      counterText: ""),
+                                  decoration: InputDecoration(border: InputBorder.none, counterText: ""),
                                   controller: this.user.firstNameController,
                                   maxLines: 1,
                                   maxLength: 12,
@@ -172,9 +159,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                             children: [
                               Text(
                                 "Last Name",
-                                style: TextStyle(
-                                    fontSize: width / 23,
-                                    fontWeight: FontWeight.bold),
+                                style: TextStyle(fontSize: width / 23, fontWeight: FontWeight.bold),
                               ),
                               SizedBox(
                                 width: width / 15,
@@ -182,9 +167,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                               Expanded(
                                 child: TextFormField(
                                   style: TextStyle(fontSize: width / 23),
-                                  decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      counterText: ""),
+                                  decoration: InputDecoration(border: InputBorder.none, counterText: ""),
                                   controller: this.user.lastNameController,
                                   maxLines: 1,
                                   maxLength: 12,
@@ -194,17 +177,14 @@ class ProfileSettingsState extends State<ProfileSettings> {
                           ),
                           Divider(),
                           Padding(
-                            padding: EdgeInsets.fromLTRB(
-                                0, height / 60, 0, height / 60),
+                            padding: EdgeInsets.fromLTRB(0, height / 60, 0, height / 60),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               // mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
                                   "Username",
-                                  style: TextStyle(
-                                      fontSize: width / 23,
-                                      fontWeight: FontWeight.bold),
+                                  style: TextStyle(fontSize: width / 23, fontWeight: FontWeight.bold),
                                 ),
                                 SizedBox(
                                   width: width / 15,
@@ -213,20 +193,15 @@ class ProfileSettingsState extends State<ProfileSettings> {
                                   children: [
                                     Text(
                                       "@ ",
-                                      style: TextStyle(
-                                          fontSize: width / 23,
-                                          color: Colors.grey),
+                                      style: TextStyle(fontSize: width / 23, color: Colors.grey),
                                     ),
                                     Text(
                                       this.user.soshiUsername,
-                                      style: TextStyle(
-                                          fontSize: width / 23,
-                                          color: Colors.grey
+                                      style: TextStyle(fontSize: width / 23, color: Colors.grey
                                           //color: Colors.grey
                                           ),
                                     ),
-                                    user.verified == false ||
-                                            user.verified == null
+                                    user.verified == false || user.verified == null
                                         ? Container()
                                         : Padding(
                                             padding: EdgeInsets.only(left: 3),
@@ -248,9 +223,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                                 padding: EdgeInsets.only(top: height / 65),
                                 child: Text(
                                   "Bio",
-                                  style: TextStyle(
-                                      fontSize: width / 23,
-                                      fontWeight: FontWeight.bold),
+                                  style: TextStyle(fontSize: width / 23, fontWeight: FontWeight.bold),
                                 ),
                               ),
                               SizedBox(
@@ -275,17 +248,14 @@ class ProfileSettingsState extends State<ProfileSettings> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Padding(
-                              padding: EdgeInsets.only(
-                                  top: height / 65, bottom: height / 65),
+                              padding: EdgeInsets.only(top: height / 65, bottom: height / 65),
                               child: Text(
                                 "Passions",
-                                style: TextStyle(
-                                    fontSize: width / 23,
-                                    fontWeight: FontWeight.bold),
+                                style: TextStyle(fontSize: width / 23, fontWeight: FontWeight.bold),
                               ),
                             ),
                           ),
-                          PassionTileList(),
+                          PassionTileList(profileScreenRefresher: widget.importProfileNotifier),
                           Divider(),
                           SizedBox(
                             height: height / 15,

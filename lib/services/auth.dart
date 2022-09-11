@@ -1,9 +1,11 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:soshi/services/analytics.dart';
+import 'package:soshi/services/dataEngine.dart';
 import 'package:soshi/services/database.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'localData.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /*
@@ -18,19 +20,16 @@ class AuthService {
 
   // sign in with email and password
   Future signInWithEmailAndPassword(
-      {String emailIn,
-      String passwordIn,
-      BuildContext contextIn,
-      @required Function refreshIn}) async {
+      {String emailIn, String passwordIn, BuildContext contextIn, @required Function refreshIn}) async {
     try {
-      String soshiUsername =
-          await DatabaseService().getSoshiUsernameForLogin(email: emailIn);
-      await LocalDataService.initializeSharedPreferences(
-          currSoshiUsername: soshiUsername); // sync all local data with cloud
       UserCredential loginResult = await _auth.signInWithEmailAndPassword(
-          email: emailIn,
-          password: passwordIn); // signs user in, initiates login
+          email: emailIn, password: passwordIn); // signs user in, initiates login
+
       User user = loginResult.user;
+      log("SOSHI USERNAME UPDATE: " + user.uid);
+
+      await DataEngine.freshSetup(soshiUsername: user.uid);
+
       Analytics.setUserAttributes(userId: user.uid);
       Analytics.logSignIn('email');
 
@@ -43,48 +42,6 @@ class AuthService {
 
       // return e.toString();
       return "Incorrect password, try again";
-      // showDialog(
-      //   context: contextIn,
-      //   builder: (BuildContext context) {
-      //     return AlertDialog(
-      //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40.0))),
-      //       backgroundColor: Colors.blueGrey[900],
-      //       title: Text(
-      //         "Invalid Credentials. \n",
-      //         style: TextStyle(color: Colors.cyan[600], fontWeight: FontWeight.bold),
-      //       ),
-      //       content: Text(
-      //         "If needed, you can reset your password.",
-      //         style: TextStyle(color: Colors.cyan[700], fontWeight: FontWeight.bold),
-      //       ),
-      //       actions: <Widget>[
-      //         TextButton(
-      //           child: Text(
-      //             'Ok',
-      //             style: TextStyle(fontSize: 20),
-      //           ),
-      //           onPressed: () {
-      //             Navigator.of(context).pop();
-      //           },
-      //         ),
-      //       ],
-      //     );
-      //   },
-      // );
-
-      // body: SnackBar(
-      // content: const Text('Invalid Credentials!'),
-      // backgroundColor: (Colors.black12),
-      // action: SnackBarAction(
-      // label: 'dismiss',
-      // onPressed: () {},
-      // ),
-      // ),
-
-// return Scaffold(
-      // body: SnackBar(action: ,),
-//),
-
     }
 
     //return a pop up or some shit
@@ -99,18 +56,14 @@ class AuthService {
     final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
 
     // Obtain the auth details from the request
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
     // Create a new credential
-    final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
+    final credential = GoogleAuthProvider.credential(accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
 
     try {
       // check if user already exists with email
-      soshiUsername = await DatabaseService()
-          .getSoshiUsernameForLogin(email: googleUser.email);
-      soshiUsername = soshiUsername.toLowerCase().trim();
+      soshiUsername = DataEngine.soshiUsername.toLowerCase().trim();
       Analytics.logSignIn('google');
     } catch (e) {
       debugPrint(e);
@@ -123,8 +76,7 @@ class AuthService {
       soshiUsername = googleUser.email.split('@')[0];
 
       // use username to create user file
-      DatabaseService databaseService =
-          new DatabaseService(currSoshiUsernameIn: soshiUsername);
+      DatabaseService databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
       await databaseService.createUserFile(
           username: soshiUsername.toLowerCase().trim(),
           email: googleUser.email,
@@ -139,8 +91,8 @@ class AuthService {
     }
 
     // initialize shared preferences
-    await LocalDataService.initializeSharedPreferences(
-        currSoshiUsername: soshiUsername);
+    // await LocalDataService.initializeSharedPreferences(
+    //     currSoshiUsername: soshiUsername);
 
     // LocalDataService.initializeSharedPreferences(soshiUsername: googleUser.displayName);
     // Once signed in, return the UserCredential
@@ -157,26 +109,23 @@ class AuthService {
     BuildContext contextIn,
   }) async {
     try {
-      DatabaseService databaseService =
-          DatabaseService(currSoshiUsernameIn: username);
+      DatabaseService databaseService = DatabaseService(currSoshiUsernameIn: username);
       if (await databaseService.isUsernameTaken(username)) {
         throw new ErrorDescription("Username is taken, try another one");
       }
 
-      await databaseService.createUserFile(
-          username: username, email: email, first: first, last: last);
+      await databaseService.createUserFile(username: username, email: email, first: first, last: last);
       print("file created");
-      await LocalDataService.initializeSharedPreferences(
-          currSoshiUsername: username);
+
       print("shared prefs initialized");
-      UserCredential registerResult = await _auth
-          .createUserWithEmailAndPassword(email: email, password: password);
+      UserCredential registerResult = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       User user = registerResult.user;
       // refreshIn();
       print("✅ successfully created new account! ${email}");
 
-      print(
-          "◀◀◀ username ${username}\n email ${email} \n password ${password} \n ${first} \n ${last} ◀◀◀");
+      print("◀◀◀ username ${username}\n email ${email} \n password ${password} \n ${first} \n ${last} ◀◀◀");
+
+      await DataEngine.freshSetup(soshiUsername: username);
 
       return user;
     } catch (e) {
@@ -190,8 +139,9 @@ class AuthService {
   // sign user out of app
   Future<void> signOut() async {
     // wipe local data
-    LocalDataService.wipeSharedPreferences();
-    LocalDataService.updateFirstLaunch(true);
+    // LocalDataService.wipeSharedPreferences();
+    // LocalDataService.updateFirstLaunch(true);
+
     Analytics.logSignOut();
     return await _auth.signOut();
   }

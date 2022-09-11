@@ -5,44 +5,60 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:soshi/services/dynamicLinks.dart';
+import 'package:soshi/services/pointManager.dart';
 
 class DataEngine {
   // String defaultUsername;
   // DataEngine({@required this.defaultUsername});
-
   static String soshiUsername;
   static bool initializedStatus = false;
+  static bool hasLaunched = false;
+  static SoshiUser globalUser;
 
-  static initialize(String soshiUsername) async {
+  //Used when user logs in or creates accont
+  static freshSetup({@required soshiUsername}) async {
+    // Force clearing all cache!
+    await SharedPreferences.getInstance().then((value) => value.clear());
+    await SharedPreferences.getInstance().then((value) => value.setString("username", soshiUsername));
     DataEngine.soshiUsername = soshiUsername;
+    log("[⚙ Data Engine ⚙] Fresh Setup successful with username ${soshiUsername}");
+  }
+
+  //Used after user logs out (Little uncessary as we clear on login)
+  static forceClear() async {
+    log("[⚙ Data Engine ⚙] All user cache data cleared!");
+
+    await SharedPreferences.getInstance().then((value) => value.clear());
+  }
+
+  static usernameFailSafe() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove("userObject");
+    DataEngine.soshiUsername = prefs.getString("username");
     log("[⚙ Data Engine ⚙] successfully initialzed with username: ${soshiUsername} ✅");
+  }
+
+  static initialize() async {
+    DataEngine.globalUser = await DataEngine.getUserObject(firebaseOverride: true);
   }
 
   static Map serializeUser(SoshiUser user) {
     List serializePassions = [];
-
     user.passions.forEach((e) {
       serializePassions.add({'passion_emoji': e.emoji, 'passion_name': e.name});
     });
 
     Map<String, dynamic> toReturn = {
       'Friends': user.friends,
-      'Name': {
-        'First': user.firstNameController.text,
-        'Last': user.lastNameController.text
-      },
+      'Name': {'First': user.firstNameController.text, 'Last': user.lastNameController.text},
       'Photo URL': user.photoURL,
       'Bio': user.bioController.text,
       'Soshi Points': user.soshiPoints,
       'Verified': user.verified,
       'Passions': serializePassions,
-      'Choose Platforms':
-          user.getAvailablePlatforms().map((e) => e.platformName).toList(),
-      'Profile Platforms':
-          user.getChosenPlatforms().map((e) => e.platformName).toList(),
+      'Choose Platforms': user.getAvailablePlatforms().map((e) => e.platformName).toList(),
+      'Profile Platforms': user.getChosenPlatforms().map((e) => e.platformName).toList(),
       'Dynamic Link': user.dynamicLink,
+      'Point Manager': user.pointManager.serializeDictionary()
     };
 
     Map switches = {};
@@ -61,36 +77,33 @@ class DataEngine {
   }
 
   //{NOTE} If firebaseOverride is true, will fetch latest data again from firestore
-  static getUserObject(
-      {@required bool firebaseOverride, String soshiUsernameOverride}) async {
-    String currUsername;
-    if (soshiUsernameOverride == null) {
-      currUsername = soshiUsername; // if no override, use local username
-    } else {
+  static getUserObject({@required bool firebaseOverride, String soshiUsernameOverride}) async {
+    //failsafe [kinda necessary]
+    await usernameFailSafe();
+    String currUsername = DataEngine.soshiUsername;
+    if (soshiUsernameOverride != null && soshiUsernameOverride != "") {
       currUsername = soshiUsernameOverride;
       firebaseOverride = true; // force firebase override if other user
     }
+
     Map fetch;
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    log("{userObject Exists?} ==> ${prefs.containsKey("userObject")}");
-
-    if (firebaseOverride || !prefs.containsKey("userObject")) {
+    if (firebaseOverride || !prefs.containsKey("userObject") || prefs.getString("userObject") == "null") {
       log("[⚙ Data Engine ⚙]  getUserObject() Firebase data burn ⚠ userFetch=> ${currUsername}");
-      DocumentSnapshot dSnap = await FirebaseFirestore.instance
-          .collection("users")
-          .doc(currUsername)
-          .get();
+      DocumentSnapshot dSnap = await FirebaseFirestore.instance.collection("users").doc(currUsername).get();
       fetch = dSnap.data();
+
       await prefs.setString("userObject", jsonEncode(fetch));
     } else {
       log("[⚙ Data Engine ⚙]  getUserObject() Using cache 😃");
       fetch = jsonDecode(prefs.getString("userObject"));
     }
 
-    String url = fetch['Photo URL'] ?? Defaults.defaultProfilePic;
-    bool hasPhoto = url != null && url.contains("http");
+    bool hasPhoto = fetch['Photo URL'] != null && fetch['Photo URL'].contains("http");
+    String url = hasPhoto ? fetch['Photo URL'] : Defaults.defaultProfilePic;
+
     String photoURL = url;
 
     bool Verified = fetch['Verified'] ?? false;
@@ -103,8 +116,7 @@ class DataEngine {
     String bio = fetch['Bio'] ?? "";
     List<String> friends = (fetch['Friends'].cast<String>() ?? []);
 
-    String dynamicLink = fetch['Dynamic Link'] ??
-        await DynamicLinkService.createDynamicLink(soshiUsername);
+    String dynamicLink = fetch['Dynamic Link'] ?? await DynamicLinkService.createDynamicLink(soshiUsername);
     print(dynamicLink);
     log("[⚙ Data Engine ⚙] basic info built ✅");
 
@@ -117,48 +129,24 @@ class DataEngine {
         if (e['passion_name'].toString().toUpperCase() == "EMPTY") {
           passions.add(Defaults.emptyPassion);
         } else {
-          passions
-              .add(Passion(emoji: e['passion_emoji'], name: e['passion_name']));
+          passions.add(Passion(emoji: e['passion_emoji'], name: e['passion_name']));
         }
       });
     }
 
-    // if (fetch['Passions'] != null) {
-    //   List.of(fetch['Passions']).forEach((e) {
-    //     if (e['passion_name'].toString().toUpperCase() == "EMPTY") {
-    //       passions.add(Defaults.emptyPassion);
-    //     } else {
-    //       passions.add(Passion(emoji: e['passion_emoji'], name: e['passion_name']));
-    //     }
-    //   });
-
-    //   //add null for where there are empty passions, so there are always 3
-    //   for (int i = 0; i < 3 - fetch['Passions'].length; i++) {
-    //     passions.add(Defaults.emptyPassion);
-    //   }
-    // } else {
-    //   for (int i = 0; i < 3; i++) {
-    //     passions.add(Defaults.emptyPassion);
-    //   }
-    // }
-
     log("[⚙ Data Engine ⚙] passions info built ✅");
 
-    if (fetch['Usernames'] != null &&
-        fetch['Switches'] != null &&
-        fetch['Choose Platforms'] != null) {
+    if (fetch['Usernames'] != null && fetch['Switches'] != null && fetch['Choose Platforms'] != null) {
       Map.of(fetch['Usernames']).keys.forEach((key) {
         bool switchStatus = Map.of(fetch['Switches'])[key];
         bool isChosen = List.of(fetch['Profile Platforms']).contains(key);
-        // log("[⚙ Data Engine ⚙] adding ${key} ${switchStatus} ${isChosen} ✅");
 
         Social makeSocial = Social(
             username: fetch['Usernames'][key],
             platformName: key.toString(),
             switchStatus: switchStatus,
             isChosen: isChosen,
-            usernameController:
-                TextEditingController(text: fetch['Usernames'][key]));
+            usernameController: TextEditingController(text: fetch['Usernames'][key]));
 
         socials.add(makeSocial);
         lookupSocial[key] = makeSocial;
@@ -167,37 +155,39 @@ class DataEngine {
       log("[⚙ Data Engine ⚙] SoshiUser Object built ✅");
     }
 
+    //Building POINT_MANAGER_OBJECT
+    PointManager pointManager = new PointManager(fetch);
+
     return SoshiUser(
-      soshiUsername: currUsername,
-      firstName: fetch['Name']['First'],
-      firstNameController:
-          new TextEditingController(text: fetch['Name']['First']),
-      lastNameController:
-          new TextEditingController(text: fetch['Name']['Last']),
-      lastName: fetch['Name']['Last'],
-      photoURL: photoURL,
-      hasPhoto: hasPhoto,
-      verified: Verified,
-      socials: socials,
-      passions: passions,
-      soshiPoints: soshiPoints,
-      bio: bio,
-      bioController: new TextEditingController(text: bio),
-      friends: friends,
-      lookupSocial: lookupSocial,
-      dynamicLink: dynamicLink,
-    );
+        soshiUsername: currUsername,
+        firstName: fetch['Name']['First'],
+        firstNameController: new TextEditingController(text: fetch['Name']['First']),
+        lastNameController: new TextEditingController(text: fetch['Name']['Last']),
+        lastName: fetch['Name']['Last'],
+        photoURL: photoURL,
+        hasPhoto: hasPhoto,
+        verified: Verified,
+        socials: socials,
+        passions: passions,
+        soshiPoints: soshiPoints,
+        bio: bio,
+        bioController: new TextEditingController(text: bio),
+        friends: friends,
+        lookupSocial: lookupSocial,
+        dynamicLink: dynamicLink,
+        pointManager: pointManager);
   }
 
-  // static overrideWithTextControllerData(){
-
-  // }
-
-  static applyUserChanges(
-      {@required SoshiUser user,
-      @required bool cloud,
-      @required bool local}) async {
+  static applyUserChanges({@required SoshiUser user, @required bool cloud, @required bool local}) async {
     // {!} These tasks can happen asynchronously to save time!
+
+    //Syncing controllers
+    user.bio = user.bioController.text;
+    user.firstName = user.firstNameController.text;
+    user.lastName = user.lastNameController.text;
+
+    globalUser = user;
+
     if (cloud || local) {
       Map afterSerialized = serializeUser(user);
 
@@ -209,10 +199,7 @@ class DataEngine {
       }
 
       if (cloud) {
-        await FirebaseFirestore.instance
-            .collection("users")
-            .doc(soshiUsername)
-            .update(afterSerialized);
+        await FirebaseFirestore.instance.collection("users").doc(soshiUsername).update(afterSerialized);
         log("[⚙ Data Engine ⚙] update Cloud {Firestore} success! ✅");
       }
     }
@@ -241,18 +228,14 @@ class DataEngine {
 
 //{NOTE} just use "applyUserChanges" and change boolean values
 
-  static Future<List<Passion>> getAvailablePassions(
-      {@required bool firebaseOverride}) async {
+  static Future<List<Passion>> getAvailablePassions({@required bool firebaseOverride}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map allPassionData = {};
 
     if (!prefs.containsKey("available_passions") || firebaseOverride) {
       log("[⚙ Data Engine ⚙] Firebase burn for available passions❌");
 
-      DocumentSnapshot dsnap = await FirebaseFirestore.instance
-          .collection('metadata')
-          .doc('passionData')
-          .get();
+      DocumentSnapshot dsnap = await FirebaseFirestore.instance.collection('metadata').doc('passionData').get();
       allPassionData = dsnap.get('all_passions_list');
       await prefs.setString("available_passions", jsonEncode(allPassionData));
     } else {
@@ -261,9 +244,7 @@ class DataEngine {
       allPassionData = jsonDecode(prefs.getString("available_passions"));
     }
 
-    List<Passion> pList = allPassionData.keys
-        .map((key) => Passion(emoji: allPassionData[key], name: key))
-        .toList();
+    List<Passion> pList = allPassionData.keys.map((key) => Passion(emoji: allPassionData[key], name: key)).toList();
 
     pList.add(Defaults.emptyPassion);
     log("[⚙ Data Engine ⚙] Successfully fetched latest available passions ✅");
@@ -285,6 +266,8 @@ class SoshiUser {
   TextEditingController firstNameController;
   TextEditingController lastNameController;
 
+  PointManager pointManager;
+
   SoshiUser(
       {@required this.soshiUsername,
       @required this.firstName,
@@ -301,12 +284,13 @@ class SoshiUser {
       @required this.bioController,
       @required this.friends,
       @required this.lookupSocial,
-      @required this.dynamicLink});
+      @required this.dynamicLink,
+      @required this.pointManager});
 
   //Will ignore case in input platform String
   getUsernameGivenPlatform({@required String platform}) {
-    if (this.lookupSocial[platform] == null) {
-      return "MISSING_USERNAME";
+    if (this.lookupSocial[platform] == null || this.lookupSocial[platform] == "") {
+      return Defaults.NO_USERNAME;
     }
     return this.lookupSocial[platform].username;
   }
@@ -362,12 +346,10 @@ class SoshiUser {
   }
 
   // takes string list, converts to friends list
-  static Future<List<Friend>> convertStrToFriendList(
-      List<String> usernameList) async {
+  static Future<List<Friend>> convertStrToFriendList(List<String> usernameList) async {
     List<Friend> list = [];
     for (String username in usernameList) {
-      SoshiUser currUser = await DataEngine.getUserObject(
-          firebaseOverride: true, soshiUsernameOverride: username);
+      SoshiUser currUser = await DataEngine.getUserObject(firebaseOverride: true, soshiUsernameOverride: username);
       list.add(Friend(
           soshiUsername: username,
           fullName: currUser.firstName + ' ' + currUser.lastName,
@@ -448,14 +430,6 @@ class Friend {
     return friends;
   }
 
-  // static List<String> convertToStringList(List<Friend> friendsList) {
-  //   List<String> list = [];
-  //   for (Friend friend in friendsList) {
-  //     list.add(friend.soshiUsername);
-  //   }
-  //   return list;
-  // }
-
   // convert friend to map, then map to json
   String serialize() {
     return jsonEncode(this.toJson());
@@ -466,4 +440,6 @@ class Defaults {
   static String defaultProfilePic =
       "https://img.freepik.com/free-photo/abstract-luxury-plain-blur-grey-black-gradient-used-as-background-studio-wall-display-your-products_1258-58170.jpg?w=2000";
   static Passion emptyPassion = Passion(emoji: "❌", name: "Empty");
+
+  static const String NO_USERNAME = "NO_USERNAME";
 }

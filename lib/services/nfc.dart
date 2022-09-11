@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nfc_manager/nfc_manager.dart';
+import 'package:soshi/services/dataEngine.dart';
 
 import 'localData.dart';
 
@@ -41,7 +42,7 @@ class _NFCWriterState extends State<NFCWriter> {
 
         NdefMessage message = NdefMessage([
           NdefRecord.createUri(Uri.parse(
-              'https://soshi.app/${LocalDataService.getLocalUsername()}')),
+              'https://soshi.app/${DataEngine.soshiUsername}')),
         ]);
 
         try {

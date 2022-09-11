@@ -32,15 +32,14 @@ class _WrapperState extends State<Wrapper> {
     final user = Provider.of<User>(context); // get current user
 
     if (user != null) {
-      //[!] Uncomment this to test onboarding screen with hot-reload
       return MainApp();
-      // return NewIntroFlow();
     } else {
-      if (!widget.firstLaunch) {
-        return Authenticate(refresh: refreshApp);
-      } else {
-        return NewIntroFlow();
-      }
+      return NewIntroFlow();
+      // if (!widget.firstLaunch) {
+      //   return Authenticate(refresh: refreshApp);
+      // } else {
+      //   return NewIntroFlow();
+      // }
     }
   }
 }

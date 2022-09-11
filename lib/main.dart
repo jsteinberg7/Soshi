@@ -4,10 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:soshi/services/analytics.dart';
 import 'package:soshi/services/dataEngine.dart';
-import 'package:soshi/services/localData.dart';
+import 'package:soshi/services/runtimeManager.dart';
 import 'services/auth.dart';
 import 'package:soshi/screens/wrapper.dart';
 import 'package:flutter/services.dart';
@@ -26,8 +25,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
     return StreamProvider<User>.value(
         value: AuthService().user,
         child: MaterialApp(
@@ -65,14 +63,11 @@ class _MyAppState extends State<MyApp> {
               bottomAppBarColor: Color.fromARGB(255, 0, 0, 0),
               appBarTheme: AppBarTheme(color: Colors.grey[50]),
               cardColor: Colors.white,
-              dividerTheme: DividerThemeData(
-                  thickness: .2, indent: 0, endIndent: 0, color: Colors.grey),
+              dividerTheme: DividerThemeData(thickness: .2, indent: 0, endIndent: 0, color: Colors.grey),
               focusColor: Color(0x1aF5E0C3),
-              textSelectionTheme:
-                  TextSelectionThemeData(cursorColor: Colors.cyan[500]),
+              textSelectionTheme: TextSelectionThemeData(cursorColor: Colors.cyan[500]),
               elevatedButtonTheme: ElevatedButtonThemeData(style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
+                backgroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
                   return Colors.white;
                 }),
               )),
@@ -103,31 +98,26 @@ class _MyAppState extends State<MyApp> {
                 ),
                 primaryColor: Colors.grey[850],
                 primaryColorLight: Color(0x1a311F06),
-                dividerTheme: DividerThemeData(
-                    thickness: .2, indent: 0, endIndent: 0, color: Colors.grey),
+                dividerTheme: DividerThemeData(thickness: .2, indent: 0, endIndent: 0, color: Colors.grey),
                 primaryColorDark: Colors.black,
                 canvasColor: Colors.grey[850],
                 scaffoldBackgroundColor: Colors.grey[900],
                 bottomAppBarColor: Color(0xff6D42CE),
                 cardColor: Colors.grey[900],
-                textSelectionTheme:
-                    TextSelectionThemeData(cursorColor: Colors.cyan[500]),
+                textSelectionTheme: TextSelectionThemeData(cursorColor: Colors.cyan[500]),
                 elevatedButtonTheme: ElevatedButtonThemeData(
                     style: ButtonStyle(
                   // MaterialStateProperty.resolveWith<TextStyle>(Set<MaterialState> states) {
                   //   return TextStyle(color: Colors.white);
                   // }
 
-                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                      (Set<MaterialState> states) {
+                  backgroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
                     return Colors.grey[900];
                   }),
-                  elevation: MaterialStateProperty.resolveWith<double>(
-                      (Set<MaterialState> states) {
+                  elevation: MaterialStateProperty.resolveWith<double>((Set<MaterialState> states) {
                     return 5.0;
                   }),
-                  foregroundColor: MaterialStateProperty.resolveWith<Color>(
-                      (Set<MaterialState> states) {
+                  foregroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
                     return Colors.white;
                   }),
                 )),
@@ -139,70 +129,29 @@ class _MyAppState extends State<MyApp> {
 bool firstLaunch;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // initialize Firebase
   await Firebase.initializeApp();
-  // lock device in portrait mode
+
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-
-  // initialize SharedPreferences if user is logged in
-  LocalDataService.preferences = await SharedPreferences.getInstance();
-
-  firstLaunch = (!LocalDataService.hasLaunched() ||
-      LocalDataService.hasLaunched() ==
-          null); // firstLaunched true if hasLaunched is false (first time running app)
-
-  /*
-    1. Check if first time running app
-    2. If so, check if LocalData has data to see if user is logged in
-    */
   FirebaseDynamicLinks links = FirebaseDynamicLinks.instance;
-
-  if ((LocalDataService.getLocalUsername() == "null" ||
-      LocalDataService.getLocalUsername() == null)) {
-    // check if user is signed in
-    if (firstLaunch) {
-      AuthService tempAuth = new AuthService();
-      await tempAuth.signOut(); // sign user out
-
-      // if (LocalDataService.hasCreatedDynamicLink() == null &&
-      //     !(LocalDataService.getLocalUsername() == "null" ||
-      //         LocalDataService.getLocalUsername() == null)) {
-      // create Firebase dynamic link if necessary
-      // links.buildLink();
-      // LocalDataService.preferences
-      //     .setBool("Created Dynamic Link", true); // update field
-    } else {
-      // // if signed in and not first launch
-      // if (LocalDataService.friendsListReformatted() == null &&
-      //     !LocalDataService.getLocalFriendsList().isEmpty) {
-      //   // check if friendsList has been reformatted
-      //   // if null, reformated friends list
-      //   await LocalDataService
-      //       .reformatFriendsList(); // should only ever run once per user
-      // }
-    }
-  }
-  // else if (DatabaseService())  // check if "Contact" link has been corrupted by focus node bug (fix if necessary)
   Analytics.logAppOpen();
-
-  // get params from deep link
   PendingDynamicLinkData linkData = await links.getInitialLink();
 
-  // print("Deep Link Params: " + linkData.utmParameters.toString())
+  // HasLaunched, firstSwitch, etc.
+  await RuntimeManager.sync();
 
-  String username = LocalDataService.getLocalUsername();
-  print("✅✅✅✅ Attempt to start the Data Engine! ✅✅✅✅");
+  // //Pull latest data from SharedPref/Cloud
+  await DataEngine.initialize();
+  // await DataEngine.forceClear();
 
-  await DataEngine.initialize(username);
+  // // var prf = await SharedPreferences.getInstance();
+  // AuthService authService = new AuthService();
+  // await authService.signOut();
+  // Navigator.pop(context); // close popup
+  // Navigator.pushReplacement(context, MaterialPageRoute(builder: ((context) => NewIntroFlow())));
 
   runApp(MyApp(linkData));
-
-  await LocalDataService.preferences
-      .setBool("hasLaunched", true); // user has launched app
 
   if (linkData != null) {
     print(linkData.utmParameters);
   }
-
-  // pull friendslist data to ensure up to date (name, bio, verified) ** USER MUST BE LOGGED IN
 }

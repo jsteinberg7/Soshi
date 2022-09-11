@@ -8,9 +8,8 @@ import 'package:soshi/constants/utilities.dart';
 import 'package:soshi/screens/mainapp/friendsGroupsWrapper.dart';
 import 'package:soshi/screens/mainapp/profile.dart';
 import 'package:soshi/screens/mainapp/qrCode.dart';
-import 'package:soshi/services/database.dart';
+import 'package:soshi/services/dataEngine.dart';
 import 'package:soshi/services/dynamicLinks.dart';
-import 'package:soshi/services/localData.dart';
 import '../../constants/widgets.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
@@ -82,8 +81,8 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    String soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
-    DatabaseService databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
+    // String soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
+    // DatabaseService databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
 
     return Scaffold(
       drawerEnableOpenDragGesture: false,
@@ -143,7 +142,7 @@ class LatestBottomNavBar extends StatelessWidget {
               size: 35,
             ),
           ),
-          CustomNavigationBarItem(icon: ProfilePic(radius: 25, url: LocalDataService.getLocalProfilePictureURL())),
+          CustomNavigationBarItem(icon: ProfilePic(radius: 25, url: DataEngine.globalUser.photoURL)),
           CustomNavigationBarItem(
             icon: Icon(
               AntDesign.contacts,
