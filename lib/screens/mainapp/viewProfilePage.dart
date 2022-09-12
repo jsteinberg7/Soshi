@@ -99,13 +99,13 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                         children: [
                                           Container(
                                             width: width / 1.5,
+                                            // color: Colors.grey,
                                             child: Center(
                                               child: AutoSizeText(
                                                 "${friendUserObject.firstName} ${friendUserObject.lastName}",
                                                 style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: width / 16,
-                                                ),
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: width / 16),
                                               ),
                                             ),
                                           ),

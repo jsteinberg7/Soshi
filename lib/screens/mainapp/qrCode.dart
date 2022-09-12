@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 // import 'package:nfc_manager/nfc_manager.dart';
@@ -10,9 +11,20 @@ import 'package:soshi/screens/mainapp/viewProfilePage.dart';
 import 'package:soshi/services/analytics.dart';
 import 'package:soshi/services/dataEngine.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+<<<<<<< HEAD
 
 import 'package:vibration/vibration.dart';
 import 'package:share/share.dart';
+=======
+import 'package:soshi/services/localData.dart';
+import 'package:soshi/services/nfc.dart';
+
+import 'package:vibration/vibration.dart';
+import 'package:share/share.dart';
+import '../../services/dynamicLinks.dart';
+import 'friendScreen.dart';
+import 'package:flutter_share/flutter_share.dart';
+>>>>>>> dynamic_Link_Working
 
 class NewQRScreen extends StatefulWidget {
   @override
@@ -51,8 +63,10 @@ class _NewQRScreenState extends State<NewQRScreen> {
             if (snapshot.connectionState != ConnectionState.done) {
               return Center(child: CircularProgressIndicator.adaptive());
             }
+
             return Center(
               child: SafeArea(
+<<<<<<< HEAD
                 child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
                   Neumorphic(
                     style: NeumorphicStyle(
@@ -70,6 +84,28 @@ class _NewQRScreenState extends State<NewQRScreen> {
                           children: [
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
+=======
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Neumorphic(
+                        style: NeumorphicStyle(
+                            depth: 2,
+                            //shadowDarkColor: Colors.cyan,
+                            //shadowLightColor: Colors.cyan,
+                            shape: NeumorphicShape.concave,
+                            color:
+                                Theme.of(context).brightness == Brightness.light
+                                    ? Colors.white
+                                    : Colors.black26,
+                            boxShape: NeumorphicBoxShape.roundRect(
+                              BorderRadius.circular(25.0),
+                            )),
+                        child: Container(
+                            height: height / 1.9,
+                            width: width / 1.2,
+                            child: Column(
+>>>>>>> dynamic_Link_Working
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 IconButton(
@@ -93,6 +129,7 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                     SizedBox(
                                       height: 2,
                                     ),
+<<<<<<< HEAD
                                     SoshiUsernameText(user.soshiUsername,
                                         fontSize: width / 23, isVerified: user.verified)
                                   ],
@@ -123,6 +160,61 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                           content: const Text(
                                             'Copied link to clipboard :)',
                                             textAlign: TextAlign.center,
+=======
+                                    IconButton(
+                                      icon: Icon(Icons.ios_share_rounded),
+                                      onPressed: () async {
+                                        FlutterShare.share(
+                                            title: "Share your Soshi link!",
+                                            linkUrl: user.shortDynamicLink);
+                                      },
+                                    )
+                                  ],
+                                ),
+                                PhysicalModel(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(25.0),
+                                  // elevation: 5,
+                                  child: Container(
+                                    height: width / 1.6,
+                                    width: width / 1.6,
+                                    child: Stack(
+                                      alignment: AlignmentDirectional.center,
+                                      children: [
+                                        // Container(
+                                        //     height: height,
+                                        //     width: width,
+                                        //     child: Image.asset(
+                                        //       "assets/images/misc/qr_lines.png",
+                                        //     )),
+                                        GestureDetector(
+                                          onTap: () {
+                                            Clipboard.setData(ClipboardData(
+                                                text: user
+                                                    .shortDynamicLink // user.lookupSocial["Soddddshi"].toString()
+                                                ));
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(SnackBar(
+                                              content: const Text(
+                                                'Copied link to clipboard :)',
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ));
+                                            Analytics.logCopyLinkToClipboard();
+                                          },
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(30.0),
+                                            child: QrImage(
+                                                size: width / 1.5,
+                                                dataModuleStyle:
+                                                    QrDataModuleStyle(
+                                                        dataModuleShape:
+                                                            QrDataModuleShape
+                                                                .circle,
+                                                        color: Colors.black),
+                                                data: user.longDynamicLink),
+>>>>>>> dynamic_Link_Working
                                           ),
                                         ));
                                         Analytics.logCopyLinkToClipboard();
@@ -157,6 +249,7 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                     ),
                                   ],
                                 ),
+<<<<<<< HEAD
                               ),
                             ),
                             Text("Share with others to instantly connect.", style: TextStyle(fontSize: width / 27)),
@@ -177,6 +270,85 @@ class _NewQRScreenState extends State<NewQRScreen> {
                               Popups.showJoinGroupPopup(context, groupId);
                             } else {
                               String friendSoshiUsername = QRScanResult.split("/").last;
+=======
+                                Text("Share with others to instantly connect.",
+                                    style: TextStyle(fontSize: width / 27)),
+                              ],
+                            )),
+                      ),
+                      ActivatePortalButton(
+                        shortDynamicLink: user.shortDynamicLink,
+                      ),
+
+                      Container(
+                        child: GestureDetector(
+                          onTap: () async {
+                            String username = user.soshiUsername;
+                            DatabaseService databaseService =
+                                new DatabaseService(
+                                    currSoshiUsernameIn: username);
+                            String QRScanResult =
+                                await Utilities.scanQR(mounted);
+                            if (QRScanResult.length > 5) {
+                              // vibrate when QR code is successfully scanned
+                              Vibration.vibrate();
+                              try {
+                                if (QRScanResult.contains(
+                                    "https://soshi.app/group/")) {
+                                  String groupId = QRScanResult.split("/").last;
+                                  Popups.showJoinGroupPopup(context, groupId);
+                                } else if (QRScanResult.contains(
+                                    "https://soshi.app/")) {
+                                  // This is to account for if a version 3.0 scans a version 2.5
+                                  String friendSoshiUsername =
+                                      QRScanResult.split("/").last;
+
+                                  Map friendData = await databaseService
+                                      .getUserFile(friendSoshiUsername);
+                                  Friend friend = databaseService
+                                      .userDataToFriend(friendData);
+                                  bool isFriendAdded =
+                                      await LocalDataService.isFriendAdded(
+                                          friendSoshiUsername);
+
+                                  if (!isFriendAdded &&
+                                      friendSoshiUsername != username) {
+                                    // add new friend if necessary
+                                    List<String> newFriendsList =
+                                        await LocalDataService.addFriend(
+                                            friend: friend);
+                                    databaseService
+                                        .overwriteFriendsList(newFriendsList);
+                                  }
+
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    return ViewProfilePage(
+                                      friendSoshiUsername: friend.soshiUsername,
+                                      refreshScreen: () {},
+                                    );
+                                  }));
+                                } else {
+                                  String friendSoshiUsername =
+                                      DynamicLinkService
+                                          .extractUsernameFromDynamicLink(
+                                              QRScanResult);
+                                  Map friendData = await databaseService
+                                      .getUserFile(friendSoshiUsername);
+                                  Friend friend = databaseService
+                                      .userDataToFriend(friendData);
+                                  bool isFriendAdded =
+                                      await LocalDataService.isFriendAdded(
+                                          friendSoshiUsername);
+
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    return ViewProfilePage(
+                                      friendSoshiUsername: friend.soshiUsername,
+                                      refreshScreen: () {},
+                                    ); // show friend popup when tile is pressed
+                                  }));
+>>>>>>> dynamic_Link_Working
 
                               Navigator.push(context, MaterialPageRoute(builder: (context) {
                                 return ViewProfilePage(
@@ -214,6 +386,7 @@ class _NewQRScreenState extends State<NewQRScreen> {
                             ),
                           )),
 
+<<<<<<< HEAD
                       // style: NeumorphicStyle(
                       //     // shadowLightColor: Colors.cyan,
                       //     // shadowDarkColor: Colors.cyan,
@@ -228,6 +401,71 @@ class _NewQRScreenState extends State<NewQRScreen> {
                     ),
                   )
                 ]),
+=======
+                          // style: NeumorphicStyle(
+                          //     // shadowLightColor: Colors.cyan,
+                          //     // shadowDarkColor: Colors.cyan,
+                          //     depth: 2,
+                          //     shape: NeumorphicShape.convex,
+                          //     color: Theme.of(context).brightness == Brightness.light
+                          //         ? Colors.white
+                          //         : Colors.black26,
+                          //     boxShape: NeumorphicBoxShape.roundRect(
+                          //       BorderRadius.circular(20.0),
+                          //     )),
+                        ),
+                      ),
+                      // Text(
+                      //   user.longDynamicLink,
+                      //   style: TextStyle(fontSize: 10),
+                      // ),
+
+                      // Text(user.shortDynamicLink),
+                      // Text(DynamicLinkService.extractUsernameFromDynamicLink(
+                      //     user.longDynamicLink))
+                      // Container(
+                      //     child: GestureDetector(
+                      //   onTap: () {
+                      //     CustomAlertDialogDoubleChoiceWithAsset
+                      //         .showCustomAlertDialogDoubleChoiceWithAsset(
+                      //             "Soshi Portal",
+                      //             "assets/images/onboarding/mockup3.png",
+                      //             "Activate!",
+                      //             "Done",
+                      //             () {}, () {
+                      //       Navigator.pop(context);
+                      //     }, context, height, width);
+                      //   },
+                      //   child: Container(
+                      //       height: height / 15,
+                      //       width: width / 2.1,
+                      //       child: Card(
+                      //         // color: Colors.grey.shade800,
+                      //         shape: RoundedRectangleBorder(
+                      //             borderRadius:
+                      //                 BorderRadius.all(Radius.circular(10))),
+                      //         child: Center(
+                      //           child: Row(
+                      //             mainAxisAlignment: MainAxisAlignment.center,
+                      //             children: [
+                      //               Text(
+                      //                 "Activate Soshi Portal",
+                      //                 style: TextStyle(
+                      //                     fontWeight: FontWeight.bold,
+                      //                     fontSize: width / 33),
+                      //               ),
+                      //               SizedBox(width: 5),
+                      //               Icon(
+                      //                 CupertinoIcons.info_circle,
+                      //                 size: width / 20,
+                      //               )
+                      //             ],
+                      //           ),
+                      //         ),
+                      //       )),
+                      // )),
+                    ]),
+>>>>>>> dynamic_Link_Working
               ),
             );
           }),

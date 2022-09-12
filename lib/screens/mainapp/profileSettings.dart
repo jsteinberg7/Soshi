@@ -1,5 +1,3 @@
-//import 'dart:html';
-
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -23,13 +21,75 @@ class ProfileSettings extends StatefulWidget {
 
 class ProfileSettingsState extends State<ProfileSettings> {
   SoshiUser user;
+  File image;
+  String tempNewURL;
+
 
   loadDataEngine() async {
     print("🌐 GLOBAL USER loading data engine inside profileSettings");
+    if (tempNewURL == null) {
+      tempNewURL = DataEngine.globalUser.photoURL;
+    }
     // this.user = await DataEngine.getUserObject(firebaseOverride: false);
     this.user = DataEngine.globalUser;
     log(user.toString());
   }
+
+    Future pickImage() async {
+    try {
+      final profilePic =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (profilePic == null) {
+        return user.photoURL;
+      } else {
+        final profilePicTemp = File(profilePic.path);
+        await cropAndUploadImage(profilePicTemp);
+      }
+    } on PlatformException catch (e) {
+      print("failed to pick image: $e");
+    }
+  }
+
+  Future<File> cropImage(String path,
+      {CropStyle cropStyle = CropStyle.circle}) async {
+    return (await ImageCropper().cropImage(
+        cropStyle: cropStyle,
+        sourcePath: path,
+        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+        maxHeight: 700,
+        maxWidth: 700,
+        compressFormat: ImageCompressFormat.jpg,
+        androidUiSettings: AndroidUiSettings(toolbarTitle: "Crop Image"),
+        iosUiSettings: IOSUiSettings(
+          title: "Crop Image",
+        )));
+  }
+
+  Future<void> cropAndUploadImage(
+    File passedInImage,
+  ) async {
+    if (passedInImage != null) {
+      File croppedImage = await cropImage(passedInImage.path);
+      FirebaseStorage firebaseStorage = FirebaseStorage.instance;
+
+      await firebaseStorage
+          .ref()
+          .child("Profile Pictures/" + user.soshiUsername)
+          .putFile(croppedImage);
+
+      // upload image to firebase to get URL
+      String urlNew = await FirebaseStorage.instance
+          .ref()
+          .child("Profile Pictures/" + user.soshiUsername)
+          .getDownloadURL();
+
+      setState(() => tempNewURL = urlNew);
+    } else {
+      print("No image picked");
+      return;
+    }
+  }
+
 
   Widget build(BuildContext context) {
     double height = Utilities.getHeight(context);
@@ -62,6 +122,8 @@ class ProfileSettingsState extends State<ProfileSettings> {
                 ),
               ),
               onPressed: () {
+                user.photoURL = tempNewURL;
+
                 DataEngine.applyUserChanges(user: DataEngine.globalUser, cloud: true, local: true);
                 // Need alternative to refresh the profile!!!!
                 Navigator.pop(context);
@@ -98,8 +160,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                         children: <Widget>[
                           GestureDetector(
                             onTap: () async {
-                              final ImagePicker imagePicker = ImagePicker();
-                              var pickedImage = await imagePicker.pickImage(source: ImageSource.gallery);
+                              pickImage();
 
                               // await imagePicker.getImage(
                               //     source: ImageSource.gallery,

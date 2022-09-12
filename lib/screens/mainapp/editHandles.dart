@@ -42,8 +42,6 @@ class _EditHandlesState extends State<EditHandles> {
   @override
   Widget build(BuildContext context) {
     print("🔃 rebuilding EditHandles Now 🔃");
-    // soshiUsername = LocalDataService.getLocalUsername();
-    // chosenPlatforms = widget.user.getChosenPlatforms();
     double height = Utilities.getHeight(context);
     double width = Utilities.getWidth(context);
 
@@ -206,15 +204,10 @@ class _SMCardState extends State<SMCard> {
     return Stack(
       children: [
         Card(
-          // color: Colors.grey[200],
+          //color: Colors.grey[200],
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15.0),
-              side: BorderSide(
-                  color: Colors.transparent,
-                  // Theme.of(context).brightness == Brightness.light
-                  //     ? Colors.white
-                  //     : Colors.grey[850],
-                  width: 3.0)),
+              side: BorderSide(color: Colors.transparent, width: 3.0)),
           elevation: 2,
           child: Container(
               child: Row(
@@ -236,6 +229,7 @@ class _SMCardState extends State<SMCard> {
                         String phoneNumber = DataEngine.globalUser.getUsernameGivenPlatform(platform: "Phone");
 
                         Uint8List profilePicBytes;
+
                         try {
                           // try to load profile pic from url
                           await http.get(Uri.parse(photoUrl)).then((http.Response response) {
@@ -284,10 +278,13 @@ class _SMCardState extends State<SMCard> {
                   ),
                 ),
               ),
+              SizedBox(
+                width: 5,
+              ),
               platformName != "Contact"
                   ? Text(indicator, style: TextStyle(fontSize: width / 25, color: Colors.grey))
                   : Text(
-                      "  ",
+                      "   ",
                     ),
               platformName != "Contact"
                   ? Padding(
@@ -299,7 +296,7 @@ class _SMCardState extends State<SMCard> {
                 child: Expanded(
                     child: platformName != "Contact"
                         ? Padding(
-                            padding: const EdgeInsets.only(right: 10.0),
+                            padding: EdgeInsets.only(right: width / 40),
                             child: TextField(
                               keyboardType:
                                   platformName == "Phone" ? TextInputType.numberWithOptions(decimal: true, signed: true) : TextInputType.text,
@@ -417,10 +414,6 @@ class _SMCardState extends State<SMCard> {
                 top: height / 27,
                 child: ElevatedButton(
                   style: ButtonStyle(
-                      // backgroundColor: Theme.of(context).brightness ==
-                      //                         Brightness.light
-                      //                     ? Colors.white
-                      //                     : Colors.black,
                       shape: MaterialStateProperty.all(CircleBorder()),
                       backgroundColor: Theme.of(context).brightness == Brightness.light
                           ? MaterialStateProperty.all(Colors.white)
@@ -439,77 +432,3 @@ class _SMCardState extends State<SMCard> {
     );
   }
 }
-
-// class GreenAddButton extends StatefulWidget {
-//   Function() refreshScreen;
-//   GreenAddButton({Function refreshScreen}) {
-//     this.refreshScreen = refreshScreen;
-//   }
-
-//   @override
-//   State<GreenAddButton> createState() => _GreenAddButtonState();
-// }
-
-// class _GreenAddButtonState extends State<GreenAddButton> {
-//   @override
-//   void initState() {
-//     super.initState();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     double width = Utilities.getWidth(context);
-//     return ElevatedButton(
-//       style: ElevatedButton.styleFrom(
-//           elevation: 5,
-//           primary: Colors.green,
-//           shape: RoundedRectangleBorder(
-//               //to set border radius to button
-//               borderRadius: BorderRadius.circular(15)),
-//           padding:
-//               EdgeInsets.fromLTRB(50, 0, 50, 0) //content padding inside button
-
-//           ),
-//       child: Text(
-//         "Add",
-//         style: TextStyle(
-//             fontWeight: FontWeight.bold,
-//             letterSpacing: 1.5,
-//             fontSize: width / 20,
-//             color: Colors.white),
-//       ),
-//       onPressed: () async {
-//         // check if user has all platforms (in case of update)
-//         if (Constants.originalPlatforms.length +
-//                 Constants.addedPlatforms.length >
-//             LocalDataService.getLocalChoosePlatforms().length +
-//                 LocalDataService.getLocalProfilePlatforms().length) {
-//           // check which platforms need to be added
-//           for (String platform in Constants.addedPlatforms) {
-//             if (!LocalDataService.getLocalProfilePlatforms()
-//                     .contains(platform) &&
-//                 !LocalDataService.getLocalChoosePlatforms()
-//                     .contains(platform)) {
-//               await LocalDataService.addToChoosePlatforms(
-//                   platform); // add new platform to choose platforms
-//               await LocalDataService.updateSwitchForPlatform(
-//                   platform: platform,
-//                   state:
-//                       false); // create switch for platform in and initialize to false
-//               if (LocalDataService.getLocalUsernameForPlatform(platform) ==
-//                   null) {
-//                 await LocalDataService.updateUsernameForPlatform(
-//                     platform: platform,
-//                     username:
-//                         ""); // create username mapping for platform if absent
-//               }
-//             }
-//           }
-//         }
-//         await Navigator.push(context, MaterialPageRoute(builder: (context) {
-//           return Scaffold(body: ChooseSocials());
-//         }));
-//       },
-//     );
-//   }
-// }

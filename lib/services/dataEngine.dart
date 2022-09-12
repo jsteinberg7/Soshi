@@ -57,8 +57,9 @@ class DataEngine {
       'Passions': serializePassions,
       'Choose Platforms': user.getAvailablePlatforms().map((e) => e.platformName).toList(),
       'Profile Platforms': user.getChosenPlatforms().map((e) => e.platformName).toList(),
-      'Dynamic Link': user.dynamicLink,
       'Point Manager': user.pointManager.serializeDictionary()
+      'Long Dynamic Link': user.longDynamicLink,
+      'Short Dynamic Link': user.shortDynamicLink
     };
 
     Map switches = {};
@@ -114,10 +115,11 @@ class DataEngine {
     Map<String, Social> lookupSocial = {};
     int soshiPoints = fetch['Soshi Points'] ?? 0;
     String bio = fetch['Bio'] ?? "";
-    List<String> friends = (fetch['Friends'].cast<String>() ?? []);
-
-    String dynamicLink = fetch['Dynamic Link'] ?? await DynamicLinkService.createDynamicLink(soshiUsername);
-    print(dynamicLink);
+    List friends = fetch['Friends'] ?? [];
+    String longDynamicLink = fetch['Long Dynamic Link'] ??
+        await DynamicLinkService.createLongDynamicLink(soshiUsername);
+    String shortDynamicLink = fetch['Short Dynamic Link'] ??
+        await DynamicLinkService.createShortDynamicLink(soshiUsername);
     log("[⚙ Data Engine ⚙] basic info built ✅");
 
     if (fetch['Passions'] == null) {
@@ -153,7 +155,20 @@ class DataEngine {
       });
 
       log("[⚙ Data Engine ⚙] SoshiUser Object built ✅");
+    } else {
+      Defaults.blankUsernames.forEach((key, value) {
+        Social makeSocial = Social(
+            username: "",
+            platformName: key.toString(),
+            switchStatus: false,
+            isChosen: false,
+            usernameController: TextEditingController(text: ""));
+        socials.add(makeSocial);
+        lookupSocial[key] = makeSocial;
+      });
     }
+    Set added = socials.map((e) => e.platformName).toList().toSet();
+    Set allPlatforms = Defaults.blankUsernames.keys.toSet();
 
     //Building POINT_MANAGER_OBJECT
     PointManager pointManager = new PointManager(fetch);
@@ -174,7 +189,8 @@ class DataEngine {
         bioController: new TextEditingController(text: bio),
         friends: friends,
         lookupSocial: lookupSocial,
-        dynamicLink: dynamicLink,
+        shortDynamicLink: shortDynamicLink,
+        longDynamicLink: longDynamicLink,
         pointManager: pointManager);
   }
 
@@ -199,7 +215,11 @@ class DataEngine {
       }
 
       if (cloud) {
-        await FirebaseFirestore.instance.collection("users").doc(soshiUsername).update(afterSerialized);
+        //afterSerialized["Friends"] = Friend.convertToStringList(user.friends);
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(soshiUsername)
+            .update(afterSerialized);
         log("[⚙ Data Engine ⚙] update Cloud {Firestore} success! ✅");
       }
     }
@@ -246,14 +266,19 @@ class DataEngine {
 
     List<Passion> pList = allPassionData.keys.map((key) => Passion(emoji: allPassionData[key], name: key)).toList();
 
-    pList.add(Defaults.emptyPassion);
     log("[⚙ Data Engine ⚙] Successfully fetched latest available passions ✅");
     return pList;
   }
 }
 
 class SoshiUser {
-  String soshiUsername, firstName, lastName, photoURL, bio, dynamicLink;
+  String soshiUsername,
+      firstName,
+      lastName,
+      photoURL,
+      bio,
+      shortDynamicLink,
+      longDynamicLink;
   bool hasPhoto;
   bool verified;
   List<Social> socials;
@@ -284,12 +309,11 @@ class SoshiUser {
       @required this.bioController,
       @required this.friends,
       @required this.lookupSocial,
-      @required this.dynamicLink,
+      @required this.shortDynamicLink,
+      @required this.longDynamicLink,
       @required this.pointManager});
-
-  //Will ignore case in input platform String
+      
   getUsernameGivenPlatform({@required String platform}) {
-    if (this.lookupSocial[platform] == null || this.lookupSocial[platform] == "") {
       return Defaults.NO_USERNAME;
     }
     return this.lookupSocial[platform].username;
@@ -442,4 +466,21 @@ class Defaults {
   static Passion emptyPassion = Passion(emoji: "❌", name: "Empty");
 
   static const String NO_USERNAME = "NO_USERNAME";
+  static Map blankUsernames = {
+    'Contact': 'Contact Card',
+    'Discord': '',
+    'Email': '',
+    'Facebook': '',
+    'Instagram': '',
+    'Linkedin': '',
+    'Phone': '',
+    'Snapchat': '',
+    'Soshi': '',
+    'Spotify': '',
+    'TikTok': '',
+    'Twitter': '',
+    'Youtube': '',
+    'Venmo': '',
+    'Cryptowallet': '',
+  };
 }

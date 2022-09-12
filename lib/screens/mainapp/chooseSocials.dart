@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:soshi/screens/login/loading.dart';
 import 'package:soshi/services/dataEngine.dart';
 import 'package:soshi/services/localData.dart';
+import 'package:vibration/vibration.dart';
 
 import '../../constants/widgets.dart';
 
@@ -15,17 +17,50 @@ class ChooseSocialsCard extends StatefulWidget {
   _ChooseSocialsCardState createState() => _ChooseSocialsCardState();
 }
 
-class _ChooseSocialsCardState extends State<ChooseSocialsCard> {
-  @override
-  void initState() {
-    // isSwitched = widget.user.lookupSocial[widget.platformName].switchStatus;
-    super.initState();
-  }
+class _ChooseSocialsCardState extends State<ChooseSocialsCard>
+    with SingleTickerProviderStateMixin {
+  double _scale;
+  AnimationController _controller;
 
   bool isSwitched = false;
 
   @override
+  void initState() {
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(
+        milliseconds: 50,
+      ),
+      lowerBound: 0.0,
+      upperBound: 0.1,
+    )..addListener(() {
+        setState(() {});
+      });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
+
+  void _tapDown(TapDownDetails details) {
+    _controller.forward();
+    HapticFeedback.lightImpact();
+    setState(() {
+      isSwitched = !isSwitched;
+      widget.user.lookupSocial[widget.platformName].isChosen = true;
+    });
+  }
+
+  void _tapUp(TapUpDetails details) {
+    _controller.reverse();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    _scale = 1 - _controller.value;
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
@@ -40,7 +75,8 @@ class _ChooseSocialsCardState extends State<ChooseSocialsCard> {
         clipBehavior: Clip.none,
         children: [
           Card(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)),
 
             elevation: 5,
             //color: Colors.grey[8,
@@ -84,8 +120,8 @@ class _ChooseSocialsCardState extends State<ChooseSocialsCard> {
                         },
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -134,7 +170,6 @@ class _ChooseSocialsState extends State<ChooseSocials> {
     return Scaffold(
       appBar: AppBar(
         leading: CupertinoBackButton(),
-
         actions: [
           Padding(
             padding: EdgeInsets.only(right: width / 150),
@@ -158,7 +193,6 @@ class _ChooseSocialsState extends State<ChooseSocials> {
           )
         ],
         elevation: .5,
-
         title: Text(
           "Add Platforms",
           style: TextStyle(
@@ -167,7 +201,6 @@ class _ChooseSocialsState extends State<ChooseSocials> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        // backgroundColor: Colors.grey[850],
         centerTitle: true,
       ),
       body: Padding(

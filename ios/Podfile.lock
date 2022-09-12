@@ -456,6 +456,8 @@ PODS:
     - Flutter
   - flutter_keyboard_visibility (0.0.1):
     - Flutter
+  - flutter_share (0.0.1):
+    - Flutter
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
@@ -550,6 +552,8 @@ PODS:
     - nanopb/encode (= 2.30908.0)
   - nanopb/decode (2.30908.0)
   - nanopb/encode (2.30908.0)
+  - nfc_manager (0.0.1):
+    - Flutter
   - path_provider_ios (0.0.1):
     - Flutter
   - "permission_handler (5.1.0+2)":
@@ -582,10 +586,12 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_barcode_scanner (from `.symlinks/plugins/flutter_barcode_scanner/ios`)
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
+  - flutter_share (from `.symlinks/plugins/flutter_share/ios`)
   - google_sign_in_ios (from `.symlinks/plugins/google_sign_in_ios/ios`)
   - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - in_app_review (from `.symlinks/plugins/in_app_review/ios`)
+  - nfc_manager (from `.symlinks/plugins/nfc_manager/ios`)
   - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
   - share (from `.symlinks/plugins/share/ios`)
@@ -646,6 +652,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_barcode_scanner/ios"
   flutter_keyboard_visibility:
     :path: ".symlinks/plugins/flutter_keyboard_visibility/ios"
+  flutter_share:
+    :path: ".symlinks/plugins/flutter_share/ios"
   google_sign_in_ios:
     :path: ".symlinks/plugins/google_sign_in_ios/ios"
   image_cropper:
@@ -654,6 +662,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/image_picker_ios/ios"
   in_app_review:
     :path: ".symlinks/plugins/in_app_review/ios"
+  nfc_manager:
+    :path: ".symlinks/plugins/nfc_manager/ios"
   path_provider_ios:
     :path: ".symlinks/plugins/path_provider_ios/ios"
   permission_handler:
@@ -692,9 +702,10 @@ SPEC CHECKSUMS:
   FirebaseFirestore: fff37682b934e3e94d83e5c24936721890a2edf0
   FirebaseInstallations: 40bd9054049b2eae9a2c38ef1c3dd213df3605cd
   FirebaseStorage: 32ab036ce11eb7e94c279a238a65efa24f81593d
-  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
+  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_barcode_scanner: 7a1144744c28dc0c57a8de7218ffe5ec59a9e4bf
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
+  flutter_share: 4be0208963c60b537e6255ed2ce1faae61cd9ac2
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   google_sign_in_ios: ed71c0dbddfba8b1ea9aa210dbda695f46bf51bd
   GoogleAppMeasurement: 71156240babd3cc6ced03e0d54816f01a880c730
@@ -710,6 +721,7 @@ SPEC CHECKSUMS:
   in_app_review: 4a97249f7a2f539a0f294c2d9196b7fe35e49541
   leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
+  nfc_manager: 69e4cd9c15112206ab30246b1ce8d81a75729fdf
   path_provider_ios: 14f3d2fd28c4fdb42f44e0f751d12861c43cee02
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
   PromisesObjC: 99b6f43f9e1044bd87a95a60beff28c2c44ddb72

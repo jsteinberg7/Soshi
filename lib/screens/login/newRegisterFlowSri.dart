@@ -47,6 +47,7 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
 
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           elevation: 0,
           centerTitle: true,
@@ -412,11 +413,10 @@ class _RegisterSingleScreenState extends State<RegisterSingleScreen> {
     double width = Utilities.getWidth(context);
     double height = Utilities.getHeight(context);
 
-    return SingleChildScrollView(
-      child: Container(
-          //color: Colors.green,
-          child: Padding(
-        padding: const EdgeInsets.fromLTRB(10.0, 0, 10, 10),
+    return Container(
+        child: Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: SingleChildScrollView(
         child: Column(
           children: [
             this.widget.userMetaData == null
@@ -440,17 +440,17 @@ class _RegisterSingleScreenState extends State<RegisterSingleScreen> {
                           widget.userMetaData['Photo URL'] != null && widget.userMetaData['Photo URL'].contains("https")
                               ? ProfilePic(
                                   url: widget.userMetaData['Photo URL'],
-                                  radius: height / 12.1,
+                                  radius: 60,
                                 )
                               : ProfilePic(
                                   url: "assets/images/misc/default_pic.png",
-                                  radius: height / 12.1,
+                                  radius: 60,
                                 ),
-                          // SizedBox(height: height / 300),
+                          SizedBox(height: 10),
                           Text(
                             "Welcome back,\n${this.widget.userMetaData['Name']['First']}!",
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: height / 35),
+                            style: TextStyle(fontSize: 21),
                           ),
                         ],
                       ),
@@ -485,12 +485,13 @@ class _RegisterSingleScreenState extends State<RegisterSingleScreen> {
                     )),
           ],
         ),
-      )),
-    );
+      ),
+    ));
   }
 
   TextFormField makeTextField(String hintText, TextEditingController controller) {
     return TextFormField(
+      autofillHints: hintText == "Email" ? [AutofillHints.email] : null,
       keyboardType: hintText == "Email"
           ? TextInputType.emailAddress
           : hintText == "First Name" || hintText == "Last Name"

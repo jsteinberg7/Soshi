@@ -130,51 +130,13 @@ class RectangularProfilePic extends StatelessWidget {
 
 class CustomAlertDialogSingleChoice {
   static showCustomAlertDialogSingleChoice(
-      String title, String message, String primaryText, Function primaryAction, BuildContext context, double height, double width) {
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30.0))),
-            //backgroundColor: Colors.grey.shade800,
-            // backgroundColor: Colors.blueGrey[900],
-            title: Text(
-              title,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                // color: Colors.cyan[600],
-                fontWeight: FontWeight.bold,
-                fontSize: width / 20,
-              ),
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  message,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: width / 25,
-                  ),
-                ),
-                SizedBox(height: height / 50),
-                TextButton(
-                    child: Text(
-                      primaryText,
-                      style: TextStyle(fontSize: width / 25, color: Colors.blue, fontWeight: FontWeight.bold),
-                    ),
-                    onPressed: primaryAction),
-              ],
-            ),
-          );
-        });
-  }
-}
-
-class CustomAlertDialog {
-  static showCustomAlertDialog(String title, String message, String primaryText, String secondaryText, Function primaryAction,
-      Function secondaryAction, BuildContext context, double height, double width) {
+      String title,
+      String message,
+      String primaryText,
+      Function primaryAction,
+      BuildContext context,
+      double height,
+      double width) {
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -214,6 +176,73 @@ class CustomAlertDialog {
                     child: Text(
                       secondaryText,
                       style: TextStyle(fontSize: width / 25, color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white),
+                    ),
+                    onPressed: secondaryAction),
+              ],
+            ),
+          );
+        });
+  }
+}
+
+class CustomAlertDialogDoubleChoiceWithAsset {
+  static showCustomAlertDialogDoubleChoiceWithAsset(
+      String title,
+      String assetUrl,
+      String primaryText,
+      String secondaryText,
+      Function primaryAction,
+      Function secondaryAction,
+      BuildContext context,
+      double height,
+      double width) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(30.0))),
+            //backgroundColor: Colors.grey.shade800,
+            // backgroundColor: Colors.blueGrey[900],
+            title: Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                // color: Colors.cyan[600],
+                fontWeight: FontWeight.bold,
+                fontSize: width / 20,
+              ),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  height: height / 5,
+                  child: Image.asset(
+                    assetUrl,
+                  ),
+                ),
+                SizedBox(height: height / 50),
+                TextButton(
+                    child: Text(
+                      primaryText,
+                      style: TextStyle(
+                          fontSize: width / 25,
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    onPressed: primaryAction),
+                Divider(),
+                TextButton(
+                    child: Text(
+                      secondaryText,
+                      style: TextStyle(
+                          fontSize: width / 25,
+                          color:
+                              Theme.of(context).brightness == Brightness.light
+                                  ? Colors.black
+                                  : Colors.white),
                     ),
                     onPressed: secondaryAction),
               ],
@@ -289,20 +318,71 @@ class SignOutButton extends StatelessWidget {
 }
 
 class ActivatePortalButton extends StatelessWidget {
+  String shortDynamicLink;
+
+  ActivatePortalButton({String shortDynamicLink}) {
+    this.shortDynamicLink = shortDynamicLink;
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 
-    return Constants.makeBlueShadowButton("Activate Portal", Icons.tap_and_play, () async {
-      showModalBottomSheet(
-          constraints: BoxConstraints(minWidth: width / 1.1, maxWidth: width / 1.1),
-          backgroundColor: Colors.transparent,
-          context: context,
-          builder: (BuildContext context) {
-            return NFCWriter(height, width);
-          });
-    });
+    return Container(
+        child: GestureDetector(
+      onTap: () {
+        CustomAlertDialogDoubleChoiceWithAsset
+            .showCustomAlertDialogDoubleChoiceWithAsset(
+                "Soshi Portal",
+                "assets/images/misc/NFCTemp.png", // To be replaced with NFC activating gif
+                "Activate!",
+                "Done", () {
+          Navigator.pop(context);
+          print("NFC writer pops up");
+          showModalBottomSheet(
+              constraints:
+                  BoxConstraints(minWidth: width / 1.1, maxWidth: width / 1.1),
+              backgroundColor: Colors.transparent,
+              context: context,
+              builder: (BuildContext context) {
+                return NFCWriter(height, width, this.shortDynamicLink);
+              });
+
+          // showModalBottomSheetApp(builder: NFCWriter(height, width, user.shortDynamicLink));
+
+          // Call NFC writer and write user.shortDynamicLink
+        }, () {
+          Navigator.pop(context);
+        }, context, height, width);
+      },
+      child: Container(
+          height: height / 15,
+          width: width / 2.1,
+          child: Card(
+            // color: Colors.grey.shade800,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Activate Soshi Portal",
+                    style: TextStyle(
+                        //fontWeight: FontWeight.bold,
+                        fontSize: width / 30),
+                  ),
+                  SizedBox(width: 5),
+                  Icon(
+                    CupertinoIcons.info_circle,
+                    size: width / 20,
+                  )
+                ],
+              ),
+            ),
+          )),
+    ));
   }
 }
 
@@ -583,19 +663,21 @@ class ShareButton extends StatelessWidget {
   double size;
   String soshiUsername;
   String groupId;
+  String shortDynamicLink;
 
-  ShareButton({this.size, this.soshiUsername, this.groupId});
+  ShareButton({this.size, this.soshiUsername, this.groupId, this.shortDynamicLink);
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(shape: CircleBorder()),
       onPressed: () {
         if (groupId == null) {
-          Share.share("https://soshi.app/deeplink/user/" + soshiUsername,
-              subject: DataEngine.globalUser.firstName + " " + DataEngine.globalUser.lastName + "'s Soshi Contact Card");
+          Share.share(this.shortDynamicLink,
+              subject: 
+DataEngine.globalUser.firstName + " " + DataEngine.globalUser.lastName + "'s Soshi Contact Card");>>>>>>> dynamic_Link_Working
         } else {
           Share.share(
-            "https://soshi.app/deeplink/group/" + groupId,
+            "https://strippedsoshi.page.link" + groupId,
           );
         }
       },
@@ -1105,8 +1187,8 @@ class SMButton extends StatelessWidget {
 
           DialogBuilder(context).hideOpenDialog();
 
-          // Popups.showContactAddedPopup(context, width, photoUrl, firstName, lastName, phoneNumber, email);
-
+          Popups.showContactAddedPopup(context, width, photoUrl, firstName,
+              lastName, phoneNumber, email);
         } else if (platform == "Cryptowallet") {
           Clipboard.setData(ClipboardData(
             text: username.toString(),

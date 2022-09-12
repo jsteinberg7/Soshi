@@ -1,4 +1,3 @@
-//import 'dart:html';
 // ignore_for_file: must_be_immutable
 
 import 'dart:typed_data';
@@ -32,7 +31,11 @@ A social media card used in the profile (one card per platform)
 class SMTile extends StatefulWidget {
   SoshiUser user;
   Social selectedSocial;
-  SMTile({@required this.user, @required this.selectedSocial});
+  ValueNotifier importProfileNotifier;
+  SMTile(
+      {@required this.user,
+      @required this.selectedSocial,
+      @required this.importProfileNotifier});
   @override
   _SMTileState createState() => _SMTileState();
 }
@@ -60,6 +63,8 @@ class _SMTileState extends State<SMTile> {
   @override
   Widget build(BuildContext context) {
     platformName = widget.selectedSocial.platformName;
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
 
     if (platformName == "Phone") {
       hintText = "Phone Number";
@@ -70,10 +75,50 @@ class _SMTileState extends State<SMTile> {
     } else {
       hintText = "Username";
     }
-
     if (platformName == "Contact") {
       usernameController.text = "Contact Card";
     }
+
+    focusNode = new FocusNode();
+    focusNode.addListener(() {
+      if (!focusNode.hasFocus) {
+        if (!isSwitched) {
+          setState(() {
+            isSwitched = true;
+          });
+
+          if (widget.user.getUsernameGivenPlatform(platform: platformName) ==
+                  null ||
+              widget.user.getUsernameGivenPlatform(platform: platformName) ==
+                  "") {
+            // prompt user to enter username
+            Popups.editUsernamePopup(
+              context,
+              widget.user,
+              widget.selectedSocial,
+              MediaQuery.of(context).size.width,
+            );
+          }
+
+          widget.selectedSocial.switchStatus = true;
+
+          if (LocalDataService.getFirstSwitchTap()) {
+            LocalDataService.updateFirstSwitchTap(false);
+            CustomAlertDialogSingleChoice.showCustomAlertDialogSingleChoice(
+                "Toggle Switches",
+                "These switches allow you to turn on and off what you'd like to share.",
+                "Done", () {
+              Navigator.of(context).pop();
+            }, context, height, width);
+          }
+        }
+        String usernameControllerLower = usernameController.text.toLowerCase();
+        widget.selectedSocial.username = usernameControllerLower.trim();
+
+        DataEngine.applyUserChanges(
+            user: widget.user, cloud: true, local: true);
+      }
+    });
 
     List platformsExceptForContact = [
       "Phone",
@@ -312,7 +357,6 @@ class ProfileState extends State<Profile> {
               print(rows);
               if (rows > 1) {
                 for (int i = 0; i < rows; i++) {
-                  addedContainerSize += 35;
                   // if (height < 800) {
                   //   containerSize += .2;
                   // } else {
@@ -320,7 +364,17 @@ class ProfileState extends State<Profile> {
                   // }
                 }
               }
-            }
+=======
+            //     for (int i = 0; i < rows; i++) {
+            //       addedContainerSize += 70;
+            //       // if (height < 800) {
+            //       //   containerSize += .2;
+            //       // } else {
+            //       //   containerSize += .19;
+            //       // }
+            //     }
+            //   }
+            // }
 
             print(addedContainerSize);
 
@@ -518,11 +572,11 @@ class ProfileState extends State<Profile> {
                                       ),
                                     ),
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                       Positioned(
                         left: 0,
@@ -600,13 +654,72 @@ class ProfileState extends State<Profile> {
                                             crossAxisCount: 3, childAspectRatio: .8, crossAxisSpacing: width / 40),
                                       ),
                                     ),
+                                    IconButton(
+                                      icon: Icon(CupertinoIcons
+                                          .pencil_ellipsis_rectangle),
+                                      onPressed: () async {
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                          return Scaffold(
+                                              body: ValueListenableBuilder(
+                                                  valueListenable: this
+                                                      .controlsEditHandlesScreen,
+                                                  builder: (context, value, _) {
+                                                    return EditHandles(
+                                                        editHandleMasterControl:
+                                                            controlsEditHandlesScreen,
+                                                        profileMasterControl: widget
+                                                            .importProfileNotifier);
+                                                  }));
+                                        }));
+                                      },
+                                    )
+                                  ],
+                                ),
+                                Container(
+                                  child: Align(
+                                    alignment: Alignment.topCenter,
+                                    child: GridView.builder(
+                                      // add an extra tile with the "+" that can be used always to add morem platforms
+                                      padding: EdgeInsets.zero,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                5, 5, 5, 5),
+                                            child: index != userSocials.length
+                                                ? SMTile(
+                                                    user: user,
+                                                    selectedSocial:
+                                                        userSocials[index],
+                                                    importProfileNotifier: widget
+                                                        .importProfileNotifier,
+                                                  )
+                                                : AddPlatformsTile(
+                                                    importProfileNotifier: widget
+                                                        .importProfileNotifier,
+                                                    user: user));
+                                      },
+                                      itemCount: userSocials.length + 1,
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                              crossAxisCount: 3,
+                                              childAspectRatio: .8,
+                                              crossAxisSpacing: width / 40),
+                                    ),
                                   ),
-                                ],
-                              ),
-                            )),
-                      ),
-                    ],
-                  )),
+                                ),
+                              ],
+                            ),
+                          )),
+                    ),
+                  ],
+                ),
+              ),
             );
           }
         });
