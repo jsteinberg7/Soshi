@@ -61,6 +61,8 @@ class _NFCWriterState extends State<NFCWriter> {
           Navigator.pop(context);
           return true;
         } catch (e) {
+          print(e.toString());
+
           NfcManager.instance.stopSession(
               errorMessage:
                   "Portal is not compatible or has already been written to :(");
@@ -74,7 +76,8 @@ class _NFCWriterState extends State<NFCWriter> {
   @override
   Widget build(BuildContext context) {
     print("writing");
-    Navigator.of(context).pop();
+    return Container();
+    // Navigator.of(context).pop();
 
     //it");
     // return Container(
