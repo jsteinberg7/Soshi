@@ -13,6 +13,7 @@ import 'package:soshi/services/dynamicLinks.dart';
 import '../../constants/widgets.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
+import '../../services/database.dart';
 import 'generalSettings.dart';
 
 class MainApp extends StatefulWidget {
@@ -82,15 +83,9 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-<<<<<<< HEAD
-    // String soshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
-    // DatabaseService databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
-=======
-    String soshiUsername =
-        LocalDataService.getLocalUsernameForPlatform("Soshi");
+    String soshiUsername = DataEngine.globalUser.soshiUsername;
     DatabaseService databaseService =
         new DatabaseService(currSoshiUsernameIn: soshiUsername);
->>>>>>> dynamic_Link_Working
 
     return Scaffold(
       drawerEnableOpenDragGesture: false,
@@ -155,7 +150,9 @@ class LatestBottomNavBar extends StatelessWidget {
               size: 35,
             ),
           ),
-          CustomNavigationBarItem(icon: ProfilePic(radius: 25, url: DataEngine.globalUser.photoURL)),
+          CustomNavigationBarItem(
+              icon:
+                  ProfilePic(radius: 25, url: DataEngine.globalUser.photoURL)),
           CustomNavigationBarItem(
             icon: Icon(
               AntDesign.contacts,

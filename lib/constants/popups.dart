@@ -12,6 +12,7 @@ import 'package:soshi/services/url.dart';
 // import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import '../screens/mainapp/groupScreen.dart';
 import '../screens/mainapp/viewGroupPage.dart';
+import '../services/dataEngine.dart';
 import 'constants.dart';
 //import 'package:google_fonts/google_fonts.dart';
 
@@ -24,7 +25,8 @@ class Popups {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40.0))),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(40.0))),
             //backgroundColor: Colors.blueGrey[900],
             title: Text(
               "Platform Switches",
@@ -91,13 +93,17 @@ class Popups {
   //       });
   // }
 
-  static void contactCardExplainedPopup(BuildContext context, double width, double height) {
+  static void contactCardExplainedPopup(
+      BuildContext context, double width, double height) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            backgroundColor: Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.grey[850],
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40.0))),
+            backgroundColor: Theme.of(context).brightness == Brightness.light
+                ? Colors.white
+                : Colors.grey[850],
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(40.0))),
             // backgroundColor: Colors.blueGrey[900],
             title: Text(
               "Contact Card",
@@ -144,8 +150,14 @@ class Popups {
         });
   }
 
-  static Future<dynamic> showContactAddedPopup(BuildContext context, double width, String profilePicURL,
-      String firstName, String lastName, String phoneNumber, String email) {
+  static Future<dynamic> showContactAddedPopup(
+      BuildContext context,
+      double width,
+      String profilePicURL,
+      String firstName,
+      String lastName,
+      String phoneNumber,
+      String email) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     return showDialog(
@@ -154,13 +166,15 @@ class Popups {
           return AlertDialog(
             actions: [
               TextButton(
-                child: Text("Done", style: TextStyle(color: Colors.blue, fontSize: width / 20)),
+                child: Text("Done",
+                    style: TextStyle(color: Colors.blue, fontSize: width / 20)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               )
             ],
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0))),
             // backgroundColor: Colors.grey[850],
             content: Padding(
               padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
@@ -178,7 +192,10 @@ class Popups {
                     child: Text(
                       firstName + " " + lastName,
                       maxLines: 1,
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: width / 18, letterSpacing: 1.2),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: width / 18,
+                          letterSpacing: 1.2),
                     ),
                   ),
                   SizedBox(
@@ -186,14 +203,22 @@ class Popups {
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [Icon(CupertinoIcons.phone), SizedBox(width: 5), Text(phoneNumber)],
+                    children: [
+                      Icon(CupertinoIcons.phone),
+                      SizedBox(width: 5),
+                      Text(phoneNumber)
+                    ],
                   ),
                   SizedBox(
                     height: 5,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [Icon(CupertinoIcons.mail), SizedBox(width: 5), Text(email)],
+                    children: [
+                      Icon(CupertinoIcons.mail),
+                      SizedBox(width: 5),
+                      Text(email)
+                    ],
                   ),
                   SizedBox(
                     height: 5,
@@ -205,7 +230,8 @@ class Popups {
                     height: 5,
                   ),
                   Text(
-                    firstName + "'s information has been added to your devices contacts.",
+                    firstName +
+                        "'s information has been added to your devices contacts.",
                     style: TextStyle(fontSize: width / 22),
                     textAlign: TextAlign.center,
                   )
@@ -216,7 +242,8 @@ class Popups {
         });
   }
 
-  static void editUsernamePopup(BuildContext context, String platformName, double width, SoshiUser user) {
+  static void editUsernamePopup(
+      BuildContext context, String platformName, double width, SoshiUser user) {
     String indicator;
     String hintText;
     Social social = DataEngine.globalUser.lookupSocial[platformName];
@@ -262,10 +289,13 @@ class Popups {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(25.0))),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(25.0))),
             // backgroundColor: Colors.blueGrey[900],
             title: Text(
-              platformName.contains("Cryptowallet") ? "Edit your Crypto Hash" : "Edit your " + platformName,
+              platformName.contains("Cryptowallet")
+                  ? "Edit your Crypto Hash"
+                  : "Edit your " + platformName,
             ),
             //   style: TextStyle(
             //       //color: Colors.cyan[600],
@@ -277,10 +307,13 @@ class Popups {
                     style: TextStyle(
                       // color: Colors.white,
                       fontSize: width / 20,
+                    )),
                 SizedBox(width: width / 40),
                 Expanded(
                   child: TextField(
-                    keyboardType: platformName.contains("Phone") ? TextInputType.phone : null,
+                    keyboardType: platformName.contains("Phone")
+                        ? TextInputType.phone
+                        : null,
                     autocorrect: false,
                     controller: social.usernameController,
                     style: TextStyle(
@@ -290,7 +323,7 @@ class Popups {
                     ),
                     onSubmitted: (String inputText) {
                       // apply new usernake to field
-                      platformSocial.username = inputText;
+                      social.username = inputText;
                       DataEngine.applyUserChanges(
                           user: user, cloud: true, local: true);
 
@@ -318,7 +351,8 @@ class Popups {
                   ),
                   onPressed: () async {
                     if (social.usernameController.text != "") {
-                      DataEngine.applyUserChanges(user: user, cloud: true, local: true);
+                      DataEngine.applyUserChanges(
+                          user: user, cloud: true, local: true);
                     }
 
                     Navigator.pop(context);
@@ -377,10 +411,10 @@ class Popups {
                             style: TextStyle(fontSize: 20, color: Colors.blue),
                           ),
                           onPressed: () async {
-                            if (!LocalDataService.getLocalChoosePlatforms()
-                                .contains(platformName)) {
-                              Navigator.pop(context);
-                            }
+                            // if (!LocalDataService.getLocalChoosePlatforms()
+                            //     .contains(platformName)) {
+                            //   Navigator.pop(context);
+                            // }
                           })
                     ])
               ]);
@@ -625,583 +659,583 @@ class Popups {
   //       });
   // }
 
-  static bool popup_live = false;
-  static void showUserProfilePopupNew(BuildContext context,
-      {String friendSoshiUsername,
-      Friend friend,
-      Function refreshScreen}) async {
-    String userUsername = LocalDataService.getLocalUsername();
-    // get list of all visible platforms
-    DatabaseService databaseService = new DatabaseService(
-        currSoshiUsernameIn: LocalDataService.getLocalUsername());
+  // static bool popup_live = false;
+  // static void showUserProfilePopupNew(BuildContext context,
+  //     {String friendSoshiUsername,
+  //     Friend friend,
+  //     Function refreshScreen}) async {
+  //   String userUsername = LocalDataService.getLocalUsername();
+  //   // get list of all visible platforms
+  //   DatabaseService databaseService = new DatabaseService(
+  //       currSoshiUsernameIn: LocalDataService.getLocalUsername());
 
-    Map userData = await databaseService.getUserFile(friendSoshiUsername);
+  //   Map userData = await databaseService.getUserFile(friendSoshiUsername);
 
-    List<String> visiblePlatforms;
-    Map<String, dynamic> usernames;
+  //   List<String> visiblePlatforms;
+  //   Map<String, dynamic> usernames;
 
-    if (friend == null) {
-      // DYNAMIC SHARING if no friend data passed in
-      visiblePlatforms =
-          await databaseService.getEnabledPlatformsList(userData);
-      // get list of profile usernames
-      usernames = databaseService.getUserProfileNames(userData);
-    } else {
-      // STATIC SHARING
-      // visiblePlatforms = friend.enabledUsernames.keys.toList();
-      // usernames = friend.enabledUsernames;
-    }
+  //   if (friend == null) {
+  //     // DYNAMIC SHARING if no friend data passed in
+  //     visiblePlatforms =
+  //         await databaseService.getEnabledPlatformsList(userData);
+  //     // get list of profile usernames
+  //     usernames = databaseService.getUserProfileNames(userData);
+  //   } else {
+  //     // STATIC SHARING
+  //     // visiblePlatforms = friend.enabledUsernames.keys.toList();
+  //     // usernames = friend.enabledUsernames;
+  //   }
 
-    double popupHeightDivisor;
-    double innerContainerSizeDivisor;
+  //   double popupHeightDivisor;
+  //   double innerContainerSizeDivisor;
 
-    if (visiblePlatforms.length >= 0 && visiblePlatforms.length <= 3) {
-      popupHeightDivisor = 2.2;
-      innerContainerSizeDivisor = 8;
-    } else if (visiblePlatforms.length > 3 && visiblePlatforms.length <= 6) {
-      popupHeightDivisor = 1.8;
-      innerContainerSizeDivisor = 4.4;
-    } else if (visiblePlatforms.length > 6 && visiblePlatforms.length <= 9) {
-      popupHeightDivisor = 1.5;
-      innerContainerSizeDivisor = 2.9;
-    } else {
-      popupHeightDivisor = 1.25;
-      innerContainerSizeDivisor = 2.2;
-    }
+  //   if (visiblePlatforms.length >= 0 && visiblePlatforms.length <= 3) {
+  //     popupHeightDivisor = 2.2;
+  //     innerContainerSizeDivisor = 8;
+  //   } else if (visiblePlatforms.length > 3 && visiblePlatforms.length <= 6) {
+  //     popupHeightDivisor = 1.8;
+  //     innerContainerSizeDivisor = 4.4;
+  //   } else if (visiblePlatforms.length > 6 && visiblePlatforms.length <= 9) {
+  //     popupHeightDivisor = 1.5;
+  //     innerContainerSizeDivisor = 2.9;
+  //   } else {
+  //     popupHeightDivisor = 1.25;
+  //     innerContainerSizeDivisor = 2.2;
+  //   }
 
-    String fullName = databaseService.getFullName(userData);
-    bool isFriendAdded = LocalDataService.isFriendAdded(friendSoshiUsername);
-    String profilePhotoURL = databaseService.getPhotoURL(userData);
-    String bio = databaseService.getBio(userData);
-    bool isVerified = databaseService.getVerifiedStatus(userData);
+  //   String fullName = databaseService.getFullName(userData);
+  //   bool isFriendAdded = LocalDataService.isFriendAdded(friendSoshiUsername);
+  //   String profilePhotoURL = databaseService.getPhotoURL(userData);
+  //   String bio = databaseService.getBio(userData);
+  //   bool isVerified = databaseService.getVerifiedStatus(userData);
 
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
+  //   double height = MediaQuery.of(context).size.height;
+  //   double width = MediaQuery.of(context).size.width;
 
-    int numfriends = userData["Friends"].length;
-    String numFriendsString = numfriends.toString();
-    // increment variable for use with scrolling SM buttons (use instead of i)
-    popup_live = true;
-    showGeneralDialog(
-        //barrierColor: Colors.grey[500].withOpacity(.25),
-        context: context,
-        transitionDuration: Duration(milliseconds: 150),
-        barrierDismissible: true,
-        barrierLabel: '',
-        pageBuilder: (context, animation1, animation2) {},
-        barrierColor: Colors.grey[500].withOpacity(.25),
-        transitionBuilder: (context, a1, a2, widget) {
-          return Transform.scale(
-            scale: a1.value,
-            child: AlertDialog(
-                backgroundColor:
-                    Theme.of(context).brightness == Brightness.light
-                        ? null
-                        : Colors.black,
-                elevation: 50,
-                insetPadding: EdgeInsets.all(width / 14),
-                //insetPadding: EdgeInsets.all(0.0),
-                // backgroundColor: Colors.black,
-                // contentPadding:
-                //     EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(color: Colors.blueGrey),
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-                content: Container(
-                  height: height / popupHeightDivisor,
-                  child: StatefulBuilder(
-                      builder: (BuildContext context, StateSetter setState) {
-                    return Column(
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Container(
-                              child: ProfilePic(
-                                  url: profilePhotoURL, radius: height / 16),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(left: width / 30),
-                              child: Container(
-                                height: height / 8,
-                                width: width / 2.5,
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  // crossAxisAlignment:
-                                  //     CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text(
-                                      fullName,
-                                      softWrap: false,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.fade,
-                                      style: TextStyle(
-                                        fontSize: width / 22,
-                                        fontWeight: FontWeight.bold,
-                                        // color: Colors.grey[200]
-                                      ),
-                                    ),
-                                    //SizedBox(height: height / 120),
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              "@" +
-                                                  ((friend == null)
-                                                      ? usernames["Soshi"]
-                                                      : friend.soshiUsername),
-                                              style: TextStyle(
-                                                  fontSize: width / 23,
-                                                  // color: Colors.grey[500],
-                                                  fontStyle: FontStyle.italic),
-                                            ),
-                                            SizedBox(
-                                              width: width / 150,
-                                            ),
-                                            isVerified == null ||
-                                                    isVerified == false
-                                                ? Container()
-                                                : Image.asset(
-                                                    "assets/images/misc/verified.png",
-                                                    scale: width / 20,
-                                                  )
-                                          ],
-                                        ),
-                                        SizedBox(height: height / 80),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Icon(
-                                              Icons.emoji_people,
-                                              color: Colors.cyan,
-                                            ),
-                                            SizedBox(width: width / 100),
-                                            Text(
-                                              "Friends: " + numFriendsString,
-                                              style: TextStyle(
-                                                  fontSize: width / 25,
-                                                  // color: Colors.grey[500],
-                                                  fontStyle: FontStyle.italic),
-                                            ),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                        Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5.0),
-                                border: Border.all(
-                                    color: Colors.transparent, width: 1.0)),
-                            //height: height / 20,
-                            width: width,
-                            child: Center(
-                                child: (bio != null)
-                                    ? Text(bio,
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            // color: Colors.grey[300],
-                                            ))
-                                    : Container()),
-                          ),
-                        ),
-                        Divider(
-                          // color: Colors.blueGrey,
-                          color: Colors.grey[850],
-                          thickness: 1,
-                        ),
-                        Container(
-                          height: height / innerContainerSizeDivisor,
-                          width: width,
-                          padding: EdgeInsets.only(top: 10.0),
-                          child: (visiblePlatforms.length > 0)
-                              ? Wrap(
-                                  alignment: WrapAlignment.spaceEvenly,
-                                  children: List.generate(
-                                      visiblePlatforms.length, (i) {
-                                    return SMButton(
-                                      soshiUsername: friendSoshiUsername,
-                                      platform: visiblePlatforms[i],
-                                      username: usernames[visiblePlatforms[i]],
-                                      size: width / 5,
-                                    );
-                                  }),
-                                )
+  //   int numfriends = userData["Friends"].length;
+  //   String numFriendsString = numfriends.toString();
+  //   // increment variable for use with scrolling SM buttons (use instead of i)
+  //   popup_live = true;
+  //   showGeneralDialog(
+  //       //barrierColor: Colors.grey[500].withOpacity(.25),
+  //       context: context,
+  //       transitionDuration: Duration(milliseconds: 150),
+  //       barrierDismissible: true,
+  //       barrierLabel: '',
+  //       pageBuilder: (context, animation1, animation2) {},
+  //       barrierColor: Colors.grey[500].withOpacity(.25),
+  //       transitionBuilder: (context, a1, a2, widget) {
+  //         return Transform.scale(
+  //           scale: a1.value,
+  //           child: AlertDialog(
+  //               backgroundColor:
+  //                   Theme.of(context).brightness == Brightness.light
+  //                       ? null
+  //                       : Colors.black,
+  //               elevation: 50,
+  //               insetPadding: EdgeInsets.all(width / 14),
+  //               //insetPadding: EdgeInsets.all(0.0),
+  //               // backgroundColor: Colors.black,
+  //               // contentPadding:
+  //               //     EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+  //               shape: RoundedRectangleBorder(
+  //                 side: BorderSide(color: Colors.blueGrey),
+  //                 borderRadius: BorderRadius.circular(30.0),
+  //               ),
+  //               content: Container(
+  //                 height: height / popupHeightDivisor,
+  //                 child: StatefulBuilder(
+  //                     builder: (BuildContext context, StateSetter setState) {
+  //                   return Column(
+  //                     children: <Widget>[
+  //                       Row(
+  //                         children: <Widget>[
+  //                           Container(
+  //                             child: ProfilePic(
+  //                                 url: profilePhotoURL, radius: height / 16),
+  //                           ),
+  //                           Padding(
+  //                             padding: EdgeInsets.only(left: width / 30),
+  //                             child: Container(
+  //                               height: height / 8,
+  //                               width: width / 2.5,
+  //                               child: Column(
+  //                                 mainAxisAlignment:
+  //                                     MainAxisAlignment.spaceEvenly,
+  //                                 // crossAxisAlignment:
+  //                                 //     CrossAxisAlignment.start,
+  //                                 children: <Widget>[
+  //                                   Text(
+  //                                     fullName,
+  //                                     softWrap: false,
+  //                                     maxLines: 1,
+  //                                     overflow: TextOverflow.fade,
+  //                                     style: TextStyle(
+  //                                       fontSize: width / 22,
+  //                                       fontWeight: FontWeight.bold,
+  //                                       // color: Colors.grey[200]
+  //                                     ),
+  //                                   ),
+  //                                   //SizedBox(height: height / 120),
+  //                                   Column(
+  //                                     mainAxisAlignment:
+  //                                         MainAxisAlignment.spaceEvenly,
+  //                                     crossAxisAlignment:
+  //                                         CrossAxisAlignment.center,
+  //                                     children: [
+  //                                       Row(
+  //                                         mainAxisAlignment:
+  //                                             MainAxisAlignment.center,
+  //                                         children: [
+  //                                           Text(
+  //                                             "@" +
+  //                                                 ((friend == null)
+  //                                                     ? usernames["Soshi"]
+  //                                                     : friend.soshiUsername),
+  //                                             style: TextStyle(
+  //                                                 fontSize: width / 23,
+  //                                                 // color: Colors.grey[500],
+  //                                                 fontStyle: FontStyle.italic),
+  //                                           ),
+  //                                           SizedBox(
+  //                                             width: width / 150,
+  //                                           ),
+  //                                           isVerified == null ||
+  //                                                   isVerified == false
+  //                                               ? Container()
+  //                                               : Image.asset(
+  //                                                   "assets/images/misc/verified.png",
+  //                                                   scale: width / 20,
+  //                                                 )
+  //                                         ],
+  //                                       ),
+  //                                       SizedBox(height: height / 80),
+  //                                       Row(
+  //                                         mainAxisAlignment:
+  //                                             MainAxisAlignment.center,
+  //                                         children: <Widget>[
+  //                                           Icon(
+  //                                             Icons.emoji_people,
+  //                                             color: Colors.cyan,
+  //                                           ),
+  //                                           SizedBox(width: width / 100),
+  //                                           Text(
+  //                                             "Friends: " + numFriendsString,
+  //                                             style: TextStyle(
+  //                                                 fontSize: width / 25,
+  //                                                 // color: Colors.grey[500],
+  //                                                 fontStyle: FontStyle.italic),
+  //                                           ),
+  //                                         ],
+  //                                       )
+  //                                     ],
+  //                                   ),
+  //                                 ],
+  //                               ),
+  //                             ),
+  //                           )
+  //                         ],
+  //                       ),
+  //                       Padding(
+  //                         padding:
+  //                             const EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
+  //                         child: Container(
+  //                           decoration: BoxDecoration(
+  //                               borderRadius: BorderRadius.circular(5.0),
+  //                               border: Border.all(
+  //                                   color: Colors.transparent, width: 1.0)),
+  //                           //height: height / 20,
+  //                           width: width,
+  //                           child: Center(
+  //                               child: (bio != null)
+  //                                   ? Text(bio,
+  //                                       textAlign: TextAlign.center,
+  //                                       style: TextStyle(
+  //                                           // color: Colors.grey[300],
+  //                                           ))
+  //                                   : Container()),
+  //                         ),
+  //                       ),
+  //                       Divider(
+  //                         // color: Colors.blueGrey,
+  //                         color: Colors.grey[850],
+  //                         thickness: 1,
+  //                       ),
+  //                       Container(
+  //                         height: height / innerContainerSizeDivisor,
+  //                         width: width,
+  //                         padding: EdgeInsets.only(top: 10.0),
+  //                         child: (visiblePlatforms.length > 0)
+  //                             ? Wrap(
+  //                                 alignment: WrapAlignment.spaceEvenly,
+  //                                 children: List.generate(
+  //                                     visiblePlatforms.length, (i) {
+  //                                   return SMButton(
+  //                                     soshiUsername: friendSoshiUsername,
+  //                                     platform: visiblePlatforms[i],
+  //                                     username: usernames[visiblePlatforms[i]],
+  //                                     size: width / 5,
+  //                                   );
+  //                                 }),
+  //                               )
 
-                              // GridView.builder(
-                              //     padding: EdgeInsets.zero,
-                              //     gridDelegate:
-                              //         SliverGridDelegateWithFixedCrossAxisCount(
-                              //             crossAxisCount: 3),
-                              //     scrollDirection: Axis.vertical,
-                              //     itemBuilder: (BuildContext context, int i) {
-                              //       if (i == visiblePlatforms.length) {}
+  //                             // GridView.builder(
+  //                             //     padding: EdgeInsets.zero,
+  //                             //     gridDelegate:
+  //                             //         SliverGridDelegateWithFixedCrossAxisCount(
+  //                             //             crossAxisCount: 3),
+  //                             //     scrollDirection: Axis.vertical,
+  //                             //     itemBuilder: (BuildContext context, int i) {
+  //                             //       if (i == visiblePlatforms.length) {}
 
-                              //       return createSMButton(
-                              //           soshiUsername: friendSoshiUsername,
-                              //           platform: visiblePlatforms[i],
-                              //           username:
-                              //               usernames[visiblePlatforms[i]],
-                              //           size: width / 5,
-                              //           context: context);
-                              //     },
-                              //     itemCount: visiblePlatforms.length,
-                              //   )
-                              : Center(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(15),
-                                    child: Text(
-                                      "This user isn't currently sharing any social media platforms :(",
-                                      style: Constants.CustomCyan,
-                                    ),
-                                  ),
-                                ),
-                        ),
-                        SizedBox(
-                          height: height / 50,
-                        ),
-                        ElevatedButton(
-                            onPressed: () async {
-                              String soshiUsername =
-                                  LocalDataService.getLocalUsernameForPlatform(
-                                      "Soshi");
+  //                             //       return createSMButton(
+  //                             //           soshiUsername: friendSoshiUsername,
+  //                             //           platform: visiblePlatforms[i],
+  //                             //           username:
+  //                             //               usernames[visiblePlatforms[i]],
+  //                             //           size: width / 5,
+  //                             //           context: context);
+  //                             //     },
+  //                             //     itemCount: visiblePlatforms.length,
+  //                             //   )
+  //                             : Center(
+  //                                 child: Padding(
+  //                                   padding: const EdgeInsets.all(15),
+  //                                   child: Text(
+  //                                     "This user isn't currently sharing any social media platforms :(",
+  //                                     style: Constants.CustomCyan,
+  //                                   ),
+  //                                 ),
+  //                               ),
+  //                       ),
+  //                       SizedBox(
+  //                         height: height / 50,
+  //                       ),
+  //                       ElevatedButton(
+  //                           onPressed: () async {
+  //                             String soshiUsername =
+  //                                 LocalDataService.getLocalUsernameForPlatform(
+  //                                     "Soshi");
 
-                              if (isFriendAdded ||
-                                  friendSoshiUsername == userUsername) {
-                                // do nothing
-                              } else {
-                                setState(() {
-                                  // isFriendAdded = true;
-                                });
-                                // add friend, update button, refresh screen
-                                // await LocalDataService.addFriend(
-                                //     friendsoshiUsername: friendSoshiUsername);
-                                // databaseService.addFriend(
-                                //     thisSoshiUsername:
-                                //         databaseService.currSoshiUsername,
-                                //     friendSoshiUsername: friendSoshiUsername);
+  //                             if (isFriendAdded ||
+  //                                 friendSoshiUsername == userUsername) {
+  //                               // do nothing
+  //                             } else {
+  //                               setState(() {
+  //                                 // isFriendAdded = true;
+  //                               });
+  //                               // add friend, update button, refresh screen
+  //                               // await LocalDataService.addFriend(
+  //                               //     friendsoshiUsername: friendSoshiUsername);
+  //                               // databaseService.addFriend(
+  //                               //     thisSoshiUsername:
+  //                               //         databaseService.currSoshiUsername,
+  //                               //     friendSoshiUsername: friendSoshiUsername);
 
-                                Map friendData = await databaseService
-                                    .getUserFile(friendSoshiUsername);
-                                Friend friend = databaseService
-                                    .userDataToFriend(friendData);
-                                bool isFriendAdded =
-                                    await LocalDataService.isFriendAdded(
-                                        friendSoshiUsername);
+  //                               Map friendData = await databaseService
+  //                                   .getUserFile(friendSoshiUsername);
+  //                               Friend friend = databaseService
+  //                                   .userDataToFriend(friendData);
+  //                               bool isFriendAdded =
+  //                                   await LocalDataService.isFriendAdded(
+  //                                       friendSoshiUsername);
 
-                                Popups.showUserProfilePopupNew(context,
-                                    friendSoshiUsername: friendSoshiUsername,
-                                    refreshScreen: () {});
-                                if (!isFriendAdded &&
-                                    friendSoshiUsername !=
-                                        databaseService.currSoshiUsername) {
-                                  List<String> newFriendsList =
-                                      await LocalDataService.addFriend(
-                                          friend: friend);
+  //                               Popups.showUserProfilePopupNew(context,
+  //                                   friendSoshiUsername: friendSoshiUsername,
+  //                                   refreshScreen: () {});
+  //                               if (!isFriendAdded &&
+  //                                   friendSoshiUsername !=
+  //                                       databaseService.currSoshiUsername) {
+  //                                 List<String> newFriendsList =
+  //                                     await LocalDataService.addFriend(
+  //                                         friend: friend);
 
-                                  databaseService
-                                      .overwriteFriendsList(newFriendsList);
-                                }
+  //                                 databaseService
+  //                                     .overwriteFriendsList(newFriendsList);
+  //                               }
 
-                                // bool friendHasTwoWaySharing =    *Two way sharing
-                                //     await databaseService
-                                //         .getTwoWaySharing(userData);
-                                // if (friendHasTwoWaySharing == null ||
-                                //     friendHasTwoWaySharing == true) {
-                                //   // if user has two way sharing on, add self to user's friends list
-                                //   databaseService.addFriend(
-                                //       thisSoshiUsername: friendSoshiUsername,
-                                //       friendSoshiUsername:
-                                //           databaseService.currSoshiUsername);
-                                // }
+  //                               // bool friendHasTwoWaySharing =    *Two way sharing
+  //                               //     await databaseService
+  //                               //         .getTwoWaySharing(userData);
+  //                               // if (friendHasTwoWaySharing == null ||
+  //                               //     friendHasTwoWaySharing == true) {
+  //                               //   // if user has two way sharing on, add self to user's friends list
+  //                               //   databaseService.addFriend(
+  //                               //       thisSoshiUsername: friendSoshiUsername,
+  //                               //       friendSoshiUsername:
+  //                               //           databaseService.currSoshiUsername);
+  //                               // }
 
-                                // Checking if Soshi points is injected
-                                // if (LocalDataService.getInjectionFlag(
-                                //             "Soshi Points") ==
-                                //         false ||
-                                //     LocalDataService.getInjectionFlag(
-                                //             "Soshi Points") ==
-                                //         null) {
-                                //   LocalDataService.updateInjectionFlag(
-                                //       "Soshi Points", true);
-                                //   databaseService.updateInjectionSwitch(
-                                //       soshiUsername, "Soshi Points", true);
-                                // }
-                                // Give 8 soshi points for every friend added
-                                databaseService.updateSoshiPoints(
-                                    soshiUsername, 8);
-                                LocalDataService.updateSoshiPoints(8);
+  //                               // Checking if Soshi points is injected
+  //                               // if (LocalDataService.getInjectionFlag(
+  //                               //             "Soshi Points") ==
+  //                               //         false ||
+  //                               //     LocalDataService.getInjectionFlag(
+  //                               //             "Soshi Points") ==
+  //                               //         null) {
+  //                               //   LocalDataService.updateInjectionFlag(
+  //                               //       "Soshi Points", true);
+  //                               //   databaseService.updateInjectionSwitch(
+  //                               //       soshiUsername, "Soshi Points", true);
+  //                               // }
+  //                               // Give 8 soshi points for every friend added
+  //                               databaseService.updateSoshiPoints(
+  //                                   soshiUsername, 8);
+  //                               LocalDataService.updateSoshiPoints(8);
 
-                                Analytics.logAddFriend(friendSoshiUsername);
-                                refreshScreen();
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              elevation: 10.0,
-                              minimumSize: Size(width / 1.7, height / 15),
-                              shape: RoundedRectangleBorder(
-                                  side: (isFriendAdded)
-                                      ? BorderSide.none
-                                      : BorderSide(color: Colors.cyan),
-                                  borderRadius: BorderRadius.circular(25.0)),
-                              //  primary:
-                              // Colors.white
-                            ),
-                            child: Container(
-                              width: 150.0,
-                              child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: (isFriendAdded)
-                                      ? [
-                                          Text(
-                                            "Friend Added",
-                                            style: TextStyle(
-                                              fontSize: 17.0,
-                                              fontWeight: FontWeight.bold,
-                                              //color: Colors.black
-                                            ),
-                                          ),
-                                        ]
-                                      : [
-                                          Text(
-                                            "Add Friend",
-                                            style: TextStyle(
-                                                fontSize: 20.0,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.cyan[300]),
-                                          ),
-                                          Padding(
-                                              padding:
-                                                  EdgeInsets.only(left: 5.0)),
-                                          Icon(
-                                            Icons.add_reaction_outlined,
-                                            color: Colors.cyan[300],
-                                          )
-                                        ]),
-                            )),
-                      ],
-                    );
+  //                               Analytics.logAddFriend(friendSoshiUsername);
+  //                               refreshScreen();
+  //                             }
+  //                           },
+  //                           style: ElevatedButton.styleFrom(
+  //                             elevation: 10.0,
+  //                             minimumSize: Size(width / 1.7, height / 15),
+  //                             shape: RoundedRectangleBorder(
+  //                                 side: (isFriendAdded)
+  //                                     ? BorderSide.none
+  //                                     : BorderSide(color: Colors.cyan),
+  //                                 borderRadius: BorderRadius.circular(25.0)),
+  //                             //  primary:
+  //                             // Colors.white
+  //                           ),
+  //                           child: Container(
+  //                             width: 150.0,
+  //                             child: Row(
+  //                                 mainAxisAlignment: MainAxisAlignment.center,
+  //                                 children: (isFriendAdded)
+  //                                     ? [
+  //                                         Text(
+  //                                           "Friend Added",
+  //                                           style: TextStyle(
+  //                                             fontSize: 17.0,
+  //                                             fontWeight: FontWeight.bold,
+  //                                             //color: Colors.black
+  //                                           ),
+  //                                         ),
+  //                                       ]
+  //                                     : [
+  //                                         Text(
+  //                                           "Add Friend",
+  //                                           style: TextStyle(
+  //                                               fontSize: 20.0,
+  //                                               fontWeight: FontWeight.bold,
+  //                                               color: Colors.cyan[300]),
+  //                                         ),
+  //                                         Padding(
+  //                                             padding:
+  //                                                 EdgeInsets.only(left: 5.0)),
+  //                                         Icon(
+  //                                           Icons.add_reaction_outlined,
+  //                                           color: Colors.cyan[300],
+  //                                         )
+  //                                       ]),
+  //                           )),
+  //                     ],
+  //                   );
 
-                    // Stack(children: [
-                    //   Container(
-                    //     decoration: BoxDecoration(
-                    //       borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                    //       color: Colors.grey[900],
-                    //     ),
-                    //     padding: EdgeInsets.only(top: width / 5.75),
-                    //     margin: EdgeInsets.only(top: width / 5.75),
-                    //     height: height / 1.65,
-                    //     width: width / 1.1,
-                    //     child: Column(children: [
-                    //       Column(children: [
-                    //         Column(
-                    //           children: [
-                    //             Text(
-                    //               fullName,
-                    //               style: TextStyle(
-                    //                   fontSize: 20.0,
-                    //                   fontWeight: FontWeight.bold,
-                    //                   color: Colors.grey[200]),
-                    //             ),
-                    //             Text(
-                    //               "@" + usernames["Soshi"],
-                    //               style: TextStyle(
-                    //                   fontSize: 15.0,
-                    //                   color: Colors.grey[500],
-                    //                   fontStyle: FontStyle.italic),
-                    //             ),
-                    //           ],
-                    //         ),
-                    //       ]),
-                    //       Padding(
-                    //         padding:
-                    //             const EdgeInsets.fromLTRB(10.0, 15.0, 15.0, 10.0),
-                    //         child: Container(
-                    //           decoration: BoxDecoration(
-                    //               borderRadius: BorderRadius.circular(5.0),
-                    //               border: Border.all(
-                    //                   color: Colors.grey[700], width: 1.0)),
-                    //           height: height / 20,
-                    //           width: width / 1.1,
-                    //           child: Center(
-                    //             child: Text(LocalDataService.getBio(),
-                    //                 style: TextStyle(
-                    //                   color: Colors.grey[300],
-                    //                 )),
-                    //           ),
-                    //         ),
-                    //       ),
-                    //       Padding(
-                    //         padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-                    //         child: Divider(color: Colors.cyan[300]),
-                    //       ),
-                    //       Container(
-                    //         height: height / 3.5,
-                    //         width: width,
-                    //         padding: EdgeInsets.only(top: 10.0),
-                    //         child: (visiblePlatforms.length > 0)
-                    //             ? ListView.separated(
-                    //                 separatorBuilder:
-                    //                     (BuildContext context, int i) {
-                    //                   return Padding(padding: EdgeInsets.all(10.0));
-                    //                 },
-                    //                 scrollDirection: Axis.vertical,
-                    //                 itemBuilder: (BuildContext context, int i) {
-                    //                   return Row(
-                    //                       mainAxisAlignment:
-                    //                           MainAxisAlignment.center,
-                    //                       children: [
-                    //                         createSMButton(
-                    //                             soshiUsername: soshiUsername,
-                    //                             platform: visiblePlatforms[index],
-                    //                             username: usernames[
-                    //                                 visiblePlatforms[index++]],
-                    //                             size: width / 5,
-                    //                             context: context),
-                    //                         (index >= visiblePlatforms.length)
-                    //                             ? Text("")
-                    //                             : Padding(
-                    //                                 padding:
-                    //                                     const EdgeInsets.fromLTRB(
-                    //                                         5.0, 0.0, 5.0, 0.0),
-                    //                                 child: createSMButton(
-                    //                                     soshiUsername:
-                    //                                         soshiUsername,
-                    //                                     platform:
-                    //                                         visiblePlatforms[index],
-                    //                                     username: usernames[
-                    //                                         visiblePlatforms[
-                    //                                             index++]],
-                    //                                     size: width / 5,
-                    //                                     context: context),
-                    //                               ),
-                    //                         (index >= visiblePlatforms.length)
-                    //                             ? Text("")
-                    //                             : createSMButton(
-                    //                                 soshiUsername: soshiUsername,
-                    //                                 platform:
-                    //                                     visiblePlatforms[index],
-                    //                                 username: usernames[
-                    //                                     visiblePlatforms[index++]],
-                    //                                 size: width / 5,
-                    //                                 context: context),
-                    //                       ]);
-                    //                 },
-                    //                 itemCount: (visiblePlatforms.length / 3).ceil(),
-                    //               )
-                    //             : Center(
-                    //                 child: Padding(
-                    //                   padding: const EdgeInsets.all(15),
-                    //                   child: Text(
-                    //                     "This user isn't currently sharing any social media platforms :(",
-                    //                     style: Constants.CustomCyan,
-                    //                   ),
-                    //                 ),
-                    //               ),
-                    //       ),
-                    //       ElevatedButton(
-                    //           onPressed: () async {
-                    //             if (isFriendAdded) {
-                    //               // do nothing
-                    //             } else {
-                    //               // reset index to avoid invalid index on refresh
-                    //               index = 0;
-                    //               setState(() {
-                    //                 isFriendAdded = true;
-                    //               });
-                    //               // add friend, update button, refresh screen
-                    //               await LocalDataService.addFriend(
-                    //                   friendsoshiUsername: soshiUsername);
-                    //               databaseService.addFriend(
-                    //                   friendsoshiUsername: soshiUsername);
-                    //               refreshScreen();
-                    //             }
-                    //           },
-                    //           style: ElevatedButton.styleFrom(
-                    //               primary: isFriendAdded
-                    //                   ? Colors.white
-                    //                   : Color(0xFF181818)),
-                    //           child: Container(
-                    //             width: 150.0,
-                    //             child: Row(
-                    //                 mainAxisAlignment: MainAxisAlignment.center,
-                    //                 children: (isFriendAdded)
-                    //                     ? [
-                    //                         Text(
-                    //                           "Connected",
-                    //                           style: TextStyle(
-                    //                               fontSize: 20.0,
-                    //                               fontWeight: FontWeight.bold,
-                    //                               color: Colors.black),
-                    //                         ),
-                    //                         Padding(
-                    //                             padding:
-                    //                                 EdgeInsets.only(left: 5.0)),
-                    //                         Icon(
-                    //                           Icons.verified_user,
-                    //                           color: Colors.green,
-                    //                         )
-                    //                       ]
-                    //                     : [
-                    //                         Text(
-                    //                           "Connect",
-                    //                           style: TextStyle(
-                    //                               fontSize: 20.0,
-                    //                               fontWeight: FontWeight.bold,
-                    //                               color: Colors.cyan[300]),
-                    //                         ),
-                    //                         Padding(
-                    //                             padding:
-                    //                                 EdgeInsets.only(left: 5.0)),
-                    //                         Icon(
-                    //                           Icons.add_circle,
-                    //                           color: Colors.cyan[300],
-                    //                         )
-                    //                       ]),
-                    //           )),
-                    //       // Row(
-                    //       //   mainAxisAlignment: MainAxisAlignment.end,
-                    //       //   children: [
-                    //       //     Padding(
-                    //       //       padding: const EdgeInsets.all(8.0),
-                    //       //       child: FloatingActionButton(
-                    //       //           backgroundColor: Colors.cyan[400],
-                    //       //           onPressed: () => Navigator.pop(context),
-                    //       //           child: Icon(FlutterIcons.check_circle_faw,
-                    //       //               size: width / 10)),
-                    //       //     ),
-                    //       //   ],
-                    //       // )
-                    //     ]),
-                    //   ),
-                    //   Positioned(
-                    //       left: width / 2 - width / 3,
-                    //       right: width / 2 - width / 3,
-                    //       child:
-                    //           ProfilePic(url: profilePhotoURL, radius: width / 6)),
-                    // ]);
-                  }),
-                )),
-          );
-        });
-  }
+  //                   // Stack(children: [
+  //                   //   Container(
+  //                   //     decoration: BoxDecoration(
+  //                   //       borderRadius: BorderRadius.all(Radius.circular(30.0)),
+  //                   //       color: Colors.grey[900],
+  //                   //     ),
+  //                   //     padding: EdgeInsets.only(top: width / 5.75),
+  //                   //     margin: EdgeInsets.only(top: width / 5.75),
+  //                   //     height: height / 1.65,
+  //                   //     width: width / 1.1,
+  //                   //     child: Column(children: [
+  //                   //       Column(children: [
+  //                   //         Column(
+  //                   //           children: [
+  //                   //             Text(
+  //                   //               fullName,
+  //                   //               style: TextStyle(
+  //                   //                   fontSize: 20.0,
+  //                   //                   fontWeight: FontWeight.bold,
+  //                   //                   color: Colors.grey[200]),
+  //                   //             ),
+  //                   //             Text(
+  //                   //               "@" + usernames["Soshi"],
+  //                   //               style: TextStyle(
+  //                   //                   fontSize: 15.0,
+  //                   //                   color: Colors.grey[500],
+  //                   //                   fontStyle: FontStyle.italic),
+  //                   //             ),
+  //                   //           ],
+  //                   //         ),
+  //                   //       ]),
+  //                   //       Padding(
+  //                   //         padding:
+  //                   //             const EdgeInsets.fromLTRB(10.0, 15.0, 15.0, 10.0),
+  //                   //         child: Container(
+  //                   //           decoration: BoxDecoration(
+  //                   //               borderRadius: BorderRadius.circular(5.0),
+  //                   //               border: Border.all(
+  //                   //                   color: Colors.grey[700], width: 1.0)),
+  //                   //           height: height / 20,
+  //                   //           width: width / 1.1,
+  //                   //           child: Center(
+  //                   //             child: Text(LocalDataService.getBio(),
+  //                   //                 style: TextStyle(
+  //                   //                   color: Colors.grey[300],
+  //                   //                 )),
+  //                   //           ),
+  //                   //         ),
+  //                   //       ),
+  //                   //       Padding(
+  //                   //         padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+  //                   //         child: Divider(color: Colors.cyan[300]),
+  //                   //       ),
+  //                   //       Container(
+  //                   //         height: height / 3.5,
+  //                   //         width: width,
+  //                   //         padding: EdgeInsets.only(top: 10.0),
+  //                   //         child: (visiblePlatforms.length > 0)
+  //                   //             ? ListView.separated(
+  //                   //                 separatorBuilder:
+  //                   //                     (BuildContext context, int i) {
+  //                   //                   return Padding(padding: EdgeInsets.all(10.0));
+  //                   //                 },
+  //                   //                 scrollDirection: Axis.vertical,
+  //                   //                 itemBuilder: (BuildContext context, int i) {
+  //                   //                   return Row(
+  //                   //                       mainAxisAlignment:
+  //                   //                           MainAxisAlignment.center,
+  //                   //                       children: [
+  //                   //                         createSMButton(
+  //                   //                             soshiUsername: soshiUsername,
+  //                   //                             platform: visiblePlatforms[index],
+  //                   //                             username: usernames[
+  //                   //                                 visiblePlatforms[index++]],
+  //                   //                             size: width / 5,
+  //                   //                             context: context),
+  //                   //                         (index >= visiblePlatforms.length)
+  //                   //                             ? Text("")
+  //                   //                             : Padding(
+  //                   //                                 padding:
+  //                   //                                     const EdgeInsets.fromLTRB(
+  //                   //                                         5.0, 0.0, 5.0, 0.0),
+  //                   //                                 child: createSMButton(
+  //                   //                                     soshiUsername:
+  //                   //                                         soshiUsername,
+  //                   //                                     platform:
+  //                   //                                         visiblePlatforms[index],
+  //                   //                                     username: usernames[
+  //                   //                                         visiblePlatforms[
+  //                   //                                             index++]],
+  //                   //                                     size: width / 5,
+  //                   //                                     context: context),
+  //                   //                               ),
+  //                   //                         (index >= visiblePlatforms.length)
+  //                   //                             ? Text("")
+  //                   //                             : createSMButton(
+  //                   //                                 soshiUsername: soshiUsername,
+  //                   //                                 platform:
+  //                   //                                     visiblePlatforms[index],
+  //                   //                                 username: usernames[
+  //                   //                                     visiblePlatforms[index++]],
+  //                   //                                 size: width / 5,
+  //                   //                                 context: context),
+  //                   //                       ]);
+  //                   //                 },
+  //                   //                 itemCount: (visiblePlatforms.length / 3).ceil(),
+  //                   //               )
+  //                   //             : Center(
+  //                   //                 child: Padding(
+  //                   //                   padding: const EdgeInsets.all(15),
+  //                   //                   child: Text(
+  //                   //                     "This user isn't currently sharing any social media platforms :(",
+  //                   //                     style: Constants.CustomCyan,
+  //                   //                   ),
+  //                   //                 ),
+  //                   //               ),
+  //                   //       ),
+  //                   //       ElevatedButton(
+  //                   //           onPressed: () async {
+  //                   //             if (isFriendAdded) {
+  //                   //               // do nothing
+  //                   //             } else {
+  //                   //               // reset index to avoid invalid index on refresh
+  //                   //               index = 0;
+  //                   //               setState(() {
+  //                   //                 isFriendAdded = true;
+  //                   //               });
+  //                   //               // add friend, update button, refresh screen
+  //                   //               await LocalDataService.addFriend(
+  //                   //                   friendsoshiUsername: soshiUsername);
+  //                   //               databaseService.addFriend(
+  //                   //                   friendsoshiUsername: soshiUsername);
+  //                   //               refreshScreen();
+  //                   //             }
+  //                   //           },
+  //                   //           style: ElevatedButton.styleFrom(
+  //                   //               primary: isFriendAdded
+  //                   //                   ? Colors.white
+  //                   //                   : Color(0xFF181818)),
+  //                   //           child: Container(
+  //                   //             width: 150.0,
+  //                   //             child: Row(
+  //                   //                 mainAxisAlignment: MainAxisAlignment.center,
+  //                   //                 children: (isFriendAdded)
+  //                   //                     ? [
+  //                   //                         Text(
+  //                   //                           "Connected",
+  //                   //                           style: TextStyle(
+  //                   //                               fontSize: 20.0,
+  //                   //                               fontWeight: FontWeight.bold,
+  //                   //                               color: Colors.black),
+  //                   //                         ),
+  //                   //                         Padding(
+  //                   //                             padding:
+  //                   //                                 EdgeInsets.only(left: 5.0)),
+  //                   //                         Icon(
+  //                   //                           Icons.verified_user,
+  //                   //                           color: Colors.green,
+  //                   //                         )
+  //                   //                       ]
+  //                   //                     : [
+  //                   //                         Text(
+  //                   //                           "Connect",
+  //                   //                           style: TextStyle(
+  //                   //                               fontSize: 20.0,
+  //                   //                               fontWeight: FontWeight.bold,
+  //                   //                               color: Colors.cyan[300]),
+  //                   //                         ),
+  //                   //                         Padding(
+  //                   //                             padding:
+  //                   //                                 EdgeInsets.only(left: 5.0)),
+  //                   //                         Icon(
+  //                   //                           Icons.add_circle,
+  //                   //                           color: Colors.cyan[300],
+  //                   //                         )
+  //                   //                       ]),
+  //                   //           )),
+  //                   //       // Row(
+  //                   //       //   mainAxisAlignment: MainAxisAlignment.end,
+  //                   //       //   children: [
+  //                   //       //     Padding(
+  //                   //       //       padding: const EdgeInsets.all(8.0),
+  //                   //       //       child: FloatingActionButton(
+  //                   //       //           backgroundColor: Colors.cyan[400],
+  //                   //       //           onPressed: () => Navigator.pop(context),
+  //                   //       //           child: Icon(FlutterIcons.check_circle_faw,
+  //                   //       //               size: width / 10)),
+  //                   //       //     ),
+  //                   //       //   ],
+  //                   //       // )
+  //                   //     ]),
+  //                   //   ),
+  //                   //   Positioned(
+  //                   //       left: width / 2 - width / 3,
+  //                   //       right: width / 2 - width / 3,
+  //                   //       child:
+  //                   //           ProfilePic(url: profilePhotoURL, radius: width / 6)),
+  //                   // ]);
+  //                 }),
+  //               )),
+  //         );
+  //       });
+  // }
 
   void usernameEmptyPopup(
       BuildContext context, String platformName, String identifier) {
@@ -1214,7 +1248,8 @@ class Popups {
         });
   }
 
-  static Future<dynamic> showPlatformHelpPopup(BuildContext context, double height) async {
+  static Future<dynamic> showPlatformHelpPopup(
+      BuildContext context, double height) async {
     return showGeneralDialog(
         transitionDuration: Duration(milliseconds: 200),
         barrierDismissible: true,
@@ -1227,7 +1262,8 @@ class Popups {
             child: Opacity(
               opacity: a1.value,
               child: AlertDialog(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40.0))),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(40.0))),
                 // backgroundColor: Colors.blueGrey[900],
                 title: Text(
                   "Linking Social Media",
@@ -1269,7 +1305,8 @@ class Popups {
                                       // primary: Colors.blueGrey,
                                       shadowColor: Constants.buttonColorDark,
                                       shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(Radius.circular(15.0)))),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(15.0)))),
                                   onPressed: () {
                                     URL.launchURL(
                                         "https://support.tiktok.com/en/using-tiktok/exploring-videos/sharing");
@@ -1298,7 +1335,8 @@ class Popups {
                                       // primary: Colors.blueGrey,
                                       shadowColor: Constants.buttonColorDark,
                                       shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(Radius.circular(15.0)))),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(15.0)))),
                                   onPressed: () {
                                     URL.launchURL(
                                         "https://www.linkedin.com/help/linkedin/answer/49315/find-your-linkedin-public-profile-url?lang=en");
@@ -1327,7 +1365,8 @@ class Popups {
                                       // primary: Colors.blueGrey,
                                       shadowColor: Constants.buttonColorDark,
                                       shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(Radius.circular(15.0)))),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(15.0)))),
                                   onPressed: () {
                                     URL.launchURL(
                                         "https://knowledgebase.constantcontact.com/tutorials/KnowledgeBase/6069-find-the-url-for-a-facebook-profile-or-business-page?lang=en_US");
@@ -1393,7 +1432,8 @@ class Popups {
   static void showJoinGroupPopup(BuildContext context, String groupId) async {
     double width = Utilities.getWidth(context);
     // get group details
-    DatabaseService databaseService = DatabaseService(currSoshiUsernameIn: DataEngine.soshiUsername);
+    DatabaseService databaseService =
+        DatabaseService(currSoshiUsernameIn: DataEngine.soshiUsername);
 
     Group group = await databaseService.getGroupData(groupId);
 
@@ -1410,11 +1450,13 @@ class Popups {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40.0))),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(40.0))),
             // backgroundColor: Colors.blueGrey[900],
             title: Text(
               "Error",
-              style: TextStyle(color: Colors.cyan[600], fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  color: Colors.cyan[600], fontWeight: FontWeight.bold),
             ),
             content: Text(
               ("$firstOrLast name must be between 1 and 12 characters"),
@@ -1438,7 +1480,8 @@ class Popups {
         });
   }
 
-  static void soshiPointsExplainedPopup(BuildContext context, double width, double height) {
+  static void soshiPointsExplainedPopup(
+      BuildContext context, double width, double height) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -1470,7 +1513,7 @@ class Popups {
                   ),
 
                   Text("You have " +
-                      LocalDataService.getSoshiPoints().toString() +
+                      DataEngine.globalUser.soshiPoints.toString() +
                       " Soshi bolts.\n"),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -1534,7 +1577,8 @@ class _JoinGroupPopupState extends State<JoinGroupPopup> {
     this.group = widget.group;
     this.databaseService = widget.databaseService;
     username = DataEngine.soshiUsername;
-    hasJoined = group.members.contains(username) || group.admin.contains(username);
+    hasJoined =
+        group.members.contains(username) || group.admin.contains(username);
     isJoining = false;
     super.initState();
   }
@@ -1544,7 +1588,9 @@ class _JoinGroupPopupState extends State<JoinGroupPopup> {
     return Container(
         decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0))),
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(30.0),
+                topRight: Radius.circular(30.0))),
         height: 250,
         // color: Colors.white,
         child: Column(
@@ -1552,7 +1598,10 @@ class _JoinGroupPopupState extends State<JoinGroupPopup> {
           children: [
             Column(
               children: [
-                Hero(tag: group.id, child: RectangularProfilePic(radius: width / 3, url: group.photoURL)),
+                Hero(
+                    tag: group.id,
+                    child: RectangularProfilePic(
+                        radius: width / 3, url: group.photoURL)),
                 Text(group.name),
               ],
             ),
@@ -1560,8 +1609,10 @@ class _JoinGroupPopupState extends State<JoinGroupPopup> {
                 onPressed: () async {
                   if (!isJoining) {
                     if (hasJoined) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) {
-                        return ViewGroupPage(group); // Returning the ResetPassword screen
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return ViewGroupPage(
+                            group); // Returning the ResetPassword screen
                       }));
                     } else {
                       HapticFeedback.mediumImpact();
@@ -1585,15 +1636,20 @@ class _JoinGroupPopupState extends State<JoinGroupPopup> {
                                 (hasJoined) ? "View Group" : "Join Group",
                                 style: TextStyle(
                                     fontSize: 20.0,
-                                    color:
-                                        Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black),
+                                    color: Theme.of(context).brightness ==
+                                            Brightness.light
+                                        ? Colors.white
+                                        : Colors.black),
                                 textAlign: TextAlign.center,
                               )
                             : Center(child: CircularProgressIndicator()))),
                 style: ElevatedButton.styleFrom(
-                    primary: Theme.of(context).brightness != Brightness.light ? Colors.white : Colors.black,
+                    primary: Theme.of(context).brightness != Brightness.light
+                        ? Colors.white
+                        : Colors.black,
                     elevation: 8.0,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)))),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0)))),
             GestureDetector(
                 onTap: () {
                   Navigator.pop(context);

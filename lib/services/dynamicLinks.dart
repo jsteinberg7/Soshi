@@ -1,6 +1,7 @@
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:soshi/services/url.dart';
+import 'package:soshi/services/nfc.dart';
 
 import '../constants/popups.dart';
 import '../screens/mainapp/viewProfilePage.dart';
