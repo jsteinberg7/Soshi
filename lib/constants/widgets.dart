@@ -363,11 +363,7 @@ class SignOutButton extends StatelessWidget {
                       onPressed: () async {
                         await authService.signOut();
                         Navigator.pop(context); // close popup
-                        // Navigator.pop(context); // pop to login screen
-                        //        Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(builder: (context) => MainApp()),
-                        // );
+                       
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(

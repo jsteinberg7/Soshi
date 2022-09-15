@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:soshi/services/analytics.dart';
@@ -19,16 +20,18 @@ class AuthService {
   }
 
   // sign in with email and password
-  Future signInWithEmailAndPassword(
-      {String emailIn, String passwordIn, BuildContext contextIn, @required Function refreshIn}) async {
+  Future signInWithEmailAndPassword({String emailIn, String passwordIn, BuildContext contextIn, @required Function refreshIn}) async {
     try {
-      UserCredential loginResult = await _auth.signInWithEmailAndPassword(
-          email: emailIn, password: passwordIn); // signs user in, initiates login
+      UserCredential loginResult = await _auth.signInWithEmailAndPassword(email: emailIn, password: passwordIn); // signs user in, initiates login
 
       User user = loginResult.user;
       log("SOSHI USERNAME UPDATE: " + user.uid);
 
-      await DataEngine.freshSetup(soshiUsername: user.uid);
+      await FirebaseFirestore.instance.collection("emailToUsername").doc(emailIn).get().then((value) async {
+        String soshiUsername = value.get("soshiUsername");
+
+        await DataEngine.freshSetup(soshiUsername: soshiUsername);
+      });
 
       Analytics.setUserAttributes(userId: user.uid);
       Analytics.logSignIn('email');

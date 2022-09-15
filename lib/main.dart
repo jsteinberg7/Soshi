@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:soshi/services/analytics.dart';
 import 'package:soshi/services/dataEngine.dart';
 import 'package:soshi/services/runtimeManager.dart';
@@ -139,15 +140,14 @@ void main() async {
   // HasLaunched, firstSwitch, etc.
   await RuntimeManager.sync();
 
-  // //Pull latest data from SharedPref/Cloud
-  await DataEngine.initialize();
-  // await DataEngine.forceClear();
+//   // //Pull latest data from SharedPref/Cloud
 
-  // // var prf = await SharedPreferences.getInstance();
-  // AuthService authService = new AuthService();
-  // await authService.signOut();
-  // Navigator.pop(context); // close popup
-  // Navigator.pushReplacement(context, MaterialPageRoute(builder: ((context) => NewIntroFlow())));
+  await SharedPreferences.getInstance().then((value) => value);
+// //  await DataEngine.initialize();
+
+//   await DataEngine.forceClear();
+//   AuthService authService = new AuthService();
+//   await authService.signOut();
 
   runApp(MyApp(linkData));
 
