@@ -81,9 +81,7 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
   ValueNotifier controlsBottomNavBar = new ValueNotifier(1);
 
   @override
-  Widget build(BuildContext context) {
-
-  
+  Widget build(BuildContext context) {  
 
     return Scaffold(
       drawerEnableOpenDragGesture: false,

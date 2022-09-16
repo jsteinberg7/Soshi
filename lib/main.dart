@@ -123,11 +123,10 @@ class _MyAppState extends State<MyApp> {
                   }),
                 )),
                 focusColor: Color(0x1a311F06)),
-            home: Wrapper(firstLaunch)));
+            home: Wrapper()));
   }
 }
 
-bool firstLaunch;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -142,12 +141,11 @@ void main() async {
 
 //   // //Pull latest data from SharedPref/Cloud
 
-  await SharedPreferences.getInstance().then((value) => value);
 // //  await DataEngine.initialize();
-
-//   await DataEngine.forceClear();
-//   AuthService authService = new AuthService();
-//   await authService.signOut();
+  await DataEngine.forceClear();
+  AuthService authService = new AuthService();
+  await authService.signOut();
+  var prefs = await SharedPreferences.getInstance();
 
   runApp(MyApp(linkData));
 

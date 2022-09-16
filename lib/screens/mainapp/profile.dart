@@ -43,7 +43,7 @@ class _SMTileState extends State<SMTile> {
   String platformName = "";
   String hintText = "";
 
-  bool isSwitched;1
+  bool isSwitched;
   TextEditingController usernameController = new TextEditingController();
   FocusNode focusNode;
 
@@ -317,8 +317,9 @@ class ProfileState extends State<Profile> {
 
   loadDataEngine() async {
     // this.user = await DataEngine.getUserObject(firebaseOverride: false);
+
+    // await Future.delayed(Duration(seconds: 1));
     this.user = DataEngine.globalUser;
-    print(DataEngine.serializeUser(this.user));
     this.userSocials = user.getChosenPlatforms();
   }
 
@@ -336,12 +337,14 @@ class ProfileState extends State<Profile> {
           if (snapshot.connectionState != ConnectionState.done) {
             return Center(child: CircularProgressIndicator.adaptive());
           } else {
+            print("creating profile screen now!!!");
+
             int numSocialsPlusAddTile = this.userSocials.length + 1;
             int rows = (numSocialsPlusAddTile / 3).ceil();
 
-            if (rows == 1) {
-              addedContainerSize = 0;
-            }
+            // if (rows == 1) {
+            //   addedContainerSize = 0;
+            // }
 
             // if (numSocialsPlusAddTile > 3) {
             //   print(rows);
@@ -361,7 +364,7 @@ class ProfileState extends State<Profile> {
 
             return SingleChildScrollView(
               child: Container(
-                height: height * addedContainerSize,
+                height: height,
                 child: Stack(
                   children: [
                     Positioned(

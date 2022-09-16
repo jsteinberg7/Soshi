@@ -27,7 +27,6 @@ class DataEngine {
   //Used after user logs out (Little uncessary as we clear on login)
   static forceClear() async {
     log("[⚙ Data Engine ⚙] All user cache data cleared!");
-
     await SharedPreferences.getInstance().then((value) => value.clear());
   }
 
@@ -82,6 +81,7 @@ class DataEngine {
   static getUserObject({@required bool firebaseOverride, String soshiUsernameOverride}) async {
     //failsafe [kinda necessary]
     await usernameFailSafe();
+    
     String currUsername = DataEngine.soshiUsername;
     if (soshiUsernameOverride != null && soshiUsernameOverride != "") {
       currUsername = soshiUsernameOverride;

@@ -199,7 +199,7 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
                       print("✅ sign-up success: pushing to main dashboard NOW!");
                       await DataEngine.initialize();
                       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-                        return Scaffold(body: MainApp());
+                        return MainApp();
                       }));
                     }
                   } else {

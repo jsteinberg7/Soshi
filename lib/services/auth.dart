@@ -117,6 +117,8 @@ class AuthService {
         throw new ErrorDescription("Username is taken, try another one");
       }
 
+      await DataEngine.freshSetup(soshiUsername: username);
+
       await databaseService.createUserFile(username: username, email: email, first: first, last: last);
       print("file created");
 
@@ -127,8 +129,6 @@ class AuthService {
       print("✅ successfully created new account! ${email}");
 
       print("◀◀◀ username ${username}\n email ${email} \n password ${password} \n ${first} \n ${last} ◀◀◀");
-
-      await DataEngine.freshSetup(soshiUsername: username);
 
       return user;
     } catch (e) {
