@@ -4,7 +4,6 @@ import 'package:soshi/screens/login/loading.dart';
 import 'package:soshi/services/dataEngine.dart';
 import 'package:soshi/services/localData.dart';
 import 'package:vibration/vibration.dart';
-
 import '../../constants/widgets.dart';
 
 // ignore: must_be_immutable

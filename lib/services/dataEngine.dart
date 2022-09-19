@@ -78,39 +78,40 @@ class DataEngine {
   }
 
   //{NOTE} If firebaseOverride is true, will fetch latest data again from firestore
-  static getUserObject({@required bool firebaseOverride, String soshiUsernameOverride}) async {
+  static getUserObject({@required bool firebaseOverride, String friendOverride}) async {
     //failsafe [kinda necessary]
+
     await usernameFailSafe();
-    
+
     String currUsername = DataEngine.soshiUsername;
-    if (soshiUsernameOverride != null && soshiUsernameOverride != "") {
-      currUsername = soshiUsernameOverride;
+    if (friendOverride != null && friendOverride != "") {
+      currUsername = friendOverride;
       firebaseOverride = true; // force firebase override if other user
     }
 
     Map fetch;
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+// Only change userObject sharedPref when soshiUsernameOverride is null
 
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     if (firebaseOverride || !prefs.containsKey("userObject") || prefs.getString("userObject") == "null") {
       log("[⚙ Data Engine ⚙]  getUserObject() Firebase data burn ⚠ userFetch=> ${currUsername}");
       DocumentSnapshot dSnap = await FirebaseFirestore.instance.collection("users").doc(currUsername).get();
-      fetch = dSnap.data();
+      fetch = dSnap.data() as Map<String, dynamic>;
 
-      await prefs.setString("userObject", jsonEncode(fetch));
+      if (friendOverride == null) {
+        await prefs.setString("userObject", jsonEncode(fetch));
+      }
     } else {
       log("[⚙ Data Engine ⚙]  getUserObject() Using cache 😃");
       fetch = jsonDecode(prefs.getString("userObject"));
     }
 
-    bool hasPhoto = fetch['Photo URL'] != null && fetch['Photo URL']!="";
-
+    bool hasPhoto = fetch['Photo URL'] != null && fetch['Photo URL'] != "";
     String photoURL = hasPhoto ? fetch['Photo URL'] : Defaults.defaultProfilePic;
-
     bool Verified = fetch['Verified'] ?? false;
     List<Passion> passions = [];
 
-    // //remove socials array
     List<Social> socials = [];
     Map<String, Social> lookupSocial = {};
     int soshiPoints = fetch['Soshi Points'] ?? 0;
@@ -140,16 +141,26 @@ class DataEngine {
     log("[⚙ Data Engine ⚙] passions info built ✅");
 
     if (fetch['Usernames'] != null && fetch['Switches'] != null && fetch['Choose Platforms'] != null) {
-      Map.of(fetch['Usernames']).keys.forEach((key) {
-        bool switchStatus = Map.of(fetch['Switches'])[key];
-        bool isChosen = List.of(fetch['Profile Platforms']).contains(key);
+      List masterList = Defaults.allPlatforms;
 
-        Social makeSocial = Social(
-            username: fetch['Usernames'][key],
-            platformName: key.toString(),
-            switchStatus: switchStatus,
-            isChosen: isChosen,
-            usernameController: TextEditingController(text: fetch['Usernames'][key]));
+    
+      // List<String> firebaseUsernames = fetch['Usernames'].keys;
+
+      masterList.forEach((key) {
+        Social makeSocial = null;
+        if (fetch['Usernames'][key] != null) {
+          bool switchStatus = Map.of(fetch['Switches'])[key];
+          bool isChosen = List.of(fetch['Profile Platforms']).contains(key);
+          makeSocial = Social(
+              username: fetch['Usernames'][key],
+              platformName: key.toString(),
+              switchStatus: switchStatus,
+              isChosen: isChosen,
+              usernameController: TextEditingController(text: fetch['Usernames'][key]));
+        } else {
+          makeSocial = Social(
+              username: "", platformName: key.toString(), switchStatus: false, isChosen: false, usernameController: TextEditingController(text: ""));
+        }
 
         socials.add(makeSocial);
         lookupSocial[key] = makeSocial;
@@ -312,6 +323,7 @@ class SoshiUser {
 
   List<Social> getAvailablePlatforms() {
     List<Social> toReturn = [];
+    this.lookupSocial.remove('Soshi');
     this.lookupSocial.values.forEach((element) {
       if (!element.isChosen) {
         toReturn.add(element);
@@ -354,7 +366,7 @@ class SoshiUser {
   static Future<List<Friend>> convertStrToFriendList(List<String> usernameList) async {
     List<Friend> list = [];
     for (String username in usernameList) {
-      SoshiUser currUser = await DataEngine.getUserObject(firebaseOverride: true, soshiUsernameOverride: username);
+      SoshiUser currUser = await DataEngine.getUserObject(firebaseOverride: true, friendOverride: username);
       list.add(Friend(
           soshiUsername: username,
           fullName: currUser.firstName + ' ' + currUser.lastName,
@@ -443,4 +455,29 @@ class Defaults {
   static Passion emptyPassion = Passion(emoji: "❌", name: "Empty");
 
   static const String NO_USERNAME = "NO_USERNAME";
+
+  static List<String> allPlatforms = [
+    "Phone",
+    "Instagram",
+    "Snapchat",
+    "Linkedin",
+    "Twitter",
+    "Facebook",
+    "Reddit",
+    "Tiktok",
+    "Discord",
+    "Email",
+    "Venmo",
+    "Spotify",
+    "Contact",
+    "Personal",
+    "Youtube",
+    "Vsco",
+    "AppleMusic",
+    "CashApp",
+    // "Soundcloud"
+    "BeReal",
+    "OnlyFans",
+    //"Cryptowallet"
+  ];
 }
