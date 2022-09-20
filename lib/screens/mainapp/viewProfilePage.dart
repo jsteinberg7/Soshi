@@ -19,10 +19,9 @@ import '../../services/dataEngine.dart';
 import 'package:http/http.dart' as http;
 
 class ViewProfilePage extends StatefulWidget {
-  String friendUsername;
   String friendSoshiUsername;
   Function refreshScreen;
-  ViewProfilePage({@required this.friendUsername, this.friendSoshiUsername, this.refreshScreen});
+  ViewProfilePage({@required this.friendSoshiUsername, this.refreshScreen});
 
   @override
   State<ViewProfilePage> createState() => _ViewProfilePageState();
@@ -33,8 +32,8 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
   List<Social> visibleSocials;
 
   getFriendUserData() async {
-    friendUserObject =
-        await DataEngine.getUserObject(firebaseOverride: true, soshiUsernameOverride: widget.friendSoshiUsername);
+    friendUserObject = await DataEngine.getUserObject(firebaseOverride: true, friendOverride: widget.friendSoshiUsername);
+
     visibleSocials = friendUserObject.getAvailablePlatforms();
   }
 
@@ -68,10 +67,8 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                           alignment: Alignment.bottomCenter,
                           border: 2,
                           linearGradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [
-                            (Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black)
-                                .withOpacity(0.8),
-                            (Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black)
-                                .withOpacity(0.4),
+                            (Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black).withOpacity(0.8),
+                            (Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black).withOpacity(0.4),
                           ], stops: [
                             0.1,
                             1,
@@ -80,10 +77,8 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                             colors: [
-                              (Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black)
-                                  .withOpacity(0.5),
-                              (Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black)
-                                  .withOpacity(0.5),
+                              (Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black).withOpacity(0.5),
+                              (Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black).withOpacity(0.5),
                             ],
                           ),
                           child: Padding(
@@ -103,9 +98,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                             child: Center(
                                               child: AutoSizeText(
                                                 "${friendUserObject.firstName} ${friendUserObject.lastName}",
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: width / 16),
+                                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: width / 16),
                                               ),
                                             ),
                                           ),
@@ -127,8 +120,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                         child: Column(children: [
                                           Text(
                                             friendUserObject.friends.length.toString(),
-                                            style: TextStyle(
-                                                fontSize: width / 24, letterSpacing: 1.2, fontWeight: FontWeight.bold),
+                                            style: TextStyle(fontSize: width / 24, letterSpacing: 1.2, fontWeight: FontWeight.bold),
                                           ),
                                           friendUserObject.friends.length == 1
                                               ? Text(
@@ -149,16 +141,12 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                         width: width / 4,
                                         child: Column(children: [
                                           Text(
-                                            friendUserObject.soshiPoints == null
-                                                ? "0"
-                                                : friendUserObject.soshiPoints.toString(),
-                                            style: TextStyle(
-                                                fontSize: width / 24, letterSpacing: 1.2, fontWeight: FontWeight.bold),
+                                            friendUserObject.soshiPoints == null ? "0" : friendUserObject.soshiPoints.toString(),
+                                            style: TextStyle(fontSize: width / 24, letterSpacing: 1.2, fontWeight: FontWeight.bold),
                                           ),
                                           friendUserObject.soshiPoints.toString() == "1"
                                               ? Text("Bolt", style: TextStyle(fontSize: width / 24, letterSpacing: 1.2))
-                                              : Text("Bolts",
-                                                  style: TextStyle(fontSize: width / 24, letterSpacing: 1.2))
+                                              : Text("Bolts", style: TextStyle(fontSize: width / 24, letterSpacing: 1.2))
                                         ]),
                                       ),
                                     ],
@@ -223,8 +211,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                     child: Container(
                       decoration: BoxDecoration(
                           color: Theme.of(context).scaffoldBackgroundColor,
-                          borderRadius:
-                              BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
+                          borderRadius: BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -327,8 +314,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                             String firstName = friendUserObject.firstName;
                                             String lastName = friendUserObject.lastName;
                                             String email = friendUserObject.getUsernameGivenPlatform(platform: "Email");
-                                            String phoneNumber =
-                                                friendUserObject.getUsernameGivenPlatform(platform: "Phone");
+                                            String phoneNumber = friendUserObject.getUsernameGivenPlatform(platform: "Phone");
                                             String photoUrl = friendUserObject.photoURL;
 
                                             Uint8List profilePicBytes;
@@ -340,8 +326,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                               });
                                             } catch (e) {
                                               // if url is invalid, use default profile pic
-                                              ByteData data =
-                                                  await rootBundle.load("assets/images/misc/default_pic.png");
+                                              ByteData data = await rootBundle.load("assets/images/misc/default_pic.png");
                                               profilePicBytes = data.buffer.asUint8List();
                                             }
                                             Contact newContact = new Contact(
@@ -360,8 +345,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
 
                                             DialogBuilder(context).hideOpenDialog();
 
-                                            Popups.showContactAddedPopup(
-                                                context, width, photoUrl, firstName, lastName, phoneNumber, email);
+                                            Popups.showContactAddedPopup(context, width, photoUrl, firstName, lastName, phoneNumber, email);
 
                                             //ContactsService.openContactForm();
                                             // ContactsService.addContact(newContact).then((dynamic success) {

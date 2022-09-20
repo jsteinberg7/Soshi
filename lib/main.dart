@@ -137,6 +137,7 @@ class _MyAppState extends State<MyApp> {
 }
 
 void main() async {
+  print("hot restart main running");
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
@@ -150,11 +151,11 @@ void main() async {
 
 //   // //Pull latest data from SharedPref/Cloud
 
-// //  await DataEngine.initialize();
-  await DataEngine.forceClear();
-  AuthService authService = new AuthService();
-  await authService.signOut();
-  var prefs = await SharedPreferences.getInstance();
+  //  await DataEngine.initialize();
+  // await DataEngine.forceClear();
+  // AuthService authService = new AuthService();
+  // await authService.signOut();
+  // var prefs = await SharedPreferences.getInstance();
 
   runApp(MyApp(linkData));
 

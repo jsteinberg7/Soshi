@@ -36,7 +36,7 @@ class _WrapperState extends State<Wrapper> {
     }
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (!prefs.containsKey("Useranme") || prefs.getString("Useranme") == "") {
+    if (!prefs.containsKey("Username") || prefs.getString("Username") == "") {
       // This means that user data was lost in upgrade or bug, need to force user to sign up again :(
       toReturn = NewIntroFlow();
     } else {
