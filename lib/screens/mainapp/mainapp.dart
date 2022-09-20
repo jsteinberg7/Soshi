@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:custom_navigation_bar/custom_navigation_bar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // import 'package:nfc_manager/nfc_manager.dart';
@@ -77,12 +78,12 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
   }
 
   int currScreen = 1;
-  PageController pageController = new PageController(initialPage: 1, viewportFraction: 1.1);
+  PageController pageController =
+      new PageController(initialPage: 1, viewportFraction: 1.1);
   ValueNotifier controlsBottomNavBar = new ValueNotifier(1);
 
   @override
-  Widget build(BuildContext context) {  
-
+  Widget build(BuildContext context) {
     return Scaffold(
       drawerEnableOpenDragGesture: false,
       drawer: Container(
@@ -113,7 +114,12 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
 }
 
 class LatestBottomNavBar extends StatelessWidget {
-  const LatestBottomNavBar({Key key, @required this.currScreen, @required this.pageController, @required this.importNotifier}) : super(key: key);
+  const LatestBottomNavBar(
+      {Key key,
+      @required this.currScreen,
+      @required this.pageController,
+      @required this.importNotifier})
+      : super(key: key);
 
   final int currScreen;
   final PageController pageController;
@@ -128,22 +134,30 @@ class LatestBottomNavBar extends StatelessWidget {
         scaleFactor: .05,
         elevation: 5,
         iconSize: Utilities.getWidth(context) / 10,
-        selectedColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+        selectedColor: Theme.of(context).brightness == Brightness.light
+            ? Colors.black
+            : Colors.white,
         strokeColor: Colors.transparent,
         unSelectedColor: Colors.grey,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         items: [
           CustomNavigationBarItem(
             icon: Icon(
-              AntDesign.qrcode,
+              //AntDesign.qrcode,
+              CupertinoIcons.qrcode,
               size: 35,
             ),
           ),
-          CustomNavigationBarItem(icon: ProfilePic(radius: 25, url: Defaults.defaultProfilePic)),
+          CustomNavigationBarItem(
+              icon: Icon(
+            CupertinoIcons.person,
+            size: 35,
+          )),
           CustomNavigationBarItem(
             icon: Icon(
-              AntDesign.contacts,
-              size: 35,
+              //AntDesign.contacts,
+              CupertinoIcons.person_3,
+              size: 40,
             ),
           ),
         ],
