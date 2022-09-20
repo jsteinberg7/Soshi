@@ -118,7 +118,7 @@ class AuthService {
       }
 
       await DataEngine.freshSetup(soshiUsername: username);
-
+      
       await databaseService.createUserFile(username: username, email: email, first: first, last: last);
       print("file created");
 

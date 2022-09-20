@@ -34,7 +34,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
   getFriendUserData() async {
     friendUserObject = await DataEngine.getUserObject(firebaseOverride: true, friendOverride: widget.friendSoshiUsername);
 
-    visibleSocials = friendUserObject.getAvailablePlatforms();
+    visibleSocials = friendUserObject.getSwitchedOnPlatforms();
   }
 
   @override
@@ -262,6 +262,8 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                             //   shrinkWrap: true,
                                             //   itemBuilder:
                                             //       (BuildContext context, int i) {
+                                            //         Social currentPlatform = visibleSocials[i];
+
                                             //     return Padding(
                                             //         padding: const EdgeInsets.fromLTRB(
                                             //             0, 0, 0, 10),
@@ -274,26 +276,25 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                             //             size: width / 15,
                                             //             context: context));
                                             //   },
-                                            //   itemCount: visiblePlatforms.length,
+                                            //   itemCount: visibleSocials.length,
                                             //   gridDelegate:
                                             //       SliverGridDelegateWithFixedCrossAxisCount(
                                             //           crossAxisCount: 4,
                                             //           childAspectRatio: .9,
                                             //           crossAxisSpacing: width / 60),
                                             // ),
-                                            // child: Wrap(
-                                            //   alignment: WrapAlignment.center,
-                                            //   spacing: width / 40,
-                                            //   children: List.generate(visiblePlatforms.length, (i) {
-                                            //     return SMButton(
-                                            //       soshiUsername: friendSoshiUsername,
-                                            //       platform: visiblePlatforms[i],
-                                            //       username: usernames[visiblePlatforms[i]],
-                                            //       size: width / 7,
-                                            //     );
-                                            //   }),
-                                            // )
-                                          ),
+                                            child: Wrap(
+                                              alignment: WrapAlignment.center,
+                                              spacing: width / 40,
+                                              children: List.generate(visibleSocials.length, (i) {
+                                                return SMButton(
+                                                  soshiUsername: friendUserObject.soshiUsername,
+                                                  platform: visibleSocials[i].platformName,
+                                                  username: visibleSocials[i].username,
+                                                  size: width / 7,
+                                                );
+                                              }),
+                                            )),
                                   ),
                                   Padding(
                                     padding: EdgeInsets.fromLTRB(0, height / 30, 0, height / 20),
@@ -456,7 +457,7 @@ class _AddFriendButtonState extends State<AddFriendButton> {
               });
               isFriendAdded = DataEngine.globalUser.friends.contains(friendSoshiUsername);
 
-              if (!isFriendAdded && friendSoshiUsername != databaseService.currSoshiUsername) {
+              if (!isFriendAdded) {
                 List<Friend> friends = await DataEngine.getCachedFriendsList();
                 friends.add(widget.friend); // update cached list
                 DataEngine.updateCachedFriendsList(friends: friends);
@@ -469,7 +470,6 @@ class _AddFriendButtonState extends State<AddFriendButton> {
                 isAdding = false;
                 isFriendAdded = true;
               });
-              refreshFunction();
             }
           },
           child: Padding(

@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:soshi/services/database.dart';
 import 'package:soshi/services/dynamicLinks.dart';
 import 'package:soshi/services/pointManager.dart';
 
@@ -41,7 +42,7 @@ class DataEngine {
     DataEngine.globalUser = await DataEngine.getUserObject(firebaseOverride: true);
   }
 
-  static Map serializeUser(SoshiUser user) {
+  static Future<Map> serializeUser(SoshiUser user) async {
     List serializePassions = [];
     user.passions.forEach((e) {
       serializePassions.add({'passion_emoji': e.emoji, 'passion_name': e.name});
@@ -59,15 +60,22 @@ class DataEngine {
       'Profile Platforms': user.getChosenPlatforms().map((e) => e.platformName).toList(),
       'Short Dynamic Link': user.shortDynamicLink,
       'Long Dynamic Link': user.longDynamicLink,
-      'Point Manager': user.pointManager.serializeDictionary()
+      'Point Manager': user.pointManager.serializeDictionary(),
     };
 
     Map switches = {};
     Map usernames = {};
 
+    log("[⚙ Data Engine ⚙] Updating .vcf Contact file");
+    String url = await DatabaseService.updateContactCard(user: user);
+
     user.lookupSocial.values.forEach((Social e) {
       switches[e.platformName] = e.switchStatus;
-      usernames[e.platformName] = e.usernameController.text;
+      if (e.platformName == "Contact") {
+        usernames[e.platformName] = url;
+      } else {
+        usernames[e.platformName] = e.usernameController.text;
+      }
     });
 
     toReturn['Switches'] = switches;
@@ -143,7 +151,6 @@ class DataEngine {
     if (fetch['Usernames'] != null && fetch['Switches'] != null && fetch['Choose Platforms'] != null) {
       List masterList = Defaults.allPlatforms;
 
-    
       // List<String> firebaseUsernames = fetch['Usernames'].keys;
 
       masterList.forEach((key) {
@@ -204,7 +211,7 @@ class DataEngine {
     globalUser = user;
 
     if (cloud || local) {
-      Map afterSerialized = serializeUser(user);
+      Map afterSerialized = await serializeUser(user);
 
       if (local) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -326,6 +333,17 @@ class SoshiUser {
     this.lookupSocial.remove('Soshi');
     this.lookupSocial.values.forEach((element) {
       if (!element.isChosen) {
+        toReturn.add(element);
+      }
+    });
+    return toReturn;
+  }
+
+  List<Social> getSwitchedOnPlatforms() {
+    List<Social> toReturn = [];
+    this.lookupSocial.remove('Soshi');
+    this.lookupSocial.values.forEach((element) {
+      if (element.switchStatus == null || element.switchStatus) {
         toReturn.add(element);
       }
     });

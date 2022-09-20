@@ -86,8 +86,11 @@ class _SMTileState extends State<SMTile> {
 
           if (widget.user.getUsernameGivenPlatform(platform: platformName) == null ||
               widget.user.getUsernameGivenPlatform(platform: platformName) == "") {
+            if (platformName != "Contact") {
+              Popups.editUsernamePopup(context, platformName, MediaQuery.of(context).size.width, DataEngine.globalUser);
+            }
             // prompt user to enter username
-            Popups.editUsernamePopup(context, platformName, MediaQuery.of(context).size.width, DataEngine.globalUser);
+
           }
 
           widget.selectedSocial.switchStatus = true;
@@ -209,14 +212,13 @@ class _SMTileState extends State<SMTile> {
                 onChanged: (bool value) {
                   HapticFeedback.lightImpact();
 
-                  if (widget.user.getUsernameGivenPlatform(platform: platformName) == null ||
-                      widget.user.getUsernameGivenPlatform(platform: platformName) == "" && value == true) {
+                  if ((widget.user.getUsernameGivenPlatform(platform: platformName) == null ||
+                          widget.user.getUsernameGivenPlatform(platform: platformName) == "" && value == true) &&
+                      platformName != "Contact") {
                     Popups.editUsernamePopup(context, platformName, MediaQuery.of(context).size.width, DataEngine.globalUser);
                   }
 
-                  if (widget.selectedSocial.username != ""
-                      //value == false
-                      ) {
+                  if (widget.selectedSocial.username != "") {
                     widget.user.lookupSocial[platformName].switchStatus = value;
                     setState(() {
                       this.isSwitched = value;
