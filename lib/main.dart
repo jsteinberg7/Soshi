@@ -32,7 +32,7 @@ class _MyAppState extends State<MyApp> {
         value: AuthService().user,
         child: MaterialApp(
             debugShowCheckedModeBanner: false,
-            themeMode: ThemeMode.light,
+            themeMode: ThemeMode.system,
             theme: ThemeData(
               fontFamily: GoogleFonts.inter().fontFamily,
 

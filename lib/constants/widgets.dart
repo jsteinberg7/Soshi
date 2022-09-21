@@ -1248,9 +1248,17 @@ class ProfilePicBackdrop extends StatelessWidget {
 class SMButton extends StatelessWidget {
   String soshiUsername, platform, username;
   double size;
+  SoshiUser userObject;
+  String phoneFromUserObject;
+  String emailFromUserObject;
 
   SMButton(
       {this.soshiUsername, this.platform, this.username, this.size = 70.0});
+
+  getUserData() async {
+    userObject = await DataEngine.getUserObject(
+        firebaseOverride: true, friendOverride: soshiUsername);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1266,22 +1274,21 @@ class SMButton extends StatelessWidget {
           DialogBuilder(context).showLoadingIndicator();
 
           double width = MediaQuery.of(context).size.width;
-          DatabaseService databaseService =
-              new DatabaseService(currSoshiUsernameIn: soshiUsername);
-          // Map userData = await databaseService.getUserFile(soshiUsername);
-
-          // String firstName = await databaseService.getFirstDisplayName(userData);
-          // String lastName = databaseService.getLastDisplayName(userData);
-          // String email = await databaseService.getUsernameForPlatform(platform: "Email", userData: userData);
-          // String phoneNumber = await databaseService.getUsernameForPlatform(platform: "Phone", userData: userData);
-          // String photoUrl = databaseService.getPhotoURL(userData);
 
           Uint8List profilePicBytes;
 
           try {
-            // try to load profile pic from url
+            await getUserData(); // Get user object based on SOSHI Username
+
+            // Get phone number and email for easy handling
+            emailFromUserObject =
+                userObject.getUsernameGivenPlatform(platform: "Email");
+            phoneFromUserObject =
+                userObject.getUsernameGivenPlatform(platform: "Phone");
+
+            // Try to load profile pic from url
             await http
-                .get(Uri.parse(DataEngine.globalUser.photoURL))
+                .get(Uri.parse(userObject.photoURL))
                 .then((http.Response response) {
               profilePicBytes = response.bodyBytes;
             });
@@ -1292,19 +1299,13 @@ class SMButton extends StatelessWidget {
             profilePicBytes = data.buffer.asUint8List();
           }
           Contact newContact = new Contact(
-              givenName: DataEngine.globalUser.firstName,
-              familyName: DataEngine.globalUser.lastName,
+              givenName: userObject.firstName,
+              familyName: userObject.lastName,
               emails: [
-                Item(
-                    label: "Email",
-                    value: DataEngine.globalUser
-                        .getUsernameGivenPlatform(platform: "Email")),
+                Item(label: "Email", value: emailFromUserObject),
               ],
               phones: [
-                Item(
-                    label: "Cell",
-                    value: DataEngine.globalUser
-                        .getUsernameGivenPlatform(platform: "Phone")),
+                Item(label: "Cell", value: phoneFromUserObject),
               ],
               avatar: profilePicBytes);
           await askPermissions(context);
@@ -1313,8 +1314,14 @@ class SMButton extends StatelessWidget {
 
           DialogBuilder(context).hideOpenDialog();
 
-          // Popups.showContactAddedPopup(context, width, photoUrl, firstName,
-          //     lastName, phoneNumber, email);
+          Popups.showContactAddedPopup(
+              context,
+              width,
+              userObject.photoURL,
+              userObject.firstName,
+              userObject.lastName,
+              phoneFromUserObject,
+              emailFromUserObject);
         } else if (platform == "Cryptowallet") {
           Clipboard.setData(ClipboardData(
             text: username.toString(),

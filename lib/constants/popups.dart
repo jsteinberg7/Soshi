@@ -174,7 +174,7 @@ class Popups {
               )
             ],
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                borderRadius: BorderRadius.all(Radius.circular(30.0))),
             // backgroundColor: Colors.grey[850],
             content: Padding(
               padding: EdgeInsets.fromLTRB(5, 0, 5, 0),

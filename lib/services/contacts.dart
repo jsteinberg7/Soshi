@@ -65,6 +65,6 @@ void _handleInvalidPermissions(
   } else if (permissionStatus == PermissionStatus.permanentlyDenied) {
     final snackBar =
         SnackBar(content: Text('Contact data not available on device'));
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    //ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
