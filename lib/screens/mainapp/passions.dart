@@ -1,10 +1,12 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:soshi/screens/mainapp/passionsPage.dart';
 import 'package:soshi/services/dataEngine.dart';
 
 class PassionTileList extends StatefulWidget {
   ValueNotifier profileScreenRefresher;
-  PassionTileList({Key key, ValueNotifier profileScreenRefresher}) : super(key: key);
+  PassionTileList({Key key, ValueNotifier profileScreenRefresher})
+      : super(key: key);
 
   @override
   State<PassionTileList> createState() => _PassionTileListState();
@@ -28,7 +30,10 @@ class _PassionTileListState extends State<PassionTileList> {
           } else {
             return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [0, 1, 2].map((int pIndex) => makePassionTile(user.passions[pIndex], pIndex)).toList());
+                children: [0, 1, 2]
+                    .map((int pIndex) =>
+                        makePassionTile(user.passions[pIndex], pIndex))
+                    .toList());
           }
         });
   }
@@ -57,7 +62,9 @@ class _PassionTileListState extends State<PassionTileList> {
     return passion != Defaults.emptyPassion
         ? ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
-                elevation: 1, shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15)))),
+                elevation: 1,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(15)))),
             onPressed: () async {
               pushAndUpdatePassions(passion, pIndex);
             },
@@ -65,14 +72,24 @@ class _PassionTileListState extends State<PassionTileList> {
               passion.emoji,
               style: TextStyle(fontSize: 15),
             ),
-            label: Text(
-              passion.name,
-              style: TextStyle(fontSize: 15),
-            ))
+            label: Container(
+              //color: Colors.green,
+              width: MediaQuery.of(context).size.width / 7,
+              child: AutoSizeText(
+                passion.name,
+                textAlign: TextAlign.center,
+                maxLines: 1, //passion.name.contains(" ") ? 2 : 1,
+                style:
+                    TextStyle(fontSize: MediaQuery.of(context).size.width / 25),
+                minFontSize: 1,
+              ),
+            ),
+          )
         : OutlinedButton.icon(
             style: OutlinedButton.styleFrom(
                 primary: Colors.black,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15)))),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(15)))),
             onPressed: () async {
               pushAndUpdatePassions(passion, pIndex);
             },
@@ -83,7 +100,10 @@ class _PassionTileListState extends State<PassionTileList> {
             label: Text(
               "Add",
               style: TextStyle(
-                  color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white, fontSize: 15),
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.black
+                      : Colors.white,
+                  fontSize: 15),
             ));
   }
 }

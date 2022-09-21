@@ -20,7 +20,8 @@ class FriendScreen extends StatefulWidget {
   _FriendScreenState createState() => _FriendScreenState();
 }
 
-class _FriendScreenState extends State<FriendScreen> with TickerProviderStateMixin {
+class _FriendScreenState extends State<FriendScreen>
+    with TickerProviderStateMixin {
   SoshiUser user;
   List recentFriendsList;
   List friendsList;
@@ -58,7 +59,8 @@ class _FriendScreenState extends State<FriendScreen> with TickerProviderStateMix
       if (currName.contains(searchText) || currUsername.contains(searchText)) {
         // check for match
         filteredFriendsList.add(friend); // if match, add to new filtered list
-        filteredFriendsListNames.add(friend.fullName.toLowerCase()); // add name to names list
+        filteredFriendsListNames
+            .add(friend.fullName.toLowerCase()); // add name to names list
       }
     }
     setState(() {
@@ -125,14 +127,16 @@ class _FriendScreenState extends State<FriendScreen> with TickerProviderStateMix
                               child: Center(
                                 child: Text(
                                   "You have no friends :(",
-                                  style: TextStyle(fontSize: 20, letterSpacing: 2),
+                                  style:
+                                      TextStyle(fontSize: 20, letterSpacing: 2),
                                 ),
                               ),
                             );
                           }
                         }
                       } else {
-                        return CircularProgressIndicator.adaptive();
+                        return Center(
+                            child: CircularProgressIndicator.adaptive());
                       }
                     }),
                 SizedBox(
@@ -216,7 +220,12 @@ class FriendTile extends StatelessWidget {
   Function refreshFriendScreen;
   SoshiUser user;
   List<Friend> friends;
-  FriendTile({@required this.user, @required this.friends, this.friend, this.databaseService, this.refreshFriendScreen});
+  FriendTile(
+      {@required this.user,
+      @required this.friends,
+      this.friend,
+      this.databaseService,
+      this.refreshFriendScreen});
   /* Creates a single "friend tile" (an element of the ListView of Friends) */
 
   Widget build(BuildContext context) {
@@ -228,13 +237,15 @@ class FriendTile extends StatelessWidget {
       child: ListTile(
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return ViewProfilePage(   
+              return ViewProfilePage(
                 friendSoshiUsername: friend.soshiUsername,
                 refreshScreen: refreshFriendScreen,
               ); // show friend popup when tile is pressed
             }));
           },
-          leading: Hero(tag: friend.soshiUsername, child: ProfilePic(radius: width / 14, url: friend.photoURL)),
+          leading: Hero(
+              tag: friend.soshiUsername,
+              child: ProfilePic(radius: width / 14, url: friend.photoURL)),
           title: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -248,7 +259,8 @@ class FriendTile extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                       fontSize: 18)),
               SizedBox(height: height / 170),
-              SoshiUsernameText(friend.soshiUsername, fontSize: 14, isVerified: friend.isVerified)
+              SoshiUsernameText(friend.soshiUsername,
+                  fontSize: 14, isVerified: friend.isVerified)
             ],
           ),
           tileColor: Colors.transparent,
@@ -293,17 +305,20 @@ class FriendTile extends StatelessWidget {
                                   children: [
                                     ListTile(
                                       title: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           Padding(
-                                            padding: EdgeInsets.fromLTRB(0, height / 160, 0, height / 100),
+                                            padding: EdgeInsets.fromLTRB(0,
+                                                height / 160, 0, height / 100),
                                             child: ProfilePic(
                                               radius: width / 10,
                                               url: friend.photoURL,
                                             ),
                                           ),
                                           Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
                                               Text(
                                                 "@" + friend.soshiUsername,
@@ -315,7 +330,8 @@ class FriendTile extends StatelessWidget {
                                               SizedBox(
                                                 width: width / 130,
                                               ),
-                                              friend.isVerified == null || friend.isVerified == false
+                                              friend.isVerified == null ||
+                                                      friend.isVerified == false
                                                   ? Container()
                                                   : Image.asset(
                                                       "assets/images/misc/verified.png",
@@ -328,7 +344,9 @@ class FriendTile extends StatelessWidget {
                                             title: Center(
                                               child: Text(
                                                 "Remove friend",
-                                                style: TextStyle(fontSize: width / 20, color: Colors.red),
+                                                style: TextStyle(
+                                                    fontSize: width / 20,
+                                                    color: Colors.red),
                                               ),
                                             ),
                                             onTap: () async {
@@ -339,10 +357,19 @@ class FriendTile extends StatelessWidget {
                                               // databaseService.overwriteFriendsList(
                                               //     newFriendsList); // update cloud list
                                               // DataEngine.applyUserChanges(user:  user, cloud: true, local: true)
-                                              friends.removeWhere((friend) => friend.soshiUsername == friend.soshiUsername); // update cached list
-                                              DataEngine.updateCachedFriendsList(friends: friends);
-                                              user.friends.remove(friend.soshiUsername); // update string list
-                                              DataEngine.applyUserChanges(user: user, cloud: true, local: true);
+                                              friends.removeWhere((friend) =>
+                                                  friend.soshiUsername ==
+                                                  friend
+                                                      .soshiUsername); // update cached list
+                                              DataEngine
+                                                  .updateCachedFriendsList(
+                                                      friends: friends);
+                                              user.friends.remove(friend
+                                                  .soshiUsername); // update string list
+                                              DataEngine.applyUserChanges(
+                                                  user: user,
+                                                  cloud: true,
+                                                  local: true);
                                               refreshFriendScreen();
                                               Navigator.pop(context);
                                             },
@@ -361,7 +388,9 @@ class FriendTile extends StatelessWidget {
                                   title: Center(
                                     child: Text(
                                       "Cancel",
-                                      style: TextStyle(fontSize: width / 20, color: Colors.blue),
+                                      style: TextStyle(
+                                          fontSize: width / 20,
+                                          color: Colors.blue),
                                     ),
                                   ),
                                   onTap: () => Navigator.pop(context),

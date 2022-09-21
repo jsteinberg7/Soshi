@@ -35,7 +35,7 @@ class DialogBuilder {
       barrierDismissible: false,
       builder: (BuildContext c) {
         this.context = c;
-        return SpinKitChasingDots(color: Colors.cyan, size: 80);
+        return CircularProgressIndicator.adaptive();
       },
     );
   }

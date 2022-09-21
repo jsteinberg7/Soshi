@@ -103,7 +103,10 @@ class ProfileSettingsState extends State<ProfileSettings> {
           onPressed: () {
             print("verify discard changes?");
             CustomAlertDialogDoubleChoice.showCustomAlertDialogDoubleChoice(
-                "Unsaved changes will be discarded", "Yes", "No", () {
+                "Unsaved Changes",
+                "Unsaved changes will be discarded",
+                "Yes",
+                "No", () {
               Navigator.pop(context);
               Navigator.pop(context);
             }, () {

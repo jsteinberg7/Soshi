@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -191,6 +192,7 @@ class CustomAlertDialogSingleChoice {
 class CustomAlertDialogDoubleChoice {
   static showCustomAlertDialogDoubleChoice(
       String title,
+      String messageText,
       String primaryText,
       String secondaryText,
       Function primaryAction,
@@ -219,6 +221,10 @@ class CustomAlertDialogDoubleChoice {
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                Text(messageText),
+                SizedBox(
+                  height: height / 50,
+                ),
                 TextButton(
                     child: Text(
                       primaryText,
@@ -234,10 +240,8 @@ class CustomAlertDialogDoubleChoice {
                       secondaryText,
                       style: TextStyle(
                           fontSize: width / 25,
-                          color:
-                              Theme.of(context).brightness == Brightness.light
-                                  ? Colors.black
-                                  : Colors.white),
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold),
                     ),
                     onPressed: secondaryAction),
               ],
@@ -363,7 +367,7 @@ class SignOutButton extends StatelessWidget {
                       onPressed: () async {
                         await authService.signOut();
                         Navigator.pop(context); // close popup
-                       
+
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
@@ -1169,7 +1173,7 @@ class PassionBubble extends StatelessWidget {
   String passionString;
   String passionEmoji;
 
-  PassionBubble(this.passionEmoji, this.passionString);
+  PassionBubble(this.passionString, this.passionEmoji);
 
   @override
   Widget build(BuildContext context) {
@@ -1184,11 +1188,28 @@ class PassionBubble extends StatelessWidget {
             borderRadius: BorderRadius.circular(10.0)),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(8, 2, 8, 5),
-          child: Container(
-            child: Text(
-              passionEmoji + passionString,
-              style: TextStyle(fontSize: width / 25),
-            ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                child: Text(
+                  passionEmoji,
+                  style: TextStyle(fontSize: width / 20),
+                ),
+              ),
+              Container(
+                //color: Colors.green,
+                width: width / 6,
+                child: AutoSizeText(
+                  passionString,
+                  textAlign: TextAlign.center,
+                  maxLines: 1, //passion.name.contains(" ") ? 2 : 1,
+                  style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.width / 25),
+                  minFontSize: 1,
+                ),
+              ),
+            ],
           ),
           // child: Container(
           //   width: width / 4.5,

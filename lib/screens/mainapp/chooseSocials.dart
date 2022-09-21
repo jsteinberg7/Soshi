@@ -190,6 +190,9 @@ class _ChooseSocialsState extends State<ChooseSocials> {
                 style: TextStyle(color: Colors.blue, fontSize: width / 23),
               ),
               onPressed: () async {
+                // CircularProgressIndicator dialogBuilder =
+                //     new CircularProgressIndicator.adaptive();
+
                 DialogBuilder dialogBuilder = new DialogBuilder(context);
                 dialogBuilder.showLoadingIndicator();
 

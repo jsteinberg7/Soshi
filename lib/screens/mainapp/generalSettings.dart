@@ -221,7 +221,8 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                             .showCustomAlertDialogDoubleChoice(
                                 "Sign Out",
                                 "Are you sure you want to sign out?",
-                                "", () async {
+                                "Yes",
+                                "No", () async {
                           await DataEngine.forceClear();
                           await authService.signOut();
                           Navigator.pop(context); // close popup
