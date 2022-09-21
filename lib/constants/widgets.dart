@@ -221,7 +221,10 @@ class CustomAlertDialogDoubleChoice {
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(messageText),
+                Text(
+                  messageText,
+                  textAlign: TextAlign.center,
+                ),
                 SizedBox(
                   height: height / 50,
                 ),
