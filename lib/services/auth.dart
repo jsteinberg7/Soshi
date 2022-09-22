@@ -20,14 +20,24 @@ class AuthService {
   }
 
   // sign in with email and password
-  Future signInWithEmailAndPassword({String emailIn, String passwordIn, BuildContext contextIn, @required Function refreshIn}) async {
+  Future signInWithEmailAndPassword(
+      {String emailIn,
+      String passwordIn,
+      BuildContext contextIn,
+      @required Function refreshIn}) async {
     try {
-      UserCredential loginResult = await _auth.signInWithEmailAndPassword(email: emailIn, password: passwordIn); // signs user in, initiates login
+      UserCredential loginResult = await _auth.signInWithEmailAndPassword(
+          email: emailIn,
+          password: passwordIn); // signs user in, initiates login
 
       User user = loginResult.user;
       log("SOSHI USERNAME UPDATE: " + user.uid);
 
-      await FirebaseFirestore.instance.collection("emailToUsername").doc(emailIn).get().then((value) async {
+      await FirebaseFirestore.instance
+          .collection("emailToUsername")
+          .doc(emailIn)
+          .get()
+          .then((value) async {
         String soshiUsername = value.get("soshiUsername");
 
         await DataEngine.freshSetup(soshiUsername: soshiUsername);
@@ -59,10 +69,12 @@ class AuthService {
     final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
 
     // Obtain the auth details from the request
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
 
     // Create a new credential
-    final credential = GoogleAuthProvider.credential(accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
+    final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
 
     try {
       // check if user already exists with email
@@ -79,7 +91,8 @@ class AuthService {
       soshiUsername = googleUser.email.split('@')[0];
 
       // use username to create user file
-      DatabaseService databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
+      DatabaseService databaseService =
+          new DatabaseService(currSoshiUsernameIn: soshiUsername);
       await databaseService.createUserFile(
           username: soshiUsername.toLowerCase().trim(),
           email: googleUser.email,
@@ -112,23 +125,29 @@ class AuthService {
     BuildContext contextIn,
   }) async {
     try {
-      DatabaseService databaseService = DatabaseService(currSoshiUsernameIn: username);
+      DatabaseService databaseService =
+          DatabaseService(currSoshiUsernameIn: username);
       if (await databaseService.isUsernameTaken(username)) {
         throw new ErrorDescription("Username is taken, try another one");
       }
 
       await DataEngine.freshSetup(soshiUsername: username);
-      
-      await databaseService.createUserFile(username: username, email: email, first: first, last: last);
+
+      //SoshiUser soshiUser = DataEngine.getUserObject(firebaseOverride: true);
+
+      await databaseService.createUserFile(
+          username: username, email: email, first: first, last: last);
       print("file created");
 
       print("shared prefs initialized");
-      UserCredential registerResult = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      UserCredential registerResult = await _auth
+          .createUserWithEmailAndPassword(email: email, password: password);
       User user = registerResult.user;
       // refreshIn();
       print("✅ successfully created new account! ${email}");
 
-      print("◀◀◀ username ${username}\n email ${email} \n password ${password} \n ${first} \n ${last} ◀◀◀");
+      print(
+          "◀◀◀ username ${username}\n email ${email} \n password ${password} \n ${first} \n ${last} ◀◀◀");
 
       return user;
     } catch (e) {
