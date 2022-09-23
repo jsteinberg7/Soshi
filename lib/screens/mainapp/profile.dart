@@ -95,21 +95,9 @@ class _SMTileState extends State<SMTile> {
               Popups.editUsernamePopup(context, platformName,
                   MediaQuery.of(context).size.width, DataEngine.globalUser);
             }
-            // prompt user to enter username
-
           }
 
           widget.selectedSocial.switchStatus = true;
-
-          // if (LocalDataService.getFirstSwitchTap()) {
-          //   LocalDataService.updateFirstSwitchTap(false);
-          //   CustomAlertDialogSingleChoice.showCustomAlertDialogSingleChoice(
-          //       "Toggle Switches",
-          //       "These switches allow you to turn on and off what you'd like to share.",
-          //       "Done", () {
-          //     Navigator.of(context).pop();
-          //   }, context, height, width);
-          // }
         }
         String usernameControllerLower = usernameController.text.toLowerCase();
         widget.selectedSocial.username = usernameControllerLower.trim();
@@ -234,15 +222,20 @@ class _SMTileState extends State<SMTile> {
                     value: this.isSwitched,
                     activeColor: Colors.cyan,
                     onChanged: (bool value) {
+                      print("Username" +
+                          widget.user.getUsernameGivenPlatform(
+                              platform: platformName));
                       HapticFeedback.lightImpact();
 
                       if ((widget.user.getUsernameGivenPlatform(
                                       platform: platformName) ==
                                   null ||
                               widget.user.getUsernameGivenPlatform(
-                                          platform: platformName) ==
-                                      "" &&
-                                  value == true) &&
+                                      platform: platformName) ==
+                                  ""
+                          //     &&
+                          // value == true
+                          ) &&
                           platformName != "Contact") {
                         Popups.editUsernamePopup(
                             context,
@@ -367,7 +360,6 @@ class ProfileState extends State<Profile> {
     var width = MediaQuery.of(context).size.width;
     // UV tried to use the dynamic container size. Will neeed to find a better way.
     int addedContainerSize = 30;
-    print("height: ${height} ${width}");
 
     return FutureBuilder(
         future: loadDataEngine(),
@@ -380,29 +372,34 @@ class ProfileState extends State<Profile> {
             int numSocialsPlusAddTile = this.userSocials.length + 1;
             int rows = (numSocialsPlusAddTile / 3).ceil();
 
-            // if (rows == 1) {
-            //   addedContainerSize = 0;
-            // }
+            if (rows == 1) {
+              addedContainerSize = 0;
+            }
 
-            // if (numSocialsPlusAddTile > 3) {
-            //   print(rows);
-            //   if (rows > 1) {
-            //     for (int i = 0; i < rows; i++) {
-            //       addedContainerSize += 70;
-            //       // if (height < 800) {
-            //       //   containerSize += .2;
-            //       // } else {
-            //       //   containerSize += .19;
-            //       // }
-            //     }
-            //   }
-            // }
+            if (numSocialsPlusAddTile > 3) {
+              print(rows);
+              if (rows > 1) {
+                for (int i = 0; i < rows; i++) {
+                  if (i > 2) {
+                    addedContainerSize += 100;
+                  } else {
+                    addedContainerSize += 60;
+                  }
+
+                  // if (height < 800) {
+                  //   containerSize += .2;
+                  // } else {
+                  //   containerSize += .19;
+                  // }
+                }
+              }
+            }
 
             print(addedContainerSize);
 
             return SingleChildScrollView(
               child: Container(
-                height: height,
+                height: height + addedContainerSize,
                 child: Stack(
                   children: [
                     Positioned(
@@ -474,414 +471,214 @@ class ProfileState extends State<Profile> {
                                     child: Padding(
                                       padding: EdgeInsets.fromLTRB(width / 40,
                                           width / 40, width / 40, 0),
-                                      child: Column(
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            children: <Widget>[
-                                              IconButton(
-                                                  onPressed: () {
-                                                    Scaffold.of(context)
-                                                        .openDrawer();
-                                                  },
-                                                  icon: Icon(CupertinoIcons
-                                                      .line_horizontal_3)),
-                                              Column(
-                                                children: [
-                                                  Container(
-                                                    width: width / 1.5,
-                                                    child: Center(
-                                                      child: AutoSizeText(
-                                                        user.firstName +
-                                                            " " +
-                                                            user.lastName,
-                                                        maxLines: 1,
-                                                        minFontSize: 1,
-                                                        style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: width / 16,
-                                                        ),
+                                      child: Column(children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: <Widget>[
+                                            IconButton(
+                                                onPressed: () {
+                                                  Scaffold.of(context)
+                                                      .openDrawer();
+                                                },
+                                                icon: Icon(CupertinoIcons
+                                                    .line_horizontal_3)),
+                                            Column(
+                                              children: [
+                                                Container(
+                                                  width: width / 1.5,
+                                                  child: Center(
+                                                    child: AutoSizeText(
+                                                      user.firstName +
+                                                          " " +
+                                                          user.lastName,
+                                                      maxLines: 1,
+                                                      minFontSize: 1,
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: width / 16,
                                                       ),
                                                     ),
                                                   ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            top: 3.0,
-                                                            bottom: 2.0),
-                                                    child: SoshiUsernameText(
-                                                        user.soshiUsername,
-                                                        fontSize: width / 22,
-                                                        isVerified:
-                                                            user.verified),
-                                                  )
-                                                ],
-                                              ),
-                                              IconButton(
-                                                  onPressed: () {
-                                                    Navigator.push(context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) {
-                                                      return Scaffold(
-                                                          body: ProfileSettings(
-                                                              // importProfileNotifier: widget.importProfileNotifier
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 3.0,
+                                                          bottom: 2.0),
+                                                  child: SoshiUsernameText(
+                                                      user.soshiUsername,
+                                                      fontSize: width / 22,
+                                                      isVerified:
+                                                          user.verified),
+                                                )
+                                              ],
+                                            ),
+                                            IconButton(
+                                                onPressed: () {
+                                                  Navigator.push(context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) {
+                                                    return Scaffold(
+                                                        body: ProfileSettings(
+                                                            // importProfileNotifier: widget.importProfileNotifier
 
-                                                              ));
-                                                    })).then((value) {
-                                                      print(
-                                                          "☹️☹️☹️☹️☹️ returnign from profile settings, must refresh screen state");
-                                                      setState(() {});
-                                                    });
-                                                  },
+                                                            ));
+                                                  })).then((value) {
+                                                    print(
+                                                        "☹️☹️☹️☹️☹️ returnign from profile settings, must refresh screen state");
+                                                    setState(() {});
+                                                  });
+                                                },
 
-                                                  // {
-                                                  //   Navigator.push(context,
-                                                  //       MaterialPageRoute(
-                                                  //           builder: (context) {
-                                                  //     return Scaffold(
-                                                  //         body: ProfileSettings(
-                                                  //             // importProfileNotifier: widget.importProfileNotifier
+                                                // {
+                                                //   Navigator.push(context,
+                                                //       MaterialPageRoute(
+                                                //           builder: (context) {
+                                                //     return Scaffold(
+                                                //         body: ProfileSettings(
+                                                //             // importProfileNotifier: widget.importProfileNotifier
 
-                                                  //             ));
-                                                  //   }));
-                                                  // },
-                                                  icon:
-                                                      Icon(CupertinoIcons.pen)),
-                                            ],
-                                          ),
-                                          SizedBox(
-                                            height: height / 100,
-                                          ),
-
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              SizedBox(
-                                                width: width / 4,
+                                                //             ));
+                                                //   }));
+                                                // },
+                                                icon: Icon(CupertinoIcons.pen)),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: height / 100,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            SizedBox(
+                                              width: width / 4,
+                                              child: Column(children: [
+                                                Text(
+                                                    user.friends.length
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                        letterSpacing: 1.2,
+                                                        fontSize: width / 25,
+                                                        fontWeight:
+                                                            FontWeight.bold)),
+                                                user.friends.length == 1
+                                                    ? Text(
+                                                        "Friend",
+                                                        style: TextStyle(
+                                                            //fontWeight: FontWeight.bold,
+                                                            letterSpacing: 1.2,
+                                                            fontSize:
+                                                                width / 25),
+                                                      )
+                                                    : Text("Friends",
+                                                        style: TextStyle(
+                                                            letterSpacing: 1.2,
+                                                            fontSize:
+                                                                width / 25)),
+                                              ]),
+                                            ),
+                                            ProfilePic(
+                                                radius: width / 6.5,
+                                                url: user.photoURL),
+                                            SizedBox(
+                                              width: width / 4,
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  Popups
+                                                      .soshiPointsExplainedPopup(
+                                                          context,
+                                                          width,
+                                                          height);
+                                                },
                                                 child: Column(children: [
                                                   Text(
-                                                      user.friends.length
+                                                      DataEngine.globalUser
+                                                          .soshiPoints
                                                           .toString(),
                                                       style: TextStyle(
                                                           letterSpacing: 1.2,
                                                           fontSize: width / 25,
                                                           fontWeight:
                                                               FontWeight.bold)),
-                                                  user.friends.length == 1
-                                                      ? Text(
-                                                          "Friend",
-                                                          style: TextStyle(
-                                                              //fontWeight: FontWeight.bold,
-                                                              letterSpacing:
-                                                                  1.2,
-                                                              fontSize:
-                                                                  width / 25),
-                                                        )
-                                                      : Text("Friends",
-                                                          style: TextStyle(
-                                                              letterSpacing:
-                                                                  1.2,
-                                                              fontSize:
-                                                                  width / 25)),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      DataEngine.globalUser
+                                                                  .soshiPoints ==
+                                                              1
+                                                          ? Text("Bolt",
+                                                              style: TextStyle(
+                                                                  letterSpacing:
+                                                                      1.2,
+                                                                  fontSize:
+                                                                      width /
+                                                                          25))
+                                                          : Text("Bolts",
+                                                              style: TextStyle(
+                                                                  letterSpacing:
+                                                                      1.2,
+                                                                  fontSize:
+                                                                      width /
+                                                                          25)),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(left: 2),
+                                                        child: IconButton(
+                                                          onPressed: () {
+                                                            Popups
+                                                                .soshiPointsExplainedPopup(
+                                                                    context,
+                                                                    width,
+                                                                    height);
+                                                          },
+                                                          padding:
+                                                              EdgeInsets.zero,
+                                                          constraints:
+                                                              BoxConstraints(
+                                                                  maxHeight:
+                                                                      width /
+                                                                          28,
+                                                                  maxWidth:
+                                                                      width /
+                                                                          28,
+                                                                  minHeight: 0,
+                                                                  minWidth: 0),
+                                                          icon: Icon(
+                                                              CupertinoIcons
+                                                                  .info_circle,
+                                                              size: width / 28),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
                                                 ]),
                                               ),
-                                              ProfilePic(
-                                                  radius: width / 6.5,
-                                                  url: user.photoURL),
-                                              SizedBox(
-                                                width: width / 4,
-                                                child: GestureDetector(
-                                                  onTap: () {
-                                                    Popups
-                                                        .soshiPointsExplainedPopup(
-                                                            context,
-                                                            width,
-                                                            height);
-                                                  },
-                                                  child: Column(children: [
-                                                    Text(
-                                                        DataEngine.globalUser
-                                                            .soshiPoints
-                                                            .toString(),
-                                                        style: TextStyle(
-                                                            letterSpacing: 1.2,
-                                                            fontSize:
-                                                                width / 25,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold)),
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        DataEngine.globalUser
-                                                                    .soshiPoints ==
-                                                                1
-                                                            ? Text("Bolt",
-                                                                style: TextStyle(
-                                                                    letterSpacing:
-                                                                        1.2,
-                                                                    fontSize:
-                                                                        width /
-                                                                            25))
-                                                            : Text("Bolts",
-                                                                style: TextStyle(
-                                                                    letterSpacing:
-                                                                        1.2,
-                                                                    fontSize:
-                                                                        width /
-                                                                            25)),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 2),
-                                                          child: IconButton(
-                                                            onPressed: () {
-                                                              Popups
-                                                                  .soshiPointsExplainedPopup(
-                                                                      context,
-                                                                      width,
-                                                                      height);
-                                                            },
-                                                            padding:
-                                                                EdgeInsets.zero,
-                                                            constraints:
-                                                                BoxConstraints(
-                                                                    maxHeight:
-                                                                        width /
-                                                                            28,
-                                                                    maxWidth:
-                                                                        width /
-                                                                            28,
-                                                                    minHeight:
-                                                                        0,
-                                                                    minWidth:
-                                                                        0),
-                                                            icon: Icon(
-                                                                CupertinoIcons
-                                                                    .info_circle,
-                                                                size:
-                                                                    width / 28),
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ]),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: height / 60),
+                                        user.bio == "" || user.bio == null
+                                            ? Container()
+                                            : Container(
+                                                child: Padding(
+                                                padding: EdgeInsets.fromLTRB(
+                                                    width / 7, 0, width / 7, 0),
+                                                child: AutoSizeText(
+                                                  user.bio,
+                                                  maxLines: 3,
+                                                  minFontSize: 1,
+                                                  style: TextStyle(
+                                                      fontSize: width / 22),
+                                                  textAlign: TextAlign.center,
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(height: height / 60),
-                                          user.bio == "" || user.bio == null
-                                              ? Container()
-                                              : Container(
-                                                  child: Padding(
-                                                  padding: EdgeInsets.fromLTRB(
-                                                      width / 7,
-                                                      0,
-                                                      width / 7,
-                                                      0),
-                                                  child: AutoSizeText(
-                                                    user.bio,
-                                                    maxLines: 3,
-                                                    minFontSize: 1,
-                                                    style: TextStyle(
-                                                        fontSize: width / 22),
-                                                    textAlign: TextAlign.center,
-                                                  ),
-                                                )),
-
-                                          // Padding(
-                                          //   padding:
-                                          //       const EdgeInsets.fromLTRB(
-                                          //           0, 5, 10, 0),
-                                          //   child: PassionTileList(),
-                                          // ),
-                                        ],
-// =======
-//                   height: height + addedContainerSize,
-//                   child: Stack(
-//                     children: [
-//                       Positioned(
-//                         top: 0,
-//                         left: 0,
-//                         right: 0,
-//                         child: Stack(
-//                           children: [
-//                             Container(
-//                               width: width,
-//                               // height: height / containerSize,
-//                               height: MediaQuery.of(context).size.height / 2.3,
-//                               child: Image.network(Defaults.defaultProfilePic, fit: BoxFit.fill),
-//                             ),
-//                             ProfilePicBackdrop(user.photoURL, height: height / 2, width: width),
-//                             GlassmorphicContainer(
-//                               // height: height / containerSize,
-//                               height: height / 2,
-//                               width: width,
-//                               borderRadius: 0,
-//                               blur: 8,
-//                               alignment: Alignment.bottomCenter,
-//                               border: 2,
-//                               linearGradient: LinearGradient(
-//                                 begin: Alignment.topLeft,
-//                                 end: Alignment.bottomRight,
-//                                 colors: [
-//                                   (Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black).withOpacity(0.8),
-//                                   (Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black).withOpacity(0.4)
-//                                 ],
-//                                 stops: [0.1, 1],
-//                               ),
-//                               borderGradient: LinearGradient(
-//                                 begin: Alignment.topLeft,
-//                                 end: Alignment.bottomRight,
-//                                 colors: [
-//                                   (Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black).withOpacity(0.5),
-//                                   (Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black).withOpacity(0.5),
-//                                 ],
-//                               ),
-//                             ),
-//                             Container(
-//                               child: Column(
-//                                 mainAxisSize: MainAxisSize.min,
-//                                 children: [
-//                                   SafeArea(
-//                                     child: Container(
-//                                       // color: Colors.green,
-//                                       // height: height / containerSize,
-//                                       width: width,
-//                                       child: Padding(
-//                                         padding: EdgeInsets.fromLTRB(width / 40, width / 40, width / 40, 0),
-//                                         child: Column(
-//                                           children: [
-//                                             Row(
-//                                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                                               children: <Widget>[
-//                                                 IconButton(
-//                                                     onPressed: () {
-//                                                       Scaffold.of(context).openDrawer();
-//                                                     },
-//                                                     icon: Icon(CupertinoIcons.line_horizontal_3)),
-//                                                 Column(
-//                                                   children: [
-//                                                     Container(
-//                                                       width: width / 1.5,
-//                                                       child: Center(
-//                                                         child: AutoSizeText(
-//                                                           user.firstName + " " + user.lastName,
-//                                                           maxLines: 1,
-//                                                           style: TextStyle(
-//                                                             fontWeight: FontWeight.bold,
-//                                                             fontSize: width / 16,
-//                                                           ),
-//                                                         ),
-//                                                       ),
-//                                                     ),
-//                                                     Padding(
-//                                                       padding: const EdgeInsets.only(top: 3.0, bottom: 2.0),
-//                                                       child: SoshiUsernameText(user.soshiUsername, fontSize: width / 22, isVerified: user.verified),
-//                                                     )
-//                                                   ],
-//                                                 ),
-//                                                 IconButton(
-//                                                     onPressed: () {
-//                                                       Navigator.push(context, MaterialPageRoute(builder: (context) {
-//                                                         return Scaffold(
-//                                                             body: ProfileSettings(
-//                                                                 // importProfileNotifier: widget.importProfileNotifier
-
-//                                                                 ));
-//                                                       })).then((value) {
-//                                                         print("☹️☹️☹️☹️☹️ returnign from profile settings, must refresh screen state");
-//                                                         setState(() {});
-//                                                       });
-//                                                     },
-//                                                     icon: Icon(CupertinoIcons.pen)),
-//                                               ],
-//                                             ),
-//                                             SizedBox(
-//                                               height: height / 100,
-//                                             ),
-
-//                                             Row(
-//                                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                                               children: [
-//                                                 SizedBox(
-//                                                   width: width / 4,
-//                                                   child: Column(children: [
-//                                                     Text(user.friends.length.toString(),
-//                                                         style: TextStyle(letterSpacing: 1.2, fontSize: width / 25, fontWeight: FontWeight.bold)),
-//                                                     user.friends.length == 1
-//                                                         ? Text(
-//                                                             "Friend",
-//                                                             style: TextStyle(
-//                                                                 //fontWeight: FontWeight.bold,
-//                                                                 letterSpacing: 1.2,
-//                                                                 fontSize: width / 25),
-//                                                           )
-//                                                         : Text("Friends", style: TextStyle(letterSpacing: 1.2, fontSize: width / 25)),
-//                                                   ]),
-//                                                 ),
-//                                                 ProfilePic(radius: width / 6.5, url: LocalDataService.getLocalProfilePictureURL()),
-//                                                 SizedBox(
-//                                                   width: width / 4,
-//                                                   child: GestureDetector(
-//                                                     onTap: () {
-//                                                       Popups.soshiPointsExplainedPopup(context, width, height);
-//                                                     },
-//                                                     child: Column(children: [
-//                                                       Text(LocalDataService.getSoshiPoints().toString(),
-//                                                           style: TextStyle(letterSpacing: 1.2, fontSize: width / 25, fontWeight: FontWeight.bold)),
-//                                                       Row(
-//                                                         mainAxisAlignment: MainAxisAlignment.center,
-//                                                         children: [
-//                                                           LocalDataService.getSoshiPoints() == 1
-//                                                               ? Text("Bolt", style: TextStyle(letterSpacing: 1.2, fontSize: width / 25))
-//                                                               : Text("Bolts", style: TextStyle(letterSpacing: 1.2, fontSize: width / 25)),
-//                                                           Padding(
-//                                                             padding: const EdgeInsets.only(left: 2),
-//                                                             child: IconButton(
-//                                                               onPressed: () {
-//                                                                 Popups.soshiPointsExplainedPopup(context, width, height);
-//                                                               },
-//                                                               padding: EdgeInsets.zero,
-//                                                               constraints: BoxConstraints(
-//                                                                   maxHeight: width / 28, maxWidth: width / 28, minHeight: 0, minWidth: 0),
-//                                                               icon: Icon(CupertinoIcons.info_circle, size: width / 28),
-//                                                             ),
-//                                                           )
-//                                                         ],
-//                                                       ),
-//                                                     ]),
-//                                                   ),
-//                                                 ),
-//                                               ],
-//                                             ),
-//                                             //SizedBox(height: height / 1),
-//                                             Padding(
-//                                                 padding: EdgeInsets.fromLTRB(width / 5, height / 3, width / 5, 0),
-//                                                 child: user.bio == "" || user.bio == null
-//                                                     ? Container()
-//                                                     : Container(
-//                                                         child: //Padding(
-//                                                             //padding: EdgeInsets.fromLTRB(width / 5, 0, width / 5, 0),
-//                                                             //child:
-//                                                             AutoSizeText(
-//                                                           LocalDataService.getBio(),
-//                                                           maxLines: 3,
-//                                                           minFontSize: 17,
-//                                                           textAlign: TextAlign.center,
-//                                                         ),
-//                                                       )),
-//                                           ],
-//                                         ),
-// >>>>>>> merged_main
-                                      ),
+                                              )),
+                                      ]),
                                     ),
                                   ),
                                 ),

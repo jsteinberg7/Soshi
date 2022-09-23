@@ -293,8 +293,8 @@ class Popups {
                 borderRadius: BorderRadius.all(Radius.circular(25.0))),
             // backgroundColor: Colors.blueGrey[900],
             title: Text(
-              platformName.contains("Cryptowallet")
-                  ? "Edit your Crypto Hash"
+              platformName.contains("AppleMusic")
+                  ? "Edit your Apple Music"
                   : "Edit your " + platformName,
             ),
             //   style: TextStyle(
@@ -349,7 +349,7 @@ class Popups {
                     'Done',
                     style: TextStyle(fontSize: width / 20, color: Colors.blue),
                   ),
-                  onPressed: () async {
+                  onPressed: () {
                     if (social.usernameController.text != "") {
                       DataEngine.applyUserChanges(
                           user: user, cloud: true, local: true);
