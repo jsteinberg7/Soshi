@@ -126,8 +126,10 @@ class DataEngine {
     String bio = fetch['Bio'] ?? "";
     List<String> friends = (fetch['Friends'].cast<String>() ?? []);
 
-    String shortDynamicLink = fetch['Short Dynamic Link'] ?? await DynamicLinkService.createShortDynamicLink(soshiUsername);
-    String longDynamicLink = fetch['Long Dynamic Link'] ?? await DynamicLinkService.createLongDynamicLink(soshiUsername);
+    String shortDynamicLink =
+        fetch['Short Dynamic Link'] ?? await DynamicLinkService.createShortDynamicLink(soshiUsername);
+    String longDynamicLink =
+        fetch['Long Dynamic Link'] ?? await DynamicLinkService.createLongDynamicLink(soshiUsername);
 
     //print(dynamicLink);
     log("[⚙ Data Engine ⚙] basic info built ✅");
@@ -166,7 +168,11 @@ class DataEngine {
               usernameController: TextEditingController(text: fetch['Usernames'][key]));
         } else {
           makeSocial = Social(
-              username: "", platformName: key.toString(), switchStatus: false, isChosen: false, usernameController: TextEditingController(text: ""));
+              username: "",
+              platformName: key.toString(),
+              switchStatus: false,
+              isChosen: false,
+              usernameController: TextEditingController(text: ""));
         }
 
         socials.add(makeSocial);
@@ -312,7 +318,7 @@ class SoshiUser {
 
   //Will ignore case in input platform String
   getUsernameGivenPlatform({@required String platform}) {
-    if (this.lookupSocial[platform] == null || this.lookupSocial[platform] == "") {
+    if (this.lookupSocial[platform].username == null || this.lookupSocial[platform].username == "") {
       return Defaults.NO_USERNAME;
     }
     return this.lookupSocial[platform].username;
@@ -455,7 +461,11 @@ class Friend {
     var data = jsonDecode(json);
     List<Friend> friends = [];
     for (var entry in data) {
-      friends.add(Friend(fullName: entry["Name"], soshiUsername: entry["Username"], photoURL: entry["Url"], isVerified: entry["Verified"]));
+      friends.add(Friend(
+          fullName: entry["Name"],
+          soshiUsername: entry["Username"],
+          photoURL: entry["Url"],
+          isVerified: entry["Verified"]));
     }
     print(data);
     return friends;

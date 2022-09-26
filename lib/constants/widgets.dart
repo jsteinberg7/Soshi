@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:contacts_service/contacts_service.dart';
@@ -16,7 +15,6 @@ import 'package:soshi/screens/login/newIntroFlowSri.dart';
 import 'package:soshi/services/auth.dart';
 import 'package:soshi/services/dataEngine.dart';
 import 'package:soshi/services/database.dart';
-import 'package:soshi/services/localData.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:soshi/services/url.dart';
 import '../screens/login/loading.dart';
@@ -84,11 +82,7 @@ class RectangularProfilePic extends StatelessWidget {
   String url = "";
   bool defaultPic;
   File file;
-  RectangularProfilePic(
-      {@required double radius,
-      @required String url,
-      bool defaultPic = false,
-      File file = null}) {
+  RectangularProfilePic({@required double radius, @required String url, bool defaultPic = false, File file = null}) {
     this.customSize = radius;
     this.url = url;
     this.defaultPic = defaultPic;
@@ -136,21 +130,14 @@ class RectangularProfilePic extends StatelessWidget {
 }
 
 class CustomAlertDialogSingleChoice {
-  static showCustomAlertDialogSingleChoice(
-      String title,
-      String message,
-      String primaryText,
-      Function primaryAction,
-      BuildContext context,
-      double height,
-      double width) {
+  static showCustomAlertDialogSingleChoice(String title, String message, String primaryText, Function primaryAction,
+      BuildContext context, double height, double width) {
     showDialog(
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(30.0))),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30.0))),
             //backgroundColor: Colors.grey.shade800,
             // backgroundColor: Colors.blueGrey[900],
             title: Text(
@@ -176,10 +163,7 @@ class CustomAlertDialogSingleChoice {
                 TextButton(
                     child: Text(
                       primaryText,
-                      style: TextStyle(
-                          fontSize: width / 25,
-                          color: Colors.blue,
-                          fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: width / 25, color: Colors.blue, fontWeight: FontWeight.bold),
                     ),
                     onPressed: primaryAction),
               ],
@@ -190,23 +174,14 @@ class CustomAlertDialogSingleChoice {
 }
 
 class CustomAlertDialogDoubleChoice {
-  static showCustomAlertDialogDoubleChoice(
-      String title,
-      String messageText,
-      String primaryText,
-      String secondaryText,
-      Function primaryAction,
-      Function secondaryAction,
-      BuildContext context,
-      double height,
-      double width) {
+  static showCustomAlertDialogDoubleChoice(String title, String messageText, String primaryText, String secondaryText,
+      Function primaryAction, Function secondaryAction, BuildContext context, double height, double width) {
     showDialog(
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(30.0))),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30.0))),
             //backgroundColor: Colors.grey.shade800,
             // backgroundColor: Colors.blueGrey[900],
             title: Text(
@@ -231,20 +206,14 @@ class CustomAlertDialogDoubleChoice {
                 TextButton(
                     child: Text(
                       primaryText,
-                      style: TextStyle(
-                          fontSize: width / 25,
-                          color: Colors.blue,
-                          fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: width / 25, color: Colors.blue, fontWeight: FontWeight.bold),
                     ),
                     onPressed: primaryAction),
                 Divider(),
                 TextButton(
                     child: Text(
                       secondaryText,
-                      style: TextStyle(
-                          fontSize: width / 25,
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: width / 25, color: Colors.red, fontWeight: FontWeight.bold),
                     ),
                     onPressed: secondaryAction),
               ],
@@ -270,8 +239,7 @@ class CustomAlertDialogDoubleChoiceWithAsset {
         barrierDismissible: false,
         builder: (BuildContext context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(30.0))),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30.0))),
             //backgroundColor: Colors.grey.shade800,
             // backgroundColor: Colors.blueGrey[900],
             title: Text(
@@ -296,10 +264,7 @@ class CustomAlertDialogDoubleChoiceWithAsset {
                 TextButton(
                     child: Text(
                       primaryText,
-                      style: TextStyle(
-                          fontSize: width / 25,
-                          color: Colors.blue,
-                          fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: width / 25, color: Colors.blue, fontWeight: FontWeight.bold),
                     ),
                     onPressed: primaryAction),
                 Divider(),
@@ -308,10 +273,7 @@ class CustomAlertDialogDoubleChoiceWithAsset {
                       secondaryText,
                       style: TextStyle(
                           fontSize: width / 25,
-                          color:
-                              Theme.of(context).brightness == Brightness.light
-                                  ? Colors.black
-                                  : Colors.white),
+                          color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white),
                     ),
                     onPressed: secondaryAction),
               ],
@@ -331,8 +293,7 @@ class SignOutButton extends StatelessWidget {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(40.0))),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40.0))),
               // backgroundColor: Colors.blueGrey[900],
               title: Text(
                 "Sign Out",
@@ -371,10 +332,7 @@ class SignOutButton extends StatelessWidget {
                         await authService.signOut();
                         Navigator.pop(context); // close popup
 
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: ((context) => NewIntroFlow())));
+                        Navigator.pushReplacement(context, MaterialPageRoute(builder: ((context) => NewIntroFlow())));
                       },
                     ),
                   ],
@@ -401,17 +359,15 @@ class ActivatePortalButton extends StatelessWidget {
     return Container(
         child: GestureDetector(
       onTap: () {
-        CustomAlertDialogDoubleChoiceWithAsset
-            .showCustomAlertDialogDoubleChoiceWithAsset(
-                "Soshi Portal",
-                "assets/images/misc/NFCTemp.png", // To be replaced with NFC activating gif
-                "Activate!",
-                "Done", () {
+        CustomAlertDialogDoubleChoiceWithAsset.showCustomAlertDialogDoubleChoiceWithAsset(
+            "Soshi Portal",
+            "assets/images/misc/NFCTemp.png", // To be replaced with NFC activating gif
+            "Activate!",
+            "Done", () {
           Navigator.pop(context);
           print("NFC writer pops up");
           showModalBottomSheet(
-              constraints:
-                  BoxConstraints(minWidth: width / 1.1, maxWidth: width / 1.1),
+              constraints: BoxConstraints(minWidth: width / 1.1, maxWidth: width / 1.1),
               backgroundColor: Colors.transparent,
               context: context,
               builder: (BuildContext context) {
@@ -428,27 +384,25 @@ class ActivatePortalButton extends StatelessWidget {
       child: Container(
           height: height / 15,
           width: width / 2.1,
-          child: Card(
-            // color: Colors.grey.shade800,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10))),
-            child: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Activate Soshi Portal",
-                    style: TextStyle(
-                        //fontWeight: FontWeight.bold,
-                        fontSize: width / 30),
-                  ),
-                  SizedBox(width: 5),
-                  Icon(
-                    CupertinoIcons.info_circle,
-                    size: width / 20,
-                  )
-                ],
-              ),
+          decoration: BoxDecoration(
+              border: Border.all(color: Colors.blue),
+              color: Theme.of(context).scaffoldBackgroundColor,
+              borderRadius: BorderRadius.all(Radius.circular(15.0))),
+          child: Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Activate Soshi Portal",
+                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue, fontSize: width / 30),
+                ),
+                SizedBox(width: 5),
+                Icon(
+                  CupertinoIcons.info_circle,
+                  size: width / 20,
+                  color: Colors.blue,
+                )
+              ],
             ),
           )),
     ));
@@ -473,9 +427,7 @@ class DeleteProfileButton extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(0, 5, 3, 3),
                 child: Icon(
                   Icons.delete,
-                  color: Theme.of(context).brightness == Brightness.light
-                      ? Colors.black
-                      : Colors.white,
+                  color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
                 ),
               ),
               Text("Delete Account",
@@ -489,8 +441,7 @@ class DeleteProfileButton extends StatelessWidget {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(40.0))),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40.0))),
                     backgroundColor: Colors.blueGrey[900],
                     title: Text(
                       "Delete Account",
@@ -527,16 +478,13 @@ class DeleteProfileButton extends StatelessWidget {
                             onPressed: () async {
                               String soshiUsername = DataEngine.soshiUsername;
 
-                              DatabaseService databaseService =
-                                  new DatabaseService(
-                                      currSoshiUsernameIn: soshiUsername);
+                              DatabaseService databaseService = new DatabaseService(currSoshiUsernameIn: soshiUsername);
                               await databaseService.deleteProfileData();
 
                               // wipe profile data in firestore
                               AuthService authService = new AuthService();
                               Navigator.of(context).pop();
-                              await authService
-                                  .deleteProfile(); // delete user account from firebase
+                              await authService.deleteProfile(); // delete user account from firebase
                               // LocalDataService.wipeSharedPreferences(); // clear local user data
                             },
                           ),
@@ -718,9 +666,7 @@ class _ReturnNumConnectionsState extends State<ReturnNumConnections> {
     if (connectionsCount.toString() == "1") {
       return Text("1 friend",
           style: TextStyle(
-            color: Theme.of(context).brightness == Brightness.light
-                ? Colors.black
-                : Colors.white,
+            color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
             letterSpacing: 2.0,
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -728,9 +674,7 @@ class _ReturnNumConnectionsState extends State<ReturnNumConnections> {
     }
     return Text(connectionsCount.toString() + " friends",
         style: TextStyle(
-          color: Theme.of(context).brightness == Brightness.light
-              ? Colors.black
-              : Colors.white,
+          color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
           letterSpacing: 2.0,
           fontSize: 20,
           fontWeight: FontWeight.bold,
@@ -744,8 +688,7 @@ class ShareButton extends StatelessWidget {
   String groupId;
   String shortDynamicLink;
 
-  ShareButton(
-      {this.size, this.soshiUsername, this.groupId, this.shortDynamicLink});
+  ShareButton({this.size, this.soshiUsername, this.groupId, this.shortDynamicLink});
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
@@ -753,10 +696,8 @@ class ShareButton extends StatelessWidget {
       onPressed: () {
         if (groupId == null) {
           Share.share(this.shortDynamicLink,
-              subject: DataEngine.globalUser.firstName +
-                  " " +
-                  DataEngine.globalUser.lastName +
-                  "'s Soshi Contact Card");
+              subject:
+                  DataEngine.globalUser.firstName + " " + DataEngine.globalUser.lastName + "'s Soshi Contact Card");
         } else {
           Share.share(
             "https://strippedsoshi.page.link" + groupId,
@@ -777,9 +718,7 @@ class CustomThreeInOut extends StatefulWidget {
     this.duration = const Duration(milliseconds: 500),
     this.delay = const Duration(milliseconds: 50),
     this.controller,
-  })  : assert(
-            !(itemBuilder is IndexedWidgetBuilder && color is Color) &&
-                !(itemBuilder == null && color == null),
+  })  : assert(!(itemBuilder is IndexedWidgetBuilder && color is Color) && !(itemBuilder == null && color == null),
             'You should specify either a itemBuilder or a color'),
         super(key: key);
 
@@ -794,8 +733,7 @@ class CustomThreeInOut extends StatefulWidget {
   _CustomThreeInOutState createState() => _CustomThreeInOutState();
 }
 
-class _CustomThreeInOutState extends State<CustomThreeInOut>
-    with SingleTickerProviderStateMixin {
+class _CustomThreeInOutState extends State<CustomThreeInOut> with SingleTickerProviderStateMixin {
   AnimationController _controller;
 
   List<Widget> _widgets;
@@ -817,8 +755,7 @@ class _CustomThreeInOutState extends State<CustomThreeInOut>
       ),
     );
 
-    _controller = widget.controller ??
-        AnimationController(vsync: this, duration: widget.duration);
+    _controller = widget.controller ?? AnimationController(vsync: this, duration: widget.duration);
 
     _controller.forward();
 
@@ -830,8 +767,7 @@ class _CustomThreeInOutState extends State<CustomThreeInOut>
       _lastAnim = _controller.value;
 
       if (_controller.isCompleted) {
-        _forwardTimer =
-            Timer(widget.delay, () => _controller?.forward(from: 0));
+        _forwardTimer = Timer(widget.delay, () => _controller?.forward(from: 0));
       }
     });
   }
@@ -897,9 +833,7 @@ class _CustomThreeInOutState extends State<CustomThreeInOut>
 
   Widget _itemBuilder(int index) => widget.itemBuilder != null
       ? widget.itemBuilder(context, index)
-      : DecoratedBox(
-          decoration:
-              BoxDecoration(color: widget.color, shape: BoxShape.circle));
+      : DecoratedBox(decoration: BoxDecoration(color: widget.color, shape: BoxShape.circle));
 }
 
 ///CircularProfileAvatar allows developers to implement circular profile avatar with border,
@@ -1010,14 +944,12 @@ class _CircularProfileAvatarState extends State<CircularProfileAvatar> {
             width: widget.radius * 2,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(widget.radius),
-              border: Border.all(
-                  width: widget.borderWidth, color: widget.borderColor),
+              border: Border.all(width: widget.borderWidth, color: widget.borderColor),
             ),
             child: Center(
               child: Container(
-                decoration: BoxDecoration(
-                    color: widget.backgroundColor,
-                    borderRadius: BorderRadius.circular(widget.radius)),
+                decoration:
+                    BoxDecoration(color: widget.backgroundColor, borderRadius: BorderRadius.circular(widget.radius)),
                 child: widget.child == null
                     ? Stack(
                         fit: StackFit.expand,
@@ -1029,8 +961,7 @@ class _CircularProfileAvatarState extends State<CircularProfileAvatar> {
                                     Container(
                                       decoration: BoxDecoration(
                                         color: widget.foregroundColor,
-                                        borderRadius: BorderRadius.circular(
-                                            widget.radius),
+                                        borderRadius: BorderRadius.circular(widget.radius),
                                       ),
                                     ),
                                     _initialsText,
@@ -1061,12 +992,8 @@ class _CircularProfileAvatarState extends State<CircularProfileAvatar> {
   Widget profileImage({bool circular = true}) {
     return widget.cacheImage
         ? ClipRRect(
-            borderRadius: circular
-                ? BorderRadius.circular(widget.radius)
-                : BorderRadius.zero,
-            child: ((widget.imageUrl != null) &&
-                    widget.imageUrl != "null" &&
-                    widget.imageUrl != null)
+            borderRadius: circular ? BorderRadius.circular(widget.radius) : BorderRadius.zero,
+            child: ((widget.imageUrl != null) && widget.imageUrl != "null" && widget.imageUrl != null)
                 ? CachedNetworkImage(
                     fit: widget.imageFit,
                     imageUrl: widget.imageUrl,
@@ -1074,8 +1001,7 @@ class _CircularProfileAvatarState extends State<CircularProfileAvatar> {
                     placeholder: widget.placeHolder,
                     imageBuilder: widget.imageBuilder,
                     progressIndicatorBuilder: widget.progressIndicatorBuilder,
-                    useOldImageOnUrlChange:
-                        widget.animateFromOldImageOnUrlChange ?? false,
+                    useOldImageOnUrlChange: widget.animateFromOldImageOnUrlChange ?? false,
                   )
                 : Image.asset(
                     'assets/images/misc/default_pic.png',
@@ -1110,49 +1036,6 @@ class SoshiAppBar extends StatelessWidget {
         statusBarBrightness: Brightness.light, // For iOS (dark icons)
       ),
       leadingWidth: 100,
-      // actions: [
-      //   Padding(
-      //     padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-      //     child: ElevatedButton(
-      //       onPressed: () {
-      //         URL.launchURL("sms:" + "5713351885");
-      //       },
-      //       style: ElevatedButton.styleFrom(
-      //           // primary: Theme.of(context).primaryColor,
-      //           //shadowColor: Colors.grey[900],
-      //           shape: RoundedRectangleBorder(
-      //               borderRadius: BorderRadius.all(Radius.circular(15.0)))),
-      //       child: Row(
-      //         children: [
-      //           Column(
-      //             crossAxisAlignment: CrossAxisAlignment.center,
-      //             mainAxisAlignment: MainAxisAlignment.center,
-      //             children: [
-      //               Text("Send",
-      //                   style: TextStyle(
-      //                       fontSize: 10,
-      //                       fontWeight: FontWeight.bold,
-      //                       letterSpacing: 1)),
-      //               Text("feedback!",
-      //                   style: TextStyle(
-      //                       fontSize: 10,
-      //                       fontWeight: FontWeight.bold,
-      //                       letterSpacing: 1)),
-      //             ],
-      //           ),
-      //           // Icon(
-      //           //   Icons.feedback,
-      //           //   color: Colors.cyan[300],
-      //           //   size: 10,
-      //           // ),
-      //         ],
-      //       ),
-
-      //       // Icon(Icons.person_rounded,
-      //       //     color: Colors.cyan[300], size: 10.0),
-      //     ),
-      //   ),
-      // ],
       elevation: 5,
       shadowColor: Colors.cyan,
       title: Padding(
@@ -1185,9 +1068,7 @@ class PassionBubble extends StatelessWidget {
 
     return Container(
         decoration: BoxDecoration(
-            color: Theme.of(context).brightness == Brightness.light
-                ? Colors.white
-                : Colors.black,
+            color: Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black,
             borderRadius: BorderRadius.circular(10.0)),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(8, 2, 8, 5),
@@ -1207,8 +1088,7 @@ class PassionBubble extends StatelessWidget {
                   passionString,
                   textAlign: TextAlign.center,
                   maxLines: 1, //passion.name.contains(" ") ? 2 : 1,
-                  style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.width / 25),
+                  style: TextStyle(fontSize: MediaQuery.of(context).size.width / 25),
                   minFontSize: 1,
                 ),
               ),
@@ -1255,12 +1135,10 @@ class SMButton extends StatelessWidget {
   String phoneFromUserObject;
   String emailFromUserObject;
 
-  SMButton(
-      {this.soshiUsername, this.platform, this.username, this.size = 70.0});
+  SMButton({this.soshiUsername, this.platform, this.username, this.size = 70.0});
 
   getUserData() async {
-    userObject = await DataEngine.getUserObject(
-        firebaseOverride: true, friendOverride: soshiUsername);
+    userObject = await DataEngine.getUserObject(firebaseOverride: true, friendOverride: soshiUsername);
   }
 
   @override
@@ -1284,21 +1162,16 @@ class SMButton extends StatelessWidget {
             await getUserData(); // Get user object based on SOSHI Username
 
             // Get phone number and email for easy handling
-            emailFromUserObject =
-                userObject.getUsernameGivenPlatform(platform: "Email");
-            phoneFromUserObject =
-                userObject.getUsernameGivenPlatform(platform: "Phone");
+            emailFromUserObject = userObject.getUsernameGivenPlatform(platform: "Email");
+            phoneFromUserObject = userObject.getUsernameGivenPlatform(platform: "Phone");
 
             // Try to load profile pic from url
-            await http
-                .get(Uri.parse(userObject.photoURL))
-                .then((http.Response response) {
+            await http.get(Uri.parse(userObject.photoURL)).then((http.Response response) {
               profilePicBytes = response.bodyBytes;
             });
           } catch (e) {
             // if url is invalid, use default profile pic
-            ByteData data =
-                await rootBundle.load("assets/images/misc/default_pic.png");
+            ByteData data = await rootBundle.load("assets/images/misc/default_pic.png");
             profilePicBytes = data.buffer.asUint8List();
           }
           Contact newContact = new Contact(
@@ -1317,14 +1190,8 @@ class SMButton extends StatelessWidget {
 
           DialogBuilder(context).hideOpenDialog();
 
-          Popups.showContactAddedPopup(
-              context,
-              width,
-              userObject.photoURL,
-              userObject.firstName,
-              userObject.lastName,
-              phoneFromUserObject,
-              emailFromUserObject);
+          Popups.showContactAddedPopup(context, width, userObject.photoURL, userObject.firstName, userObject.lastName,
+              phoneFromUserObject, emailFromUserObject);
         } else if (platform == "Cryptowallet") {
           Clipboard.setData(ClipboardData(
             text: username.toString(),
@@ -1337,8 +1204,7 @@ class SMButton extends StatelessWidget {
           ));
         } else {
           print("Launching $username");
-          URL.launchURL(
-              URL.getPlatformURL(platform: platform, username: username));
+          URL.launchURL(URL.getPlatformURL(platform: platform, username: username));
         }
       },
       iconSize: size,
@@ -1368,8 +1234,7 @@ class SoshiUsernameText extends StatelessWidget {
   double fontSize;
   String username;
   bool isVerified;
-  SoshiUsernameText(this.username,
-      {@required this.fontSize, @required this.isVerified});
+  SoshiUsernameText(this.username, {@required this.fontSize, @required this.isVerified});
 
   @override
   Widget build(BuildContext context) {

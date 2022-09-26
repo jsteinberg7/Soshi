@@ -40,8 +40,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
 
   Future pickImage() async {
     try {
-      final profilePic =
-          await ImagePicker().pickImage(source: ImageSource.gallery);
+      final profilePic = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (profilePic == null) {
         return user.photoURL;
       } else {
@@ -53,8 +52,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
     }
   }
 
-  Future<File> cropImage(String path,
-      {CropStyle cropStyle = CropStyle.circle}) async {
+  Future<File> cropImage(String path, {CropStyle cropStyle = CropStyle.circle}) async {
     return (await ImageCropper().cropImage(
         cropStyle: cropStyle,
         sourcePath: path,
@@ -75,16 +73,11 @@ class ProfileSettingsState extends State<ProfileSettings> {
       File croppedImage = await cropImage(passedInImage.path);
       FirebaseStorage firebaseStorage = FirebaseStorage.instance;
 
-      await firebaseStorage
-          .ref()
-          .child("Profile Pictures/" + user.soshiUsername)
-          .putFile(croppedImage);
+      await firebaseStorage.ref().child("Profile Pictures/" + user.soshiUsername).putFile(croppedImage);
 
       // upload image to firebase to get URL
-      String urlNew = await FirebaseStorage.instance
-          .ref()
-          .child("Profile Pictures/" + user.soshiUsername)
-          .getDownloadURL();
+      String urlNew =
+          await FirebaseStorage.instance.ref().child("Profile Pictures/" + user.soshiUsername).getDownloadURL();
 
       setState(() => tempNewURL = urlNew);
     } else {
@@ -102,24 +95,27 @@ class ProfileSettingsState extends State<ProfileSettings> {
         leading: CupertinoBackButton(
           onPressed: () {
             print("verify discard changes?");
-            CustomAlertDialogDoubleChoice.showCustomAlertDialogDoubleChoice(
-                "Unsaved Changes",
-                "Unsaved changes will be discarded",
-                "Yes",
-                "No", () {
+
+            if (user.firstNameController.text != user.firstName ||
+                user.lastNameController.text != user.lastName ||
+                user.bioController.text != user.bio) {
+              CustomAlertDialogDoubleChoice.showCustomAlertDialogDoubleChoice(
+                  "Confirm exit", "Unsaved changes will be discarded", "Ok", "Cancel", () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              }, () {
+                Navigator.pop(context);
+              }, context, height, width);
+            } else {
               Navigator.pop(context);
-              Navigator.pop(context);
-            }, () {
-              Navigator.pop(context);
-            }, context, height, width);
+            }
           },
         ),
         actions: [
           Padding(
             padding: EdgeInsets.only(right: width / 150),
             child: TextButton(
-              style: ButtonStyle(
-                  overlayColor: MaterialStateProperty.all(Colors.transparent)),
+              style: ButtonStyle(overlayColor: MaterialStateProperty.all(Colors.transparent)),
               child: Text(
                 "Done",
                 style: TextStyle(
@@ -130,8 +126,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
               onPressed: () {
                 user.photoURL = tempNewURL;
 
-                DataEngine.applyUserChanges(
-                    user: DataEngine.globalUser, cloud: true, local: true);
+                DataEngine.applyUserChanges(user: DataEngine.globalUser, cloud: true, local: true);
                 // Need alternative to refresh the profile!!!!
                 Navigator.pop(context);
               },
@@ -161,8 +156,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
               return SingleChildScrollView(
                 child: SafeArea(
                   child: Padding(
-                    padding: EdgeInsets.fromLTRB(
-                        width / 40, height / 50, width / 40, 0),
+                    padding: EdgeInsets.fromLTRB(width / 40, height / 50, width / 40, 0),
                     child: Column(
                         //crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
@@ -184,9 +178,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                                   top: height / 30,
                                   child: Container(
                                     padding: EdgeInsets.all(width / 100),
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.transparent),
+                                    decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.transparent),
                                     child: Icon(
                                       Icons.edit,
                                       size: 50,
@@ -207,9 +199,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                             children: [
                               Text(
                                 "First Name",
-                                style: TextStyle(
-                                    fontSize: width / 23,
-                                    fontWeight: FontWeight.bold),
+                                style: TextStyle(fontSize: width / 23, fontWeight: FontWeight.bold),
                               ),
                               SizedBox(
                                 width: width / 15,
@@ -217,9 +207,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                               Expanded(
                                 child: TextFormField(
                                   style: TextStyle(fontSize: width / 23),
-                                  decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      counterText: ""),
+                                  decoration: InputDecoration(border: InputBorder.none, counterText: ""),
                                   controller: this.user.firstNameController,
                                   maxLines: 1,
                                   maxLength: 12,
@@ -234,9 +222,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                             children: [
                               Text(
                                 "Last Name",
-                                style: TextStyle(
-                                    fontSize: width / 23,
-                                    fontWeight: FontWeight.bold),
+                                style: TextStyle(fontSize: width / 23, fontWeight: FontWeight.bold),
                               ),
                               SizedBox(
                                 width: width / 15,
@@ -244,9 +230,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                               Expanded(
                                 child: TextFormField(
                                   style: TextStyle(fontSize: width / 23),
-                                  decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      counterText: ""),
+                                  decoration: InputDecoration(border: InputBorder.none, counterText: ""),
                                   controller: this.user.lastNameController,
                                   maxLines: 1,
                                   maxLength: 12,
@@ -256,17 +240,14 @@ class ProfileSettingsState extends State<ProfileSettings> {
                           ),
                           Divider(),
                           Padding(
-                            padding: EdgeInsets.fromLTRB(
-                                0, height / 60, 0, height / 60),
+                            padding: EdgeInsets.fromLTRB(0, height / 60, 0, height / 60),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               // mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
                                   "Username",
-                                  style: TextStyle(
-                                      fontSize: width / 23,
-                                      fontWeight: FontWeight.bold),
+                                  style: TextStyle(fontSize: width / 23, fontWeight: FontWeight.bold),
                                 ),
                                 SizedBox(
                                   width: width / 15,
@@ -275,20 +256,15 @@ class ProfileSettingsState extends State<ProfileSettings> {
                                   children: [
                                     Text(
                                       "@ ",
-                                      style: TextStyle(
-                                          fontSize: width / 23,
-                                          color: Colors.grey),
+                                      style: TextStyle(fontSize: width / 23, color: Colors.grey),
                                     ),
                                     Text(
                                       this.user.soshiUsername,
-                                      style: TextStyle(
-                                          fontSize: width / 23,
-                                          color: Colors.grey
+                                      style: TextStyle(fontSize: width / 23, color: Colors.grey
                                           //color: Colors.grey
                                           ),
                                     ),
-                                    user.verified == false ||
-                                            user.verified == null
+                                    user.verified == false || user.verified == null
                                         ? Container()
                                         : Padding(
                                             padding: EdgeInsets.only(left: 3),
@@ -310,9 +286,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                                 padding: EdgeInsets.only(top: height / 65),
                                 child: Text(
                                   "Bio",
-                                  style: TextStyle(
-                                      fontSize: width / 23,
-                                      fontWeight: FontWeight.bold),
+                                  style: TextStyle(fontSize: width / 23, fontWeight: FontWeight.bold),
                                 ),
                               ),
                               SizedBox(
@@ -337,19 +311,14 @@ class ProfileSettingsState extends State<ProfileSettings> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Padding(
-                              padding: EdgeInsets.only(
-                                  top: height / 65, bottom: height / 65),
+                              padding: EdgeInsets.only(top: height / 65, bottom: height / 65),
                               child: Text(
                                 "Passions",
-                                style: TextStyle(
-                                    fontSize: width / 23,
-                                    fontWeight: FontWeight.bold),
+                                style: TextStyle(fontSize: width / 23, fontWeight: FontWeight.bold),
                               ),
                             ),
                           ),
-                          PassionTileList(
-                              profileScreenRefresher:
-                                  widget.importProfileNotifier),
+                          PassionTileList(profileScreenRefresher: widget.importProfileNotifier),
                           Divider(),
                           SizedBox(
                             height: height / 15,

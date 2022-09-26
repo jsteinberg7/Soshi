@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 // import 'package:nfc_manager/nfc_manager.dart';
@@ -12,13 +11,9 @@ import 'package:soshi/services/analytics.dart';
 import 'package:soshi/services/dataEngine.dart';
 import 'package:soshi/services/database.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:soshi/services/localData.dart';
-import 'package:soshi/services/nfc.dart';
 
 import 'package:vibration/vibration.dart';
-import 'package:share/share.dart';
 import '../../services/dynamicLinks.dart';
-import 'friendScreen.dart';
 import 'package:flutter_share/flutter_share.dart';
 
 class NewQRScreen extends StatefulWidget {
@@ -80,7 +75,9 @@ class _NewQRScreenState extends State<NewQRScreen> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                IconButton(icon: Icon(Icons.ios_share_rounded, color: Colors.transparent), onPressed: () => {}),
+                                IconButton(
+                                    icon: Icon(Icons.ios_share_rounded, color: Colors.transparent),
+                                    onPressed: () => {}),
                                 Column(
                                   children: [
                                     Container(
@@ -99,7 +96,8 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                     SizedBox(
                                       height: 2,
                                     ),
-                                    SoshiUsernameText(user.soshiUsername, fontSize: width / 23, isVerified: user.verified)
+                                    SoshiUsernameText(user.soshiUsername,
+                                        fontSize: width / 23, isVerified: user.verified)
                                   ],
                                 ),
                                 IconButton(
@@ -128,7 +126,8 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                     //     )),
                                     GestureDetector(
                                       onTap: () {
-                                        Clipboard.setData(ClipboardData(text: user.shortDynamicLink // user.lookupSocial["Soddddshi"].toString()
+                                        Clipboard.setData(ClipboardData(
+                                            text: user.shortDynamicLink // user.lookupSocial["Soddddshi"].toString()
                                             ));
                                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                           content: const Text(
@@ -142,7 +141,8 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                         borderRadius: BorderRadius.circular(30.0),
                                         child: QrImage(
                                             size: width / 1.5,
-                                            dataModuleStyle: QrDataModuleStyle(dataModuleShape: QrDataModuleShape.circle, color: Colors.black),
+                                            dataModuleStyle: QrDataModuleStyle(
+                                                dataModuleShape: QrDataModuleShape.circle, color: Colors.black),
                                             data: user.longDynamicLink),
                                       ),
                                     ),
@@ -200,7 +200,8 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                 );
                               }));
                             } else {
-                              String friendSoshiUsername = DynamicLinkService.extractUsernameFromDynamicLink(QRScanResult);
+                              String friendSoshiUsername =
+                                  DynamicLinkService.extractUsernameFromDynamicLink(QRScanResult);
 
                               Navigator.push(context, MaterialPageRoute(builder: (context) {
                                 return ViewProfilePage(
@@ -228,7 +229,7 @@ class _NewQRScreenState extends State<NewQRScreen> {
                           height: height / 13,
                           width: width / 1.8,
                           child: Card(
-                            // color: Colors.grey.shade800,
+                            color: Colors.grey.shade800,
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                             child: Center(
                               child: Row(
