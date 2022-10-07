@@ -52,13 +52,15 @@ class _NFCWriterState extends State<NFCWriter> {
             displayText = "Success!";
             animationUrl =
                 "https://assets1.lottiefiles.com/packages/lf20_s2lryxtd.json";
-          });
+          }); //setState is being called wrong so its wrirting to the tag successfully but showing error message
+
           await Future.delayed(
               Duration(seconds: 1)); // wait a sec before stopping session
           NfcManager.instance.stopSession();
           await Future.delayed(
               Duration(seconds: 1)); // close popup after 2 seconds
           Navigator.pop(context);
+          NfcManager.instance.stopSession();
           return true;
         } catch (e) {
           NfcManager.instance.stopSession(

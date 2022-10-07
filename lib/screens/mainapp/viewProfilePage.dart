@@ -63,7 +63,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
               return Stack(
                 children: [
                   Positioned(
-                    top: 5,
+                    top: 0,
                     left: 0,
                     right: 0,
                     child: Stack(
@@ -296,7 +296,9 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                           AddFriendButton(
                               friend: Friend(
                                   soshiUsername: friendUserObject.soshiUsername,
-                                  fullName: friendUserObject.soshiUsername,
+                                  fullName: (friendUserObject.firstName +
+                                      " " +
+                                      friendUserObject.lastName),
                                   photoURL: friendUserObject.photoURL,
                                   isVerified: friendUserObject.verified),
                               height: height,

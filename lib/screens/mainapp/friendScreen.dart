@@ -244,7 +244,7 @@ class FriendTile extends StatelessWidget {
             }));
           },
           leading: Hero(
-              tag: friend.soshiUsername,
+              tag: friend.fullName,
               child: ProfilePic(radius: width / 14, url: friend.photoURL)),
           title: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -357,17 +357,20 @@ class FriendTile extends StatelessWidget {
                                               // databaseService.overwriteFriendsList(
                                               //     newFriendsList); // update cloud list
                                               // DataEngine.applyUserChanges(user:  user, cloud: true, local: true)
-                                              friends.removeWhere((friend) =>
-                                                  friend.soshiUsername ==
-                                                  friend
-                                                      .soshiUsername); // update cached list
+                                              friends.removeWhere(
+                                                  (removedFriendObj) =>
+                                                      removedFriendObj
+                                                          .soshiUsername ==
+                                                      friend
+                                                          .soshiUsername); // update cached list
                                               DataEngine
                                                   .updateCachedFriendsList(
                                                       friends: friends);
-                                              user.friends.remove(friend
-                                                  .soshiUsername); // update string list
+                                              DataEngine.globalUser.friends
+                                                  .remove(friend
+                                                      .soshiUsername); // update string list
                                               DataEngine.applyUserChanges(
-                                                  user: user,
+                                                  user: DataEngine.globalUser,
                                                   cloud: true,
                                                   local: true);
                                               refreshFriendScreen();

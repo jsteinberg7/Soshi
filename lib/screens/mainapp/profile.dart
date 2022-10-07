@@ -341,470 +341,429 @@ class Profile extends StatefulWidget {
 }
 
 class ProfileState extends State<Profile> {
-  SoshiUser user;
+  refreshProfileScreen() {
+    setState(() {
+      this.userSocials = DataEngine.globalUser.getChosenPlatforms();
+    });
+  }
+
   List<Social> userSocials;
   ValueNotifier controlsEditHandlesScreen =
       new ValueNotifier("CONTROL_EDIT_HANDLES");
 
-  loadDataEngine() async {
-    // this.user = await DataEngine.getUserObject(firebaseOverride: false);
-
-    // await Future.delayed(Duration(seconds: 1));
-    this.user = DataEngine.globalUser;
-    this.userSocials = user.getChosenPlatforms();
-  }
-
   @override
   Widget build(BuildContext context) {
+    this.userSocials = DataEngine.globalUser.getChosenPlatforms();
+
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     // UV tried to use the dynamic container size. Will neeed to find a better way.
     int addedContainerSize = 30;
+    int numSocialsPlusAddTile = this.userSocials.length + 1;
+    int rows = (numSocialsPlusAddTile / 3).ceil();
 
-    return FutureBuilder(
-        future: loadDataEngine(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return Center(child: CircularProgressIndicator.adaptive());
+    if (rows == 1) {
+      addedContainerSize = 0;
+    }
+
+    if (numSocialsPlusAddTile > 3) {
+      print(rows);
+      if (rows > 1) {
+        for (int i = 0; i < rows; i++) {
+          if (i > 2) {
+            addedContainerSize += 100;
           } else {
-            print("creating profile screen now!!!");
+            addedContainerSize += 60;
+          }
 
-            int numSocialsPlusAddTile = this.userSocials.length + 1;
-            int rows = (numSocialsPlusAddTile / 3).ceil();
+          // if (height < 800) {
+          //   containerSize += .2;
+          // } else {
+          //   containerSize += .19;
+          // }
+        }
+      }
+    }
 
-            if (rows == 1) {
-              addedContainerSize = 0;
-            }
-
-            if (numSocialsPlusAddTile > 3) {
-              print(rows);
-              if (rows > 1) {
-                for (int i = 0; i < rows; i++) {
-                  if (i > 2) {
-                    addedContainerSize += 100;
-                  } else {
-                    addedContainerSize += 60;
-                  }
-
-                  // if (height < 800) {
-                  //   containerSize += .2;
-                  // } else {
-                  //   containerSize += .19;
-                  // }
-                }
-              }
-            }
-
-            print(addedContainerSize);
-
-            return SingleChildScrollView(
-              child: Container(
-                height: height + addedContainerSize,
-                child: Stack(
-                  children: [
-                    Positioned(
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      child: Stack(
-                        children: [
-                          Container(
-                            width: width,
+    return SingleChildScrollView(
+      child: Container(
+        height: height + addedContainerSize,
+        child: Stack(
+          children: [
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Stack(
+                children: [
+                  Container(
+                    width: width,
+                    // height: height / containerSize,
+                    height: MediaQuery.of(context).size.height / 2.3,
+                    child: Image.network(Defaults.defaultProfilePic,
+                        fit: BoxFit.fill),
+                  ),
+                  ProfilePicBackdrop(DataEngine.globalUser.photoURL,
+                      height: height / 2, width: width),
+                  GlassmorphicContainer(
+                    // height: height / containerSize,
+                    height: height / 2,
+                    width: width,
+                    borderRadius: 0,
+                    blur: 8,
+                    alignment: Alignment.bottomCenter,
+                    border: 2,
+                    linearGradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        (Theme.of(context).brightness == Brightness.light
+                                ? Colors.white
+                                : Colors.black)
+                            .withOpacity(0.8),
+                        (Theme.of(context).brightness == Brightness.light
+                                ? Colors.white
+                                : Colors.black)
+                            .withOpacity(0.4)
+                      ],
+                      stops: [0.1, 1],
+                    ),
+                    borderGradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        (Theme.of(context).brightness == Brightness.light
+                                ? Colors.white
+                                : Colors.black)
+                            .withOpacity(0.5),
+                        (Theme.of(context).brightness == Brightness.light
+                                ? Colors.white
+                                : Colors.black)
+                            .withOpacity(0.5),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SafeArea(
+                          child: Container(
+                            // color: Colors.green,
                             // height: height / containerSize,
-                            height: MediaQuery.of(context).size.height / 2.3,
-                            child: Image.network(Defaults.defaultProfilePic,
-                                fit: BoxFit.fill),
-                          ),
-                          ProfilePicBackdrop(user.photoURL,
-                              height: height / 2, width: width),
-                          GlassmorphicContainer(
-                            // height: height / containerSize,
-                            height: height / 2,
                             width: width,
-                            borderRadius: 0,
-                            blur: 8,
-                            alignment: Alignment.bottomCenter,
-                            border: 2,
-                            linearGradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                (Theme.of(context).brightness ==
-                                            Brightness.light
-                                        ? Colors.white
-                                        : Colors.black)
-                                    .withOpacity(0.8),
-                                (Theme.of(context).brightness ==
-                                            Brightness.light
-                                        ? Colors.white
-                                        : Colors.black)
-                                    .withOpacity(0.4)
-                              ],
-                              stops: [0.1, 1],
-                            ),
-                            borderGradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                (Theme.of(context).brightness ==
-                                            Brightness.light
-                                        ? Colors.white
-                                        : Colors.black)
-                                    .withOpacity(0.5),
-                                (Theme.of(context).brightness ==
-                                            Brightness.light
-                                        ? Colors.white
-                                        : Colors.black)
-                                    .withOpacity(0.5),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SafeArea(
-                                  child: Container(
-                                    // color: Colors.green,
-                                    // height: height / containerSize,
-                                    width: width,
-                                    child: Padding(
-                                      padding: EdgeInsets.fromLTRB(width / 40,
-                                          width / 40, width / 40, 0),
-                                      child: Column(children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: <Widget>[
-                                            IconButton(
-                                                onPressed: () {
-                                                  Scaffold.of(context)
-                                                      .openDrawer();
-                                                },
-                                                icon: Icon(CupertinoIcons
-                                                    .line_horizontal_3)),
-                                            Column(
-                                              children: [
-                                                Container(
-                                                  width: width / 1.5,
-                                                  child: Center(
-                                                    child: AutoSizeText(
-                                                      user.firstName +
-                                                          " " +
-                                                          user.lastName,
-                                                      maxLines: 1,
-                                                      minFontSize: 1,
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: width / 16,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          top: 3.0,
-                                                          bottom: 2.0),
-                                                  child: SoshiUsernameText(
-                                                      user.soshiUsername,
-                                                      fontSize: width / 22,
-                                                      isVerified:
-                                                          user.verified),
-                                                )
-                                              ],
-                                            ),
-                                            IconButton(
-                                                onPressed: () {
-                                                  Navigator.push(context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) {
-                                                    return Scaffold(
-                                                        body: ProfileSettings(
-                                                            // importProfileNotifier: widget.importProfileNotifier
-
-                                                            ));
-                                                  })).then((value) {
-                                                    print(
-                                                        "☹️☹️☹️☹️☹️ returnign from profile settings, must refresh screen state");
-                                                    setState(() {});
-                                                  });
-                                                },
-
-                                                // {
-                                                //   Navigator.push(context,
-                                                //       MaterialPageRoute(
-                                                //           builder: (context) {
-                                                //     return Scaffold(
-                                                //         body: ProfileSettings(
-                                                //             // importProfileNotifier: widget.importProfileNotifier
-
-                                                //             ));
-                                                //   }));
-                                                // },
-                                                icon: Icon(CupertinoIcons.pen)),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: height / 100,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            SizedBox(
-                                              width: width / 4,
-                                              child: Column(children: [
-                                                Text(
-                                                    user.friends.length
-                                                        .toString(),
-                                                    style: TextStyle(
-                                                        letterSpacing: 1.2,
-                                                        fontSize: width / 25,
-                                                        fontWeight:
-                                                            FontWeight.bold)),
-                                                user.friends.length == 1
-                                                    ? Text(
-                                                        "Friend",
-                                                        style: TextStyle(
-                                                            //fontWeight: FontWeight.bold,
-                                                            letterSpacing: 1.2,
-                                                            fontSize:
-                                                                width / 25),
-                                                      )
-                                                    : Text("Friends",
-                                                        style: TextStyle(
-                                                            letterSpacing: 1.2,
-                                                            fontSize:
-                                                                width / 25)),
-                                              ]),
-                                            ),
-                                            ProfilePic(
-                                                radius: width / 6.5,
-                                                url: user.photoURL),
-                                            SizedBox(
-                                              width: width / 4,
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  Popups
-                                                      .soshiPointsExplainedPopup(
-                                                          context,
-                                                          width,
-                                                          height);
-                                                },
-                                                child: Column(children: [
-                                                  Text(
-                                                      DataEngine.globalUser
-                                                          .soshiPoints
-                                                          .toString(),
-                                                      style: TextStyle(
-                                                          letterSpacing: 1.2,
-                                                          fontSize: width / 25,
-                                                          fontWeight:
-                                                              FontWeight.bold)),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      DataEngine.globalUser
-                                                                  .soshiPoints ==
-                                                              1
-                                                          ? Text("Bolt",
-                                                              style: TextStyle(
-                                                                  letterSpacing:
-                                                                      1.2,
-                                                                  fontSize:
-                                                                      width /
-                                                                          25))
-                                                          : Text("Bolts",
-                                                              style: TextStyle(
-                                                                  letterSpacing:
-                                                                      1.2,
-                                                                  fontSize:
-                                                                      width /
-                                                                          25)),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(left: 2),
-                                                        child: IconButton(
-                                                          onPressed: () {
-                                                            Popups
-                                                                .soshiPointsExplainedPopup(
-                                                                    context,
-                                                                    width,
-                                                                    height);
-                                                          },
-                                                          padding:
-                                                              EdgeInsets.zero,
-                                                          constraints:
-                                                              BoxConstraints(
-                                                                  maxHeight:
-                                                                      width /
-                                                                          28,
-                                                                  maxWidth:
-                                                                      width /
-                                                                          28,
-                                                                  minHeight: 0,
-                                                                  minWidth: 0),
-                                                          icon: Icon(
-                                                              CupertinoIcons
-                                                                  .info_circle,
-                                                              size: width / 28),
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ]),
+                            child: Padding(
+                              padding: EdgeInsets.fromLTRB(
+                                  width / 40, width / 40, width / 40, 0),
+                              child: Column(children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: <Widget>[
+                                    IconButton(
+                                        onPressed: () {
+                                          Scaffold.of(context).openDrawer();
+                                        },
+                                        icon: Icon(
+                                            CupertinoIcons.line_horizontal_3)),
+                                    Column(
+                                      children: [
+                                        Container(
+                                          width: width / 1.5,
+                                          child: Center(
+                                            child: AutoSizeText(
+                                              DataEngine.globalUser.firstName +
+                                                  " " +
+                                                  DataEngine
+                                                      .globalUser.lastName,
+                                              maxLines: 1,
+                                              minFontSize: 1,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: width / 16,
                                               ),
                                             ),
-                                          ],
+                                          ),
                                         ),
-                                        SizedBox(height: height / 60),
-                                        user.bio == "" || user.bio == null
-                                            ? Container()
-                                            : Container(
-                                                child: Padding(
-                                                padding: EdgeInsets.fromLTRB(
-                                                    width / 7, 0, width / 7, 0),
-                                                child: AutoSizeText(
-                                                  user.bio,
-                                                  maxLines: 3,
-                                                  minFontSize: 1,
-                                                  style: TextStyle(
-                                                      fontSize: width / 22),
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                              )),
-                                      ]),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 3.0, bottom: 2.0),
+                                          child: SoshiUsernameText(
+                                              DataEngine
+                                                  .globalUser.soshiUsername,
+                                              fontSize: width / 22,
+                                              isVerified: DataEngine
+                                                  .globalUser.verified),
+                                        )
+                                      ],
                                     ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      top: height / 2.2,
-                      child: Container(
-                          //height: height / 2,
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              // color: Colors.blue,
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(20.0),
-                                  topRight: Radius.circular(20.0))),
-                          child: Padding(
-                            padding: EdgeInsets.fromLTRB(
-                                width / 35, height / 90, width / 35, 0),
-                            child: Column(
-                              //mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(left: width / 40),
-                                  child: Text(
-                                    "Passions",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: width / 17),
-                                  ),
+                                    IconButton(
+                                        onPressed: () {
+                                          Navigator.push(context,
+                                              MaterialPageRoute(
+                                                  builder: (context) {
+                                            return Scaffold(
+                                                body: ProfileSettings(
+                                                    // importProfileNotifier: widget.importProfileNotifier
+
+                                                    ));
+                                          })).then((value) {
+                                            print(
+                                                "☹️☹️☹️☹️☹️ returnign from profile settings, must refresh screen state");
+                                            setState(() {});
+                                          });
+                                        },
+
+                                        // {
+                                        //   Navigator.push(context,
+                                        //       MaterialPageRoute(
+                                        //           builder: (context) {
+                                        //     return Scaffold(
+                                        //         body: ProfileSettings(
+                                        //             // importProfileNotifier: widget.importProfileNotifier
+
+                                        //             ));
+                                        //   }));
+                                        // },
+                                        icon: Icon(CupertinoIcons.pen)),
+                                  ],
                                 ),
                                 SizedBox(
                                   height: height / 100,
                                 ),
-                                PassionTileList(),
                                 Row(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                      MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    Padding(
-                                      padding:
-                                          EdgeInsets.only(left: width / 40),
-                                      child: Text(
-                                        "Socials",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: width / 17),
+                                    SizedBox(
+                                      width: width / 4,
+                                      child: Column(children: [
+                                        Text(
+                                            DataEngine.globalUser.friends.length
+                                                .toString(),
+                                            style: TextStyle(
+                                                letterSpacing: 1.2,
+                                                fontSize: width / 25,
+                                                fontWeight: FontWeight.bold)),
+                                        DataEngine.globalUser.friends.length ==
+                                                1
+                                            ? Text(
+                                                "Friend",
+                                                style: TextStyle(
+                                                    //fontWeight: FontWeight.bold,
+                                                    letterSpacing: 1.2,
+                                                    fontSize: width / 25),
+                                              )
+                                            : Text("Friends",
+                                                style: TextStyle(
+                                                    letterSpacing: 1.2,
+                                                    fontSize: width / 25)),
+                                      ]),
+                                    ),
+                                    ProfilePic(
+                                        radius: width / 6.5,
+                                        url: DataEngine.globalUser.photoURL),
+                                    SizedBox(
+                                      width: width / 4,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Popups.soshiPointsExplainedPopup(
+                                              context, width, height);
+                                        },
+                                        child: Column(children: [
+                                          Text(
+                                              DataEngine.globalUser.soshiPoints
+                                                  .toString(),
+                                              style: TextStyle(
+                                                  letterSpacing: 1.2,
+                                                  fontSize: width / 25,
+                                                  fontWeight: FontWeight.bold)),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              DataEngine.globalUser
+                                                          .soshiPoints ==
+                                                      1
+                                                  ? Text("Bolt",
+                                                      style: TextStyle(
+                                                          letterSpacing: 1.2,
+                                                          fontSize: width / 25))
+                                                  : Text("Bolts",
+                                                      style: TextStyle(
+                                                          letterSpacing: 1.2,
+                                                          fontSize:
+                                                              width / 25)),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 2),
+                                                child: IconButton(
+                                                  onPressed: () {
+                                                    Popups
+                                                        .soshiPointsExplainedPopup(
+                                                            context,
+                                                            width,
+                                                            height);
+                                                  },
+                                                  padding: EdgeInsets.zero,
+                                                  constraints: BoxConstraints(
+                                                      maxHeight: width / 28,
+                                                      maxWidth: width / 28,
+                                                      minHeight: 0,
+                                                      minWidth: 0),
+                                                  icon: Icon(
+                                                      CupertinoIcons
+                                                          .info_circle,
+                                                      size: width / 28),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ]),
                                       ),
                                     ),
-                                    IconButton(
-                                      icon: Icon(CupertinoIcons
-                                          .pencil_ellipsis_rectangle),
-                                      onPressed: () async {
-                                        Navigator.push(context,
-                                            MaterialPageRoute(
-                                                builder: (context) {
-                                          return Scaffold(
-                                              body: ValueListenableBuilder(
-                                                  valueListenable: this
-                                                      .controlsEditHandlesScreen,
-                                                  builder: (context, value, _) {
-                                                    return EditHandles(
-                                                        editHandleMasterControl:
-                                                            controlsEditHandlesScreen,
-                                                        profileMasterControl: widget
-                                                            .importProfileNotifier);
-                                                  }));
-                                        }));
-                                      },
-                                    )
                                   ],
                                 ),
-                                Container(
-                                  child: Align(
-                                    alignment: Alignment.topCenter,
-                                    child: GridView.builder(
-                                      // add an extra tile with the "+" that can be used always to add morem platforms
-                                      padding: EdgeInsets.zero,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      shrinkWrap: true,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                5, 5, 5, 5),
-                                            child: index != userSocials.length
-                                                ? SMTile(
-                                                    user: user,
-                                                    selectedSocial:
-                                                        userSocials[index],
-                                                    importProfileNotifier: widget
-                                                        .importProfileNotifier,
-                                                  )
-                                                : AddPlatformsTile(
-                                                    importProfileNotifier: widget
-                                                        .importProfileNotifier,
-                                                    user: user));
-                                      },
-                                      itemCount: userSocials.length + 1,
-                                      gridDelegate:
-                                          SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisCount: 3,
-                                              childAspectRatio: .8,
-                                              crossAxisSpacing: width / 40),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                                SizedBox(height: height / 60),
+                                DataEngine.globalUser.bio == "" ||
+                                        DataEngine.globalUser.bio == null
+                                    ? Container()
+                                    : Container(
+                                        child: Padding(
+                                        padding: EdgeInsets.fromLTRB(
+                                            width / 7, 0, width / 7, 0),
+                                        child: AutoSizeText(
+                                          DataEngine.globalUser.bio,
+                                          maxLines: 3,
+                                          minFontSize: 1,
+                                          style:
+                                              TextStyle(fontSize: width / 22),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      )),
+                              ]),
                             ),
-                          )),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            );
-          }
-        });
+            ),
+            Positioned(
+              left: 0,
+              right: 0,
+              top: height / 2.2,
+              child: Container(
+                  //height: height / 2,
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      // color: Colors.blue,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20.0),
+                          topRight: Radius.circular(20.0))),
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(
+                        width / 35, height / 90, width / 35, 0),
+                    child: Column(
+                      //mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: width / 40),
+                          child: Text(
+                            "Passions",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: width / 17),
+                          ),
+                        ),
+                        SizedBox(
+                          height: height / 100,
+                        ),
+                        PassionTileList(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(left: width / 40),
+                              child: Text(
+                                "Socials",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: width / 17),
+                              ),
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                  CupertinoIcons.pencil_ellipsis_rectangle),
+                              onPressed: () async {
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (context) {
+                                  return Scaffold(
+                                      body: ValueListenableBuilder(
+                                          valueListenable:
+                                              this.controlsEditHandlesScreen,
+                                          builder: (context, value, _) {
+                                            return EditHandles(
+                                                refreshScreenParam:
+                                                    refreshProfileScreen,
+                                                // editHandleMasterControl:
+                                                //     controlsEditHandlesScreen,
+                                                profileMasterControl: widget
+                                                    .importProfileNotifier);
+                                          }));
+                                }));
+                              },
+                            )
+                          ],
+                        ),
+                        Container(
+                          child: Align(
+                            alignment: Alignment.topCenter,
+                            child: GridView.builder(
+                              // add an extra tile with the "+" that can be used always to add morem platforms
+                              padding: EdgeInsets.zero,
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemBuilder: (BuildContext context, int index) {
+                                return Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                                    child: index != userSocials.length
+                                        ? SMTile(
+                                            user: DataEngine.globalUser,
+                                            selectedSocial: userSocials[index],
+                                            importProfileNotifier:
+                                                widget.importProfileNotifier,
+                                          )
+                                        : AddPlatformsTile(
+                                            importProfileNotifier:
+                                                widget.importProfileNotifier,
+                                            user: DataEngine.globalUser));
+                              },
+                              itemCount: userSocials.length + 1,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 3,
+                                      childAspectRatio: .8,
+                                      crossAxisSpacing: width / 40),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
+  
+
 
 // class BioTextField extends StatefulWidget {
 //   SoshiUser user;

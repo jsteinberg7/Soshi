@@ -27,46 +27,38 @@ class NewQRScreen extends StatefulWidget {
 }
 
 class _NewQRScreenState extends State<NewQRScreen> {
-  SoshiUser user;
-
-  loadDataEngine() async {
-    this.user = await DataEngine.getUserObject(firebaseOverride: false);
-  }
-
   @override
   Widget build(BuildContext context) {
     double height = Utilities.getHeight(context);
     double width = Utilities.getWidth(context);
 
     return Scaffold(
-      appBar: AppBar(
-        leading: GestureDetector(
-          onTap: () {},
+        appBar: AppBar(
+          leading: GestureDetector(
+            onTap: () {},
+          ),
+          elevation: 0,
+          title: Image.asset(
+            "assets/images/SoshiLogos/SoshiBubbleLogo.png",
+            height: Utilities.getHeight(context) / 18,
+          ),
+          centerTitle: true,
         ),
-        elevation: 0,
-        title: Image.asset(
-          "assets/images/SoshiLogos/SoshiBubbleLogo.png",
-          height: Utilities.getHeight(context) / 18,
-        ),
-        centerTitle: true,
-      ),
-      body: FutureBuilder(
-          future: loadDataEngine(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState != ConnectionState.done) {
-              return Center(child: CircularProgressIndicator.adaptive());
-            }
-
-            return Center(
-              child: SafeArea(
-                child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+        body: Container(
+            child: Center(
+          child: SafeArea(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
                   Neumorphic(
                     style: NeumorphicStyle(
                         depth: 2,
                         //shadowDarkColor: Colors.cyan,
                         //shadowLightColor: Colors.cyan,
                         shape: NeumorphicShape.concave,
-                        color: Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black26,
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? Colors.white
+                            : Colors.black26,
                         boxShape: NeumorphicBoxShape.roundRect(
                           BorderRadius.circular(25.0),
                         )),
@@ -80,14 +72,19 @@ class _NewQRScreenState extends State<NewQRScreen> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                IconButton(icon: Icon(Icons.ios_share_rounded, color: Colors.transparent), onPressed: () => {}),
+                                IconButton(
+                                    icon: Icon(Icons.ios_share_rounded,
+                                        color: Colors.transparent),
+                                    onPressed: () => {}),
                                 Column(
                                   children: [
                                     Container(
                                       width: width / 2,
                                       child: Center(
                                         child: AutoSizeText(
-                                          user.firstName + " " + user.lastName,
+                                          DataEngine.globalUser.firstName +
+                                              " " +
+                                              DataEngine.globalUser.lastName,
                                           maxLines: 1,
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
@@ -99,13 +96,20 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                     SizedBox(
                                       height: 2,
                                     ),
-                                    SoshiUsernameText(user.soshiUsername, fontSize: width / 23, isVerified: user.verified)
+                                    SoshiUsernameText(
+                                        DataEngine.globalUser.soshiUsername,
+                                        fontSize: width / 23,
+                                        isVerified:
+                                            DataEngine.globalUser.verified)
                                   ],
                                 ),
                                 IconButton(
                                   icon: Icon(Icons.ios_share_rounded),
                                   onPressed: () async {
-                                    FlutterShare.share(title: "Share your Soshi link!", linkUrl: user.shortDynamicLink);
+                                    FlutterShare.share(
+                                        title: "Share your Soshi link!",
+                                        linkUrl: DataEngine
+                                            .globalUser.shortDynamicLink);
                                   },
                                 )
                               ],
@@ -128,9 +132,12 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                     //     )),
                                     GestureDetector(
                                       onTap: () {
-                                        Clipboard.setData(ClipboardData(text: user.shortDynamicLink // user.lookupSocial["Soddddshi"].toString()
+                                        Clipboard.setData(ClipboardData(
+                                            text: DataEngine.globalUser
+                                                .shortDynamicLink // user.lookupSocial["Soddddshi"].toString()
                                             ));
-                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
                                           content: const Text(
                                             'Copied link to clipboard :)',
                                             textAlign: TextAlign.center,
@@ -139,11 +146,16 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                         Analytics.logCopyLinkToClipboard();
                                       },
                                       child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(30.0),
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
                                         child: QrImage(
                                             size: width / 1.5,
-                                            dataModuleStyle: QrDataModuleStyle(dataModuleShape: QrDataModuleShape.circle, color: Colors.black),
-                                            data: user.longDynamicLink),
+                                            dataModuleStyle: QrDataModuleStyle(
+                                                dataModuleShape:
+                                                    QrDataModuleShape.circle,
+                                                color: Colors.black),
+                                            data: DataEngine
+                                                .globalUser.longDynamicLink),
                                       ),
                                     ),
                                     Align(
@@ -152,14 +164,20 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                       child: Container(
                                         height: width / 10.5,
                                         width: width / 10.5,
-                                        decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            shape: BoxShape.circle),
                                         child: ClipOval(
                                           child: Container(
                                             height: width / 10,
                                             width: width / 10,
                                             child: Padding(
-                                              padding: const EdgeInsets.all(1.5),
-                                              child: ProfilePic(radius: width / 20, url: user.photoURL),
+                                              padding:
+                                                  const EdgeInsets.all(1.5),
+                                              child: ProfilePic(
+                                                  radius: width / 20,
+                                                  url: DataEngine
+                                                      .globalUser.photoURL),
                                             ),
                                           ),
                                         ),
@@ -169,40 +187,48 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                 ),
                               ),
                             ),
-                            Text("Share with others to instantly connect.", style: TextStyle(fontSize: width / 27)),
+                            Text("Share with others to instantly connect.",
+                                style: TextStyle(fontSize: width / 27)),
                           ],
                         )),
                   ),
                   ActivatePortalButton(
-                    shortDynamicLink: user.shortDynamicLink,
+                    shortDynamicLink: DataEngine.globalUser.shortDynamicLink,
                   ),
 
                   Container(
                     child: GestureDetector(
                       onTap: () async {
-                        String username = user.soshiUsername;
-                        DatabaseService databaseService = new DatabaseService(currSoshiUsernameIn: username);
+                        String username = DataEngine.globalUser.soshiUsername;
+                        DatabaseService databaseService =
+                            new DatabaseService(currSoshiUsernameIn: username);
                         String QRScanResult = await Utilities.scanQR(mounted);
                         if (QRScanResult.length > 5) {
                           // vibrate when QR code is successfully scanned
                           Vibration.vibrate();
                           try {
-                            if (QRScanResult.contains("https://soshi.app/group/")) {
+                            if (QRScanResult.contains(
+                                "https://soshi.app/group/")) {
                               String groupId = QRScanResult.split("/").last;
                               Popups.showJoinGroupPopup(context, groupId);
-                            } else if (QRScanResult.contains("https://soshi.app/")) {
+                            } else if (QRScanResult.contains(
+                                "https://soshi.app/")) {
                               // This is to account for if a version 3.0 scans a version 2.5
-                              String friendSoshiUsername = QRScanResult.split("/").last;
-                              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                              String friendSoshiUsername =
+                                  QRScanResult.split("/").last;
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
                                 return ViewProfilePage(
                                   friendSoshiUsername: friendSoshiUsername,
                                   refreshScreen: () {},
                                 );
                               }));
                             } else {
-                              String friendSoshiUsername = DynamicLinkService.extractUsernameFromDynamicLink(QRScanResult);
+                              String friendSoshiUsername = DynamicLinkService
+                                  .extractUsernameFromDynamicLink(QRScanResult);
 
-                              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
                                 return ViewProfilePage(
                                   friendSoshiUsername: friendSoshiUsername,
                                   refreshScreen: () {},
@@ -216,10 +242,12 @@ class _NewQRScreenState extends State<NewQRScreen> {
                               // }
                               //add friend right here
 
-                              Analytics.logQRScan(QRScanResult, true, "qrCode.dart");
+                              Analytics.logQRScan(
+                                  QRScanResult, true, "qrCode.dart");
                             }
                           } catch (e) {
-                            Analytics.logQRScan(QRScanResult, false, "qrCode.dart");
+                            Analytics.logQRScan(
+                                QRScanResult, false, "qrCode.dart");
                             print(e);
                           }
                         }
@@ -229,14 +257,18 @@ class _NewQRScreenState extends State<NewQRScreen> {
                           width: width / 1.8,
                           child: Card(
                             // color: Colors.grey.shade800,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                            shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
                             child: Center(
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
                                     "Scan Code",
-                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20),
                                   ),
                                   SizedBox(width: 10),
                                   Icon(Icons.camera_alt_rounded)
@@ -308,9 +340,7 @@ class _NewQRScreenState extends State<NewQRScreen> {
                   //       )),
                   // )),
                 ]),
-              ),
-            );
-          }),
-    );
+          ),
+        )));
   }
 }
