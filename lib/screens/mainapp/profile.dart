@@ -192,8 +192,16 @@ class _SMTileState extends State<SMTile> {
                       await askPermissions(context);
                       ContactsService.addContact(contact)
                           .then((dynamic success) {
-                        Popups.showContactAddedPopup(context, width, photoUrl,
-                            firstName, lastName, "phoneNumber", "email");
+                        Popups.showContactAddedPopup(
+                            context,
+                            width,
+                            photoUrl,
+                            firstName,
+                            lastName,
+                            DataEngine.globalUser
+                                .getUsernameGivenPlatform(platform: "Phone"),
+                            DataEngine.globalUser
+                                .getUsernameGivenPlatform(platform: "Email"));
                       });
                     } else if (platformName == "Cryptowallet") {
                       Clipboard.setData(ClipboardData(

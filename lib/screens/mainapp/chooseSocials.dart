@@ -67,7 +67,8 @@ class _ChooseSocialsCardState extends State<ChooseSocialsCard>
       onTap: () {
         setState(() {
           isSwitched = !isSwitched;
-          widget.user.lookupSocial[widget.platformName].isChosen = true;
+          DataEngine.globalUser.lookupSocial[widget.platformName].isChosen =
+              true;
         });
       },
       child: Stack(
@@ -174,8 +175,8 @@ class _ChooseSocialsState extends State<ChooseSocials> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
-    // List<String> choosePlatforms = LocalDataService.getLocalChoosePlatforms();
-    List<Social> choosePlatforms = widget.user.getAvailablePlatforms();
+    List<Social> choosePlatforms =
+        DataEngine.globalUser.getAvailablePlatforms();
     return Scaffold(
       appBar: AppBar(
         leading: CupertinoBackButton(),

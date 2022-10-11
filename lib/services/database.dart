@@ -372,7 +372,7 @@ class DatabaseService {
   }
 
   Future<void> updateUserPassions(String soshiUser, List newPassions) async {
-    await usersCollection.doc(soshiUser).update({"passions": newPassions});
+    await usersCollection.doc(soshiUser).update({"Passions": newPassions});
   }
   // bool isFirstTime() {
   //    (await IsFirstRun.isFirstRun()) ? return true : return false;

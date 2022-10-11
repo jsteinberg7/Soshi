@@ -427,7 +427,7 @@ class _SMCardState extends State<SMCard> {
                                               ),
                                             ),
                                             onTap: () async {
-                                              DataEngine.globalUser
+                                              await DataEngine.globalUser
                                                   .removeFromProfile(
                                                       platformName: widget
                                                           .platformSocial
