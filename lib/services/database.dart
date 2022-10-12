@@ -129,10 +129,6 @@ class DatabaseService {
         // "Reddit",
       ],
       "Profile Platforms": <String>["Phone"],
-      "INJECTION Soshi Points Flag": true,
-      "INJECTION Profile Pic Flag": false,
-      "INJECTION Bio Flag": false,
-      "INJECTION Passions Flag": false,
       "Groups": []
     });
     //await DynamicLinkService.(username);

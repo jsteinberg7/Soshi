@@ -587,10 +587,13 @@ class _AddFriendButtonState extends State<AddFriendButton> {
 
               if (!isFriendAdded) {
                 List<Friend> friends = await DataEngine.getCachedFriendsList();
-                friends.add(widget.friend); // update cached list
+                friends.add(widget.friend); // update friends cached list
                 DataEngine.updateCachedFriendsList(friends: friends);
                 DataEngine.globalUser.friends
-                    .add(friendSoshiUsername); // update string list
+                    .add(friendSoshiUsername); // update friends string list
+                DataEngine.globalUser.soshiPoints =
+                    DataEngine.globalUser.soshiPoints +
+                        25; // Adding 25 points for every friend added
                 DataEngine.applyUserChanges(
                     user: DataEngine.globalUser, cloud: true, local: true);
               }

@@ -432,7 +432,7 @@ class _SMCardState extends State<SMCard> {
                                                       platformName: widget
                                                           .platformSocial
                                                           .platformName);
-                                              widget.refreshScreen();
+                                              await widget.refreshScreen();
 
                                               Navigator.pop(context);
 

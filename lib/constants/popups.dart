@@ -231,7 +231,7 @@ class Popups {
                   ),
                   Text(
                     firstName +
-                        "'s information has been added to your devices contacts.",
+                        "'s contact information has been added to your device's contacts.",
                     style: TextStyle(fontSize: width / 22),
                     textAlign: TextAlign.center,
                   )
@@ -252,6 +252,7 @@ class Popups {
         platformName == "Snapchat" ||
         platformName == "Venmo" ||
         platformName == "Twitter" ||
+        platformName == "Reddit" ||
         platformName == "Tiktok" ||
         platformName == "Discord" ||
         platformName == "BeReal" ||
@@ -350,6 +351,7 @@ class Popups {
                     style: TextStyle(fontSize: width / 20, color: Colors.blue),
                   ),
                   onPressed: () {
+                    social.username = social.usernameController.text;
                     if (social.usernameController.text != "") {
                       DataEngine.applyUserChanges(
                           user: user, cloud: true, local: true);

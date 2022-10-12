@@ -11,8 +11,11 @@ import 'package:soshi/constants/popups.dart';
 import 'package:soshi/screens/mainapp/viewProfilePage.dart';
 import 'package:soshi/services/database.dart';
 import 'package:soshi/services/localData.dart';
+import 'package:vibration/vibration.dart';
 
+import '../../services/analytics.dart';
 import '../../services/dataEngine.dart';
+import '../../services/dynamicLinks.dart';
 
 /* This widget displays a list of the user's friends. */
 class FriendScreen extends StatefulWidget {
@@ -141,7 +144,7 @@ class _FriendScreenState extends State<FriendScreen>
                     }),
                 SizedBox(
                   height: height / 100,
-                )
+                ),
               ],
             ),
           )),
