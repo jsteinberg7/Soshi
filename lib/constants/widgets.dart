@@ -400,58 +400,33 @@ class ActivatePortalButton extends StatelessWidget {
 
     return Container(
         child: GestureDetector(
-      onTap: () {
-        CustomAlertDialogDoubleChoiceWithAsset
-            .showCustomAlertDialogDoubleChoiceWithAsset(
-                "Soshi Portal",
-                "assets/images/misc/NFCTemp.png", // To be replaced with NFC activating gif
-                "Activate!",
-                "Done", () {
-          Navigator.pop(context);
-          print("NFC writer pops up");
-          showModalBottomSheet(
-              constraints:
-                  BoxConstraints(minWidth: width / 1.1, maxWidth: width / 1.1),
-              backgroundColor: Colors.transparent,
-              context: context,
-              builder: (BuildContext context) {
-                return NFCWriter(height, width, this.shortDynamicLink);
-              });
-
-          // showModalBottomSheetApp(builder: NFCWriter(height, width, user.shortDynamicLink));
-
-          // Call NFC writer and write user.shortDynamicLink
-        }, () {
-          Navigator.pop(context);
-        }, context, height, width);
-      },
-      child: Container(
-          height: height / 15,
-          width: width / 2.1,
-          child: Card(
-            // color: Colors.grey.shade800,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10))),
-            child: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Activate Soshi Portal",
-                    style: TextStyle(
-                        //fontWeight: FontWeight.bold,
-                        fontSize: width / 30),
+            child: Container(
+                height: height / 15,
+                width: width / 2.1,
+                child: Card(
+                  // color: Colors.grey.shade800,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  child: Center(
+                    child: Text(
+                      "Activate Soshi Portal",
+                      style: TextStyle(
+                          //fontWeight: FontWeight.bold,
+                          fontSize: width / 28),
+                    ),
                   ),
-                  SizedBox(width: 5),
-                  Icon(
-                    CupertinoIcons.info_circle,
-                    size: width / 20,
-                  )
-                ],
-              ),
-            ),
-          )),
-    ));
+                )),
+            onTap: () {
+              print("NFC writer pops up");
+              showModalBottomSheet(
+                  constraints: BoxConstraints(
+                      minWidth: width / 1.1, maxWidth: width / 1.1),
+                  backgroundColor: Colors.green,
+                  context: context,
+                  builder: (BuildContext context) {
+                    return NFCWriter(height, width, this.shortDynamicLink);
+                  });
+            }));
   }
 }
 

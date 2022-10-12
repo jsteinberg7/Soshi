@@ -9,6 +9,7 @@ import 'package:soshi/services/dataEngine.dart';
 import 'package:soshi/constants/widgets.dart';
 import 'package:soshi/constants/utilities.dart';
 
+import '../../services/nfc.dart';
 import '../../services/url.dart';
 
 class GeneralSettings extends StatefulWidget {
@@ -115,22 +116,53 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                     ? Colors.black
                                     : Colors.white),
                       ),
+                      // GestureDetector(
+                      //   behavior: HitTestBehavior.opaque,
+                      //   onTap: () {
+                      //     Navigator.push(context,
+                      //         MaterialPageRoute(builder: (context) {
+                      //       return Scaffold(body: ProfileSettings());
+                      //     }));
+                      //   },
+                      //   child: Padding(
+                      //     padding: EdgeInsets.fromLTRB(
+                      //         0, height / 100, 0, height / 80),
+                      //     child: Row(
+                      //         //mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      //         children: [
+                      //           Text(
+                      //             "Account",
+                      //             style: TextStyle(fontSize: width / 23),
+                      //           ),
+                      //           Spacer(),
+                      //           Icon(CupertinoIcons.forward)
+                      //         ]),
+                      //   ),
+                      // ),
                       GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return Scaffold(body: ProfileSettings());
-                          }));
+                          print("NFC writer pops up");
+                          Navigator.of(context).pop();
+
+                          showModalBottomSheet(
+                              constraints: BoxConstraints(
+                                  minWidth: width / 1.1, maxWidth: width / 1.1),
+                              backgroundColor: Colors.green,
+                              context: context,
+                              builder: (BuildContext context) {
+                                return NFCWriter(height, width,
+                                    DataEngine.globalUser.shortDynamicLink);
+                              });
                         },
                         child: Padding(
                           padding: EdgeInsets.fromLTRB(
-                              0, height / 100, 0, height / 80),
+                              0, height / 60, 0, height / 80),
                           child: Row(
                               //mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 Text(
-                                  "Account",
+                                  "Activate Soshi Portal",
                                   style: TextStyle(fontSize: width / 23),
                                 ),
                                 Spacer(),
@@ -138,6 +170,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                               ]),
                         ),
                       ),
+
                       GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onTap: () {

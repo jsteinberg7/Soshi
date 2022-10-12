@@ -192,9 +192,9 @@ class _NewQRScreenState extends State<NewQRScreen> {
                           ],
                         )),
                   ),
-                  ActivatePortalButton(
-                    shortDynamicLink: DataEngine.globalUser.shortDynamicLink,
-                  ),
+                  // ActivatePortalButton(
+                  //   shortDynamicLink: DataEngine.globalUser.shortDynamicLink,
+                  // ),
 
                   Container(
                     child: GestureDetector(

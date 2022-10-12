@@ -34,6 +34,9 @@ class _NFCWriterState extends State<NFCWriter> {
   Future<bool> ndefWrite() async {
     print("writing");
     NfcManager.instance.startSession(
+      alertMessage:
+          "Touch and hold the Soshi Portal to the top of your iPhone :)", // this is a parameter for iOS only
+
       onDiscovered: (NfcTag tag) async {
         var ndef = Ndef.from(tag);
         if (ndef == null || !ndef.isWritable) {
