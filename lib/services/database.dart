@@ -215,8 +215,9 @@ class DatabaseService {
         phoneIn: user.getUsernameGivenPlatform(platform: "Phone"));
 
     String vcfLink = await uploadContactCard(vCard);
+    user.lookupSocial["Contact"].username = vcfLink;
+
     return vcfLink;
-    // user.lookupSocial["Contact"].username = vcfLink;
   }
 
   /*
