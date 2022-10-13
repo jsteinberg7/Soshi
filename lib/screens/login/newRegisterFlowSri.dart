@@ -13,6 +13,8 @@ import 'package:soshi/screens/mainapp/mainapp.dart';
 import 'package:soshi/services/auth.dart';
 import 'package:soshi/services/dataEngine.dart';
 
+import '../../services/database.dart';
+
 class NewRegisterFlow extends StatefulWidget {
   SuperController superController;
   ScreenChecker screenChecker;
@@ -177,9 +179,9 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
                             passwordIn:
                                 widget.superController.passwordOldAcc.text);
 
-                    if (user.runtimeType == String) {
-                      OnboardingLoader.killLoader(context);
+                    OnboardingLoader.killLoader(context);
 
+                    if (user.runtimeType == String) {
                       print("❌ error caught in runTimetype (SIGN_IN)");
                       setState(() {
                         this.registerError = true;
@@ -192,8 +194,10 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
                       print(
                           "✅ sign-in success: pushing to main dashboard NOW!");
                       await DataEngine.initialize();
-                      OnboardingLoader.killLoader(context);
-
+                      await DataEngine.applyUserChanges(
+                          user: DataEngine.globalUser,
+                          cloud: true,
+                          local: true); // update contact card
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) => MainApp()),
@@ -233,10 +237,8 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
                       contextIn: context,
                     );
 
-                    //OnboardingLoader.killLoader(context);
+                    OnboardingLoader.killLoader(context);
                     if (user.runtimeType == String) {
-                      OnboardingLoader.killLoader(context);
-
                       print("❌ error caught in runTimetype");
                       setState(() {
                         this.registerError = true;
@@ -249,18 +251,17 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
                       print(
                           "✅ sign-up success: pushing to main dashboard NOW!");
                       await DataEngine.initialize();
-                      OnboardingLoader.killLoader(context);
 
+                      await DataEngine.applyUserChanges(
+                          user: DataEngine.globalUser,
+                          cloud: true,
+                          local: true); // update contact card
                       Navigator.pushReplacement(context,
                           MaterialPageRoute(builder: (context) {
                         return MainApp();
                       }));
                     }
                   } else {
-                    OnboardingLoader.killLoader(
-                      context,
-                    );
-
                     log("cannot proceed to next screen sorry!");
                   }
                 },

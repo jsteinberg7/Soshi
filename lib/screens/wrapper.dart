@@ -48,12 +48,12 @@ class _WrapperState extends State<Wrapper> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<User>(context); // get current user
     return FutureBuilder(
         future: wrapperSafeguard(),
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
-            return Container();
+            return Container(
+                child: Center(child: CircularProgressIndicator.adaptive()));
           } else {
             return toReturn;
           }

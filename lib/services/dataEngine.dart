@@ -43,9 +43,6 @@ class DataEngine {
     log("[⚙ Data Engine ⚙] INITIALIZING USER NOW");
     DataEngine.globalUser =
         await DataEngine.getUserObject(firebaseOverride: true);
-    await DatabaseService.updateContactCard(user: DataEngine.globalUser);
-    await DataEngine.applyUserChanges(
-        user: DataEngine.globalUser, cloud: true, local: true);
   }
 
   static Future<Map> serializeUser(SoshiUser user) async {
