@@ -21,10 +21,11 @@ class _ChooseSocialsCardState extends State<ChooseSocialsCard>
   double _scale;
   AnimationController _controller;
 
-  bool isSwitched = false;
+  bool isSwitched;
 
   @override
   void initState() {
+    isSwitched = false;
     _controller = AnimationController(
       vsync: this,
       duration: Duration(
