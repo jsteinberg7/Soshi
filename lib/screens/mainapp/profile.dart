@@ -53,14 +53,6 @@ class _SMTileState extends State<SMTile> {
   String soshiUsername;
 
   @override
-  void initState() {
-    // soshiUsername = DataEngine.globalUser.soshiUsername;
-    // platformName = widget.selectedSocial.platformName;
-    // isSwitched = widget.selectedSocial.switchStatus;
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     soshiUsername = DataEngine.globalUser.soshiUsername;
     platformName = widget.selectedSocial.platformName;
