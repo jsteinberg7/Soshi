@@ -175,8 +175,8 @@ class _ChooseSocialsState extends State<ChooseSocials> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
-    List<Social> choosePlatforms =
-        DataEngine.globalUser.getAvailablePlatforms();
+    // List<Social> choosePlatforms =
+    //     DataEngine.globalUser.getAvailablePlatforms();
     return Scaffold(
       appBar: AppBar(
         leading: CupertinoBackButton(),
@@ -225,11 +225,13 @@ class _ChooseSocialsState extends State<ChooseSocials> {
               return Padding(
                 padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
                 child: ChooseSocialsCard(
-                    platformName: choosePlatforms[index].platformName,
+                    platformName: DataEngine.globalUser
+                        .getAvailablePlatforms()[index]
+                        .platformName,
                     user: widget.user),
               );
             },
-            itemCount: choosePlatforms.length),
+            itemCount: DataEngine.globalUser.getAvailablePlatforms().length),
       ),
     );
   }
