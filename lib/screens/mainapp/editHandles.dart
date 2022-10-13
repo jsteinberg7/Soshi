@@ -51,9 +51,15 @@ class _EditHandlesState extends State<EditHandles> {
   }
 
   @override
+  void initState() {
+    chosenPlatforms = DataEngine.globalUser.getChosenPlatforms();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     print("🔃 rebuilding EditHandles Now 🔃");
-    chosenPlatforms = DataEngine.globalUser.getChosenPlatforms();
+    //chosenPlatforms = DataEngine.globalUser.getChosenPlatforms();
 
     double height = Utilities.getHeight(context);
     double width = Utilities.getWidth(context);
@@ -125,7 +131,7 @@ class _EditHandlesState extends State<EditHandles> {
                         MaterialPageRoute(builder: (context) {
                       return Scaffold(
                           body: ChooseSocials(
-                        user: DataEngine.globalUser,
+                        refreshEditHandles: refreshEditHandlesScreen,
                       ));
                     })).then((value) {
                       setState(() {});
@@ -133,8 +139,7 @@ class _EditHandlesState extends State<EditHandles> {
                   },
                 ),
                 Container(
-                  child: (chosenPlatforms == null ||
-                          chosenPlatforms.isEmpty == true)
+                  child: (chosenPlatforms == null || chosenPlatforms.isEmpty)
                       ? Container()
                       : GridView.builder(
                           physics: const NeverScrollableScrollPhysics(),
@@ -197,17 +202,12 @@ class _SMCardState extends State<SMCard> {
   FocusNode focusNode;
 
   @override
-  void initState() {
-    // soshiUsername = widget.user.soshiUsername;
+  Widget build(BuildContext context) {
     platformName = widget.platformSocial.platformName;
     isSwitched = widget.platformSocial.switchStatus;
     usernameController = widget.platformSocial.usernameController;
+    print("Initialized " + platformName);
 
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     if (platformName == "Phone") {
       hintText = "Phone Number";
       indicator = "#";
@@ -432,7 +432,7 @@ class _SMCardState extends State<SMCard> {
                                                       platformName: widget
                                                           .platformSocial
                                                           .platformName);
-                                              await widget.refreshScreen();
+                                              widget.refreshScreen();
 
                                               Navigator.pop(context);
 

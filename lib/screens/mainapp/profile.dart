@@ -303,10 +303,7 @@ class _AddPlatformsTileState extends State<AddPlatformsTile> {
     return NeumorphicButton(
       onPressed: () async {
         await Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return Scaffold(
-              body: ChooseSocials(
-            user: widget.user,
-          ));
+          return Scaffold(body: ChooseSocials());
         })).then((value) {
           print("✅ Done adding socials to profile, time to refresh the screen");
           widget.importProfileNotifier.notifyListeners();
