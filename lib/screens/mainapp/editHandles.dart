@@ -23,12 +23,12 @@ import 'package:http/http.dart' as http;
 class EditHandles extends StatefulWidget {
   //ValueNotifier editHandleMasterControl;
   Function() refreshScreenParam;
-  ValueNotifier profileMasterControl;
+  ValueNotifier importProfileNotifier;
 
   EditHandles(
       {
       //@required this.editHandleMasterControl,
-      @required this.profileMasterControl,
+      @required this.importProfileNotifier,
       @required this.refreshScreenParam});
 
   @override
@@ -151,9 +151,10 @@ class _EditHandlesState extends State<EditHandles> {
                                 padding:
                                     const EdgeInsets.fromLTRB(0, 10, 0, 10),
                                 child: SMCard(
-                                  platformSocial: chosenPlatforms[index],
-                                  refreshScreen: refreshEditHandlesScreen,
-                                )
+                                    platformSocial: chosenPlatforms[index],
+                                    refreshScreen: refreshEditHandlesScreen,
+                                    importProfileNotifier:
+                                        widget.importProfileNotifier)
                                 // importEditHandlesController:
                                 //     widget.editHandleMasterControl),
                                 );
@@ -177,14 +178,18 @@ class SMCard extends StatefulWidget {
   Social platformSocial;
   //ValueNotifier importEditHandlesController;
   Function() refreshScreen;
+  ValueNotifier importProfileNotifier;
 
-  SMCard(
-      {Social platformSocial,
-      //ValueNotifier importEditHandlesController,
-      Function refreshScreen}) {
+  SMCard({
+    ValueNotifier importProfileNotifier,
+    Social platformSocial,
+    //ValueNotifier importEditHandlesController,
+    Function refreshScreen,
+  }) {
     //this.importEditHandlesController = importEditHandlesController;
     this.platformSocial = platformSocial;
     this.refreshScreen = refreshScreen;
+    this.importProfileNotifier = importProfileNotifier;
   }
   // {@required this.platformSocial,
   // @required this.importEditHandlesController,
@@ -432,6 +437,9 @@ class _SMCardState extends State<SMCard> {
                                                       platformName: widget
                                                           .platformSocial
                                                           .platformName);
+                                              widget.importProfileNotifier
+                                                  .notifyListeners();
+
                                               widget.refreshScreen();
 
                                               Navigator.pop(context);

@@ -53,15 +53,11 @@ class _SMTileState extends State<SMTile> {
   String soshiUsername;
 
   @override
-  void initState() {
-    soshiUsername = widget.user.soshiUsername;
+  Widget build(BuildContext context) {
+    soshiUsername = DataEngine.globalUser.soshiUsername;
     platformName = widget.selectedSocial.platformName;
     isSwitched = widget.selectedSocial.switchStatus;
-    super.initState();
-  }
 
-  @override
-  Widget build(BuildContext context) {
     platformName = widget.selectedSocial.platformName;
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
@@ -87,9 +83,11 @@ class _SMTileState extends State<SMTile> {
             isSwitched = true;
           });
 
-          if (widget.user.getUsernameGivenPlatform(platform: platformName) ==
+          if (DataEngine.globalUser
+                      .getUsernameGivenPlatform(platform: platformName) ==
                   null ||
-              widget.user.getUsernameGivenPlatform(platform: platformName) ==
+              DataEngine.globalUser
+                      .getUsernameGivenPlatform(platform: platformName) ==
                   "") {
             if (platformName != "Contact") {
               Popups.editUsernamePopup(context, platformName,
@@ -103,7 +101,7 @@ class _SMTileState extends State<SMTile> {
         widget.selectedSocial.username = usernameControllerLower.trim();
 
         DataEngine.applyUserChanges(
-            user: widget.user, cloud: true, local: true);
+            user: DataEngine.globalUser, cloud: true, local: true);
       }
     });
 
@@ -154,9 +152,9 @@ class _SMTileState extends State<SMTile> {
                     if (platformName == "Contact") {
                       double width = Utilities.getWidth(context);
 
-                      String firstName = widget.user.firstName;
-                      String lastName = widget.user.lastName;
-                      String photoUrl = widget.user.photoURL;
+                      String firstName = DataEngine.globalUser.firstName;
+                      String lastName = DataEngine.globalUser.lastName;
+                      String photoUrl = DataEngine.globalUser.photoURL;
 
                       Uint8List profilePicBytes;
                       try {
@@ -179,14 +177,16 @@ class _SMTileState extends State<SMTile> {
                             Item(
                                 label: "Email",
                                 // value: LocalDataService.getLocalUsernameForPlatform("Email"),
-                                value: widget.user.getUsernameGivenPlatform(
-                                    platform: "Email")),
+                                value: DataEngine.globalUser
+                                    .getUsernameGivenPlatform(
+                                        platform: "Email")),
                           ],
                           phones: [
                             Item(
                                 label: "Cell",
-                                value: widget.user.getUsernameGivenPlatform(
-                                    platform: "Phone")),
+                                value: DataEngine.globalUser
+                                    .getUsernameGivenPlatform(
+                                        platform: "Phone")),
                           ],
                           avatar: profilePicBytes);
                       await askPermissions(context);
@@ -205,7 +205,7 @@ class _SMTileState extends State<SMTile> {
                       });
                     } else if (platformName == "Cryptowallet") {
                       Clipboard.setData(ClipboardData(
-                        text: widget.user
+                        text: DataEngine.globalUser
                             .getUsernameGivenPlatform(platform: "Cryptowallet")
                             .toString(),
                       ));
@@ -219,8 +219,9 @@ class _SMTileState extends State<SMTile> {
                     } else {
                       URL.launchURL(URL.getPlatformURL(
                           platform: platformName,
-                          username: widget.user.getUsernameGivenPlatform(
-                              platform: platformName)));
+                          username: DataEngine.globalUser
+                              .getUsernameGivenPlatform(
+                                  platform: platformName)));
                     }
                   },
                   iconSize: 60.0,
@@ -231,14 +232,14 @@ class _SMTileState extends State<SMTile> {
                     activeColor: Colors.cyan,
                     onChanged: (bool value) {
                       print("Username" +
-                          widget.user.getUsernameGivenPlatform(
+                          DataEngine.globalUser.getUsernameGivenPlatform(
                               platform: platformName));
                       HapticFeedback.lightImpact();
 
-                      if ((widget.user.getUsernameGivenPlatform(
+                      if ((DataEngine.globalUser.getUsernameGivenPlatform(
                                       platform: platformName) ==
                                   null ||
-                              widget.user.getUsernameGivenPlatform(
+                              DataEngine.globalUser.getUsernameGivenPlatform(
                                       platform: platformName) ==
                                   ""
                           //     &&
@@ -253,15 +254,17 @@ class _SMTileState extends State<SMTile> {
                       }
 
                       if (widget.selectedSocial.username != "") {
-                        widget.user.lookupSocial[platformName].switchStatus =
-                            value;
+                        DataEngine.globalUser.lookupSocial[platformName]
+                            .switchStatus = value;
                         setState(() {
                           this.isSwitched = value;
                         });
 
                         //{NOTE} Updating Firestore/local storage will occurr Asynchronously
                         DataEngine.applyUserChanges(
-                            user: widget.user, cloud: true, local: true);
+                            user: DataEngine.globalUser,
+                            cloud: true,
+                            local: true);
                         // not working because of the .tghen, where to put??
                       }
                     }),
@@ -716,7 +719,7 @@ class ProfileState extends State<Profile> {
                                                     refreshProfileScreen,
                                                 // editHandleMasterControl:
                                                 //     controlsEditHandlesScreen,
-                                                profileMasterControl: widget
+                                                importProfileNotifier: widget
                                                     .importProfileNotifier);
                                           }));
                                 }));

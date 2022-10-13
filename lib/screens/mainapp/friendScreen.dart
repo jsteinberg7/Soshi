@@ -30,7 +30,7 @@ class _FriendScreenState extends State<FriendScreen>
   List friendsList;
   List<Friend> formattedFriendsList = [];
   List<Friend> formattedFriendsListOriginal = [];
-  List<Friend> formattedRecentsList = [];
+  //List<Friend> formattedRecentsList = [];
   List<String> friendsListNames;
   TextEditingController searchController;
   AsyncMemoizer memoizer;
@@ -45,6 +45,7 @@ class _FriendScreenState extends State<FriendScreen>
   loadDataEngine() async {
     this.user = await DataEngine.getUserObject(firebaseOverride: false);
     this.formattedFriendsList = await DataEngine.getCachedFriendsList();
+    this.formattedFriendsList = formattedFriendsList;
     print(DataEngine.serializeUser(this.user));
   }
 
@@ -119,7 +120,8 @@ class _FriendScreenState extends State<FriendScreen>
                                     friends: formattedFriendsList,
                                     user: user,
                                     refreshFriendScreen: refreshFriendScreen,
-                                    friend: formattedFriendsList[i],
+                                    friend: formattedFriendsList[
+                                        formattedFriendsList.length - 1 - i],
                                   );
                                 },
                               ),

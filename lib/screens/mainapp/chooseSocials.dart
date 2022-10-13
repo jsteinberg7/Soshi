@@ -206,10 +206,12 @@ class _ChooseSocialsState extends State<ChooseSocials> {
 
                 for (String social in Queue.choosePlatformsQueue) {
                   DataEngine.globalUser.lookupSocial[social].isChosen = true;
+
                   if (DataEngine.globalUser.lookupSocial[social].username !=
                           null &&
                       DataEngine.globalUser.lookupSocial[social].username !=
                           "") {
+                    print("TUNRING ON");
                     DataEngine.globalUser.lookupSocial[social].switchStatus =
                         true;
                   }
