@@ -20,11 +20,10 @@ class _ChooseSocialsCardState extends State<ChooseSocialsCard>
     with SingleTickerProviderStateMixin {
   double _scale;
   AnimationController _controller;
-
-  bool isSwitched = false;
-
+  bool isSwitched;
   @override
   void initState() {
+    isSwitched = Queue.choosePlatformsQueue.contains(widget.platformName);
     _controller = AnimationController(
       vsync: this,
       duration: Duration(
@@ -155,8 +154,10 @@ class ChooseSocials extends StatefulWidget {
   @override
   _ChooseSocialsState createState() => _ChooseSocialsState();
 
-  SoshiUser user;
-  ChooseSocials({@required this.user});
+  Function refreshEditHandles;
+  ChooseSocials({Function refreshEditHandles}) {
+    this.refreshEditHandles = refreshEditHandles ?? () {};
+  }
 }
 
 class _ChooseSocialsState extends State<ChooseSocials> {
@@ -194,7 +195,7 @@ class _ChooseSocialsState extends State<ChooseSocials> {
                 "Done",
                 style: TextStyle(color: Colors.blue, fontSize: width / 23),
               ),
-              onPressed: () async {
+              onPressed: () {
                 // go through the queue and add each platform and turn on the switch if they have a username
 
                 // CircularProgressIndicator dialogBuilder =
@@ -212,13 +213,15 @@ class _ChooseSocialsState extends State<ChooseSocials> {
                     DataEngine.globalUser.lookupSocial[social].switchStatus =
                         true;
                   }
+
                   print(social);
                 }
 
-                await DataEngine.applyUserChanges(
-                    user: widget.user, cloud: true, local: true);
+                DataEngine.applyUserChanges(
+                    user: DataEngine.globalUser, cloud: true, local: true);
 
                 dialogBuilder.hideOpenDialog(); // disable loading indicator
+                widget.refreshEditHandles();
 
                 Navigator.pop(context);
               },

@@ -454,6 +454,11 @@ class Social {
       @required this.switchStatus,
       @required this.isChosen,
       @required this.usernameController});
+
+  @override
+  String toString() {
+    return platformName;
+  }
 }
 
 class Passion {
