@@ -271,8 +271,9 @@ class DataEngine {
     List<Friend> friends;
     if (!prefs.containsKey("cachedFriendsList")) {
       log("[⚙ Data Engine ⚙]  getCachedFriendsList() Firebase data burn ⚠ userFetch=> ${soshiUsername}");
-      SoshiUser user = await getUserObject(firebaseOverride: false);
-      friends = await SoshiUser.convertStrToFriendList(user.friends);
+      //SoshiUser user = await getUserObject(firebaseOverride: false);
+      friends =
+          await SoshiUser.convertStrToFriendList(DataEngine.globalUser.friends);
       await prefs.setString("cachedFriendsList", jsonEncode(friends));
     } else {
       log("[⚙ Data Engine ⚙]  getCachedFriends() Using cache 😃");
@@ -440,6 +441,7 @@ class SoshiUser {
           photoURL: currUser.photoURL,
           isVerified: currUser.verified));
     }
+    print("FRIENDS" + list.toString());
     return list;
   }
 }

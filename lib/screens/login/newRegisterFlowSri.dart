@@ -179,9 +179,11 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
                             passwordIn:
                                 widget.superController.passwordOldAcc.text);
 
-                    OnboardingLoader.killLoader(context);
+                    // OnboardingLoader.killLoader(context);
 
                     if (user.runtimeType == String) {
+                      OnboardingLoader.killLoader(context);
+
                       print("❌ error caught in runTimetype (SIGN_IN)");
                       setState(() {
                         this.registerError = true;
@@ -198,6 +200,8 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
                           user: DataEngine.globalUser,
                           cloud: true,
                           local: true); // update contact card
+                      OnboardingLoader.killLoader(context);
+
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) => MainApp()),
@@ -237,8 +241,10 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
                       contextIn: context,
                     );
 
-                    OnboardingLoader.killLoader(context);
+                    // OnboardingLoader.killLoader(context);
                     if (user.runtimeType == String) {
+                      OnboardingLoader.killLoader(context);
+
                       print("❌ error caught in runTimetype");
                       setState(() {
                         this.registerError = true;
@@ -256,12 +262,16 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
                           user: DataEngine.globalUser,
                           cloud: true,
                           local: true); // update contact card
+                      OnboardingLoader.killLoader(context);
+
                       Navigator.pushReplacement(context,
                           MaterialPageRoute(builder: (context) {
                         return MainApp();
                       }));
                     }
                   } else {
+                    OnboardingLoader.killLoader(context);
+
                     log("cannot proceed to next screen sorry!");
                   }
                 },
