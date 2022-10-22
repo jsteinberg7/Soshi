@@ -24,8 +24,10 @@ abstract class DynamicLinkService {
           fallbackUrl: Uri.parse("https://soshi.app/$username"),
         ),
         socialMetaTagParameters: SocialMetaTagParameters(
-            description: "Open $username's profile in the Soshi app!",
-            title: "Open Soshi"));
+            description: "View @$username's profile in the Soshi app!",
+            title: "Open Soshi"),
+        navigationInfoParameters:
+            NavigationInfoParameters(forcedRedirectEnabled: true));
     final Uri dynamicLink = await dynamicLinks.buildLink(parameters);
     return dynamicLink.toString();
   }
@@ -48,7 +50,9 @@ abstract class DynamicLinkService {
         ),
         socialMetaTagParameters: SocialMetaTagParameters(
             description: "Open $username's profile in the Soshi app!",
-            title: "Open Soshi"));
+            title: "Open Soshi"),
+        navigationInfoParameters:
+            NavigationInfoParameters(forcedRedirectEnabled: true));
     final ShortDynamicLink shortDynamicLink =
         await dynamicLinks.buildShortLink(parameters);
     return shortDynamicLink.shortUrl.toString();
