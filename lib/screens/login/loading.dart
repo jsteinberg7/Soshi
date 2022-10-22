@@ -52,7 +52,7 @@ class OnboardingLoader {
       barrierDismissible: false,
       builder: (BuildContext context) {
         // return SpinKitChasingDots(color: Colors.cyan, size: 50);
-        return Center(child: CircularProgressIndicator());
+        return Center(child: CircularProgressIndicator.adaptive());
       },
     );
   }
