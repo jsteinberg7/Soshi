@@ -49,7 +49,7 @@ class _PassionTileListState extends State<PassionTileList> {
 
       if (value != null) {
         user.passions[pIndex] = value;
-        await DataEngine.applyUserChanges(user: user, cloud: true, local: true);
+        DataEngine.applyUserChanges(user: user, cloud: true, local: true);
         setState(() {});
         if (widget.profileScreenRefresher != null) {
           widget.profileScreenRefresher.notifyListeners();

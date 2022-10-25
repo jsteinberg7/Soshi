@@ -364,10 +364,11 @@ class FriendTile extends StatelessWidget {
                                               DataEngine
                                                   .updateCachedFriendsList(
                                                       friends: friends);
-                                              user.friends.remove(friend
+
+                                              DataEngine.globalUser.friends.remove(friend
                                                   .soshiUsername); // update string list
                                               DataEngine.applyUserChanges(
-                                                  user: user,
+                                                  user: DataEngine.globalUser,
                                                   cloud: true,
                                                   local: true);
                                               refreshFriendScreen();

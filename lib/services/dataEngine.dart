@@ -215,7 +215,6 @@ class DataEngine {
 
       if (local) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        // log(afterSerialized.toString());
         prefs.setString("userObject", jsonEncode(afterSerialized));
         log("[⚙ Data Engine ⚙] update Local success! ✅");
       }
