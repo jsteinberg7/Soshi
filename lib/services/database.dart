@@ -129,10 +129,6 @@ class DatabaseService {
         // "Reddit",
       ],
       "Profile Platforms": <String>["Phone"],
-      "INJECTION Soshi Points Flag": true,
-      "INJECTION Profile Pic Flag": false,
-      "INJECTION Bio Flag": false,
-      "INJECTION Passions Flag": false,
       "Groups": []
     });
     //await DynamicLinkService.(username);
@@ -219,8 +215,9 @@ class DatabaseService {
         phoneIn: user.getUsernameGivenPlatform(platform: "Phone"));
 
     String vcfLink = await uploadContactCard(vCard);
+    user.lookupSocial["Contact"].username = vcfLink;
+
     return vcfLink;
-    // user.lookupSocial["Contact"].username = vcfLink;
   }
 
   /*
@@ -372,7 +369,7 @@ class DatabaseService {
   }
 
   Future<void> updateUserPassions(String soshiUser, List newPassions) async {
-    await usersCollection.doc(soshiUser).update({"passions": newPassions});
+    await usersCollection.doc(soshiUser).update({"Passions": newPassions});
   }
   // bool isFirstTime() {
   //    (await IsFirstRun.isFirstRun()) ? return true : return false;

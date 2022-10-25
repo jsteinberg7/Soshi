@@ -20,11 +20,10 @@ class _ChooseSocialsCardState extends State<ChooseSocialsCard>
     with SingleTickerProviderStateMixin {
   double _scale;
   AnimationController _controller;
-
-  bool isSwitched = false;
-
+  bool isSwitched;
   @override
   void initState() {
+    isSwitched = Queue.choosePlatformsQueue.contains(widget.platformName);
     _controller = AnimationController(
       vsync: this,
       duration: Duration(
@@ -66,8 +65,13 @@ class _ChooseSocialsCardState extends State<ChooseSocialsCard>
     return GestureDetector(
       onTap: () {
         setState(() {
+          if (!isSwitched) {
+            Queue.choosePlatformsQueue.add(widget.platformName);
+          } else {
+            Queue.choosePlatformsQueue.remove(widget.platformName);
+          }
           isSwitched = !isSwitched;
-          widget.user.lookupSocial[widget.platformName].isChosen = true;
+          print(Queue.choosePlatformsQueue.toString());
         });
       },
       child: Stack(
@@ -150,8 +154,10 @@ class ChooseSocials extends StatefulWidget {
   @override
   _ChooseSocialsState createState() => _ChooseSocialsState();
 
-  SoshiUser user;
-  ChooseSocials({@required this.user});
+  Function refreshEditHandles;
+  ChooseSocials({Function refreshEditHandles}) {
+    this.refreshEditHandles = refreshEditHandles ?? () {};
+  }
 }
 
 class _ChooseSocialsState extends State<ChooseSocials> {
@@ -174,8 +180,8 @@ class _ChooseSocialsState extends State<ChooseSocials> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
-    // List<String> choosePlatforms = LocalDataService.getLocalChoosePlatforms();
-    List<Social> choosePlatforms = widget.user.getAvailablePlatforms();
+    // List<Social> choosePlatforms =
+    //     DataEngine.globalUser.getAvailablePlatforms();
     return Scaffold(
       appBar: AppBar(
         leading: CupertinoBackButton(),
@@ -189,17 +195,35 @@ class _ChooseSocialsState extends State<ChooseSocials> {
                 "Done",
                 style: TextStyle(color: Colors.blue, fontSize: width / 23),
               ),
-              onPressed: () async {
+              onPressed: () {
+                // go through the queue and add each platform and turn on the switch if they have a username
+
                 // CircularProgressIndicator dialogBuilder =
                 //     new CircularProgressIndicator.adaptive();
 
                 DialogBuilder dialogBuilder = new DialogBuilder(context);
                 dialogBuilder.showLoadingIndicator();
 
-                await DataEngine.applyUserChanges(
-                    user: widget.user, cloud: true, local: true);
+                for (String social in Queue.choosePlatformsQueue) {
+                  DataEngine.globalUser.lookupSocial[social].isChosen = true;
+
+                  if (DataEngine.globalUser.lookupSocial[social].username !=
+                          null &&
+                      DataEngine.globalUser.lookupSocial[social].username !=
+                          "") {
+                    print("TUNRING ON");
+                    DataEngine.globalUser.lookupSocial[social].switchStatus =
+                        true;
+                  }
+
+                  print(social);
+                }
+
+                DataEngine.applyUserChanges(
+                    user: DataEngine.globalUser, cloud: true, local: true);
 
                 dialogBuilder.hideOpenDialog(); // disable loading indicator
+                widget.refreshEditHandles();
 
                 Navigator.pop(context);
               },
@@ -224,11 +248,13 @@ class _ChooseSocialsState extends State<ChooseSocials> {
               return Padding(
                 padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
                 child: ChooseSocialsCard(
-                    platformName: choosePlatforms[index].platformName,
-                    user: widget.user),
+                    platformName: DataEngine.globalUser
+                        .getAvailablePlatforms()[index]
+                        .platformName,
+                    user: DataEngine.globalUser),
               );
             },
-            itemCount: choosePlatforms.length),
+            itemCount: DataEngine.globalUser.getAvailablePlatforms().length),
       ),
     );
   }
@@ -236,5 +262,5 @@ class _ChooseSocialsState extends State<ChooseSocials> {
 
 abstract class Queue {
   static List<String> choosePlatformsQueue = [];
-  static List<String> filteredChoosePlatformsQueue = [];
+  // static List<String> filteredChoosePlatformsQueue = [];
 }

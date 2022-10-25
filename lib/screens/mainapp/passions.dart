@@ -13,29 +13,20 @@ class PassionTileList extends StatefulWidget {
 }
 
 class _PassionTileListState extends State<PassionTileList> {
-  SoshiUser user;
-
-  loadDataEngine() async {
-    // user = await DataEngine.getUserObject(firebaseOverride: false);
-    user = DataEngine.globalUser;
-  }
+  // loadDataEngine() async {
+  //   // user = await DataEngine.getUserObject(firebaseOverride: false);
+  //   user = DataEngine.globalUser;
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: loadDataEngine(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return Center(child: CircularProgressIndicator.adaptive());
-          } else {
-            return Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [0, 1, 2]
-                    .map((int pIndex) =>
-                        makePassionTile(user.passions[pIndex], pIndex))
-                    .toList());
-          }
-        });
+    return SingleChildScrollView(
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [0, 1, 2]
+                .map((int pIndex) => makePassionTile(
+                    DataEngine.globalUser.passions[pIndex], pIndex))
+                .toList()));
   }
 
   pushAndUpdatePassions(Passion replace, int pIndex) async {
@@ -43,13 +34,14 @@ class _PassionTileListState extends State<PassionTileList> {
         context,
         new MaterialPageRoute(
             builder: ((context) => PassionsPage(
-                  alreadySelected: user.passions,
+                  alreadySelected: DataEngine.globalUser.passions,
                 )))).then((value) async {
       print(value.toString());
 
       if (value != null) {
-        user.passions[pIndex] = value;
-        DataEngine.applyUserChanges(user: user, cloud: true, local: true);
+        DataEngine.globalUser.passions[pIndex] = value;
+        DataEngine.applyUserChanges(
+            user: DataEngine.globalUser, cloud: true, local: true);
         setState(() {});
         if (widget.profileScreenRefresher != null) {
           widget.profileScreenRefresher.notifyListeners();

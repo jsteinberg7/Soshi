@@ -39,6 +39,7 @@ class DataEngine {
   }
 
   static initialize() async {
+    log("[⚙ Data Engine ⚙] INITIALIZING USER NOW");
     DataEngine.globalUser = await DataEngine.getUserObject(firebaseOverride: true);
   }
 
@@ -237,8 +238,8 @@ class DataEngine {
     List<Friend> friends;
     if (!prefs.containsKey("cachedFriendsList")) {
       log("[⚙ Data Engine ⚙]  getCachedFriendsList() Firebase data burn ⚠ userFetch=> ${soshiUsername}");
-      SoshiUser user = await getUserObject(firebaseOverride: false);
-      friends = await SoshiUser.convertStrToFriendList(user.friends);
+      //SoshiUser user = await getUserObject(firebaseOverride: false);
+      friends = await SoshiUser.convertStrToFriendList(DataEngine.globalUser.friends);
       await prefs.setString("cachedFriendsList", jsonEncode(friends));
     } else {
       log("[⚙ Data Engine ⚙]  getCachedFriends() Using cache 😃");
@@ -363,6 +364,7 @@ class SoshiUser {
   removeFromProfile({@required String platformName}) {
     // this.lookupSocial.remove(platformName);
     this.lookupSocial[platformName].isChosen = false;
+    this.lookupSocial[platformName].switchStatus = false;
     log("after remove:" + lookupSocial.toString());
   }
 
@@ -390,6 +392,7 @@ class SoshiUser {
           photoURL: currUser.photoURL,
           isVerified: currUser.verified));
     }
+    print("FRIENDS" + list.toString());
     return list;
   }
 }
@@ -405,6 +408,11 @@ class Social {
       @required this.switchStatus,
       @required this.isChosen,
       @required this.usernameController});
+
+  @override
+  String toString() {
+    return platformName;
+  }
 }
 
 class Passion {
@@ -454,7 +462,7 @@ class Friend {
     var data = jsonDecode(json);
     List<Friend> friends = [];
     for (var entry in data) {
-      friends.add(Friend(fullName: entry["Name"], soshiUsername: entry["Username"], photoURL: entry["Url"], isVerified: entry["Verified"]));
+      friends.add(Friend(soshiUsername: entry["Username"], fullName: entry["Name"], photoURL: entry["Url"], isVerified: entry["Verified"]));
     }
     print(data);
     return friends;
@@ -497,4 +505,9 @@ class Defaults {
     "OnlyFans",
     //"Cryptowallet"
   ];
+
+  static Future<String> fetchPrivacyPolicy() async {
+    DocumentSnapshot dSnap = await FirebaseFirestore.instance.collection("metadata").doc("privacyPolicy").get();
+    return dSnap.get('text');
+  }
 }

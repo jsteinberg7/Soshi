@@ -9,7 +9,7 @@ import '../screens/mainapp/viewProfilePage.dart';
 abstract class DynamicLinkService {
   static Future<String> createLongDynamicLink(String username) async {
     FirebaseDynamicLinks dynamicLinks = FirebaseDynamicLinks.instance;
-    String url = "https://strippedsoshi.page.link";
+    String url = "https://soshi.app/deeplink/user/";
     final DynamicLinkParameters parameters = DynamicLinkParameters(
         uriPrefix: url,
         link: Uri.parse(
@@ -24,15 +24,17 @@ abstract class DynamicLinkService {
           fallbackUrl: Uri.parse("https://soshi.app/$username"),
         ),
         socialMetaTagParameters: SocialMetaTagParameters(
-            description: "Open $username's profile in the Soshi app!",
-            title: "Open Soshi"));
+            description: "View @$username's profile in the Soshi app!",
+            title: "Open Soshi"),
+        navigationInfoParameters:
+            NavigationInfoParameters(forcedRedirectEnabled: true));
     final Uri dynamicLink = await dynamicLinks.buildLink(parameters);
     return dynamicLink.toString();
   }
 
   static Future<String> createShortDynamicLink(String username) async {
     FirebaseDynamicLinks dynamicLinks = FirebaseDynamicLinks.instance;
-    String url = "https://strippedsoshi.page.link";
+    String url = "https://soshi.app/deeplink/user/";
     final DynamicLinkParameters parameters = DynamicLinkParameters(
         uriPrefix: url,
         link: Uri.parse(
@@ -48,7 +50,9 @@ abstract class DynamicLinkService {
         ),
         socialMetaTagParameters: SocialMetaTagParameters(
             description: "Open $username's profile in the Soshi app!",
-            title: "Open Soshi"));
+            title: "Open Soshi"),
+        navigationInfoParameters:
+            NavigationInfoParameters(forcedRedirectEnabled: true));
     final ShortDynamicLink shortDynamicLink =
         await dynamicLinks.buildShortLink(parameters);
     return shortDynamicLink.shortUrl.toString();

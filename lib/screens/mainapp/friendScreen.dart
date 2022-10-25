@@ -11,8 +11,11 @@ import 'package:soshi/constants/popups.dart';
 import 'package:soshi/screens/mainapp/viewProfilePage.dart';
 import 'package:soshi/services/database.dart';
 import 'package:soshi/services/localData.dart';
+import 'package:vibration/vibration.dart';
 
+import '../../services/analytics.dart';
 import '../../services/dataEngine.dart';
+import '../../services/dynamicLinks.dart';
 
 /* This widget displays a list of the user's friends. */
 class FriendScreen extends StatefulWidget {
@@ -27,7 +30,7 @@ class _FriendScreenState extends State<FriendScreen>
   List friendsList;
   List<Friend> formattedFriendsList = [];
   List<Friend> formattedFriendsListOriginal = [];
-  List<Friend> formattedRecentsList = [];
+  //List<Friend> formattedRecentsList = [];
   List<String> friendsListNames;
   TextEditingController searchController;
   AsyncMemoizer memoizer;
@@ -40,9 +43,13 @@ class _FriendScreenState extends State<FriendScreen>
   }
 
   loadDataEngine() async {
-    this.user = await DataEngine.getUserObject(firebaseOverride: false);
+    // this.user = await DataEngine.getUserObject(firebaseOverride: false);
     this.formattedFriendsList = await DataEngine.getCachedFriendsList();
-    print(DataEngine.serializeUser(this.user));
+    // print(formattedFriendsList.toString());
+    print("jasons gay");
+    print(formattedFriendsList.toString());
+
+    //print(DataEngine.serializeUser(this.user));
   }
 
   // narrows down friendsList based on search text
@@ -116,7 +123,8 @@ class _FriendScreenState extends State<FriendScreen>
                                     friends: formattedFriendsList,
                                     user: user,
                                     refreshFriendScreen: refreshFriendScreen,
-                                    friend: formattedFriendsList[i],
+                                    friend: formattedFriendsList[
+                                        formattedFriendsList.length - 1 - i],
                                   );
                                 },
                               ),
@@ -141,7 +149,7 @@ class _FriendScreenState extends State<FriendScreen>
                     }),
                 SizedBox(
                   height: height / 100,
-                )
+                ),
               ],
             ),
           )),
@@ -244,7 +252,7 @@ class FriendTile extends StatelessWidget {
             }));
           },
           leading: Hero(
-              tag: friend.soshiUsername,
+              tag: friend.fullName,
               child: ProfilePic(radius: width / 14, url: friend.photoURL)),
           title: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -357,16 +365,18 @@ class FriendTile extends StatelessWidget {
                                               // databaseService.overwriteFriendsList(
                                               //     newFriendsList); // update cloud list
                                               // DataEngine.applyUserChanges(user:  user, cloud: true, local: true)
-                                              friends.removeWhere((friend) =>
-                                                  friend.soshiUsername ==
-                                                  friend
-                                                      .soshiUsername); // update cached list
+                                              friends.removeWhere(
+                                                  (removedFriendObj) =>
+                                                      removedFriendObj
+                                                          .soshiUsername ==
+                                                      friend
+                                                          .soshiUsername); // update cached list
                                               DataEngine
                                                   .updateCachedFriendsList(
                                                       friends: friends);
-
-                                              DataEngine.globalUser.friends.remove(friend
-                                                  .soshiUsername); // update string list
+                                              DataEngine.globalUser.friends
+                                                  .remove(friend
+                                                      .soshiUsername); // update string list
                                               DataEngine.applyUserChanges(
                                                   user: DataEngine.globalUser,
                                                   cloud: true,

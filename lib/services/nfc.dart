@@ -34,10 +34,15 @@ class _NFCWriterState extends State<NFCWriter> {
   Future<bool> ndefWrite() async {
     print("writing");
     NfcManager.instance.startSession(
+      alertMessage:
+          "Touch and hold the Soshi Portal to the top of your iPhone :)", // this is a parameter for iOS only
+
       onDiscovered: (NfcTag tag) async {
         var ndef = Ndef.from(tag);
         if (ndef == null || !ndef.isWritable) {
-          NfcManager.instance.stopSession(errorMessage: ":(");
+          NfcManager.instance.stopSession(
+              errorMessage:
+                  "Portal is not compatible or has already been written to :(");
           return false;
         }
 
@@ -48,22 +53,20 @@ class _NFCWriterState extends State<NFCWriter> {
         try {
           await ndef.write(message);
 
-          setState(() {
-            displayText = "Success!";
-            animationUrl =
-                "https://assets1.lottiefiles.com/packages/lf20_s2lryxtd.json";
-          });
+          //setState(() {
+          displayText = "Success!";
+          animationUrl =
+              "https://assets1.lottiefiles.com/packages/lf20_s2lryxtd.json";
+          //}); //setState is being called wrong so its wrirting to the tag successfully but showing error message
+
           await Future.delayed(
-              Duration(seconds: 1)); // wait a sec before stopping session
+              Duration(seconds: 0)); // wait a sec before stopping session
           NfcManager.instance.stopSession();
-          await Future.delayed(
-              Duration(seconds: 1)); // close popup after 2 seconds
-          Navigator.pop(context);
           return true;
         } catch (e) {
+          print(e.toString());
           NfcManager.instance.stopSession(
-              errorMessage:
-                  "Portal is not compatible or has already been written to :(");
+              errorMessage: "Please re-try activating Soshi Portal.");
           return false;
         }
       },

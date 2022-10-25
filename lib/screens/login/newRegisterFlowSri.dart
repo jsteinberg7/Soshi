@@ -5,6 +5,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:soshi/constants/popups.dart';
 import 'package:soshi/constants/utilities.dart';
 import 'package:soshi/constants/widgets.dart';
 import 'package:soshi/screens/login/loading.dart';
@@ -12,6 +13,8 @@ import 'package:soshi/screens/login/superController.dart';
 import 'package:soshi/screens/mainapp/mainapp.dart';
 import 'package:soshi/services/auth.dart';
 import 'package:soshi/services/dataEngine.dart';
+
+import '../../services/database.dart';
 
 class NewRegisterFlow extends StatefulWidget {
   SuperController superController;
@@ -145,9 +148,11 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
                     dynamic user = await _authService.signInWithEmailAndPassword(
                         emailIn: widget.superController.email.text.trim().toLowerCase(), passwordIn: widget.superController.passwordOldAcc.text);
 
-                    OnboardingLoader.killLoader(context);
+                    // OnboardingLoader.killLoader(context);
 
                     if (user.runtimeType == String) {
+                      OnboardingLoader.killLoader(context);
+
                       print("❌ error caught in runTimetype (SIGN_IN)");
                       setState(() {
                         this.registerError = true;
@@ -159,6 +164,9 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
                       });
                       print("✅ sign-in success: pushing to main dashboard NOW!");
                       await DataEngine.initialize();
+                      await DataEngine.applyUserChanges(user: DataEngine.globalUser, cloud: true, local: true); // update contact card
+                      OnboardingLoader.killLoader(context);
+
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) => MainApp()),
@@ -185,8 +193,10 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
                       contextIn: context,
                     );
 
-                    OnboardingLoader.killLoader(context);
+                    // OnboardingLoader.killLoader(context);
                     if (user.runtimeType == String) {
+                      OnboardingLoader.killLoader(context);
+
                       print("❌ error caught in runTimetype");
                       setState(() {
                         this.registerError = true;
@@ -198,11 +208,17 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
                       });
                       print("✅ sign-up success: pushing to main dashboard NOW!");
                       await DataEngine.initialize();
+
+                      await DataEngine.applyUserChanges(user: DataEngine.globalUser, cloud: true, local: true); // update contact card
+                      OnboardingLoader.killLoader(context);
+
                       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
                         return MainApp();
                       }));
                     }
                   } else {
+                    OnboardingLoader.killLoader(context);
+
                     log("cannot proceed to next screen sorry!");
                   }
                 },
@@ -271,6 +287,43 @@ class _RegisterSingleScreenState extends State<RegisterSingleScreen> {
   String forgotPasswordText = "Forgot password?";
   bool validPassword = true;
   bool validEmail = true;
+
+  renderPrivacyPolicy() {
+    if (widget.type == InputType.SOSHI_USERNAME) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(0, 10, 5, 0),
+        child: Container(
+          child: Row(
+            children: [
+              //  Text("by creating an account, you agree to sosh")
+              TextButton.icon(
+                  onPressed: () async {
+                    await Popups.privacyPolicyPopup(context);
+                  },
+                  icon: Icon(
+                    Icons.privacy_tip,
+                    color: Colors.cyan,
+                  ),
+                  label: Column(
+                    children: [
+                      Text("By creating an account you agree to"),
+                      Text(
+                        "Soshi's Privacy Policy",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ],
+                  ))
+            ],
+          ),
+        ),
+      );
+    } else {
+      return Container();
+    }
+  }
 
   renderInputErrorMessage() {
     String messageText = "";
@@ -456,6 +509,9 @@ class _RegisterSingleScreenState extends State<RegisterSingleScreen> {
                           width: MediaQuery.of(context).size.width - 75,
                           child: makeTextField(getMapData('hint_text'), getMapData('controller')),
                         ),
+
+                        renderPrivacyPolicy(),
+
                         renderInputErrorMessage(),
                         renderAuthErrorMessage(),
                         sendResetPassword()

@@ -21,12 +21,15 @@ import 'chooseSocials.dart';
 import 'package:http/http.dart' as http;
 
 class EditHandles extends StatefulWidget {
-  ValueNotifier editHandleMasterControl;
-  ValueNotifier profileMasterControl;
+  //ValueNotifier editHandleMasterControl;
+  Function() refreshScreenParam;
+  ValueNotifier importProfileNotifier;
 
   EditHandles(
-      {@required this.editHandleMasterControl,
-      @required this.profileMasterControl});
+      {
+      //@required this.editHandleMasterControl,
+      @required this.importProfileNotifier,
+      @required this.refreshScreenParam});
 
   @override
   State<EditHandles> createState() => _EditHandlesState();
@@ -34,140 +37,163 @@ class EditHandles extends StatefulWidget {
 
 class _EditHandlesState extends State<EditHandles> {
   List<Social> chosenPlatforms;
-  SoshiUser user;
+  //SoshiUser user;
 
-  loadUserEditHandles() async {
-    user = await DataEngine.getUserObject(firebaseOverride: false);
-    chosenPlatforms = user.getChosenPlatforms();
+  // loadUserEditHandles() async {
+  //   user = await DataEngine.getUserObject(firebaseOverride: false);
+  //   chosenPlatforms = user.getChosenPlatforms();
+  // }
+
+  refreshEditHandlesScreen() {
+    setState(() {
+      chosenPlatforms = DataEngine.globalUser.getChosenPlatforms();
+    });
+  }
+
+  @override
+  void initState() {
+    chosenPlatforms = DataEngine.globalUser.getChosenPlatforms();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     print("🔃 rebuilding EditHandles Now 🔃");
+    //chosenPlatforms = DataEngine.globalUser.getChosenPlatforms();
+
     double height = Utilities.getHeight(context);
     double width = Utilities.getWidth(context);
 
     return Scaffold(
-      appBar: AppBar(
-        leading: CupertinoBackButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(right: width / 150),
-            child: TextButton(
-              style: ButtonStyle(
-                  overlayColor: MaterialStateProperty.all(Colors.transparent)),
-              child: Text(
-                "Done",
-                style: TextStyle(color: Colors.blue, fontSize: width / 23),
-              ),
-              onPressed: () async {
-                await DataEngine.applyUserChanges(
-                    user: user, cloud: true, local: true);
-                widget.profileMasterControl.notifyListeners();
-
-                Navigator.pop(context);
-              },
-            ),
-          )
-        ],
-        elevation: .5,
-        title: Text(
-          "My Platforms",
-          style: TextStyle(
-            letterSpacing: 1,
-            fontSize: width / 18,
-            fontWeight: FontWeight.bold,
+        appBar: AppBar(
+          leading: CupertinoBackButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
           ),
+          actions: [
+            Padding(
+              padding: EdgeInsets.only(right: width / 150),
+              child: TextButton(
+                style: ButtonStyle(
+                    overlayColor:
+                        MaterialStateProperty.all(Colors.transparent)),
+                child: Text(
+                  "Done",
+                  style: TextStyle(color: Colors.blue, fontSize: width / 23),
+                ),
+                onPressed: () {
+                  DataEngine.applyUserChanges(
+                      user: DataEngine.globalUser, cloud: true, local: true);
+
+                  // widget.profileMasterControl.notifyListeners();
+                  widget.refreshScreenParam();
+
+                  Navigator.pop(context);
+                },
+              ),
+            )
+          ],
+          elevation: .5,
+          title: Text(
+            "My Platforms",
+            style: TextStyle(
+              letterSpacing: 1,
+              fontSize: width / 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          centerTitle: true,
         ),
-        centerTitle: true,
-      ),
-      body: FutureBuilder(
-          future: loadUserEditHandles(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState != ConnectionState.done) {
-              return Center(child: CircularProgressIndicator.adaptive());
-            }
-            return Padding(
-              padding:
-                  EdgeInsets.fromLTRB(width / 40, height / 50, width / 40, 0),
-              child: SingleChildScrollView(
-                child: Column(children: <Widget>[
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        elevation: 5,
-                        primary: Colors.green,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15)),
-                        padding: EdgeInsets.fromLTRB(50, 0, 50, 0)),
-                    child: Text(
-                      "Add",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1.5,
-                          fontSize: width / 20,
-                          color: Colors.white),
-                    ),
-                    onPressed: () async {
-                      await Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return Scaffold(
-                            body: ChooseSocials(
-                          user: user,
-                        ));
-                      })).then((value) {
-                        setState(() {});
-                      });
-                    },
+        body: SingleChildScrollView(
+          child: Padding(
+            padding:
+                EdgeInsets.fromLTRB(width / 40, height / 50, width / 40, 0),
+            child: SingleChildScrollView(
+              child: Column(children: <Widget>[
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      elevation: 5,
+                      primary: Colors.green,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15)),
+                      padding: EdgeInsets.fromLTRB(50, 0, 50, 0)),
+                  child: Text(
+                    "Add",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.5,
+                        fontSize: width / 20,
+                        color: Colors.white),
                   ),
-                  Container(
-                    child: (chosenPlatforms == null ||
-                            chosenPlatforms.isEmpty == true)
-                        ? Container()
-                        : GridView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemBuilder: (BuildContext context, int index) {
-                              print(
-                                  "building SMCard index: ${index} with name: ${chosenPlatforms[index]}");
-                              return Padding(
+                  onPressed: () async {
+                    await Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return Scaffold(
+                          body: ChooseSocials(
+                        refreshEditHandles: refreshEditHandlesScreen,
+                      ));
+                    })).then((value) {
+                      setState(() {});
+                    });
+                  },
+                ),
+                Container(
+                  child: (chosenPlatforms == null || chosenPlatforms.isEmpty)
+                      ? Container()
+                      : GridView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemBuilder: (BuildContext context, int index) {
+                            print(
+                                "building SMCard index: ${index} with name: ${chosenPlatforms[index]}");
+                            return Padding(
                                 padding:
                                     const EdgeInsets.fromLTRB(0, 10, 0, 10),
                                 child: SMCard(
                                     platformSocial: chosenPlatforms[index],
-                                    user: user,
-                                    importEditHandlesController:
-                                        widget.editHandleMasterControl),
-                              );
-                            },
-                            itemCount: chosenPlatforms.length,
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 1,
-                              childAspectRatio: 3.35,
-                            ),
+                                    refreshScreen: refreshEditHandlesScreen,
+                                    importProfileNotifier:
+                                        widget.importProfileNotifier)
+                                // importEditHandlesController:
+                                //     widget.editHandleMasterControl),
+                                );
+                          },
+                          itemCount: chosenPlatforms.length,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 1,
+                            childAspectRatio: 3.35,
                           ),
-                  ),
-                ]),
-              ),
-            );
-          }),
-    );
+                        ),
+                ),
+              ]),
+            ),
+          ),
+        ));
   }
 }
 
 class SMCard extends StatefulWidget {
   Social platformSocial;
-  SoshiUser user;
-  ValueNotifier importEditHandlesController;
+  //ValueNotifier importEditHandlesController;
+  Function() refreshScreen;
+  ValueNotifier importProfileNotifier;
 
-  SMCard(
-      {@required this.user,
-      @required this.platformSocial,
-      @required this.importEditHandlesController});
+  SMCard({
+    ValueNotifier importProfileNotifier,
+    Social platformSocial,
+    //ValueNotifier importEditHandlesController,
+    Function refreshScreen,
+  }) {
+    //this.importEditHandlesController = importEditHandlesController;
+    this.platformSocial = platformSocial;
+    this.refreshScreen = refreshScreen;
+    this.importProfileNotifier = importProfileNotifier;
+  }
+  // {@required this.platformSocial,
+  // @required this.importEditHandlesController,
+  // @required this.refreshScreen});
 
   @override
   _SMCardState createState() => _SMCardState();
@@ -181,17 +207,12 @@ class _SMCardState extends State<SMCard> {
   FocusNode focusNode;
 
   @override
-  void initState() {
-    // soshiUsername = widget.user.soshiUsername;
+  Widget build(BuildContext context) {
     platformName = widget.platformSocial.platformName;
     isSwitched = widget.platformSocial.switchStatus;
     usernameController = widget.platformSocial.usernameController;
+    print("Initialized " + platformName);
 
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     if (platformName == "Phone") {
       hintText = "Phone Number";
       indicator = "#";
@@ -411,20 +432,27 @@ class _SMCardState extends State<SMCard> {
                                               ),
                                             ),
                                             onTap: () async {
-                                              widget.user.removeFromProfile(
-                                                  platformName: widget
-                                                      .platformSocial
-                                                      .platformName);
+                                              await DataEngine.globalUser
+                                                  .removeFromProfile(
+                                                      platformName: widget
+                                                          .platformSocial
+                                                          .platformName);
+                                              widget.importProfileNotifier
+                                                  .notifyListeners();
+
+                                              widget.refreshScreen();
+
                                               Navigator.pop(context);
 
                                               await DataEngine.applyUserChanges(
-                                                  user: widget.user,
-                                                  cloud: false,
+                                                  user: DataEngine.globalUser,
+                                                  cloud: true,
                                                   local: true);
 
-                                              log(widget.user.toString());
-                                              widget.importEditHandlesController
-                                                  .notifyListeners();
+                                              log(DataEngine.globalUser
+                                                  .toString());
+                                              // widget.importEditHandlesController
+                                              // .notifyListeners();
                                             },
                                           ),
                                         ],

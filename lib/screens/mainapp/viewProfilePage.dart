@@ -63,7 +63,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
               return Stack(
                 children: [
                   Positioned(
-                    top: 5,
+                    top: 0,
                     left: 0,
                     right: 0,
                     child: Stack(
@@ -296,7 +296,9 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                           AddFriendButton(
                               friend: Friend(
                                   soshiUsername: friendUserObject.soshiUsername,
-                                  fullName: friendUserObject.soshiUsername,
+                                  fullName: (friendUserObject.firstName +
+                                      " " +
+                                      friendUserObject.lastName),
                                   photoURL: friendUserObject.photoURL,
                                   isVerified: friendUserObject.verified),
                               height: height,
@@ -587,10 +589,13 @@ class _AddFriendButtonState extends State<AddFriendButton> {
 
               if (!isFriendAdded) {
                 List<Friend> friends = await DataEngine.getCachedFriendsList();
-                friends.add(widget.friend); // update cached list
+                friends.add(widget.friend); // update friends cached list
                 DataEngine.updateCachedFriendsList(friends: friends);
                 DataEngine.globalUser.friends
-                    .add(friendSoshiUsername); // update string list
+                    .add(friendSoshiUsername); // update friends string list
+                DataEngine.globalUser.soshiPoints =
+                    DataEngine.globalUser.soshiPoints +
+                        25; // Adding 25 points for every friend added
                 DataEngine.applyUserChanges(
                     user: DataEngine.globalUser, cloud: true, local: true);
               }

@@ -20,13 +20,56 @@ import 'constants.dart';
 Custom popup dialogs
 */
 class Popups {
+  static void privacyPolicyPopup(BuildContext context) async {
+    OnboardingLoader.showLoadingIndicator("", context);
+
+    String privacyPolicy = await Defaults.fetchPrivacyPolicy();
+
+    OnboardingLoader.killLoader(context);
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40.0))),
+            //backgroundColor: Colors.blueGrey[900],
+            title: Text(
+              "Soshi Privacy policy",
+              style: TextStyle(
+                  // color: Colors.cyan[600],
+                  fontWeight: FontWeight.bold),
+            ),
+            content: SingleChildScrollView(
+              child: Text(
+                privacyPolicy,
+                softWrap: true,
+                style: TextStyle(
+                    fontSize: 15,
+                    // color: Colors.cyan[700],
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                  'Dismiss',
+                  style: TextStyle(fontSize: 20, color: Colors.blue),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
   static void platformSwitchesExplained(BuildContext context) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(40.0))),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40.0))),
             //backgroundColor: Colors.blueGrey[900],
             title: Text(
               "Platform Switches",
@@ -93,17 +136,13 @@ class Popups {
   //       });
   // }
 
-  static void contactCardExplainedPopup(
-      BuildContext context, double width, double height) {
+  static void contactCardExplainedPopup(BuildContext context, double width, double height) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            backgroundColor: Theme.of(context).brightness == Brightness.light
-                ? Colors.white
-                : Colors.grey[850],
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(40.0))),
+            backgroundColor: Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.grey[850],
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40.0))),
             // backgroundColor: Colors.blueGrey[900],
             title: Text(
               "Contact Card",
@@ -151,13 +190,7 @@ class Popups {
   }
 
   static Future<dynamic> showContactAddedPopup(
-      BuildContext context,
-      double width,
-      String profilePicURL,
-      String firstName,
-      String lastName,
-      String phoneNumber,
-      String email) {
+      BuildContext context, double width, String profilePicURL, String firstName, String lastName, String phoneNumber, String email) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     return showDialog(
@@ -166,15 +199,13 @@ class Popups {
           return AlertDialog(
             actions: [
               TextButton(
-                child: Text("Done",
-                    style: TextStyle(color: Colors.blue, fontSize: width / 20)),
+                child: Text("Done", style: TextStyle(color: Colors.blue, fontSize: width / 20)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               )
             ],
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(30.0))),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30.0))),
             // backgroundColor: Colors.grey[850],
             content: Padding(
               padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
@@ -192,10 +223,7 @@ class Popups {
                     child: Text(
                       firstName + " " + lastName,
                       maxLines: 1,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: width / 18,
-                          letterSpacing: 1.2),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: width / 18, letterSpacing: 1.2),
                     ),
                   ),
                   SizedBox(
@@ -203,22 +231,14 @@ class Popups {
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(CupertinoIcons.phone),
-                      SizedBox(width: 5),
-                      Text(phoneNumber)
-                    ],
+                    children: [Icon(CupertinoIcons.phone), SizedBox(width: 5), Text(phoneNumber)],
                   ),
                   SizedBox(
                     height: 5,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(CupertinoIcons.mail),
-                      SizedBox(width: 5),
-                      Text(email)
-                    ],
+                    children: [Icon(CupertinoIcons.mail), SizedBox(width: 5), Text(email)],
                   ),
                   SizedBox(
                     height: 5,
@@ -230,8 +250,7 @@ class Popups {
                     height: 5,
                   ),
                   Text(
-                    firstName +
-                        "'s information has been added to your devices contacts.",
+                    firstName + "'s contact information has been added to your device's contacts.",
                     style: TextStyle(fontSize: width / 22),
                     textAlign: TextAlign.center,
                   )
@@ -242,8 +261,7 @@ class Popups {
         });
   }
 
-  static void editUsernamePopup(
-      BuildContext context, String platformName, double width, SoshiUser user) {
+  static void editUsernamePopup(BuildContext context, String platformName, double width, SoshiUser user) {
     String indicator;
     String hintText;
     Social social = DataEngine.globalUser.lookupSocial[platformName];
@@ -252,6 +270,7 @@ class Popups {
         platformName == "Snapchat" ||
         platformName == "Venmo" ||
         platformName == "Twitter" ||
+        platformName == "Reddit" ||
         platformName == "Tiktok" ||
         platformName == "Discord" ||
         platformName == "BeReal" ||
@@ -261,10 +280,7 @@ class Popups {
       hintText = "Username";
       indicator = "@";
     } else {
-      if (platformName == "Facebook" ||
-          platformName == "Linkedin" ||
-          platformName == "Spotify" ||
-          platformName == "AppleMusic") {
+      if (platformName == "Facebook" || platformName == "Linkedin" || platformName == "Spotify" || platformName == "AppleMusic") {
         hintText = "Link To Profile";
         indicator = "https://";
       } else if (platformName == "Personal") {
@@ -289,13 +305,10 @@ class Popups {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(25.0))),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(25.0))),
             // backgroundColor: Colors.blueGrey[900],
             title: Text(
-              platformName.contains("AppleMusic")
-                  ? "Edit your Apple Music"
-                  : "Edit your " + platformName,
+              platformName.contains("AppleMusic") ? "Edit your Apple Music" : "Edit your " + platformName,
             ),
             //   style: TextStyle(
             //       //color: Colors.cyan[600],
@@ -311,9 +324,7 @@ class Popups {
                 SizedBox(width: width / 40),
                 Expanded(
                   child: TextField(
-                    keyboardType: platformName.contains("Phone")
-                        ? TextInputType.phone
-                        : null,
+                    keyboardType: platformName.contains("Phone") ? TextInputType.phone : null,
                     autocorrect: false,
                     controller: social.usernameController,
                     style: TextStyle(
@@ -324,8 +335,7 @@ class Popups {
                     onSubmitted: (String inputText) {
                       // apply new usernake to field
                       social.username = inputText;
-                      DataEngine.applyUserChanges(
-                          user: user, cloud: true, local: true);
+                      DataEngine.applyUserChanges(user: user, cloud: true, local: true);
 
                       Navigator.pop(context);
                     },
@@ -350,9 +360,9 @@ class Popups {
                     style: TextStyle(fontSize: width / 20, color: Colors.blue),
                   ),
                   onPressed: () {
+                    social.username = social.usernameController.text;
                     if (social.usernameController.text != "") {
-                      DataEngine.applyUserChanges(
-                          user: user, cloud: true, local: true);
+                      DataEngine.applyUserChanges(user: user, cloud: true, local: true);
                     }
 
                     Navigator.pop(context);
@@ -366,15 +376,13 @@ class Popups {
   }
 
   //void usernameEmptyPopup(BuildContext context, String platformName, String identifier) {
-  static void deletePlatformPopup(BuildContext context,
-      {@required String platformName, @required Function refreshScreen}) {
+  static void deletePlatformPopup(BuildContext context, {@required String platformName, @required Function refreshScreen}) {
     DatabaseService databaseService = new DatabaseService();
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(40.0))),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40.0))),
               // backgroundColor: Colors.blueGrey[900],
               title: Text(
                 "Remove Platform",
@@ -383,9 +391,7 @@ class Popups {
                     fontWeight: FontWeight.bold),
               ),
               content: Text(
-                ("Are you sure you want to remove " +
-                    platformName +
-                    " from your profile?"),
+                ("Are you sure you want to remove " + platformName + " from your profile?"),
                 style: TextStyle(
                   fontSize: 20,
                   // color: Colors.cyan[700],
@@ -393,30 +399,28 @@ class Popups {
                 ),
               ),
               actions: <Widget>[
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      TextButton(
-                        child: Text(
-                          'Cancel',
-                          style: TextStyle(fontSize: 20, color: Colors.red),
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
+                Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <Widget>[
+                  TextButton(
+                    child: Text(
+                      'Cancel',
+                      style: TextStyle(fontSize: 20, color: Colors.red),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  TextButton(
+                      child: Text(
+                        'Remove',
+                        style: TextStyle(fontSize: 20, color: Colors.blue),
                       ),
-                      TextButton(
-                          child: Text(
-                            'Remove',
-                            style: TextStyle(fontSize: 20, color: Colors.blue),
-                          ),
-                          onPressed: () async {
-                            // if (!LocalDataService.getLocalChoosePlatforms()
-                            //     .contains(platformName)) {
-                            //   Navigator.pop(context);
-                            // }
-                          })
-                    ])
+                      onPressed: () async {
+                        // if (!LocalDataService.getLocalChoosePlatforms()
+                        //     .contains(platformName)) {
+                        //   Navigator.pop(context);
+                        // }
+                      })
+                ])
               ]);
         });
   }
@@ -1237,8 +1241,7 @@ class Popups {
   //       });
   // }
 
-  void usernameEmptyPopup(
-      BuildContext context, String platformName, String identifier) {
+  void usernameEmptyPopup(BuildContext context, String platformName, String identifier) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -1248,8 +1251,7 @@ class Popups {
         });
   }
 
-  static Future<dynamic> showPlatformHelpPopup(
-      BuildContext context, double height) async {
+  static Future<dynamic> showPlatformHelpPopup(BuildContext context, double height) async {
     return showGeneralDialog(
         transitionDuration: Duration(milliseconds: 200),
         barrierDismissible: true,
@@ -1262,8 +1264,7 @@ class Popups {
             child: Opacity(
               opacity: a1.value,
               child: AlertDialog(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(40.0))),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40.0))),
                 // backgroundColor: Colors.blueGrey[900],
                 title: Text(
                   "Linking Social Media",
@@ -1304,12 +1305,9 @@ class Popups {
                                   style: ElevatedButton.styleFrom(
                                       // primary: Colors.blueGrey,
                                       shadowColor: Constants.buttonColorDark,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(15.0)))),
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0)))),
                                   onPressed: () {
-                                    URL.launchURL(
-                                        "https://support.tiktok.com/en/using-tiktok/exploring-videos/sharing");
+                                    URL.launchURL("https://support.tiktok.com/en/using-tiktok/exploring-videos/sharing");
                                   },
                                   child: Text("Press me!")),
                             )
@@ -1334,9 +1332,7 @@ class Popups {
                                   style: ElevatedButton.styleFrom(
                                       // primary: Colors.blueGrey,
                                       shadowColor: Constants.buttonColorDark,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(15.0)))),
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0)))),
                                   onPressed: () {
                                     URL.launchURL(
                                         "https://www.linkedin.com/help/linkedin/answer/49315/find-your-linkedin-public-profile-url?lang=en");
@@ -1364,9 +1360,7 @@ class Popups {
                                   style: ElevatedButton.styleFrom(
                                       // primary: Colors.blueGrey,
                                       shadowColor: Constants.buttonColorDark,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(15.0)))),
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0)))),
                                   onPressed: () {
                                     URL.launchURL(
                                         "https://knowledgebase.constantcontact.com/tutorials/KnowledgeBase/6069-find-the-url-for-a-facebook-profile-or-business-page?lang=en_US");
@@ -1432,8 +1426,7 @@ class Popups {
   static void showJoinGroupPopup(BuildContext context, String groupId) async {
     double width = Utilities.getWidth(context);
     // get group details
-    DatabaseService databaseService =
-        DatabaseService(currSoshiUsernameIn: DataEngine.soshiUsername);
+    DatabaseService databaseService = DatabaseService(currSoshiUsernameIn: DataEngine.soshiUsername);
 
     Group group = await databaseService.getGroupData(groupId);
 
@@ -1450,13 +1443,11 @@ class Popups {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(40.0))),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40.0))),
             // backgroundColor: Colors.blueGrey[900],
             title: Text(
               "Error",
-              style: TextStyle(
-                  color: Colors.cyan[600], fontWeight: FontWeight.bold),
+              style: TextStyle(color: Colors.cyan[600], fontWeight: FontWeight.bold),
             ),
             content: Text(
               ("$firstOrLast name must be between 1 and 12 characters"),
@@ -1480,15 +1471,13 @@ class Popups {
         });
   }
 
-  static void soshiPointsExplainedPopup(
-      BuildContext context, double width, double height) {
+  static void soshiPointsExplainedPopup(BuildContext context, double width, double height) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(40.0))),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40.0))),
             title: Text(
               "My Soshi Bolts",
               style: TextStyle(fontSize: 25),
@@ -1508,16 +1497,11 @@ class Popups {
                         style: NeumorphicStyle(
                             depth: 8,
                             color: Theme.of(context).scaffoldBackgroundColor,
-                            shadowLightColor:
-                                Theme.of(context).brightness == Brightness.light
-                                    ? Colors.black
-                                    : Colors.white),
+                            shadowLightColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white),
                         size: width / 4),
                   ),
 
-                  Text("You have " +
-                      DataEngine.globalUser.soshiPoints.toString() +
-                      " Soshi bolts.\n"),
+                  Text("You have " + DataEngine.globalUser.soshiPoints.toString() + " Soshi bolts.\n"),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
@@ -1535,14 +1519,10 @@ class Popups {
                         decoration: BoxDecoration(
                             border: Border.all(color: Colors.blue),
                             color: Theme.of(context).scaffoldBackgroundColor,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(15.0))),
+                            borderRadius: BorderRadius.all(Radius.circular(15.0))),
                         height: height / 20,
                         width: width / 1.1,
-                        child: Center(
-                            child: Text("Close",
-                                style: TextStyle(
-                                    color: Colors.blue, fontSize: width / 22))),
+                        child: Center(child: Text("Close", style: TextStyle(color: Colors.blue, fontSize: width / 22))),
                       ),
                     ),
                   ),
@@ -1580,8 +1560,7 @@ class _JoinGroupPopupState extends State<JoinGroupPopup> {
     this.group = widget.group;
     this.databaseService = widget.databaseService;
     username = DataEngine.soshiUsername;
-    hasJoined =
-        group.members.contains(username) || group.admin.contains(username);
+    hasJoined = group.members.contains(username) || group.admin.contains(username);
     isJoining = false;
     super.initState();
   }
@@ -1589,11 +1568,8 @@ class _JoinGroupPopupState extends State<JoinGroupPopup> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(30.0),
-                topRight: Radius.circular(30.0))),
+        decoration:
+            BoxDecoration(color: Colors.white, borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0))),
         height: 250,
         // color: Colors.white,
         child: Column(
@@ -1601,10 +1577,7 @@ class _JoinGroupPopupState extends State<JoinGroupPopup> {
           children: [
             Column(
               children: [
-                Hero(
-                    tag: group.id,
-                    child: RectangularProfilePic(
-                        radius: width / 3, url: group.photoURL)),
+                Hero(tag: group.id, child: RectangularProfilePic(radius: width / 3, url: group.photoURL)),
                 Text(group.name),
               ],
             ),
@@ -1612,10 +1585,8 @@ class _JoinGroupPopupState extends State<JoinGroupPopup> {
                 onPressed: () async {
                   if (!isJoining) {
                     if (hasJoined) {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return ViewGroupPage(
-                            group); // Returning the ResetPassword screen
+                      Navigator.push(context, MaterialPageRoute(builder: (context) {
+                        return ViewGroupPage(group); // Returning the ResetPassword screen
                       }));
                     } else {
                       HapticFeedback.mediumImpact();
@@ -1637,22 +1608,15 @@ class _JoinGroupPopupState extends State<JoinGroupPopup> {
                         child: !isJoining
                             ? Text(
                                 (hasJoined) ? "View Group" : "Join Group",
-                                style: TextStyle(
-                                    fontSize: 20.0,
-                                    color: Theme.of(context).brightness ==
-                                            Brightness.light
-                                        ? Colors.white
-                                        : Colors.black),
+                                style:
+                                    TextStyle(fontSize: 20.0, color: Theme.of(context).brightness == Brightness.light ? Colors.white : Colors.black),
                                 textAlign: TextAlign.center,
                               )
                             : Center(child: CircularProgressIndicator()))),
                 style: ElevatedButton.styleFrom(
-                    primary: Theme.of(context).brightness != Brightness.light
-                        ? Colors.white
-                        : Colors.black,
+                    primary: Theme.of(context).brightness != Brightness.light ? Colors.white : Colors.black,
                     elevation: 8.0,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0)))),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)))),
             GestureDetector(
                 onTap: () {
                   Navigator.pop(context);
