@@ -11,21 +11,22 @@ abstract class DynamicLinkService {
     FirebaseDynamicLinks dynamicLinks = FirebaseDynamicLinks.instance;
     String url = "https://strippedsoshi.page.link";
     final DynamicLinkParameters parameters = DynamicLinkParameters(
-        uriPrefix: url,
-        link: Uri.parse(
-            "https://soshi.app/$username"), //Uri.parse("$url/$username"),
-        androidParameters: AndroidParameters(
-            packageName: "com.swoledevs.soshi",
-            fallbackUrl: Uri.parse("https://soshi.app/$username"),
-            minimumVersion: 0),
-        iosParameters: IOSParameters(
-          minimumVersion: "0",
-          bundleId: "com.example.strippedsoshi",
+      uriPrefix: url,
+      link: Uri.parse(
+          "https://soshi.app/$username"), //Uri.parse("$url/$username"),
+      androidParameters: AndroidParameters(
+          packageName: "com.swoledevs.soshi",
           fallbackUrl: Uri.parse("https://soshi.app/$username"),
-        ),
-        socialMetaTagParameters: SocialMetaTagParameters(
-            description: "Open $username's profile in the Soshi app!",
-            title: "Open Soshi"));
+          minimumVersion: 0),
+      iosParameters: IOSParameters(
+        minimumVersion: "0",
+        bundleId: "com.example.strippedsoshi",
+        fallbackUrl: Uri.parse("https://soshi.app/$username"),
+      ),
+      // socialMetaTagParameters: SocialMetaTagParameters(
+      //     description: "Open $username's profile in the Soshi app!",
+      //     title: "Open Soshi")
+    );
     final Uri dynamicLink = await dynamicLinks.buildLink(parameters);
     return dynamicLink.toString();
   }
