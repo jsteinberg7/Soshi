@@ -31,15 +31,15 @@ class _WrapperState extends State<Wrapper> {
   wrapperSafeguard() async {
     final user = Provider.of<User>(context);
 
-    if (user == null) {
+    if (user == null) { // show login
       toReturn = NewIntroFlow();
     }
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (!prefs.containsKey("Username") || prefs.getString("Username") == "") {
+    if (!prefs.containsKey("Username") || prefs.getString("Username") == "") { // show login
       // This means that user data was lost in upgrade or bug, need to force user to sign up again :(
-      toReturn = NewIntroFlow();
-    } else {
+      toReturn = NewIntroFlow(); 
+    } else { // show main app
       // We have a local stored version of the Username. We will use this to restore all Userdata!
       await DataEngine.initialize();
       toReturn = MainApp();
