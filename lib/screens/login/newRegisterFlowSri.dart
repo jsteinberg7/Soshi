@@ -352,7 +352,8 @@ class _RegisterSingleScreenState extends State<RegisterSingleScreen> {
   bool validEmail = true;
 
   renderPrivacyPolicy() {
-    if (widget.type == InputType.SOSHI_USERNAME) {
+    if (widget.type == InputType.SOSHI_USERNAME ||
+        widget.type == InputType.PASSWORD) {
       return Padding(
         padding: const EdgeInsets.fromLTRB(0, 10, 5, 0),
         child: Container(
@@ -371,7 +372,8 @@ class _RegisterSingleScreenState extends State<RegisterSingleScreen> {
                   ),
                   label: Column(
                     children: [
-                      Text("By creating an account you agree to"),
+                      Text(
+                          "By ${widget.type == InputType.SOSHI_USERNAME ? "creating an account" : "logging in"}, you agree to"),
                       Text(
                         "Soshi's Terms and Conditions",
                         style: TextStyle(
