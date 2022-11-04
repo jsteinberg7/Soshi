@@ -873,6 +873,8 @@ PODS:
     - Flutter
     - FMDB (>= 2.7.5)
   - TOCropViewController (2.6.1)
+  - uni_links (0.0.1):
+    - Flutter
   - url_launcher_ios (0.0.1):
     - Flutter
   - vibration (1.7.5):
@@ -902,6 +904,7 @@ DEPENDENCIES:
   - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
   - sms_autofill (from `.symlinks/plugins/sms_autofill/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
+  - uni_links (from `.symlinks/plugins/uni_links/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - vibration (from `.symlinks/plugins/vibration/ios`)
 
@@ -986,6 +989,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/sms_autofill/ios"
   sqflite:
     :path: ".symlinks/plugins/sqflite/ios"
+  uni_links:
+    :path: ".symlinks/plugins/uni_links/ios"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
   vibration:
@@ -1046,6 +1051,7 @@ SPEC CHECKSUMS:
   sms_autofill: c461043483362c3f1709ee76eaae6eb570b31686
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
   TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
+  uni_links: d97da20c7701486ba192624d99bffaaffcfc298a
   url_launcher_ios: 839c58cdb4279282219f5e248c3321761ff3c4de
   vibration: 7d883d141656a1c1a6d8d238616b2042a51a1241
 

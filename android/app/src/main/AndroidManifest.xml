@@ -48,6 +48,7 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data
                     android:host="strippedsoshi.page.link"
+                    android:host="soshi.app"
                     android:scheme="https"/>
             </intent-filter>
             <intent-filter>
