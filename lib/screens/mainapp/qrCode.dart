@@ -227,6 +227,8 @@ class _NewQRScreenState extends State<NewQRScreen> {
                               String friendSoshiUsername = DynamicLinkService
                                   .extractUsernameFromDynamicLink(QRScanResult);
 
+                              print(friendSoshiUsername);
+
                               Navigator.push(context,
                                   MaterialPageRoute(builder: (context) {
                                 return ViewProfilePage(
