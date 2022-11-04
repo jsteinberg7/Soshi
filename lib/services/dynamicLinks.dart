@@ -9,8 +9,7 @@ import '../screens/mainapp/viewProfilePage.dart';
 abstract class DynamicLinkService {
   static Future<String> createLongDynamicLink(String username) async {
     FirebaseDynamicLinks dynamicLinks = FirebaseDynamicLinks.instance;
-    //String url = "https://soshi.app/deeplink/user/";  //not working because the host URL soshi.app/deeplink/user is not set up (10/30/22) on firebase
-    String url = "https://strippedsoshi.page.link";
+    String url = "https://strippedsoshi.page.link/";
     final DynamicLinkParameters parameters = DynamicLinkParameters(
         uriPrefix: url,
         link: Uri.parse(
@@ -30,8 +29,7 @@ abstract class DynamicLinkService {
 
   static Future<String> createShortDynamicLink(String username) async {
     FirebaseDynamicLinks dynamicLinks = FirebaseDynamicLinks.instance;
-    // String url = "https://soshi.app/deeplink/user/"; //not working because the host URL soshi.app/deeplink/user is not set up (10/30/22) on firebase
-    String url = "https://strippedsoshi.page.link";
+    String url = "https://strippedsoshi.page.link/";
     final DynamicLinkParameters parameters = DynamicLinkParameters(
         uriPrefix: url,
         link: Uri.parse(

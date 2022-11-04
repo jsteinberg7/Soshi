@@ -237,6 +237,27 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                               ]),
                         ),
                       ),
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          URL.launchURL(
+                              "https://app.termly.io/document/terms-of-use-for-saas/8b7e6781-e03e-45a3-88e9-d0a8de547d12");
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(
+                              0, height / 60, 0, height / 80),
+                          child: Row(
+                              //mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Text(
+                                  "Terms and Conditions",
+                                  style: TextStyle(fontSize: width / 23),
+                                ),
+                                Spacer(),
+                                Icon(CupertinoIcons.forward)
+                              ]),
+                        ),
+                      ),
                     ],
                   ),
                   Align(

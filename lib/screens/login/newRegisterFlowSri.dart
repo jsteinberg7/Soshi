@@ -15,6 +15,7 @@ import 'package:soshi/services/auth.dart';
 import 'package:soshi/services/dataEngine.dart';
 
 import '../../services/database.dart';
+import '../../services/url.dart';
 
 class NewRegisterFlow extends StatefulWidget {
   SuperController superController;
@@ -351,7 +352,8 @@ class _RegisterSingleScreenState extends State<RegisterSingleScreen> {
   bool validEmail = true;
 
   renderPrivacyPolicy() {
-    if (widget.type == InputType.SOSHI_USERNAME) {
+    if (widget.type == InputType.SOSHI_USERNAME ||
+        widget.type == InputType.PASSWORD) {
       return Padding(
         padding: const EdgeInsets.fromLTRB(0, 10, 5, 0),
         child: Container(
@@ -360,7 +362,9 @@ class _RegisterSingleScreenState extends State<RegisterSingleScreen> {
               //  Text("by creating an account, you agree to sosh")
               TextButton.icon(
                   onPressed: () async {
-                    await Popups.privacyPolicyPopup(context);
+                    // await Popups.privacyPolicyPopup(context);
+                    await URL.launchURL(
+                        "https://app.termly.io/document/terms-of-use-for-saas/8b7e6781-e03e-45a3-88e9-d0a8de547d12");
                   },
                   icon: Icon(
                     Icons.privacy_tip,
@@ -369,11 +373,9 @@ class _RegisterSingleScreenState extends State<RegisterSingleScreen> {
                   label: Column(
                     children: [
                       Text(
-                        "By creating an account you agree to",
-                        style: TextStyle(color: Colors.grey),
-                      ),
+                          "By ${widget.type == InputType.SOSHI_USERNAME ? "creating an account" : "logging in"}, you agree to"),
                       Text(
-                        "Soshi's Privacy Policy",
+                        "Soshi's Terms and Conditions",
                         style: TextStyle(
                           color: Colors.grey,
                           // Theme.of(context).brightness == Brightness.light
