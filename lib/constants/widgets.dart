@@ -387,11 +387,9 @@ class SignOutButton extends StatelessWidget {
 }
 
 class ActivatePortalButton extends StatelessWidget {
-  String shortDynamicLink;
+  String link;
 
-  ActivatePortalButton({String shortDynamicLink}) {
-    this.shortDynamicLink = shortDynamicLink;
-  }
+  ActivatePortalButton({@required String link});
 
   @override
   Widget build(BuildContext context) {
@@ -424,7 +422,7 @@ class ActivatePortalButton extends StatelessWidget {
                   backgroundColor: Colors.green,
                   context: context,
                   builder: (BuildContext context) {
-                    return NFCWriter(height, width, this.shortDynamicLink);
+                    return NFCWriter(height, width, this.link);
                   });
             }));
   }
@@ -717,17 +715,16 @@ class ShareButton extends StatelessWidget {
   double size;
   String soshiUsername;
   String groupId;
-  String shortDynamicLink;
+  String link;
 
-  ShareButton(
-      {this.size, this.soshiUsername, this.groupId, this.shortDynamicLink});
+  ShareButton({this.size, this.soshiUsername, this.groupId, this.link});
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(shape: CircleBorder()),
       onPressed: () {
         if (groupId == null) {
-          Share.share(this.shortDynamicLink,
+          Share.share(this.link,
               subject: DataEngine.globalUser.firstName +
                   " " +
                   DataEngine.globalUser.lastName +

@@ -9,8 +9,8 @@ import 'localData.dart';
 
 class NFCWriter extends StatefulWidget {
   double height, width;
-  String shortDynamicLink;
-  NFCWriter(this.height, this.width, this.shortDynamicLink);
+  String link;
+  NFCWriter(this.height, this.width, this.link);
 
   @override
   State<NFCWriter> createState() => _NFCWriterState();
@@ -24,7 +24,7 @@ class _NFCWriterState extends State<NFCWriter> {
     super.initState();
     this.height = widget.height;
     this.width = widget.width;
-    this.shortDynamicLink = widget.shortDynamicLink;
+    this.shortDynamicLink = widget.link;
     displayText = "Scanning for tags...";
     animationUrl =
         "https://assets8.lottiefiles.com/packages/lf20_maxyrepx.json";

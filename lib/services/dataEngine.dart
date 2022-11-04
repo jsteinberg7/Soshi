@@ -66,8 +66,8 @@ class DataEngine {
           user.getAvailablePlatforms().map((e) => e.platformName).toList(),
       'Profile Platforms':
           user.getChosenPlatforms().map((e) => e.platformName).toList(),
-      'Short Dynamic Link': user.shortDynamicLink,
-      'Long Dynamic Link': user.longDynamicLink,
+      // 'Short Dynamic Link': user.shortDynamicLink,
+      // 'Long Dynamic Link': user.longDynamicLink,
       'Point Manager': user.pointManager.serializeDictionary(),
     };
 
@@ -142,10 +142,10 @@ class DataEngine {
     List<String> friends = (fetch['Friends'].cast<String>() ?? []);
 
     // if short dynamic link is null (they just updated to 3.0+) it creates one for them
-    String shortDynamicLink = fetch['Short Dynamic Link'] ??
-        await DynamicLinkService.createShortDynamicLink(soshiUsername);
-    String longDynamicLink = fetch['Long Dynamic Link'] ??
-        await DynamicLinkService.createShortDynamicLink(soshiUsername);
+    // String shortDynamicLink = fetch['Short Dynamic Link'] ??
+    //     await DynamicLinkService.createShortDynamicLink(soshiUsername);
+    // String longDynamicLink = fetch['Long Dynamic Link'] ??
+    //     await DynamicLinkService.createShortDynamicLink(soshiUsername);
 
     // if (shortDynamicLink.contains(need to find string manip that contains the intro page of the short link and if it has that, make a new dynamic link (probably not happening))) {
     //   // Checking to see if existing users are using the old short dynamic link
@@ -240,8 +240,8 @@ class DataEngine {
         bioController: new TextEditingController(text: bio),
         friends: friends,
         lookupSocial: lookupSocial,
-        shortDynamicLink: shortDynamicLink,
-        longDynamicLink: longDynamicLink,
+        // shortDynamicLink: shortDynamicLink,
+        // longDynamicLink: longDynamicLink,
         pointManager: pointManager);
   }
 
@@ -332,13 +332,9 @@ class DataEngine {
 }
 
 class SoshiUser {
-  String soshiUsername,
-      firstName,
-      lastName,
-      photoURL,
-      bio,
-      shortDynamicLink,
-      longDynamicLink;
+  String soshiUsername, firstName, lastName, photoURL, bio;
+  // shortDynamicLink,
+  // longDynamicLink;
   bool hasPhoto;
   bool verified;
   List<Social> socials;
@@ -369,8 +365,8 @@ class SoshiUser {
       @required this.bioController,
       @required this.friends,
       @required this.lookupSocial,
-      @required this.shortDynamicLink,
-      @required this.longDynamicLink,
+      // @required this.shortDynamicLink,
+      // @required this.longDynamicLink,
       @required this.pointManager});
 
   //Will ignore case in input platform String

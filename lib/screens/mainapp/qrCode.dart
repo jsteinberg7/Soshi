@@ -108,8 +108,8 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                   onPressed: () async {
                                     FlutterShare.share(
                                         title: "Share your Soshi link!",
-                                        linkUrl: DataEngine
-                                            .globalUser.shortDynamicLink);
+                                        linkUrl:
+                                            "soshi.app/${DataEngine.globalUser.soshiUsername}");
                                   },
                                 )
                               ],
@@ -134,7 +134,7 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                       onTap: () {
                                         Clipboard.setData(ClipboardData(
                                             text: DataEngine.globalUser
-                                                .shortDynamicLink // user.lookupSocial["Soddddshi"].toString()
+                                                .soshiUsername // user.lookupSocial["Soddddshi"].toString()
                                             ));
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(SnackBar(
@@ -154,8 +154,8 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                                 dataModuleShape:
                                                     QrDataModuleShape.circle,
                                                 color: Colors.black),
-                                            data: DataEngine
-                                                .globalUser.longDynamicLink),
+                                            data:
+                                                "https://soshi.app/${DataEngine.globalUser.soshiUsername}"),
                                       ),
                                     ),
                                     Align(
