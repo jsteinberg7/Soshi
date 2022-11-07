@@ -9,22 +9,23 @@ import 'localData.dart';
 
 class NFCWriter extends StatefulWidget {
   double height, width;
-  String link;
-  NFCWriter(this.height, this.width, this.link);
+  String soshiLink;
+  NFCWriter(this.height, this.width, this.soshiLink);
 
   @override
   State<NFCWriter> createState() => _NFCWriterState();
 }
 
 class _NFCWriterState extends State<NFCWriter> {
-  String displayText, animationUrl, shortDynamicLink;
+  String displayText, animationUrl;
   double height, width;
+  String soshiLink;
   @override
   void initState() {
     super.initState();
     this.height = widget.height;
     this.width = widget.width;
-    this.shortDynamicLink = widget.link;
+    this.soshiLink = widget.soshiLink;
     displayText = "Scanning for tags...";
     animationUrl =
         "https://assets8.lottiefiles.com/packages/lf20_maxyrepx.json";
@@ -47,7 +48,7 @@ class _NFCWriterState extends State<NFCWriter> {
         }
 
         NdefMessage message = NdefMessage([
-          NdefRecord.createUri(Uri.parse(shortDynamicLink)),
+          NdefRecord.createUri(Uri.parse(soshiLink)),
         ]);
 
         try {

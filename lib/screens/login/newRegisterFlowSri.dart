@@ -358,6 +358,7 @@ class _RegisterSingleScreenState extends State<RegisterSingleScreen> {
         padding: const EdgeInsets.fromLTRB(0, 10, 5, 0),
         child: Container(
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               //  Text("by creating an account, you agree to sosh")
               TextButton.icon(

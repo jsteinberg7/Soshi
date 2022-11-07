@@ -152,7 +152,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                               context: context,
                               builder: (BuildContext context) {
                                 return NFCWriter(height, width,
-                                    "https://soshi.app/${DataEngine.globalUser.soshiUsername}");
+                                    "https://soshi.app/nfc_portal/${DataEngine.globalUser.soshiUsername}");
                               });
                         },
                         child: Padding(

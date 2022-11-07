@@ -387,9 +387,9 @@ class SignOutButton extends StatelessWidget {
 }
 
 class ActivatePortalButton extends StatelessWidget {
-  String link;
+  String soshiLink;
 
-  ActivatePortalButton({@required String link});
+  ActivatePortalButton({@required String soshiLink});
 
   @override
   Widget build(BuildContext context) {
@@ -422,7 +422,7 @@ class ActivatePortalButton extends StatelessWidget {
                   backgroundColor: Colors.green,
                   context: context,
                   builder: (BuildContext context) {
-                    return NFCWriter(height, width, this.link);
+                    return NFCWriter(height, width, this.soshiLink);
                   });
             }));
   }

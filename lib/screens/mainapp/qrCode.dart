@@ -109,14 +109,14 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                     FlutterShare.share(
                                         title: "Share your Soshi link!",
                                         linkUrl:
-                                            "soshi.app/${DataEngine.globalUser.soshiUsername}");
+                                            "soshi.app/share/${DataEngine.globalUser.soshiUsername}");
                                   },
                                 )
                               ],
                             ),
                             PhysicalModel(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(25.0),
+                              borderRadius: BorderRadius.circular(15.0),
                               // elevation: 5,
                               child: Container(
                                 height: width / 1.6,
@@ -133,9 +133,8 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                     GestureDetector(
                                       onTap: () {
                                         Clipboard.setData(ClipboardData(
-                                            text: DataEngine.globalUser
-                                                .soshiUsername // user.lookupSocial["Soddddshi"].toString()
-                                            ));
+                                            text:
+                                                "soshi.app/share/${DataEngine.globalUser.soshiUsername}"));
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(SnackBar(
                                           content: const Text(
@@ -155,22 +154,22 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                                     QrDataModuleShape.circle,
                                                 color: Colors.black),
                                             data:
-                                                "https://soshi.app/${DataEngine.globalUser.soshiUsername}"),
+                                                "https://soshi.app/qr/${DataEngine.globalUser.soshiUsername}"),
                                       ),
                                     ),
                                     Align(
                                       // bottom: width / 4.5,
                                       // right: width / 20,
                                       child: Container(
-                                        height: width / 10.5,
-                                        width: width / 10.5,
+                                        height: width / 9,
+                                        width: width / 9,
                                         decoration: BoxDecoration(
                                             color: Colors.white,
                                             shape: BoxShape.circle),
                                         child: ClipOval(
                                           child: Container(
-                                            height: width / 10,
-                                            width: width / 10,
+                                            height: width / 12,
+                                            width: width / 12,
                                             child: Padding(
                                               padding:
                                                   const EdgeInsets.all(1.5),
