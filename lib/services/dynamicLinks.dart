@@ -127,7 +127,7 @@ abstract class DynamicLinkService {
   static Future<void> retrieveDynamicLink(BuildContext context) async {
     try {
       final initialLink = await getInitialLink();
-      String username = initialLink.split("/").last;
+      String username = initialLink?.split("/")?.last;
       Navigator.push(context, MaterialPageRoute(builder: (context) {
         return ViewProfilePage(
           friendSoshiUsername: username,
