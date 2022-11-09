@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:custom_navigation_bar/custom_navigation_bar.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +13,7 @@ import 'package:soshi/screens/mainapp/profile.dart';
 import 'package:soshi/screens/mainapp/qrCode.dart';
 import 'package:soshi/services/dataEngine.dart';
 import 'package:soshi/services/dynamicLinks.dart';
+import 'package:uni_links/uni_links.dart';
 import '../../constants/widgets.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
@@ -29,9 +32,67 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
   ValueNotifier controlsQRScreen = new ValueNotifier("CONTROL_QR");
   ValueNotifier controlsProfileScreen = new ValueNotifier("CONTROL_PROFILE");
   ValueNotifier controlsConnections = new ValueNotifier("CONTROL_CONNECTION");
+  StreamSubscription _sub;
+  bool _initialUriIsHandled = false;
+  Uri _initialUri;
+  Uri _latestUri;
+  Object _err;
+
+  void _handleIncomingLinks() {
+    // It will handle app links while the app is already started - be it in
+    // the foreground or in the background.
+    _sub = uriLinkStream.listen((Uri uri) {
+      if (!mounted) return;
+      print('got uri: $uri');
+      setState(() {
+        _latestUri = uri;
+        _err = null;
+      });
+    }, onError: (Object err) {
+      if (!mounted) return;
+      print('got err: $err');
+      setState(() {
+        _latestUri = null;
+        if (err is FormatException) {
+          _err = err;
+        } else {
+          _err = null;
+        }
+      });
+    });
+  }
+
+  Future<void> _handleInitialUri() async {
+    // In this example app this is an almost useless guard, but it is here to
+    // show we are not going to call getInitialUri multiple times, even if this
+    // was a weidget that will be disposed of (ex. a navigation route change).
+    if (!_initialUriIsHandled) {
+      _initialUriIsHandled = true;
+      print("Initial called");
+      try {
+        final uri = await getInitialUri();
+        if (uri == null) {
+          print('no initial uri');
+        } else {
+          print('got initial uri: $uri');
+        }
+        if (!mounted) return;
+        setState(() => _initialUri = uri);
+      } on PlatformException {
+        // Platform messages may fail but we ignore the exception
+        print('falied to get initial uri');
+      } on FormatException catch (err) {
+        if (!mounted) return;
+        print('malformed initial uri');
+        setState(() => _err = err);
+      }
+    }
+  }
 
   @override
   void initState() {
+    _handleIncomingLinks();
+    _handleInitialUri();
     super.initState();
     screens = [
       FractionallySizedBox(
@@ -60,25 +121,28 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
     ]; // list of screens (change through indexing)
     WidgetsBinding.instance.addObserver(this);
     print(">> calling from init");
-    DynamicLinkService.retrieveDynamicLink(context);
+    // DynamicLinkService.handleInitialLink(context);
+    // DynamicLinkService.retrieveDynamicLink(context); // check for Firebase links
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       print(">> calling from lifecycle change");
-      DynamicLinkService.retrieveDynamicLink(context);
+      // DynamicLinkService.retrieveDynamicLink(context);
     }
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _sub.cancel();
     super.dispose();
   }
 
   int currScreen = 1;
-  PageController pageController = new PageController(initialPage: 1, viewportFraction: 1.1);
+  PageController pageController =
+      new PageController(initialPage: 1, viewportFraction: 1.1);
   ValueNotifier controlsBottomNavBar = new ValueNotifier(1);
 
   @override
@@ -114,7 +178,12 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
 }
 
 class LatestBottomNavBar extends StatelessWidget {
-  const LatestBottomNavBar({Key key, @required this.currScreen, @required this.pageController, @required this.importNotifier}) : super(key: key);
+  const LatestBottomNavBar(
+      {Key key,
+      @required this.currScreen,
+      @required this.pageController,
+      @required this.importNotifier})
+      : super(key: key);
 
   final int currScreen;
   final PageController pageController;
@@ -129,7 +198,9 @@ class LatestBottomNavBar extends StatelessWidget {
         scaleFactor: .05,
         elevation: 5,
         iconSize: Utilities.getWidth(context) / 10,
-        selectedColor: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+        selectedColor: Theme.of(context).brightness == Brightness.light
+            ? Colors.black
+            : Colors.white,
         strokeColor: Colors.transparent,
         unSelectedColor: Colors.grey,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,

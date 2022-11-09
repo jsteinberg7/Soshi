@@ -17,10 +17,6 @@ class MyApp extends StatefulWidget {
 
   @override
   _MyAppState createState() => _MyAppState();
-
-  MyApp(PendingDynamicLinkData linkDataIn) {
-    this.linkData = linkDataIn;
-  }
 }
 
 class _MyAppState extends State<MyApp> {
@@ -142,9 +138,10 @@ void main() async {
   await Firebase.initializeApp();
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  FirebaseDynamicLinks links = FirebaseDynamicLinks.instance;
   Analytics.logAppOpen();
-  PendingDynamicLinkData linkData = await links.getInitialLink();
+  // FirebaseDynamicLinks links = FirebaseDynamicLinks.instance;
+
+  // PendingDynamicLinkData linkData = await links.getInitialLink();
 
   // HasLaunched, firstSwitch, etc.
   await RuntimeManager.sync();
@@ -157,9 +154,9 @@ void main() async {
   // await authService.signOut();
   // var prefs = await SharedPreferences.getInstance();
 
-  runApp(MyApp(linkData));
+  runApp(MyApp());
 
-  if (linkData != null) {
-    print(linkData.utmParameters);
-  }
+  // if (linkData != null) {
+  //   print(linkData.utmParameters);
+  // }
 }

@@ -23,7 +23,7 @@ class _NewIntroFlowState extends State<NewIntroFlow> {
   int currentPage = 0;
   @override
   Widget build(BuildContext context) {
-    print("reanimating with current apge: " + currentPage.toString());
+    print("reanimating with current page: " + currentPage.toString());
     double width = Utilities.getWidth(context);
     double height = Utilities.getHeight(context);
 

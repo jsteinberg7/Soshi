@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:soshi/services/url.dart';
@@ -125,18 +127,7 @@ abstract class DynamicLinkService {
   //           NavigationInfoParameters(forcedRedirectEnabled: true)));
   // }
   static Future<void> retrieveDynamicLink(BuildContext context) async {
-    try {
-      final initialLink = await getInitialLink();
-      String username = initialLink?.split("/")?.last;
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return ViewProfilePage(
-          friendSoshiUsername: username,
-          refreshScreen: () {},
-        ); // show friend popup when tile is pressed
-      }));
-    } catch (e) {
-      print("No bueno, intial link no bueno :( abort abort abort");
-    }
+    // print(">> method call");
     List params;
     Stream stream = FirebaseDynamicLinks.instance.onLink;
     stream.listen((data) async {
@@ -170,6 +161,32 @@ abstract class DynamicLinkService {
       return;
     }
   }
+
+  static Future<void> handleInitialLink(BuildContext context) async {
+    try {
+      final initialLink = await getInitialLink();
+      if (initialLink != null && initialLink.contains("soshi.app/")) {
+        String username = initialLink?.split("/")?.last;
+        if (username != null) {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return ViewProfilePage(
+              friendSoshiUsername: username,
+              refreshScreen: () {},
+            ); // show friend popup when tile is pressed
+          }));
+        }
+
+        return;
+      }
+    } catch (e) {
+      print(e);
+      print("No bueno, intial link no bueno :( abort abort abort");
+    }
+  }
+
+
+  
+
 
   ///createDynamicLink(
 //   static Future<void> createGroupDynamicLink(String id) async {
