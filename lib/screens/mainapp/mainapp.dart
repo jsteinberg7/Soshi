@@ -11,6 +11,7 @@ import 'package:soshi/constants/utilities.dart';
 import 'package:soshi/screens/mainapp/friendsGroupsWrapper.dart';
 import 'package:soshi/screens/mainapp/profile.dart';
 import 'package:soshi/screens/mainapp/qrCode.dart';
+import 'package:soshi/screens/mainapp/viewProfilePage.dart';
 import 'package:soshi/services/dataEngine.dart';
 import 'package:soshi/services/dynamicLinks.dart';
 import 'package:uni_links/uni_links.dart';
@@ -44,10 +45,22 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
     _sub = uriLinkStream.listen((Uri uri) {
       if (!mounted) return;
       print('got uri: $uri');
+
       setState(() {
         _latestUri = uri;
         _err = null;
       });
+      List<String> params = uri.toString().split("/");
+      if (params == null) {
+        return;
+      }
+      String username = params?.last;
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return ViewProfilePage(
+          friendSoshiUsername: username,
+          refreshScreen: () {},
+        ); // show friend popup when tile is pressed
+      }));
     }, onError: (Object err) {
       if (!mounted) return;
       print('got err: $err');
