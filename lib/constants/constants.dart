@@ -201,7 +201,7 @@ abstract class Constants {
     "OnlyFans",
     //"Cryptowallet"
   ];
-  /* Instructions for injecting/adding new platforms: 
+  /* Instructions for injecting/adding new platforms (OLD): 
     1. Add to addedPlatforms (above)
     2. Add Logo and Writing Logo to assets
     3. Add handler to URL service

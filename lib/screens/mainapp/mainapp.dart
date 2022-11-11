@@ -15,6 +15,7 @@ import 'package:soshi/screens/mainapp/viewProfilePage.dart';
 import 'package:soshi/services/dataEngine.dart';
 import 'package:soshi/services/dynamicLinks.dart';
 import 'package:uni_links/uni_links.dart';
+import '../../constants/popups.dart';
 import '../../constants/widgets.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
@@ -43,24 +44,28 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
     // It will handle app links while the app is already started - be it in
     // the foreground or in the background.
     _sub = uriLinkStream.listen((Uri uri) {
-      if (!mounted) return;
-      print('got uri: $uri');
+      if (uri.toString().contains("soshi.app")) {
+        if (!mounted) return;
+        print('got uri: $uri');
 
-      setState(() {
-        _latestUri = uri;
-        _err = null;
-      });
-      List<String> params = uri.toString().split("/");
-      if (params == null) {
+        setState(() {
+          _latestUri = uri;
+          _err = null;
+        });
+        List<String> params = uri.toString().split("/");
+        if (params == null) {
+          return;
+        }
+        String username = params?.last;
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return ViewProfilePage(
+            friendSoshiUsername: username,
+            refreshScreen: () {},
+          ); // show friend popup when tile is pressed
+        }));
+      } else {
         return;
       }
-      String username = params?.last;
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return ViewProfilePage(
-          friendSoshiUsername: username,
-          refreshScreen: () {},
-        ); // show friend popup when tile is pressed
-      }));
     }, onError: (Object err) {
       if (!mounted) return;
       print('got err: $err');
@@ -79,18 +84,23 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
     // In this example app this is an almost useless guard, but it is here to
     // show we are not going to call getInitialUri multiple times, even if this
     // was a weidget that will be disposed of (ex. a navigation route change).
+
     if (!_initialUriIsHandled) {
       _initialUriIsHandled = true;
       print("Initial called");
       try {
         final uri = await getInitialUri();
-        if (uri == null) {
-          print('no initial uri');
+        if (uri.toString().contains("soshi.app")) {
+          if (uri == null) {
+            print('no initial uri');
+          } else {
+            print('got initial uri: $uri');
+          }
+          if (!mounted) return;
+          setState(() => _initialUri = uri);
         } else {
-          print('got initial uri: $uri');
+          return;
         }
-        if (!mounted) return;
-        setState(() => _initialUri = uri);
       } on PlatformException {
         // Platform messages may fail but we ignore the exception
         print('falied to get initial uri');
@@ -135,14 +145,14 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     print(">> calling from init");
     // DynamicLinkService.handleInitialLink(context);
-    // DynamicLinkService.retrieveDynamicLink(context); // check for Firebase links
+    DynamicLinkService.retrieveDynamicLink(context); // check for Firebase links
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       print(">> calling from lifecycle change");
-      // DynamicLinkService.retrieveDynamicLink(context);
+      DynamicLinkService.retrieveDynamicLink(context);
     }
   }
 

@@ -109,7 +109,7 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                     FlutterShare.share(
                                         title: "Share your Soshi link!",
                                         linkUrl:
-                                            "soshi.app/share/${DataEngine.globalUser.soshiUsername}");
+                                            "https://soshi.app/share/${DataEngine.globalUser.soshiUsername}");
                                   },
                                 )
                               ],
@@ -134,7 +134,7 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                       onTap: () {
                                         Clipboard.setData(ClipboardData(
                                             text:
-                                                "soshi.app/share/${DataEngine.globalUser.soshiUsername}"));
+                                                "https://soshi.app/share/${DataEngine.globalUser.soshiUsername}"));
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(SnackBar(
                                           content: const Text(
