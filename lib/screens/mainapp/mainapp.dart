@@ -91,13 +91,24 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
       try {
         final uri = await getInitialUri();
         if (uri.toString().contains("soshi.app")) {
-          if (uri == null) {
-            print('no initial uri');
-          } else {
-            print('got initial uri: $uri');
-          }
           if (!mounted) return;
-          setState(() => _initialUri = uri);
+          print('got uri: $uri');
+
+          setState(() {
+            _latestUri = uri;
+            _err = null;
+          });
+          List<String> params = uri.toString().split("/");
+          if (params == null) {
+            return;
+          }
+          String username = params?.last;
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return ViewProfilePage(
+              friendSoshiUsername: username,
+              refreshScreen: () {},
+            ); // show friend popup when tile is pressed
+          }));
         } else {
           return;
         }
