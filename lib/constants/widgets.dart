@@ -8,7 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:share/share.dart';
+// import 'package:share/share.dart';
 import 'package:soshi/constants/popups.dart';
 import 'package:soshi/constants/utilities.dart';
 import 'package:soshi/services/analytics.dart';
@@ -711,34 +711,34 @@ class _ReturnNumConnectionsState extends State<ReturnNumConnections> {
   }
 }
 
-class ShareButton extends StatelessWidget {
-  double size;
-  String soshiUsername;
-  String groupId;
-  String link;
+// class ShareButton extends StatelessWidget {
+//   double size;
+//   String soshiUsername;
+//   String groupId;
+//   String link;
 
-  ShareButton({this.size, this.soshiUsername, this.groupId, this.link});
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(shape: CircleBorder()),
-      onPressed: () {
-        if (groupId == null) {
-          Share.share(this.link,
-              subject: DataEngine.globalUser.firstName +
-                  " " +
-                  DataEngine.globalUser.lastName +
-                  "'s Soshi Contact Card");
-        } else {
-          Share.share(
-            "https://strippedsoshi.page.link" + groupId,
-          );
-        }
-      },
-      child: Icon(Icons.share, size: size),
-    );
-  }
-}
+//   ShareButton({this.size, this.soshiUsername, this.groupId, this.link});
+//   @override
+//   Widget build(BuildContext context) {
+//     return ElevatedButton(
+//       style: ElevatedButton.styleFrom(shape: CircleBorder()),
+//       onPressed: () {
+//         if (groupId == null) {
+//           Share.share(this.link,
+//               subject: DataEngine.globalUser.firstName +
+//                   " " +
+//                   DataEngine.globalUser.lastName +
+//                   "'s Soshi Contact Card");
+//         } else {
+//           Share.share(
+//             "https://strippedsoshi.page.link" + groupId,
+//           );
+//         }
+//       },
+//       child: Icon(Icons.share, size: size),
+//     );
+//   }
+// }
 
 class CustomThreeInOut extends StatefulWidget {
   const CustomThreeInOut({

@@ -31,7 +31,9 @@ class GroupScreenComingSoon extends StatelessWidget {
             padding: const EdgeInsets.all(25.0),
             child: Text("Coming Soon!"),
           ),
-          SizedBox(width: Utilities.getWidth(context) / 1.6, child: Image.asset("assets/images/misc/groups_preview.png"))
+          SizedBox(
+              width: Utilities.getWidth(context) / 1.6,
+              child: Image.asset("assets/images/misc/groups_preview.png"))
         ],
       ))),
     );
@@ -90,7 +92,9 @@ class _GroupScreenState extends State<GroupScreen> {
           future: getGroups(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Container(height: height / 2, child: Center(child: CircularProgressIndicator()));
+              return Container(
+                  height: height / 2,
+                  child: Center(child: CircularProgressIndicator()));
             } else if (snapshot.connectionState == ConnectionState.done) {
               dynamic data = snapshot.data;
               return Column(
@@ -110,7 +114,8 @@ class _GroupScreenState extends State<GroupScreen> {
                               "Denton Hall",
                               "Juggling Club"
                             ][Random().nextInt(5)]}\"',
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0)),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15.0)),
                             prefixIcon: Icon(
                               Icons.search,
                             ),
@@ -123,7 +128,8 @@ class _GroupScreenState extends State<GroupScreen> {
                     children: [
                       Align(
                         child: Padding(
-                          padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 2.0),
+                          padding:
+                              const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 2.0),
                           child: Text("Groups (${data.length})"),
                         ),
                         alignment: Alignment.topLeft,
@@ -131,8 +137,10 @@ class _GroupScreenState extends State<GroupScreen> {
                       Align(
                         alignment: Alignment.topRight,
                         child: Padding(
-                          padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 2.0),
-                          child: Constants.makeBlueShadowButtonSmall("Create Group", Icons.group_add, () {
+                          padding:
+                              const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 2.0),
+                          child: Constants.makeBlueShadowButtonSmall(
+                              "Create Group", Icons.group_add, () {
                             showGeneralDialog(
                                 transitionDuration: Duration(milliseconds: 200),
                                 barrierDismissible: true,
@@ -155,10 +163,13 @@ class _GroupScreenState extends State<GroupScreen> {
                     height: height / 1.7,
                     width: width,
                     child: GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2),
                       itemCount: data.length,
                       itemBuilder: (BuildContext context, int i) {
-                        return Padding(padding: EdgeInsets.all(10.0), child: GroupCard(width: width, group: data[i]));
+                        return Padding(
+                            padding: EdgeInsets.all(10.0),
+                            child: GroupCard(width: width, group: data[i]));
                       },
                     ),
                   ),
@@ -180,7 +191,8 @@ class CreateGroupPopup extends StatefulWidget {
   double width;
   double height;
   Function refreshGroups;
-  CreateGroupPopup({this.width, this.height, this.databaseService, this.refreshGroups});
+  CreateGroupPopup(
+      {this.width, this.height, this.databaseService, this.refreshGroups});
 }
 
 class _CreateGroupPopupState extends State<CreateGroupPopup> {
@@ -200,7 +212,9 @@ class _CreateGroupPopupState extends State<CreateGroupPopup> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: Theme.of(context).brightness == Brightness.light ? null : Colors.black,
+      backgroundColor: Theme.of(context).brightness == Brightness.light
+          ? null
+          : Colors.black,
       elevation: 50,
       insetPadding: EdgeInsets.all(width / 14),
       //insetPadding: EdgeInsets.all(0.0),
@@ -212,8 +226,11 @@ class _CreateGroupPopupState extends State<CreateGroupPopup> {
         borderRadius: BorderRadius.circular(30.0),
       ),
       content: Container(
-          decoration:
-              BoxDecoration(color: Colors.white, borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0))),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30.0),
+                  topRight: Radius.circular(30.0))),
           height: height / 2.2,
           // color: Colors.white,
           child: Column(
@@ -228,8 +245,9 @@ class _CreateGroupPopupState extends State<CreateGroupPopup> {
                     // update profile picture on tap
                     // open up image picker
                     final ImagePicker imagePicker = ImagePicker();
-                    final PickedFile pickedImage = await imagePicker.getImage(source: ImageSource.gallery, imageQuality: 20);
-                    groupPic = await dbService.cropImage(pickedImage.path, cropStyle: CropStyle.rectangle);
+                    final PickedFile pickedImage = await imagePicker.getImage(
+                        source: ImageSource.gallery, imageQuality: 20);
+                    //groupPic = await dbService.cropImage(pickedImage.path, cropStyle: CropStyle.rectangle);
 
                     setState(() {
                       picFile = groupPic;
@@ -250,7 +268,9 @@ class _CreateGroupPopupState extends State<CreateGroupPopup> {
                             padding: const EdgeInsets.all(5.0),
                             child: Container(
                               padding: EdgeInsets.all(width / 100),
-                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(8.0), color: Colors.black),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  color: Colors.black),
                               child: Icon(
                                 Icons.edit,
                                 size: 20,
@@ -277,7 +297,9 @@ class _CreateGroupPopupState extends State<CreateGroupPopup> {
                     contentPadding: EdgeInsets.only(top: 14.0),
                     prefixIcon: Icon(
                       Icons.group,
-                      color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+                      color: Theme.of(context).brightness == Brightness.light
+                          ? Colors.black
+                          : Colors.white,
                     ),
                     hintText: 'Name your group...',
                     // hintStyle: kHintTextStyle,
@@ -286,12 +308,16 @@ class _CreateGroupPopupState extends State<CreateGroupPopup> {
                 ),
               ),
               Constants.makeBlueShadowButton("Create", Icons.add, (() async {
-                String id = "${Random().nextInt(1000)}${DateTime.now().millisecondsSinceEpoch}";
+                String id =
+                    "${Random().nextInt(1000)}${DateTime.now().millisecondsSinceEpoch}";
                 String photoURL;
                 if (groupPic != null) {
-                  photoURL = await widget.databaseService.uploadProfilePicture(groupPic, groupId: id); // upload pic to Firebase Storage
+                  photoURL = await widget.databaseService.uploadProfilePicture(
+                      groupPic,
+                      groupId: id); // upload pic to Firebase Storage
                 }
-                await widget.databaseService.createGroup(id: id, name: groupNameController.text, photoURL: photoURL);
+                await widget.databaseService.createGroup(
+                    id: id, name: groupNameController.text, photoURL: photoURL);
                 widget.refreshGroups();
                 Navigator.pop(context);
               }))
@@ -305,7 +331,13 @@ class Group {
   String id, name, description, photoURL;
   List<dynamic> admin, members;
 
-  Group({this.id, this.name, this.description, this.photoURL, this.admin, this.members});
+  Group(
+      {this.id,
+      this.name,
+      this.description,
+      this.photoURL,
+      this.admin,
+      this.members});
 }
 
 class GroupCard extends StatelessWidget {
@@ -321,7 +353,8 @@ class GroupCard extends StatelessWidget {
         }));
       },
       child: Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0), side: BorderSide.none),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0), side: BorderSide.none),
           elevation: 5.0,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -347,7 +380,8 @@ class GroupCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(Icons.people),
-                      Text((group.admin.length + group.members.length).toString()),
+                      Text((group.admin.length + group.members.length)
+                          .toString()),
                     ],
                   ),
                 ],

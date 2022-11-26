@@ -43,7 +43,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
       final profilePic =
           await ImagePicker().pickImage(source: ImageSource.gallery);
       if (profilePic == null) {
-        return user.photoURL;
+        return tempNewURL;
       } else {
         final profilePicTemp = File(profilePic.path);
         await cropAndUploadImage(profilePicTemp);
@@ -53,32 +53,29 @@ class ProfileSettingsState extends State<ProfileSettings> {
     }
   }
 
-  Future<File> cropImage(String path,
+  Future<CroppedFile> cropImage(String path,
       {CropStyle cropStyle = CropStyle.circle}) async {
     return (await ImageCropper().cropImage(
-        cropStyle: cropStyle,
-        sourcePath: path,
-        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
-        maxHeight: 700,
-        maxWidth: 700,
-        compressFormat: ImageCompressFormat.jpg,
-        androidUiSettings: AndroidUiSettings(toolbarTitle: "Crop Image"),
-        iosUiSettings: IOSUiSettings(
-          title: "Crop Image",
-        )));
+      cropStyle: cropStyle,
+      sourcePath: path,
+      aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+      maxHeight: 700,
+      maxWidth: 700,
+      compressFormat: ImageCompressFormat.jpg,
+    ));
   }
 
   Future<void> cropAndUploadImage(
     File passedInImage,
   ) async {
     if (passedInImage != null) {
-      File croppedImage = await cropImage(passedInImage.path);
-      FirebaseStorage firebaseStorage = FirebaseStorage.instance;
+      CroppedFile croppedImageFirst = await cropImage(passedInImage.path);
+      final File croppedImageFinal = File(croppedImageFirst.path);
 
-      await firebaseStorage
+      await FirebaseStorage.instance
           .ref()
           .child("Profile Pictures/" + user.soshiUsername)
-          .putFile(croppedImage);
+          .putFile(croppedImageFinal);
 
       // upload image to firebase to get URL
       String urlNew = await FirebaseStorage.instance
@@ -86,7 +83,13 @@ class ProfileSettingsState extends State<ProfileSettings> {
           .child("Profile Pictures/" + user.soshiUsername)
           .getDownloadURL();
 
-      setState(() => tempNewURL = urlNew);
+      print("before setstate");
+      setState(() {
+        print("calling setstate");
+        tempNewURL = urlNew;
+      });
+      //setState(() => tempNewURL = urlNew);
+      print("after setstate");
     } else {
       print("No image picked");
       return;
@@ -137,9 +140,8 @@ class ProfileSettingsState extends State<ProfileSettings> {
                   fontSize: width / 23,
                 ),
               ),
-              onPressed: () {
+              onPressed: () async {
                 user.photoURL = tempNewURL;
-
                 DataEngine.applyUserChanges(
                     user: DataEngine.globalUser, cloud: true, local: true);
                 // Need alternative to refresh the profile!!!!
