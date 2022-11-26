@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:soshi/screens/login/loading.dart';
 import 'package:soshi/screens/mainapp/passions.dart';
 import 'package:soshi/services/dataEngine.dart';
 import 'package:soshi/constants/widgets.dart';
@@ -42,10 +43,11 @@ class ProfileSettingsState extends State<ProfileSettings> {
     try {
       final profilePic =
           await ImagePicker().pickImage(source: ImageSource.gallery);
+      final profilePicTemp = File(profilePic.path);
+
       if (profilePic == null) {
         return tempNewURL;
       } else {
-        final profilePicTemp = File(profilePic.path);
         await cropAndUploadImage(profilePicTemp);
       }
     } on PlatformException catch (e) {
@@ -71,7 +73,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
     if (passedInImage != null) {
       CroppedFile croppedImageFirst = await cropImage(passedInImage.path);
       final File croppedImageFinal = File(croppedImageFirst.path);
-
+      DialogBuilder(context).showLoadingIndicator();
       await FirebaseStorage.instance
           .ref()
           .child("Profile Pictures/" + user.soshiUsername)
@@ -83,12 +85,9 @@ class ProfileSettingsState extends State<ProfileSettings> {
           .child("Profile Pictures/" + user.soshiUsername)
           .getDownloadURL();
 
-      print("before setstate");
-      setState(() {
-        print("calling setstate");
-        tempNewURL = urlNew;
-      });
-      //setState(() => tempNewURL = urlNew);
+      setState(() => tempNewURL = urlNew);
+      DialogBuilder(context).hideOpenDialog();
+
       print("after setstate");
     } else {
       print("No image picked");
@@ -184,7 +183,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                   },
                   child: Stack(
                     children: [
-                      ProfilePic(radius: 55, url: user.photoURL),
+                      ProfilePic(radius: 55, url: tempNewURL),
                       Positioned(
                         right: width / 15,
                         top: height / 30,
