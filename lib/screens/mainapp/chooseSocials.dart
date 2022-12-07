@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:soshi/screens/login/loading.dart';
 import 'package:soshi/services/dataEngine.dart';
-import 'package:soshi/services/localData.dart';
 import 'package:vibration/vibration.dart';
 import '../../constants/widgets.dart';
 

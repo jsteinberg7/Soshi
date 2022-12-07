@@ -2,7 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-// import 'package:nfc_manager/nfc_manager.dart';
+
 
 import 'package:soshi/constants/popups.dart';
 import 'package:soshi/constants/utilities.dart';
@@ -12,8 +12,8 @@ import 'package:soshi/services/analytics.dart';
 import 'package:soshi/services/dataEngine.dart';
 import 'package:soshi/services/database.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:soshi/services/localData.dart';
-import 'package:soshi/services/nfc.dart';
+
+
 
 import 'package:vibration/vibration.dart';
 import 'package:share/share.dart';

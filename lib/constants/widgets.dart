@@ -16,12 +16,11 @@ import 'package:soshi/screens/login/newIntroFlowSri.dart';
 import 'package:soshi/services/auth.dart';
 import 'package:soshi/services/dataEngine.dart';
 import 'package:soshi/services/database.dart';
-import 'package:soshi/services/localData.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:soshi/services/url.dart';
 import '../screens/login/loading.dart';
 import '../services/contacts.dart';
-import '../services/nfc.dart';
+
 import 'constants.dart';
 import 'package:http/http.dart' as http;
 
@@ -386,47 +385,47 @@ class SignOutButton extends StatelessWidget {
   }
 }
 
-class ActivatePortalButton extends StatelessWidget {
-  String soshiLink;
+// class ActivatePortalButton extends StatelessWidget {
+//   String soshiLink;
 
-  ActivatePortalButton({@required String soshiLink});
+//   ActivatePortalButton({@required String soshiLink});
 
-  @override
-  Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
+//   @override
+//   Widget build(BuildContext context) {
+//     double width = MediaQuery.of(context).size.width;
+//     double height = MediaQuery.of(context).size.height;
 
-    return Container(
-        child: GestureDetector(
-            child: Container(
-                height: height / 15,
-                width: width / 2.1,
-                child: Card(
-                  // color: Colors.grey.shade800,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                  child: Center(
-                    child: Text(
-                      "Activate Soshi Portal",
-                      style: TextStyle(
-                          //fontWeight: FontWeight.bold,
-                          fontSize: width / 28),
-                    ),
-                  ),
-                )),
-            onTap: () {
-              print("NFC writer pops up");
-              showModalBottomSheet(
-                  constraints: BoxConstraints(
-                      minWidth: width / 1.1, maxWidth: width / 1.1),
-                  backgroundColor: Colors.green,
-                  context: context,
-                  builder: (BuildContext context) {
-                    return NFCWriter(height, width, this.soshiLink);
-                  });
-            }));
-  }
-}
+//     return Container(
+//         child: GestureDetector(
+//             child: Container(
+//                 height: height / 15,
+//                 width: width / 2.1,
+//                 child: Card(
+//                   // color: Colors.grey.shade800,
+//                   shape: RoundedRectangleBorder(
+//                       borderRadius: BorderRadius.all(Radius.circular(10))),
+//                   child: Center(
+//                     child: Text(
+//                       "Activate Soshi Portal",
+//                       style: TextStyle(
+//                           //fontWeight: FontWeight.bold,
+//                           fontSize: width / 28),
+//                     ),
+//                   ),
+//                 )),
+//             onTap: () {
+//               print("NFC writer pops up");
+//               showModalBottomSheet(
+//                   constraints: BoxConstraints(
+//                       minWidth: width / 1.1, maxWidth: width / 1.1),
+//                   backgroundColor: Colors.green,
+//                   context: context,
+//                   builder: (BuildContext context) {
+//                     return NFCWriter(height, width, this.soshiLink);
+//                   });
+//             }));
+//   }
+// }
 
 class DeleteProfileButton extends StatelessWidget {
   @override

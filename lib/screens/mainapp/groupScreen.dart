@@ -3,20 +3,15 @@ import 'dart:math';
 
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
 import 'package:soshi/constants/utilities.dart';
 import 'package:soshi/constants/widgets.dart';
-import 'package:soshi/screens/login/loading.dart';
 import 'package:soshi/screens/mainapp/viewGroupPage.dart';
-import 'package:soshi/services/localData.dart';
+
 
 import '../../constants/constants.dart';
-import '../../constants/popups.dart';
 import '../../services/database.dart';
-import 'friendScreen.dart';
 
 class GroupScreenComingSoon extends StatelessWidget {
   @override

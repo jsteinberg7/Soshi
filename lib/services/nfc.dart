@@ -4,8 +4,132 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nfc_manager/nfc_manager.dart';
+import 'package:soshi/services/database.dart';
+import 'package:ndef/ndef.dart' as ndef;
+import 'dataEngine.dart';
 
-import 'localData.dart';
+
+class NFCLinker extends StatefulWidget {
+  double height, width;
+
+  NFCLinker(this.height, this.width);
+  @override
+  State<NFCLinker> createState() => _NFCLinkerState();
+}
+
+class _NFCLinkerState extends State<NFCLinker> {
+  double height, width;
+  String displayText, animationUrl;
+  @override
+  void initState() {
+    super.initState();
+    this.height = widget.height;
+    this.width = widget.width;
+
+    displayText = "Scanning for tags...";
+    animationUrl =
+        "https://assets8.lottiefiles.com/packages/lf20_maxyrepx.json";
+    searchAndLink();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    NfcManager.instance.stopSession();
+  }
+
+  ValueNotifier nfcReaderValue = new ValueNotifier(null);
+
+  Future<void> searchAndLink() async {
+    await ndefRead(); // scan for tags
+    nfcReaderValue.addListener(() async {
+      String tagLink = nfcReaderValue.value;
+
+      print("Value changed: " + tagLink ?? "null");
+      if (tagLink != null) {
+        List<String> params = tagLink.split("/");
+        if (params.contains("id")) {
+          String id = params.last;
+          print(id);
+          if (await DatabaseService.isValidNfcId(id) &&
+              (await DatabaseService.getUsernameFromNfcId(id) == null)) {
+            await DatabaseService.updateNfcId(id, DataEngine.soshiUsername);
+          }
+        }
+      }
+    });
+  }
+
+  Future<void> ndefRead() async {
+    NfcManager.instance.startSession(onDiscovered: (NfcTag tag) async {
+      Ndef n = Ndef.from(tag);
+      // extract message from tag
+      var payload = n.cachedMessage.records[0].payload;
+      // convert to string
+      var message = String.fromCharCodes(payload);
+      print("message: ");
+      print(message);
+
+      nfcReaderValue.value = message;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    height = widget.height;
+    width = widget.width;
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Container(
+              width: width / 1.1,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(25.0))),
+              height: 250,
+              // color: Colors.white,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    height: 150,
+                    child: Lottie.network(
+                      animationUrl,
+                    ),
+                  ),
+                  Text(
+                    displayText,
+                    style: TextStyle(color: Colors.black, fontSize: 25.0),
+                  ),
+                ],
+              )),
+          SizedBox(
+            height: height / 50,
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(15.0))),
+              height: height / 15,
+              width: width / 1.1,
+              child: Center(
+                child: Text("Close",
+                    style: TextStyle(
+                        color: Colors.blue, fontSize: widget.width / 22)),
+              ),
+            ),
+          ),
+          SizedBox(height: height / 40)
+        ],
+      ),
+    );
+  }
+}
 
 class NFCWriter extends StatefulWidget {
   double height, width;

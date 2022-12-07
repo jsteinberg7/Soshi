@@ -19,7 +19,7 @@ import 'package:soshi/screens/mainapp/passions.dart';
 import 'package:soshi/services/contacts.dart';
 import 'package:soshi/services/dataEngine.dart';
 import 'package:soshi/services/database.dart';
-import 'package:soshi/services/localData.dart';
+
 import 'package:soshi/services/url.dart';
 import 'chooseSocials.dart';
 import 'profileSettings.dart';

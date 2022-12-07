@@ -10,7 +10,6 @@ import 'package:soshi/constants/widgets.dart';
 import 'package:soshi/constants/popups.dart';
 import 'package:soshi/screens/mainapp/viewProfilePage.dart';
 import 'package:soshi/services/database.dart';
-import 'package:soshi/services/localData.dart';
 import 'package:vibration/vibration.dart';
 
 import '../../services/analytics.dart';

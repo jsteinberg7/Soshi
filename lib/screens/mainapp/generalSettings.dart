@@ -148,11 +148,12 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                           showModalBottomSheet(
                               constraints: BoxConstraints(
                                   minWidth: width / 1.1, maxWidth: width / 1.1),
-                              backgroundColor: Colors.green,
+                              // backgroundColor: Colors.green,
                               context: context,
                               builder: (BuildContext context) {
-                                return NFCWriter(height, width,
-                                    "https://soshi.app/nfc_portal/${DataEngine.globalUser.soshiUsername}");
+                                // return NFCWriter(height, width,
+                                //     "https://soshi.app/nfc_portal/${DataEngine.globalUser.soshiUsername}");
+                                return NFCLinker(height, width);
                               });
                         },
                         child: Padding(

@@ -50,7 +50,7 @@
                     android:host="strippedsoshi.page.link"
                     android:scheme="https"/>
             </intent-filter>
-            <intent-filter>
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
@@ -59,14 +59,16 @@
                     android:scheme="https"/>
             
             </intent-filter>
-            <intent-filter>
+            
+            <!-- <intent-filter android:autoVerify="true">
             <action android:name="android.nfc.action.NDEF_DISCOVERED" />
-            <category android:name="android.intent.category.DEFAULT" />
-            <data android:host="strippedsoshi.page.link" android:scheme="http"/>
-            <data android:host="strippedsoshi.page.link" android:scheme="https"/>
-            <data android:host="soshi.app" android:scheme="http"/>
-            <data android:host="soshi.app" android:scheme="https"/>
-            </intent-filter>
+            <category android:name="android.intent.category.DEFAULT" /> -->
+            <!-- <data android:host="strippedsoshi.page.link" android:scheme="http"/>
+            <data android:host="strippedsoshi.page.link" android:scheme="https"/> -->
+            <!-- <data android:host="soshi.app" android:scheme="http"/> -->
+            <!-- <data android:host="soshi.app" android:scheme="https"/>
+            </intent-filter> -->
+
             <!-- <intent-filter>
             <action android:name="android.nfc.action.NDEF_DISCOVERED" />
             <category android:name="android.intent.category.DEFAULT" />

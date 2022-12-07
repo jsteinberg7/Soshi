@@ -6,7 +6,6 @@ import 'package:soshi/services/dataEngine.dart';
 import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
-import 'package:soshi/services/localData.dart';
 import 'package:soshi/constants/widgets.dart';
 import 'package:soshi/constants/utilities.dart';
 

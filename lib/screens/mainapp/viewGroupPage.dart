@@ -14,7 +14,7 @@ import '../../constants/widgets.dart';
 import '../../services/analytics.dart';
 import '../../services/dataEngine.dart';
 import '../../services/database.dart';
-import '../../services/localData.dart';
+
 import 'friendScreen.dart';
 import 'groupScreen.dart';
 

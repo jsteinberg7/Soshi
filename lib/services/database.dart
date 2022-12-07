@@ -31,6 +31,12 @@ class DatabaseService {
   CollectionReference usersCollection =
       FirebaseFirestore.instance.collection("users");
 
+  static CollectionReference nfcIdsCollection =
+      FirebaseFirestore.instance.collection("nfcIds");
+
+  static CollectionReference metadataCollection =
+      FirebaseFirestore.instance.collection("metadata");
+
   // store reference to all group files
   CollectionReference groupsCollection =
       FirebaseFirestore.instance.collection("groups");
@@ -145,6 +151,39 @@ class DatabaseService {
   //     isVerified: getVerifiedStatus(userData),
   //   );
   // }
+
+  static Future<String> getUsernameFromNfcId(String id) {
+    return nfcIdsCollection.doc(id).get().then((DocumentSnapshot ds) {
+      Map data = ds.data() as Map;
+      if (data == null) {
+        return null;
+      }
+      return data["username"];
+    });
+  }
+
+  // update username for nfc id
+  static Future<void> updateNfcId(String id, String username) async {
+    await nfcIdsCollection.doc(id).set(<String, dynamic>{"username": username});
+  }
+
+  // check if valid nfc id
+  static Future<bool> isValidNfcId(String id) async {
+    return metadataCollection
+        .doc("validNfcIds")
+        .get()
+        .then((DocumentSnapshot ds) {
+      Map data = ds.data() as Map;
+      // iterate through fields in data, check if field contains id
+      for (String field in data.keys) {
+        List<String> validTags = field.split(",");
+        if (validTags.contains(id)) {
+          return true;
+        }
+      }
+      return false;
+    });
+  }
 
   /*
   Getting the list of verified users

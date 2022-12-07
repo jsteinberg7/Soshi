@@ -1,7 +1,7 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'dart:async';
 
-import 'package:soshi/services/geo_ip.dart';
+
 
 abstract class Analytics {
   static FirebaseAnalytics instance = FirebaseAnalytics.instance;

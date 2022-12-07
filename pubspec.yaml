@@ -50,19 +50,17 @@ dependencies:
   google_sign_in: ^5.3.0
   # path_provider: ^2.0.8
   contacts_service: ^0.6.3
-  permission_handler: ^8.3.0
+  permission_handler: any
   firebase_analytics: ^9.0.4
   http: ^0.13.4
   path_provider: ^2.0.8
   google_fonts: ^2.1.1
   circular_profile_avatar: ^2.0.5
-  flutter_spinkit: ^5.1.0
 
   email_validator: ^2.0.1
 
   # keyboard_visibility: any
   flutter_keyboard_visibility: ^5.0.2
-  device_display_brightness: ^0.0.6
   introduction_screen: ^3.0.2
   lottie: ^1.2.1
   flutter_launcher_icons:
@@ -76,7 +74,6 @@ dependencies:
   smooth_page_indicator: ^1.0.0+2
 
   flutter_neumorphic: ^3.2.0
-  glassmorphism: ^3.0.0
   top_modal_sheet: ^1.0.0+1
   auto_size_text: ^3.0.0
   in_app_review: ^2.0.4
@@ -86,7 +83,9 @@ dependencies:
   nfc_manager: ^3.2.0
   uni_links: ^0.5.1
   # flutter_nfc_kit: ^3.3.1
-  
+  firebase_core_platform_interface: 4.5.1 # note removed ^
+  glassmorphism: ^3.0.0
+  ndef: ^0.3.1
 
 dev_dependencies:
   flutter_test:
