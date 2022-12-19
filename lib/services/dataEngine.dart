@@ -53,6 +53,7 @@ class DataEngine {
 
     Map<String, dynamic> toReturn = {
       'Friends': user.friends,
+      'Swapped Contacts': user.swappedContacts,
       'Name': {
         'First': user.firstNameController.text,
         'Last': user.lastNameController.text
@@ -129,6 +130,8 @@ class DataEngine {
       fetch = jsonDecode(prefs.getString("userObject"));
     }
 
+    print(fetch.toString());
+
     bool hasPhoto = fetch['Photo URL'] != null && fetch['Photo URL'] != "";
     String photoURL =
         hasPhoto ? fetch['Photo URL'] : Defaults.defaultProfilePic;
@@ -140,6 +143,7 @@ class DataEngine {
     int soshiPoints = fetch['Soshi Points'] ?? 0;
     String bio = fetch['Bio'] ?? "";
     List<String> friends = (fetch['Friends'].cast<String>() ?? []);
+    List<dynamic> swappedContacts = (fetch['Swapped Contacts'] ?? []);
 
     // if short dynamic link is null (they just updated to 3.0+) it creates one for them
     // String shortDynamicLink = fetch['Short Dynamic Link'] ??
@@ -239,6 +243,7 @@ class DataEngine {
         bio: bio,
         bioController: new TextEditingController(text: bio),
         friends: friends,
+        swappedContacts: swappedContacts,
         lookupSocial: lookupSocial,
         // shortDynamicLink: shortDynamicLink,
         // longDynamicLink: longDynamicLink,
@@ -280,6 +285,13 @@ class DataEngine {
   static updateCachedFriendsList({@required List<Friend> friends}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("cachedFriendsList", jsonEncode(friends));
+    log("[⚙ Data Engine ⚙] update friends Local success! ✅");
+  }
+
+  static updateCachedSwappedContactsList(
+      {@required List<SwappedContact> swappedContacts}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("cachedSwappedContactsList", jsonEncode(swappedContacts));
     log("[⚙ Data Engine ⚙] update friends Local success! ✅");
   }
 
@@ -341,6 +353,7 @@ class SoshiUser {
   List<Passion> passions;
   int soshiPoints;
   List<String> friends;
+  List<dynamic> swappedContacts;
   Map<String, Social> lookupSocial;
 
   TextEditingController bioController;
@@ -364,6 +377,7 @@ class SoshiUser {
       @required this.bio,
       @required this.bioController,
       @required this.friends,
+      @required this.swappedContacts,
       @required this.lookupSocial,
       // @required this.shortDynamicLink,
       // @required this.longDynamicLink,
@@ -445,16 +459,19 @@ class SoshiUser {
   static Future<List<Friend>> convertStrToFriendList(
       List<String> usernameList) async {
     List<Friend> list = [];
+
     for (String username in usernameList) {
+      // printing here
       SoshiUser currUser = await DataEngine.getUserObject(
           firebaseOverride: true, friendOverride: username);
+      // not printing here???
       list.add(Friend(
           soshiUsername: username,
           fullName: currUser.firstName + ' ' + currUser.lastName,
           photoURL: currUser.photoURL,
           isVerified: currUser.verified));
+      print("RETURNED LIST" + list.toString());
     }
-    print("FRIENDS" + list.toString());
     return list;
   }
 }
@@ -537,6 +554,111 @@ class Friend {
   // convert friend to map, then map to json
   String serialize() {
     return jsonEncode(this.toJson());
+  }
+}
+
+class SwappedContact {
+  String fullName; // These are the fields exchanged with a swapped user
+  String phoneNumber;
+  String email;
+  String jobTitle;
+  String company;
+  String nameOfSwappedContactFile;
+
+  SwappedContact(
+      {this.fullName,
+      this.jobTitle,
+      this.phoneNumber,
+      this.company,
+      this.email,
+      this.nameOfSwappedContactFile});
+
+  Map toJson() => {
+        "Name": fullName,
+        "Phone": phoneNumber,
+        "Email": email,
+        "Job Title": jobTitle,
+        "Company": company,
+        "Name of File": nameOfSwappedContactFile
+      };
+
+  static SwappedContact decodeSwappedContact(String json) {
+    Map<String, dynamic> map = jsonDecode(json);
+    return SwappedContact(
+        fullName: map["Name"],
+        phoneNumber: map["Phone"],
+        email: map["Email"],
+        jobTitle: map["Job Title"],
+        company: map["Company"],
+        nameOfSwappedContactFile: map["Name of File"]);
+  }
+
+  static List<SwappedContact> decodeSwappedContactsList(String json) {
+    var data = jsonDecode(json);
+    List<SwappedContact> swappedContacts = [];
+    for (var entry in data) {
+      swappedContacts.add(SwappedContact(
+          fullName: entry["Name"],
+          phoneNumber: entry["Phone"],
+          email: entry["Email"],
+          jobTitle: entry["Job Title"],
+          company: entry["Company"],
+          nameOfSwappedContactFile: entry["Name of File"]));
+    }
+    print(data);
+    return swappedContacts;
+  }
+
+  static Future<List<SwappedContact>> getSwappedContactList(
+      String soshiUsername) async {
+    List<SwappedContact> finalSwappedContactList = [];
+    DocumentSnapshot mapOfSoshiUserFile = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(soshiUsername)
+        .get();
+
+    List<dynamic> swappedContactStringList =
+        mapOfSoshiUserFile.get('Swapped Contacts') ?? [];
+
+    for (String swappedContactString in swappedContactStringList) {
+      // get the swapped UserString file
+      DocumentSnapshot fileOfSwappedContact = await FirebaseFirestore.instance
+          .collection("swappedInfo")
+          .doc(swappedContactString)
+          .get();
+
+      // turn it into a SwappedContact object
+      SwappedContact swappedContact = new SwappedContact(
+          phoneNumber: fileOfSwappedContact['Phone'],
+          fullName: fileOfSwappedContact['Name'],
+          company: fileOfSwappedContact['Company'],
+          email: fileOfSwappedContact['Email'],
+          jobTitle: fileOfSwappedContact['Job Title'],
+          nameOfSwappedContactFile: swappedContactString);
+
+      // add it to finalSwappedContactList
+      finalSwappedContactList.add(swappedContact);
+    }
+
+    return finalSwappedContactList;
+  }
+
+  static Future<List<SwappedContact>> getCachedSwappedContactsList() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<SwappedContact> swappedContacts;
+    if (!prefs.containsKey("cachedSwappedContactsList")) {
+      log("[⚙ Data Engine ⚙]  getCachedSwappedContactsList() Firebase data burn ⚠ userFetch");
+      //SoshiUser user = await getUserObject(firebaseOverride: false);
+      swappedContacts = await SwappedContact.getSwappedContactList(
+          DataEngine.globalUser.soshiUsername);
+      await prefs.setString(
+          "cachedSwappedContactsList", jsonEncode(swappedContacts));
+    } else {
+      log("[⚙ Data Engine ⚙]  getCachedFriends() Using cache 😃");
+      swappedContacts = SwappedContact.decodeSwappedContactsList(
+          prefs.getString("cachedSwappedContactsList"));
+    }
+    return swappedContacts;
   }
 }
 

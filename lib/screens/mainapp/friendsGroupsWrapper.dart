@@ -4,6 +4,8 @@ A wrapper a around friendScreen and groupScreen
 import 'package:flutter/cupertino.dart';
 import 'package:soshi/screens/mainapp/friendScreen.dart';
 import 'package:soshi/screens/mainapp/groupScreen.dart';
+import 'package:soshi/screens/mainapp/swappedContacts.dart';
+import 'package:soshi/services/dataEngine.dart';
 
 import '../../constants/utilities.dart';
 
@@ -40,14 +42,14 @@ class _FriendsGroupsWrapperState extends State<FriendsGroupsWrapper> {
                     0: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20),
                       child: Text(
-                        'Friends',
+                        'Connections',
                         // style: TextStyle(color: CupertinoColors.white),
                       ),
                     ),
                     1: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20),
                       child: Text(
-                        'Groups',
+                        'Swapped',
                         // style: TextStyle(color: CupertinoColors.white),
                       ),
                     )
@@ -62,7 +64,7 @@ class _FriendsGroupsWrapperState extends State<FriendsGroupsWrapper> {
               ),
               Container(
                 height: height / 1.25,
-                child: currPage == 0 ? FriendScreen() : GroupScreenComingSoon(),
+                child: currPage == 0 ? FriendScreen() : SwappedContactsPage(),
               )
             ],
           )),

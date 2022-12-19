@@ -1373,6 +1373,29 @@ class SoshiUsernameText extends StatelessWidget {
   }
 }
 
+class HeaderTitle extends StatelessWidget {
+  double fontSize;
+  String headerText;
+  HeaderTitle(this.headerText, {@required this.fontSize});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        child: Row(
+      children: [
+        Text(headerText,
+            style: TextStyle(
+              color: Colors.grey,
+              fontSize: fontSize,
+            )),
+      ],
+    ));
+  }
+}
+
+
+
+
 
 // class AddedMeButton extends StatelessWidget {
 //   double size;

@@ -54,6 +54,7 @@ class DatabaseService {
     await usersCollection.doc(username).set(<String, dynamic>{
       "Name": {"First": first, "Last": last},
       "Friends": <String>["soshi"],
+      "Swapped Contacts": [],
       "Bio": "",
       "Verified": false,
       "Soshi Points": 0,
@@ -192,6 +193,12 @@ class DatabaseService {
   // update profile picture URL (necessary on first profile pic change)
   Future<void> updateUserProfilePictureURL(String URL) async {
     await usersCollection.doc(currSoshiUsername).update({"Photo URL": URL});
+  }
+
+  Future<void> updateSwappedContactsField() async {
+    await usersCollection
+        .doc(DataEngine.globalUser.soshiUsername)
+        .update({"Swapped Contacts": []});
   }
 
   // upload selected image to Firebase Storage, return URL

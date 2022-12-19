@@ -45,9 +45,9 @@ class _FriendScreenState extends State<FriendScreen>
   loadDataEngine() async {
     // this.user = await DataEngine.getUserObject(firebaseOverride: false);
     this.formattedFriendsList = await DataEngine.getCachedFriendsList();
+    //print("FORMATTED FRIENDS LIST" + this.formattedFriendsList.toString());
+
     // print(formattedFriendsList.toString());
-    print("jasons gay");
-    print(formattedFriendsList.toString());
 
     //print(DataEngine.serializeUser(this.user));
   }
