@@ -38,10 +38,15 @@ class _NewQRScreenState extends State<NewQRScreen> {
             onTap: () {},
           ),
           elevation: 0,
-          title: Image.asset(
-            "assets/images/SoshiLogos/SoshiBubbleLogo.png",
-            height: Utilities.getHeight(context) / 18,
-          ),
+          title: Theme.of(context).brightness == Brightness.light
+              ? Image.asset(
+                  "assets/images/SoshiLogos/blackSoshiWriting.png",
+                  height: Utilities.getHeight(context) / 18,
+                )
+              : Image.asset(
+                  "assets/images/SoshiLogos/whiteSoshiWriting.png",
+                  height: Utilities.getHeight(context) / 18,
+                ),
           centerTitle: true,
         ),
         body: Container(
