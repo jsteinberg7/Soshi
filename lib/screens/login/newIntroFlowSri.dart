@@ -32,15 +32,28 @@ class _NewIntroFlowState extends State<NewIntroFlow> {
         elevation: 0,
         centerTitle: true,
         title: Container(
-          child: Image.asset(
-            "assets/images/SoshiLogos/SoshiBubbleLogo.png",
-            width: width / 3,
-          ),
+          child: Theme.of(context).brightness == Brightness.light
+              ? Image.asset(
+                  "assets/images/SoshiLogos/blackSoshiWriting.png",
+                  width: Utilities.getWidth(context) / 3,
+                )
+              : Image.asset(
+                  "assets/images/SoshiLogos/whiteSoshiWriting.png",
+                  width: Utilities.getWidth(context) / 3,
+                ),
+
+          // Image.asset(
+          //   "assets/images/SoshiLogos/SoshiBubbleLogo.png",
+          //   width: width / 3,
+          // ),
         ),
         automaticallyImplyLeading: false,
       ),
       body: Column(
         children: [
+          SizedBox(
+            height: height / 60,
+          ),
           Expanded(
             child: PageView(
               onPageChanged: (int newPage) {
@@ -107,13 +120,13 @@ class _NewIntroFlowState extends State<NewIntroFlow> {
                           color: Colors.white,
                           width: 2,
                         ),
-                        borderRadius: BorderRadius.all(Radius.circular(20)))
+                        borderRadius: BorderRadius.all(Radius.circular(30)))
                     : BoxDecoration(
                         border: Border.all(
                           color: Colors.white,
                           width: 2,
                         ),
-                        borderRadius: BorderRadius.all(Radius.circular(20))),
+                        borderRadius: BorderRadius.all(Radius.circular(30))),
                 child: Padding(
                   // padding: const EdgeInsets.fromLTRB(100, 15, 100, 15),
                   padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
@@ -172,8 +185,7 @@ class IntroSingleScreen extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
           child: Text(
             this.message.split("\n")[0],
-            style: TextStyle(
-                fontSize: 30, fontWeight: FontWeight.bold, color: Colors.cyan),
+            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
         ),

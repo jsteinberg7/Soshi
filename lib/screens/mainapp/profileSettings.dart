@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:soshi/screens/login/loading.dart';
-import 'package:soshi/screens/mainapp/passions.dart';
+import 'package:soshi/screens/mainapp/skills.dart';
 import 'package:soshi/services/dataEngine.dart';
 import 'package:soshi/constants/widgets.dart';
 import 'package:soshi/constants/utilities.dart';
@@ -336,13 +336,13 @@ class ProfileSettingsState extends State<ProfileSettings> {
                     padding:
                         EdgeInsets.only(top: height / 65, bottom: height / 65),
                     child: Text(
-                      "Passions",
+                      "Skills",
                       style: TextStyle(
                           fontSize: width / 23, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
-                PassionTileList(
+                SkillTileList(
                     profileScreenRefresher: widget.importProfileNotifier),
                 Divider(),
                 SizedBox(

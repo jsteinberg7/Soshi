@@ -378,6 +378,10 @@ class DatabaseService {
   Future<void> updateUserPassions(String soshiUser, List newPassions) async {
     await usersCollection.doc(soshiUser).update({"Passions": newPassions});
   }
+
+  Future<void> updateUserSkills(String soshiUser, List newSkills) async {
+    await usersCollection.doc(soshiUser).update({"Skills": newSkills});
+  }
   // bool isFirstTime() {
   //    (await IsFirstRun.isFirstRun()) ? return true : return false;
   //   // bool check = await IsFirstRun.isFirstRun();

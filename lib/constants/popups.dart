@@ -1537,7 +1537,7 @@ class Popups {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(40.0))),
             title: Text(
-              "My Soshi Bolts",
+              "Soshi Bolts",
               style: TextStyle(fontSize: 25),
               textAlign: TextAlign.center,
             ),
@@ -1568,7 +1568,7 @@ class Popups {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      "Connect with new friends to gain more points!",
+                      "Create new connections to gain more bolts.",
                       textAlign: TextAlign.center,
                     ),
                   ),

@@ -39,6 +39,8 @@ class _SwappedContactsPageState extends State<SwappedContactsPage> {
         await SwappedContact.getSwappedContactList(
                 DataEngine.globalUser.soshiUsername) ??
             [];
+
+    swappedContacts = new List.from(swappedContacts.reversed);
     yield swappedContacts;
 
     // Call database for list of swapped friends

@@ -1199,6 +1199,84 @@ class PassionBubble extends StatelessWidget {
   }
 }
 
+class SkillBubble extends StatelessWidget {
+  String skillName;
+
+  SkillBubble(this.skillName);
+
+  @override
+  Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+          backgroundColor: Theme.of(context).brightness == Brightness.light
+              ? Colors.white
+              : Colors.black,
+          elevation: 1,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(15)))),
+      onPressed: () {},
+      child: Container(
+          //color: Colors.green,
+          height: MediaQuery.of(context).size.width / 18,
+          width: MediaQuery.of(context).size.width / 5,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 2),
+            child: Text(
+              skillName,
+              textAlign: TextAlign.center,
+              maxLines: 1, //passion.name.contains(" ") ? 2 : 1,
+              style:
+                  TextStyle(fontSize: MediaQuery.of(context).size.width / 27),
+              overflow: TextOverflow.ellipsis,
+            ),
+          )
+          // child: AutoSizeText(
+          //   skill.name,
+          //   textAlign: TextAlign.center,
+          //   maxLines: 1, //passion.name.contains(" ") ? 2 : 1,
+          //   style:
+          //       TextStyle(fontSize: MediaQuery.of(context).size.width / 25),
+          //   minFontSize: 1,
+          // ),
+          ),
+    );
+
+    // return Container(
+    //     decoration: BoxDecoration(
+    //         color: Theme.of(context).brightness == Brightness.light
+    //             ? Colors.white
+    //             : Colors.black,
+    //         borderRadius: BorderRadius.circular(10.0)),
+    //     child: Padding(
+    //       padding: const EdgeInsets.fromLTRB(8, 2, 8, 5),
+    //       child: Container(
+    //         //color: Colors.green,
+    //         width: width / 6,
+    //         child: AutoSizeText(
+    //           skillName,
+    //           textAlign: TextAlign.center,
+    //           maxLines: 1, //passion.name.contains(" ") ? 2 : 1,
+    //           style:
+    //               TextStyle(fontSize: MediaQuery.of(context).size.width / 25),
+    //           minFontSize: 1,
+    //         ),
+    //       ),
+    //       // child: Container(
+    //       //   width: width / 4.5,
+    //       //   height: height / 30,
+    //       //   decoration: BoxDecoration(color: Colors.blue),
+    //       //   child: AutoSizeText(
+    //       //     passionEmoji + passionString,
+    //       //     // style: TextStyle(fontSize: width / 28),
+    //       //   ),
+    //       // ),
+    //     ));
+  }
+}
+
 class ProfilePicBackdrop extends StatelessWidget {
   String url;
   double height, width;
@@ -1217,6 +1295,105 @@ class ProfilePicBackdrop extends StatelessWidget {
     } else {
       return Image.asset("assets/images/misc/default_pic.png");
     }
+  }
+}
+
+class AddToContactsButton extends StatelessWidget {
+  String soshiUsername, platform, username;
+  double width, height;
+  SoshiUser userObject;
+  String phoneFromUserObject;
+  String emailFromUserObject;
+
+  AddToContactsButton({this.soshiUsername, this.width, this.height});
+
+  getUserData() async {
+    userObject = await DataEngine.getUserObject(
+        firebaseOverride: true, friendOverride: soshiUsername);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return NeumorphicButton(
+      style: NeumorphicStyle(
+          color: Colors.transparent,
+          shadowDarkColor: Colors.transparent,
+          shadowLightColor: Colors.transparent,
+          boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(15.0))),
+      onPressed: () async {
+        DialogBuilder(context).showLoadingIndicator();
+
+        double width = MediaQuery.of(context).size.width;
+
+        Uint8List profilePicBytes;
+
+        try {
+          await getUserData(); // Get user object based on SOSHI Username
+
+          // Get phone number and email for easy handling
+          emailFromUserObject =
+              userObject.getUsernameGivenPlatform(platform: "Email");
+          phoneFromUserObject =
+              userObject.getUsernameGivenPlatform(platform: "Phone");
+
+          // Try to load profile pic from url
+          await http
+              .get(Uri.parse(userObject.photoURL))
+              .then((http.Response response) {
+            profilePicBytes = response.bodyBytes;
+          });
+        } catch (e) {
+          // if url is invalid, use default profile pic
+          ByteData data =
+              await rootBundle.load("assets/images/misc/default_pic.png");
+          profilePicBytes = data.buffer.asUint8List();
+        }
+        Contact newContact = new Contact(
+            givenName: userObject.firstName,
+            familyName: userObject.lastName,
+            emails: [
+              Item(label: "Email", value: emailFromUserObject),
+            ],
+            phones: [
+              Item(label: "Cell", value: phoneFromUserObject),
+            ],
+            avatar: profilePicBytes);
+        await askPermissions(context);
+
+        await ContactsService.addContact(newContact);
+
+        DialogBuilder(context).hideOpenDialog();
+
+        Popups.showContactAddedPopup(
+            context,
+            width,
+            userObject.photoURL,
+            userObject.firstName,
+            userObject.lastName,
+            phoneFromUserObject,
+            emailFromUserObject);
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(colors: [
+            Color.fromARGB(255, 192, 33, 246),
+            Color.fromARGB(255, 21, 175, 218)
+          ]),
+          borderRadius: BorderRadius.all(Radius.circular(19.0)),
+        ),
+        width: width / 1.8,
+        height: height / 20,
+        alignment: Alignment.center,
+        child: Text(
+          'Add to Contacts',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              letterSpacing: 1.4,
+              fontSize: width / 23,
+              fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
   }
 }
 

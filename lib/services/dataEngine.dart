@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:soshi/constants/widgets.dart';
 import 'package:soshi/services/database.dart';
 import 'package:soshi/services/dynamicLinks.dart';
 import 'package:soshi/services/pointManager.dart';
@@ -51,6 +52,11 @@ class DataEngine {
       serializePassions.add({'passion_emoji': e.emoji, 'passion_name': e.name});
     });
 
+    List serializeSkills = [];
+    user.skills.forEach((e) {
+      serializeSkills.add(e.name);
+    });
+
     Map<String, dynamic> toReturn = {
       'Friends': user.friends,
       'Swapped Contacts': user.swappedContacts,
@@ -63,6 +69,7 @@ class DataEngine {
       'Soshi Points': user.soshiPoints,
       'Verified': user.verified,
       'Passions': serializePassions,
+      'Skills': serializeSkills,
       'Choose Platforms':
           user.getAvailablePlatforms().map((e) => e.platformName).toList(),
       'Profile Platforms':
@@ -137,6 +144,7 @@ class DataEngine {
         hasPhoto ? fetch['Photo URL'] : Defaults.defaultProfilePic;
     bool Verified = fetch['Verified'] ?? false;
     List<Passion> passions = [];
+    List<Skill> skills = [];
 
     List<Social> socials = [];
     Map<String, Social> lookupSocial = {};
@@ -171,6 +179,21 @@ class DataEngine {
     //print(dynamicLink);
     log("[⚙ Data Engine ⚙] basic info built ✅");
 
+    if (fetch['Skills'] == null) {
+      for (int i = 0; i < 3; i++) {
+        skills.add(Defaults.emptySkill);
+      }
+    } else {
+      List skillsListTemp = List.of(fetch['Skills']);
+      for (int i = 0; i < skillsListTemp.length; i++) {
+        if (skillsListTemp[i].toUpperCase() == "ADD +") {
+          skills.add(Defaults.emptySkill);
+        } else {
+          skills.add(Skill(name: skillsListTemp[i]));
+        }
+      }
+    }
+
     if (fetch['Passions'] == null) {
       for (int i = 0; i < 3; i++) {
         passions.add(Defaults.emptyPassion);
@@ -187,6 +210,7 @@ class DataEngine {
     }
 
     log("[⚙ Data Engine ⚙] passions info built ✅");
+    log("[⚙ Data Engine ⚙] SKILLS info built ✅");
 
     if (fetch['Usernames'] != null &&
         fetch['Switches'] != null &&
@@ -239,6 +263,7 @@ class DataEngine {
         verified: Verified,
         socials: socials,
         passions: passions,
+        skills: skills,
         soshiPoints: soshiPoints,
         bio: bio,
         bioController: new TextEditingController(text: bio),
@@ -341,6 +366,36 @@ class DataEngine {
     log("[⚙ Data Engine ⚙] Successfully fetched latest available passions ✅");
     return pList;
   }
+
+  static Future<List<Skill>> getAvailableSkills(
+      {@required bool firebaseOverride}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List allSkillData = [];
+
+    if (!prefs.containsKey("available_skills") || firebaseOverride) {
+      log("[⚙ Data Engine ⚙] Firebase burn for available skills❌");
+
+      DocumentSnapshot dsnap = await FirebaseFirestore.instance
+          .collection('metadata')
+          .doc('skillData')
+          .get();
+      allSkillData = dsnap.get('all_skills_list');
+      await prefs.setString("available_skills", jsonEncode(allSkillData));
+    } else {
+      log("[⚙ Data Engine ⚙] using smart cache for available skills 😃");
+
+      allSkillData = jsonDecode(prefs.getString("available_skills"));
+    }
+
+    List<Skill> sList = [];
+    for (int j = 0; j < allSkillData.length; j++) {
+      sList.add(Skill(name: allSkillData[j]));
+    }
+
+    sList.add(Defaults.emptySkill);
+    log("[⚙ Data Engine ⚙] Successfully fetched latest available skills ✅");
+    return sList;
+  }
 }
 
 class SoshiUser {
@@ -351,6 +406,8 @@ class SoshiUser {
   bool verified;
   List<Social> socials;
   List<Passion> passions;
+  List<Skill> skills;
+
   int soshiPoints;
   List<String> friends;
   List<dynamic> swappedContacts;
@@ -373,6 +430,7 @@ class SoshiUser {
       @required this.verified,
       @required this.socials,
       @required this.passions,
+      @required this.skills,
       @required this.soshiPoints,
       @required this.bio,
       @required this.bioController,
@@ -452,7 +510,8 @@ class SoshiUser {
         this.lastName == other.lastName &&
         this.bio == other.bio &&
         this.photoURL == other.photoURL &&
-        this.passions == other.passions;
+        this.passions == other.passions &&
+        this.skills == other.skills;
   }
 
   // takes string list, converts to friends list
@@ -504,6 +563,16 @@ class Passion {
   @override
   bool operator ==(other) {
     return (other is Passion) && other.name == name && other.emoji == emoji;
+  }
+}
+
+class Skill {
+  String name;
+  Skill({@required this.name});
+
+  @override
+  bool operator ==(other) {
+    return (other is Skill) && other.name == name;
   }
 }
 
@@ -666,6 +735,7 @@ class Defaults {
   static String defaultProfilePic =
       "https://firebasestorage.googleapis.com/v0/b/soshi-bc9ec.appspot.com/o/DefaultAssets%2Fdefault_pic.png?alt=media&token=fe028bf9-449b-4ee5-a674-12e8d6e4f575";
   static Passion emptyPassion = Passion(emoji: "❌", name: "Empty");
+  static Skill emptySkill = Skill(name: "Add +");
 
   static const String NO_USERNAME = "NO_USERNAME";
 

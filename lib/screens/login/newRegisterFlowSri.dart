@@ -56,10 +56,15 @@ class _NewRegisterFlowState extends State<NewRegisterFlow> {
         appBar: AppBar(
           elevation: 0,
           centerTitle: true,
-          title: Image.asset(
-            "assets/images/SoshiLogos/SoshiBubbleLogo.png",
-            width: width / 3,
-          ),
+          title: Theme.of(context).brightness == Brightness.light
+              ? Image.asset(
+                  "assets/images/SoshiLogos/blackSoshiWriting.png",
+                  width: Utilities.getWidth(context) / 3,
+                )
+              : Image.asset(
+                  "assets/images/SoshiLogos/whiteSoshiWriting.png",
+                  width: Utilities.getWidth(context) / 3,
+                ),
           leading: this.currentPage != 0
               ? Padding(
                   padding: const EdgeInsets.all(10.0),

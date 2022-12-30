@@ -15,7 +15,7 @@ import 'package:soshi/constants/popups.dart';
 import 'package:soshi/constants/utilities.dart';
 import 'package:soshi/constants/widgets.dart';
 import 'package:soshi/screens/mainapp/editHandles.dart';
-import 'package:soshi/screens/mainapp/passions.dart';
+import 'package:soshi/screens/mainapp/skills.dart';
 import 'package:soshi/services/contacts.dart';
 import 'package:soshi/services/dataEngine.dart';
 import 'package:soshi/services/database.dart';
@@ -639,7 +639,7 @@ class ProfileState extends State<Profile> {
                                     : Container(
                                         child: Padding(
                                         padding: EdgeInsets.fromLTRB(
-                                            width / 7, 0, width / 7, 0),
+                                            width / 7.5, 0, width / 7.5, 0),
                                         child: AutoSizeText(
                                           DataEngine.globalUser.bio,
                                           maxLines: 3,
@@ -662,7 +662,7 @@ class ProfileState extends State<Profile> {
             Positioned(
               left: 0,
               right: 0,
-              top: height / 2.2,
+              top: height / 2.3,
               child: Container(
                   //height: height / 2,
                   decoration: BoxDecoration(
@@ -681,7 +681,7 @@ class ProfileState extends State<Profile> {
                         Padding(
                           padding: EdgeInsets.only(left: width / 40),
                           child: Text(
-                            "Passions",
+                            "Skills",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: width / 17),
@@ -690,7 +690,7 @@ class ProfileState extends State<Profile> {
                         SizedBox(
                           height: height / 100,
                         ),
-                        PassionTileList(),
+                        SkillTileList(),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [

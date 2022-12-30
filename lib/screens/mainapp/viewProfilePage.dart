@@ -30,12 +30,20 @@ class ViewProfilePage extends StatefulWidget {
 class _ViewProfilePageState extends State<ViewProfilePage> {
   SoshiUser friendUserObject;
   List<Social> visibleSocials;
+  bool isContactEnabled = false;
 
   getFriendUserData() async {
     friendUserObject = await DataEngine.getUserObject(
         firebaseOverride: true, friendOverride: widget.friendSoshiUsername);
 
     visibleSocials = friendUserObject.getSwitchedOnPlatforms();
+    print(visibleSocials);
+
+    for (Social social in visibleSocials) {
+      if (social.platformName == "Contact") {
+        isContactEnabled = true;
+      }
+    }
   }
 
   @override
@@ -51,15 +59,12 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
           future: getFriendUserData(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
-              List<String> passionNamesFiltered = [];
-              List<String> passionEmojiFiltered = [];
-              for (int i = 0; i < 3; i++) {
-                if (friendUserObject.passions[i].name != "Empty") {
-                  passionNamesFiltered.add(friendUserObject.passions[i].name);
-                  passionEmojiFiltered.add(friendUserObject.passions[i].emoji);
+              List<Skill> tempSkillList = [];
+              for (Skill skill in friendUserObject.skills) {
+                if (skill.name.toUpperCase() != "ADD +") {
+                  tempSkillList.add(skill);
                 }
               }
-
               return Stack(
                 children: [
                   Positioned(
@@ -247,29 +252,25 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                 ),
                                 //FIX LATE - BY SRI
 
-                                Visibility(
-                                  visible: passionNamesFiltered != null ||
-                                      passionNamesFiltered.isNotEmpty,
-                                  child: Padding(
-                                    padding: EdgeInsets.fromLTRB(
-                                        width / 35, 0, width / 35, 0),
-                                    child: Center(
-                                      child: SizedBox(
-                                        width: width / 1.1,
-                                        child: Wrap(
-                                          alignment: WrapAlignment.center,
-                                          spacing: width / 65,
-                                          children: List.generate(
-                                              passionNamesFiltered.length, (i) {
-                                            return PassionBubble(
-                                                passionNamesFiltered[i],
-                                                passionEmojiFiltered[i]);
-                                          }),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                                // Visibility(
+                                //   visible: tempSkillList != null ||
+                                //       tempSkillList.isNotEmpty,
+                                //   child: Padding(
+                                //     padding: EdgeInsets.fromLTRB(
+                                //         width / 35, 0, width / 35, 0),
+                                //     child: Center(
+                                //       child: Wrap(
+                                //         alignment: WrapAlignment.center,
+                                //         spacing: width / 100,
+                                //         children: List.generate(
+                                //             tempSkillList.length, (i) {
+                                //           return SkillBubble(
+                                //               tempSkillList[i].name);
+                                //         }),
+                                //       ),
+                                //     ),
+                                //   ),
+                                // ),
                               ],
                             ),
                           ),
@@ -278,7 +279,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                     ),
                   ),
                   Positioned(
-                    top: height / 2.2,
+                    top: height / 2.6,
                     left: 0,
                     right: 0,
                     child: Container(
@@ -311,6 +312,58 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(left: width / 40),
+                                    child: Text(
+                                      "Skills",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: width / 17),
+                                    ),
+                                  ),
+                                  // SizedBox(
+                                  //   height: height / 400,
+                                  // ),
+                                  Center(
+                                      child: Padding(
+                                    padding: EdgeInsets.fromLTRB(
+                                        0, height / 80, 0, height / 80),
+                                    child: !tempSkillList.isEmpty
+                                        ? Container(
+                                            child: Wrap(
+                                              alignment: WrapAlignment.center,
+                                              spacing: width / 65,
+                                              children: List.generate(
+                                                  tempSkillList.length, (i) {
+                                                return SkillBubble(
+                                                    tempSkillList[i].name);
+                                              }),
+                                            ),
+                                          )
+                                        : Text(
+                                            "This user is not sharing their skills.",
+                                            style:
+                                                TextStyle(fontSize: width / 25),
+                                          ),
+                                  )),
+                                  // tempSkillList != null ||
+                                  //     tempSkillList.isNotEmpty,
+                                  // child: Padding(
+                                  //   padding: EdgeInsets.fromLTRB(
+                                  //       width / 35, 0, width / 35, 0),
+                                  //   child: Center(
+                                  //     child: Wrap(
+                                  //       alignment: WrapAlignment.center,
+                                  //       spacing: width / 100,
+                                  //       children: List.generate(
+                                  //           tempSkillList.length, (i) {
+                                  //         return SkillBubble(
+                                  //             tempSkillList[i].name);
+                                  //       }),
+                                  //     ),
+                                  //   ),
+                                  // ),
+
                                   Padding(
                                     padding: EdgeInsets.only(left: width / 40),
                                     child: Text(
@@ -384,138 +437,18 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                   ),
                                   Padding(
                                     padding: EdgeInsets.fromLTRB(
-                                        0, height / 30, 0, height / 20),
+                                        0, height / 50, 0, height / 20),
                                     child: Center(
                                       child: Visibility(
-                                        //Remove harcode later
-                                        visible: false,
-                                        // visible: false,
-                                        child: ElevatedButton(
-                                          onPressed: () async {
-                                            DialogBuilder(context)
-                                                .showLoadingIndicator();
-
-                                            double width =
-                                                MediaQuery.of(context)
-                                                    .size
-                                                    .width;
-                                            // DatabaseService databaseService =
-                                            //     new DatabaseService(currSoshiUsernameIn: soshiUsername);
-                                            // Map userData = await databaseService.getUserFile(soshiUsername);
-
-                                            String firstName =
-                                                friendUserObject.firstName;
-                                            String lastName =
-                                                friendUserObject.lastName;
-                                            String email = friendUserObject
-                                                .getUsernameGivenPlatform(
-                                                    platform: "Email");
-                                            String phoneNumber =
-                                                friendUserObject
-                                                    .getUsernameGivenPlatform(
-                                                        platform: "Phone");
-                                            String photoUrl =
-                                                friendUserObject.photoURL;
-
-                                            Uint8List profilePicBytes;
-
-                                            try {
-                                              // try to load profile pic from url
-                                              await http
-                                                  .get(Uri.parse(photoUrl))
-                                                  .then(
-                                                      (http.Response response) {
-                                                profilePicBytes =
-                                                    response.bodyBytes;
-                                              });
-                                            } catch (e) {
-                                              // if url is invalid, use default profile pic
-                                              ByteData data = await rootBundle.load(
-                                                  "assets/images/misc/default_pic.png");
-                                              profilePicBytes =
-                                                  data.buffer.asUint8List();
-                                            }
-                                            Contact newContact = new Contact(
-                                                givenName: firstName,
-                                                familyName: lastName,
-                                                emails: [
-                                                  Item(
-                                                      label: "Email",
-                                                      value: email),
-                                                ],
-                                                phones: [
-                                                  Item(
-                                                      label: "Cell",
-                                                      value: phoneNumber),
-                                                ],
-                                                avatar: profilePicBytes);
-                                            await askPermissions(context);
-
-                                            await ContactsService.addContact(
-                                                newContact);
-
-                                            DialogBuilder(context)
-                                                .hideOpenDialog();
-
-                                            Popups.showContactAddedPopup(
-                                                context,
-                                                width,
-                                                photoUrl,
-                                                firstName,
-                                                lastName,
-                                                phoneNumber,
-                                                email);
-
-                                            //ContactsService.openContactForm();
-                                            // ContactsService.addContact(newContact).then((dynamic success) {
-                                            // });
-                                            //         ContactsService.addContact(newContact).then(dynamic success)
-                                            // {             ContactsService.openExistingContact(newContact);
-                                            //       };
-
-                                            // .then((dynamic success) {
-                                            //   Popups.showContactAddedPopup(context, width, firstName, lastName);
-                                            // });
-                                          },
-                                          child: Container(
-                                            height: height / 22,
-                                            width: width / 2,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Image.asset(
-                                                  "assets/images/SMLogos/ContactLogo.png",
-                                                  //width: width / 10
-                                                  //height: height / 5,
-                                                ),
-                                                Text(
-                                                  "Add To Contacts + ",
-                                                  style: TextStyle(
-                                                      fontFamily: "Montserrat",
-                                                      fontSize: width / 25,
-                                                      color: Colors.black,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          style: ElevatedButton.styleFrom(
-                                            shadowColor: Colors.black,
-                                            primary:
-                                                Colors.white.withOpacity(0.6),
-                                            // side: BorderSide(color: Colors.cyan[400]!, width: 2),
-                                            elevation: 20,
-                                            padding: const EdgeInsets.all(15.0),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10.0),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
+                                          //Remove harcode later
+                                          visible: isContactEnabled,
+                                          // visible: false,
+                                          child: AddToContactsButton(
+                                            height: height,
+                                            soshiUsername:
+                                                friendUserObject.soshiUsername,
+                                            width: width,
+                                          )),
                                     ),
                                   ),
                                 ],
@@ -543,11 +476,12 @@ class AddFriendButton extends StatefulWidget {
   Friend friend;
   Function refreshFunction;
   double height, width;
-  AddFriendButton(
-      {@required this.friend,
-      @required this.refreshFunction,
-      @required this.height,
-      @required this.width});
+  AddFriendButton({
+    @required this.friend,
+    @required this.refreshFunction,
+    @required this.height,
+    @required this.width,
+  });
 }
 
 class _AddFriendButtonState extends State<AddFriendButton> {
@@ -573,76 +507,75 @@ class _AddFriendButtonState extends State<AddFriendButton> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: NeumorphicButton(
-          onPressed: () async {
-            if (isFriendAdded || friendSoshiUsername == soshiUsername) {
-              // do nothing
-              return;
-            } else {
-              setState(() {
-                isAdding = true;
-              });
-              // isFriendAdded =
-              //     DataEngine.globalUser.friends.contains(friendSoshiUsername);
+        child: NeumorphicButton(
+      style: NeumorphicStyle(
+          shadowDarkColor: Colors.black,
+          shadowLightColor: Colors.black12,
+          color: isFriendAdded ? Colors.black : Colors.blue,
+          boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(20.0))),
+      onPressed: () async {
+        if (isFriendAdded || friendSoshiUsername == soshiUsername) {
+          // do nothing
+          return;
+        } else {
+          setState(() {
+            isAdding = true;
+          });
+          // isFriendAdded =
+          //     DataEngine.globalUser.friends.contains(friendSoshiUsername);
 
-              if (!isFriendAdded) {
-                List<Friend> friends = await DataEngine.getCachedFriendsList();
-                friends.add(widget.friend); // update friends cached list
-                DataEngine.updateCachedFriendsList(friends: friends);
-                DataEngine.globalUser.friends
-                    .add(friendSoshiUsername); // update friends string list
-                DataEngine.globalUser.soshiPoints =
-                    DataEngine.globalUser.soshiPoints +
-                        25; // Adding 25 points for every friend added
-                DataEngine.applyUserChanges(
-                    user: DataEngine.globalUser, cloud: true, local: true);
-              }
+          if (!isFriendAdded) {
+            List<Friend> friends = await DataEngine.getCachedFriendsList();
+            friends.add(widget.friend); // update friends cached list
+            DataEngine.updateCachedFriendsList(friends: friends);
+            DataEngine.globalUser.friends
+                .add(friendSoshiUsername); // update friends string list
+            DataEngine.globalUser.soshiPoints =
+                DataEngine.globalUser.soshiPoints +
+                    25; // Adding 25 points for every friend added
+            DataEngine.applyUserChanges(
+                user: DataEngine.globalUser, cloud: true, local: true);
+          }
 
-              Analytics.logAddFriend(friendSoshiUsername);
-              setState(() {
-                isAdding = false;
-                isFriendAdded = true;
-              });
-            }
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Container(
-                height: height / 40,
-                width: width / 1.7,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    isAdding
-                        ? CircularProgressIndicator.adaptive()
-                        : (isFriendAdded
-                            ? Text(
-                                "Friend Added",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: GoogleFonts.inter().fontFamily,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: 1.8,
-                                    fontSize: width / 22.5),
-                              )
-                            : Text(
-                                "Add Friend",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: GoogleFonts.inter().fontFamily,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: 1.8,
-                                    fontSize: width / 22.5),
-                              ))
-                  ],
-                )),
-          ),
-          style: NeumorphicStyle(
-              shadowDarkColor: Colors.black,
-              shadowLightColor: Colors.black12,
-              color: isFriendAdded ? Colors.black : Colors.blue,
-              boxShape:
-                  NeumorphicBoxShape.roundRect(BorderRadius.circular(20.0)))),
-    );
+          Analytics.logAddFriend(friendSoshiUsername);
+          setState(() {
+            isAdding = false;
+            isFriendAdded = true;
+          });
+        }
+      },
+      child: Padding(
+        padding: EdgeInsets.all(5.0),
+        child: Container(
+            height: height / 40,
+            width: width / 1.7,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                isAdding
+                    ? CircularProgressIndicator.adaptive()
+                    : isFriendAdded
+                        ? Text(
+                            "Friend Added",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: GoogleFonts.inter().fontFamily,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1.8,
+                                fontSize: width / 22.5),
+                          )
+                        : Text(
+                            "Add Friend",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: GoogleFonts.inter().fontFamily,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1.8,
+                                fontSize: width / 22.5),
+                          )
+              ],
+            )),
+      ),
+    ));
   }
 }
