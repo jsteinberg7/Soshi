@@ -294,7 +294,37 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                           SizedBox(
                             height: height / 45,
                           ),
-                          AddFriendButton(
+                          Visibility(
+                            visible: DataEngine.globalUser.friends
+                                    .contains(friendUserObject.soshiUsername) &&
+                                isContactEnabled,
+                            child: Center(
+                              child: AddToContactsButton(
+                                  soshiUsername: friendUserObject.soshiUsername,
+                                  height: height,
+                                  width: width),
+                            ),
+                          ),
+                          Visibility(
+                              visible: DataEngine.globalUser.friends.contains(
+                                      friendUserObject.soshiUsername) &&
+                                  !isContactEnabled,
+                              child: AddFriendButton(
+                                friend: Friend(
+                                    soshiUsername:
+                                        friendUserObject.soshiUsername,
+                                    fullName: (friendUserObject.firstName +
+                                        " " +
+                                        friendUserObject.lastName),
+                                    photoURL: friendUserObject.photoURL,
+                                    isVerified: friendUserObject.verified),
+                                height: height,
+                                width: width,
+                              )),
+                          Visibility(
+                            visible: !DataEngine.globalUser.friends
+                                .contains(friendUserObject.soshiUsername),
+                            child: AddFriendButton(
                               friend: Friend(
                                   soshiUsername: friendUserObject.soshiUsername,
                                   fullName: (friendUserObject.firstName +
@@ -303,7 +333,9 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                   photoURL: friendUserObject.photoURL,
                                   isVerified: friendUserObject.verified),
                               height: height,
-                              width: width),
+                              width: width,
+                            ),
+                          ),
                           Container(
                             child: Padding(
                               padding: EdgeInsets.fromLTRB(
@@ -435,22 +467,18 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                               }),
                                             )),
                                   ),
-                                  Padding(
-                                    padding: EdgeInsets.fromLTRB(
-                                        0, height / 50, 0, height / 20),
-                                    child: Center(
-                                      child: Visibility(
-                                          //Remove harcode later
-                                          visible: isContactEnabled,
-                                          // visible: false,
-                                          child: AddToContactsButton(
-                                            height: height,
-                                            soshiUsername:
-                                                friendUserObject.soshiUsername,
-                                            width: width,
-                                          )),
-                                    ),
-                                  ),
+                                  // Center(
+                                  //   child: Visibility(
+                                  //       //Remove harcode later
+                                  //       visible: isContactEnabled,
+                                  //       // visible: false,
+                                  //       child: AddToContactsButton(
+                                  //         height: height,
+                                  //         soshiUsername:
+                                  //             friendUserObject.soshiUsername,
+                                  //         width: width,
+                                  //       )),
+                                  // ),
                                 ],
                               ),
                             ),
@@ -501,6 +529,7 @@ class _AddFriendButtonState extends State<AddFriendButton> {
     friendSoshiUsername = widget.friend.soshiUsername;
     refreshFunction = widget.refreshFunction;
     isFriendAdded = DataEngine.globalUser.friends.contains(friendSoshiUsername);
+
     super.initState();
   }
 
@@ -555,7 +584,15 @@ class _AddFriendButtonState extends State<AddFriendButton> {
                 isAdding
                     ? CircularProgressIndicator.adaptive()
                     : isFriendAdded
-                        ? Text(
+                        ?
+
+                        // AddToContactsButton(
+                        //     soshiUsername: friendSoshiUsername,
+                        //     width: width,
+                        //     height: height,
+                        //   )
+
+                        Text(
                             "Friend Added",
                             style: TextStyle(
                                 color: Colors.white,

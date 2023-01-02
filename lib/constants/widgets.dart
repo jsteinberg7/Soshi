@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:google_fonts/google_fonts.dart';
 // import 'package:share/share.dart';
 import 'package:soshi/constants/popups.dart';
 import 'package:soshi/constants/utilities.dart';
@@ -1213,8 +1214,8 @@ class SkillBubble extends StatelessWidget {
       style: ElevatedButton.styleFrom(
           backgroundColor: Theme.of(context).brightness == Brightness.light
               ? Colors.white
-              : Colors.black,
-          elevation: 1,
+              : Colors.grey[850],
+          elevation: 3,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(15)))),
       onPressed: () {},
@@ -1381,15 +1382,16 @@ class AddToContactsButton extends StatelessWidget {
           ]),
           borderRadius: BorderRadius.all(Radius.circular(19.0)),
         ),
-        width: width / 1.8,
-        height: height / 20,
+        width: width / 1.5,
+        height: height / 17,
         alignment: Alignment.center,
         child: Text(
-          'Add to Contacts',
+          'Add To Contacts',
           textAlign: TextAlign.center,
           style: TextStyle(
-              letterSpacing: 1.4,
-              fontSize: width / 23,
+              fontFamily: GoogleFonts.inter().fontFamily,
+              letterSpacing: 1.8,
+              fontSize: width / 22.5,
               fontWeight: FontWeight.bold),
         ),
       ),
