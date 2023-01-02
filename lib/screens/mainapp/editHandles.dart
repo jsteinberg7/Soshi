@@ -68,7 +68,17 @@ class _EditHandlesState extends State<EditHandles> {
         appBar: AppBar(
           leading: CupertinoBackButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              print("verify discard changes?");
+              CustomAlertDialogDoubleChoice.showCustomAlertDialogDoubleChoice(
+                  "Unsaved Changes",
+                  "Unsaved changes will be discarded",
+                  "Yes",
+                  "No", () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              }, () {
+                Navigator.pop(context);
+              }, context, height, width);
             },
           ),
           actions: [

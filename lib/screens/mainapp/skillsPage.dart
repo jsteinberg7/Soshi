@@ -3,6 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:soshi/services/dataEngine.dart';
 
+import '../../constants/popups.dart';
+import '../../constants/utilities.dart';
+import 'package:intl/intl.dart' show toBeginningOfSentenceCase;
+
 class SkillsPage extends StatelessWidget {
   List<Skill> alreadySelected;
 
@@ -48,6 +52,8 @@ class SkillsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = Utilities.getWidth(context);
+    TextEditingController skillController = TextEditingController();
     print("Current Skills: ${renderSkills}");
     return FutureBuilder(
         future: syncFirebaseSkill(),
@@ -97,6 +103,39 @@ class SkillsPage extends StatelessWidget {
                             controlsGridView.notifyListeners();
                           },
                         ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              elevation: 5,
+                              primary: Colors.green,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15)),
+                              padding: EdgeInsets.fromLTRB(50, 0, 50, 0)),
+                          child: Text(
+                            "Add",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1.5,
+                                fontSize: Utilities.getWidth(context) / 20,
+                                color: Colors.white),
+                          ),
+                          onPressed: () async {
+                            await Popups.customSkillPopup(
+                                context, width, skillController);
+
+                            String skillFromController =
+                                toBeginningOfSentenceCase(
+                                    skillController.text.trim());
+
+                            if (skillFromController.length > 0) {
+                              Future.delayed(Duration(milliseconds: 10), () {
+                                Navigator.pop(context, skillFromController);
+                              });
+                            }
+                          },
+                        ),
                         SizedBox(height: 10),
                         Expanded(
                           child: ValueListenableBuilder(
@@ -105,7 +144,7 @@ class SkillsPage extends StatelessWidget {
                                 return RenderSkillsList(
                                     renderSkills: renderSkills);
                               }),
-                        )
+                        ),
                       ],
                     )),
               ),
@@ -139,8 +178,50 @@ class RenderSkillsList extends StatelessWidget {
               print("👆 just tapped skill: ${renderSkills[index].name}");
               Navigator.pop(
                   context, renderSkills[index].name); //renderSkills[index]);
+              // } else {
+              //   TextEditingController skillController =
+              //       new TextEditingController();
+              //   Popups.customSkillPopup(context, width, skillController);
+              //   print("CUSTOM SKILL" + skillController.text);
+              //   Navigator.pop(context, skillController.text);
+
+              //   // add custom skill
+              // }
             },
-            child: Card(
+            child:
+                // index == 0
+                //     ? Card(
+                //         elevation: 3,
+                //         color: Colors.green,
+                //         shape: RoundedRectangleBorder(
+                //             borderRadius: BorderRadius.all(Radius.circular(10))),
+                //         child: Padding(
+                //           padding: const EdgeInsets.all(5.0),
+                //           child: Column(
+                //               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                //               children: [
+                //                 Container(
+                //                   // color: Colors.black,
+                //                   width: width / 5,
+                //                   //height: height / 45,
+                //                   child: Text(
+                //                     "Add Skill",
+
+                //                     textAlign: TextAlign.center,
+                //                     maxLines: 1,
+                //                     style: TextStyle(
+                //                         fontSize: width / 25,
+                //                         fontWeight: FontWeight.bold,
+                //                         color: Colors.white,
+                //                         letterSpacing: 1.5),
+                //                     //maxFontSize: width / 10,
+                //                   ),
+                //                 )
+                //               ]),
+                //         ),
+                //       )
+                //     :
+                Card(
               elevation: 3,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10))),

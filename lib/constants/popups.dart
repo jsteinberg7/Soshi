@@ -287,6 +287,68 @@ class Popups {
         });
   }
 
+  static customSkillPopup(BuildContext context, double width,
+      TextEditingController skillController) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(25.0))),
+            // backgroundColor: Colors.blueGrey[900],
+            title: Text("Custom Skill"),
+            //   style: TextStyle(
+            //       //color: Colors.cyan[600],
+            //       //fontWeight: FontWeight.bold),
+            // ),
+            content: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    keyboardType: TextInputType.name,
+                    autocorrect: true,
+                    controller: skillController,
+                    style: TextStyle(
+                      //fontWeight: FontWeight.bold,
+                      fontSize: width / 20,
+                      //color: Colors.cyan[300]
+                    ),
+                    onSubmitted: (String inputText) {
+                      // apply new usernake to field
+
+                      Navigator.pop(context, skillController.text);
+                    },
+                    decoration: InputDecoration(
+                      filled: false,
+                      hintText: "Skill",
+                      hintStyle: TextStyle(
+                        color: Colors.grey[500],
+                        fontSize: width / 20,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            actions: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(right: width / 50),
+                child: TextButton(
+                  child: Text(
+                    'Done',
+                    style: TextStyle(fontSize: width / 20, color: Colors.blue),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    // need to save changes here
+                  },
+                ),
+              ),
+            ],
+          );
+        });
+  }
+
   static void editUsernamePopup(
       BuildContext context, String platformName, double width, SoshiUser user) {
     String indicator;
