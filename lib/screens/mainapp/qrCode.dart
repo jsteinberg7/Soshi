@@ -16,7 +16,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 
 
 import 'package:vibration/vibration.dart';
-import 'package:share/share.dart';
+//import 'package:share/share.dart';
 import '../../services/dynamicLinks.dart';
 import 'friendScreen.dart';
 import 'package:flutter_share/flutter_share.dart';

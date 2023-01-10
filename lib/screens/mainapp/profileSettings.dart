@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:soshi/screens/login/loading.dart';
 import 'package:soshi/screens/mainapp/passions.dart';
 import 'package:soshi/services/dataEngine.dart';
 import 'package:soshi/constants/widgets.dart';
@@ -42,10 +43,11 @@ class ProfileSettingsState extends State<ProfileSettings> {
     try {
       final profilePic =
           await ImagePicker().pickImage(source: ImageSource.gallery);
+      final profilePicTemp = File(profilePic.path);
+
       if (profilePic == null) {
-        return user.photoURL;
+        return tempNewURL;
       } else {
-        final profilePicTemp = File(profilePic.path);
         await cropAndUploadImage(profilePicTemp);
       }
     } on PlatformException catch (e) {
@@ -53,32 +55,29 @@ class ProfileSettingsState extends State<ProfileSettings> {
     }
   }
 
-  Future<File> cropImage(String path,
+  Future<CroppedFile> cropImage(String path,
       {CropStyle cropStyle = CropStyle.circle}) async {
     return (await ImageCropper().cropImage(
-        cropStyle: cropStyle,
-        sourcePath: path,
-        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
-        maxHeight: 700,
-        maxWidth: 700,
-        compressFormat: ImageCompressFormat.jpg,
-        androidUiSettings: AndroidUiSettings(toolbarTitle: "Crop Image"),
-        iosUiSettings: IOSUiSettings(
-          title: "Crop Image",
-        )));
+      cropStyle: cropStyle,
+      sourcePath: path,
+      aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+      maxHeight: 700,
+      maxWidth: 700,
+      compressFormat: ImageCompressFormat.jpg,
+    ));
   }
 
   Future<void> cropAndUploadImage(
     File passedInImage,
   ) async {
     if (passedInImage != null) {
-      File croppedImage = await cropImage(passedInImage.path);
-      FirebaseStorage firebaseStorage = FirebaseStorage.instance;
-
-      await firebaseStorage
+      CroppedFile croppedImageFirst = await cropImage(passedInImage.path);
+      final File croppedImageFinal = File(croppedImageFirst.path);
+      DialogBuilder(context).showLoadingIndicator();
+      await FirebaseStorage.instance
           .ref()
           .child("Profile Pictures/" + user.soshiUsername)
-          .putFile(croppedImage);
+          .putFile(croppedImageFinal);
 
       // upload image to firebase to get URL
       String urlNew = await FirebaseStorage.instance
@@ -87,6 +86,9 @@ class ProfileSettingsState extends State<ProfileSettings> {
           .getDownloadURL();
 
       setState(() => tempNewURL = urlNew);
+      DialogBuilder(context).hideOpenDialog();
+
+      print("after setstate");
     } else {
       print("No image picked");
       return;
@@ -137,9 +139,8 @@ class ProfileSettingsState extends State<ProfileSettings> {
                   fontSize: width / 23,
                 ),
               ),
-              onPressed: () {
+              onPressed: () async {
                 user.photoURL = tempNewURL;
-
                 DataEngine.applyUserChanges(
                     user: DataEngine.globalUser, cloud: true, local: true);
                 // Need alternative to refresh the profile!!!!
@@ -182,7 +183,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                   },
                   child: Stack(
                     children: [
-                      ProfilePic(radius: 55, url: user.photoURL),
+                      ProfilePic(radius: 55, url: tempNewURL),
                       Positioned(
                         right: width / 15,
                         top: height / 30,

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'package:soshi/services/database.dart';
-import 'package:ndef/ndef.dart' as ndef;
 import 'dataEngine.dart';
 
 

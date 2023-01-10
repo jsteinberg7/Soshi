@@ -324,33 +324,33 @@ class DatabaseService {
     return friendsList.contains(otherSoshiUsername);
   }
 
-  Future<File> cropImage(String path,
-      {CropStyle cropStyle = CropStyle.circle}) async {
-    return (await ImageCropper().cropImage(
-        cropStyle: cropStyle,
-        sourcePath: path,
-        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
-        maxHeight: 700,
-        maxWidth: 700,
-        compressFormat: ImageCompressFormat.jpg,
-        androidUiSettings: AndroidUiSettings(
-            toolbarColor: Colors.cyan, toolbarTitle: "Crop Image"),
-        iosUiSettings: IOSUiSettings(
-          title: "Crop Image",
-        )));
-  }
+  // Future<File> cropImage(String path,
+  //     {CropStyle cropStyle = CropStyle.circle}) async {
+  //   return (await ImageCropper().cropImage(
+  //       cropStyle: cropStyle,
+  //       sourcePath: path,
+  //       aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+  //       maxHeight: 700,
+  //       maxWidth: 700,
+  //       compressFormat: ImageCompressFormat.jpg,
+  //       androidUiSettings: AndroidUiSettings(
+  //           toolbarColor: Colors.cyan, toolbarTitle: "Crop Image"),
+  //       iosUiSettings: IOSUiSettings(
+  //         title: "Crop Image",
+  //       )));
+  // }
 
   // for use with profile (not groups)
   Future<void> cropAndUploadImage(
     PickedFile passedInImage,
   ) async {
     if (passedInImage != null) {
-      File croppedImage = await cropImage(passedInImage.path);
+      //File croppedImage = await cropImage(passedInImage.path);
 
       // String currSoshiUsername = LocalDataService.getLocalUsernameForPlatform("Soshi");
       DatabaseService databaseService =
           new DatabaseService(currSoshiUsernameIn: currSoshiUsername);
-      await databaseService.uploadProfilePicture(croppedImage);
+      // await databaseService.uploadProfilePicture(croppedImage);
       String url = await FirebaseStorage.instance
           .ref()
           .child("Profile Pictures/" + currSoshiUsername)

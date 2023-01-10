@@ -87,7 +87,11 @@ class _ViewGroupPageState extends State<ViewGroupPage> {
   }
 
   /* Creates a single "friend tile" (an element of the ListView of Friends) */
-  Widget createFriendTile({BuildContext context, Friend friend, DatabaseService databaseService, bool adminPrivileges}) {
+  Widget createFriendTile(
+      {BuildContext context,
+      Friend friend,
+      DatabaseService databaseService,
+      bool adminPrivileges}) {
     double width = Utilities.getWidth(context);
     double height = Utilities.getHeight(context);
 
@@ -109,10 +113,13 @@ class _ViewGroupPageState extends State<ViewGroupPage> {
                     fontWeight: FontWeight.w600,
                     fontSize: 20)),
             SizedBox(height: height / 170),
-            SoshiUsernameText(friend.soshiUsername, fontSize: 14, isVerified: friend.isVerified),
+            SoshiUsernameText(friend.soshiUsername,
+                fontSize: 14, isVerified: friend.isVerified),
           ],
         ),
-        tileColor: Theme.of(context).brightness == Brightness.light ? Colors.grey[50] : Colors.grey[850],
+        tileColor: Theme.of(context).brightness == Brightness.light
+            ? Colors.grey[50]
+            : Colors.grey[850],
 
         // selectedTileColor: Constants.buttonColorLight,
         contentPadding: EdgeInsets.all(10.0),
@@ -138,8 +145,11 @@ class _ViewGroupPageState extends State<ViewGroupPage> {
                       backgroundColor: Colors.transparent,
                       context: context,
                       builder: (context) {
-                        return MemberOptionsPopup(context, height, width, databaseService,
-                            member: friend, id: group.id, refreshGroupScreen: refreshGroupPage);
+                        return MemberOptionsPopup(
+                            context, height, width, databaseService,
+                            member: friend,
+                            id: group.id,
+                            refreshGroupScreen: refreshGroupPage);
                       });
                 },
                 // shape: RoundedRectangleBorder(
@@ -204,13 +214,17 @@ class _ViewGroupPageState extends State<ViewGroupPage> {
                       blur: 10,
                       alignment: Alignment.bottomCenter,
                       border: 2,
-                      linearGradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [
-                        Color(0xFFffffff).withOpacity(0.2),
-                        Color(0xFFFFFFFF).withOpacity(0.1),
-                      ], stops: [
-                        0.1,
-                        1,
-                      ]),
+                      linearGradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Color(0xFFffffff).withOpacity(0.2),
+                            Color(0xFFFFFFFF).withOpacity(0.1),
+                          ],
+                          stops: [
+                            0.1,
+                            1,
+                          ]),
                       borderGradient: LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -226,14 +240,18 @@ class _ViewGroupPageState extends State<ViewGroupPage> {
                             child: Column(
                               children: [
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     IconButton(
                                         onPressed: () {
                                           Navigator.pop(context);
                                         },
                                         icon: Icon(Icons.arrow_back_ios_new)),
-                                    Text(group.name, style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold)),
+                                    Text(group.name,
+                                        style: TextStyle(
+                                            fontSize: 25.0,
+                                            fontWeight: FontWeight.bold)),
                                     IconButton(
                                       icon: Icon(
                                         Icons.arrow_back_ios_new,
@@ -244,10 +262,12 @@ class _ViewGroupPageState extends State<ViewGroupPage> {
                                 ),
                                 Row(
                                   key: ValueKey<int>(1),
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
                                   children: [
                                     IconButton(
-                                      icon: Icon(Icons.settings_outlined, size: 30),
+                                      icon: Icon(Icons.settings_outlined,
+                                          size: 30),
                                       onPressed: () {
                                         showModalBottomSheet(
                                             isScrollControlled: true,
@@ -258,8 +278,15 @@ class _ViewGroupPageState extends State<ViewGroupPage> {
                                             backgroundColor: Colors.transparent,
                                             context: context,
                                             builder: (BuildContext context) {
-                                              return GroupSettingsPopup(context, height, width, databaseService,
-                                                  id: group.id, isAdmin: isAdmin, refreshGroupScreen: refreshGroupPage);
+                                              return GroupSettingsPopup(
+                                                  context,
+                                                  height,
+                                                  width,
+                                                  databaseService,
+                                                  id: group.id,
+                                                  isAdmin: isAdmin,
+                                                  refreshGroupScreen:
+                                                      refreshGroupPage);
                                             });
                                       },
                                     ),
@@ -269,14 +296,21 @@ class _ViewGroupPageState extends State<ViewGroupPage> {
                                           width: width / 2.25,
                                           height: height / 5.5,
                                           child: AnimatedSwitcher(
-                                            duration: Duration(milliseconds: 500),
+                                            duration:
+                                                Duration(milliseconds: 500),
                                             child: showQrCode
-                                                ? QrImage(data: "https://soshi.app/group/${group.id}", size: 100)
-                                                : RectangularProfilePic(radius: width / 3, url: group.photoURL),
+                                                ? QrImage(
+                                                    data:
+                                                        "https://soshi.app/group/${group.id}",
+                                                    size: 100)
+                                                : RectangularProfilePic(
+                                                    radius: width / 3,
+                                                    url: group.photoURL),
                                           ),
                                         )),
                                     IconButton(
-                                        icon: Icon(Icons.qr_code_rounded, size: 30),
+                                        icon: Icon(Icons.qr_code_rounded,
+                                            size: 30),
                                         onPressed: () {
                                           setState(() {
                                             showQrCode = !showQrCode;
@@ -366,7 +400,10 @@ class _ViewGroupPageState extends State<ViewGroupPage> {
                   padding: EdgeInsets.all(8.0),
                   height: (height / 3) * 2,
                   decoration: BoxDecoration(
-                      color: Colors.white, borderRadius: BorderRadius.only(topLeft: Radius.circular(40.0), topRight: Radius.circular(40.0))),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(40.0),
+                          topRight: Radius.circular(40.0))),
                   child: FutureBuilder(
                     future: generateGroupUsers(),
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -379,17 +416,22 @@ class _ViewGroupPageState extends State<ViewGroupPage> {
                           children: [
                             Align(
                               child: Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
+                                padding:
+                                    const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
                                 child: Text(
                                   "People",
-                                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600, fontSize: width / 17),
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: width / 17),
                                 ),
                               ),
                               alignment: Alignment.topCenter,
                             ),
                             Align(
                               child: Padding(
-                                padding: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 2.0),
+                                padding: const EdgeInsets.fromLTRB(
+                                    10.0, 5.0, 10.0, 2.0),
                                 child: Text("Admin (${admin.length})"),
                               ),
                               alignment: Alignment.topLeft,
@@ -401,14 +443,18 @@ class _ViewGroupPageState extends State<ViewGroupPage> {
                                 itemCount: admin.length,
                                 itemBuilder: (BuildContext context, int i) {
                                   return createFriendTile(
-                                      context: context, friend: admin[i], databaseService: databaseService, adminPrivileges: false);
+                                      context: context,
+                                      friend: admin[i],
+                                      databaseService: databaseService,
+                                      adminPrivileges: false);
                                 },
                               ),
                             ),
                             Divider(),
                             Align(
                               child: Padding(
-                                padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 2.0),
+                                padding: const EdgeInsets.fromLTRB(
+                                    10.0, 10.0, 10.0, 2.0),
                                 child: Text("Members (${members.length})"),
                               ),
                               alignment: Alignment.topLeft,
@@ -420,13 +466,17 @@ class _ViewGroupPageState extends State<ViewGroupPage> {
                                 itemCount: members.length,
                                 itemBuilder: (BuildContext context, int i) {
                                   return createFriendTile(
-                                      context: context, friend: members[i], databaseService: databaseService, adminPrivileges: isAdmin);
+                                      context: context,
+                                      friend: members[i],
+                                      databaseService: databaseService,
+                                      adminPrivileges: isAdmin);
                                 },
                               ),
                             ),
                           ],
                         );
-                      } else if (snapshot.connectionState == ConnectionState.waiting) {
+                      } else if (snapshot.connectionState ==
+                          ConnectionState.waiting) {
                         return Container(
                           height: height / 2,
                           child: Column(
@@ -465,7 +515,9 @@ class ShareGroupPopup extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Container(
-              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(25.0))),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(25.0))),
               width: width / 1.1,
               height: height / 2,
 
@@ -502,7 +554,10 @@ class ShareGroupPopup extends StatelessWidget {
                       alignment: Alignment.center,
                       height: width / 1.8,
                       width: width / 1.8,
-                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(10.0))),
                       child: GestureDetector(
                         onTap: () {
                           Clipboard.setData(ClipboardData(
@@ -518,7 +573,8 @@ class ShareGroupPopup extends StatelessWidget {
                         },
                         child: QrImage(
                           errorCorrectionLevel: QrErrorCorrectLevel.M,
-                          embeddedImage: NetworkImage(DataEngine.globalUser.photoURL),
+                          embeddedImage:
+                              NetworkImage(DataEngine.globalUser.photoURL),
                           // +
                           dataModuleStyle: QrDataModuleStyle(
                             dataModuleShape: QrDataModuleShape.circle,
@@ -532,17 +588,19 @@ class ShareGroupPopup extends StatelessWidget {
                     ),
                   ),
                   Text("Invite others to the group!"),
-                  ShareButton(
-                    size: width / 20,
-                    groupId: id,
-                  )
+                  // ShareButton(
+                  //   size: width / 20,
+                  //   groupId: id,
+                  // )
                 ],
               )),
           SizedBox(
             height: height / 50,
           ),
           Container(
-            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(15.0))),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(15.0))),
             height: height / 15,
             width: width / 1.1,
             child: Center(
@@ -550,7 +608,9 @@ class ShareGroupPopup extends StatelessWidget {
                   onTap: () {
                     Navigator.pop(context);
                   },
-                  child: Text("Close", style: TextStyle(color: Colors.blue, fontSize: width / 22))),
+                  child: Text("Close",
+                      style:
+                          TextStyle(color: Colors.blue, fontSize: width / 22))),
             ),
           ),
           SizedBox(height: height / 50)
@@ -567,8 +627,11 @@ class MemberOptionsPopup extends StatefulWidget {
   String id;
   DatabaseService databaseService;
   Function refreshGroupScreen;
-  MemberOptionsPopup(this.context, this.height, this.width, this.databaseService,
-      {@required this.id, @required this.member, @required this.refreshGroupScreen});
+  MemberOptionsPopup(
+      this.context, this.height, this.width, this.databaseService,
+      {@required this.id,
+      @required this.member,
+      @required this.refreshGroupScreen});
 
   @override
   State<MemberOptionsPopup> createState() => _MemberOptionsPopupState();
@@ -579,12 +642,14 @@ class _MemberOptionsPopupState extends State<MemberOptionsPopup> {
   Widget build(BuildContext context) {
     return CupertinoActionSheet(
       title: Text(widget.member.fullName),
-      message: SoshiUsernameText(widget.member.soshiUsername, fontSize: 14, isVerified: widget.member.isVerified),
+      message: SoshiUsernameText(widget.member.soshiUsername,
+          fontSize: 14, isVerified: widget.member.isVerified),
       actions: <CupertinoActionSheetAction>[
         CupertinoActionSheetAction(
           onPressed: () async {
             // promote member to admin
-            widget.databaseService.promoteToAdmin(widget.id, widget.member.soshiUsername);
+            widget.databaseService
+                .promoteToAdmin(widget.id, widget.member.soshiUsername);
             widget.refreshGroupScreen(type: "promote", member: widget.member);
             Navigator.pop(context);
           },
@@ -592,7 +657,8 @@ class _MemberOptionsPopupState extends State<MemberOptionsPopup> {
         ),
         CupertinoActionSheetAction(
           onPressed: () async {
-            widget.databaseService.leaveGroup(widget.id, widget.member.soshiUsername);
+            widget.databaseService
+                .leaveGroup(widget.id, widget.member.soshiUsername);
 
             widget.refreshGroupScreen(
               type: "leave",
@@ -624,8 +690,11 @@ class GroupSettingsPopup extends StatefulWidget {
   Function refreshGroupScreen;
   bool isAdmin;
 
-  GroupSettingsPopup(this.context, this.height, this.width, this.databaseService,
-      {@required this.id, @required this.isAdmin, @required this.refreshGroupScreen});
+  GroupSettingsPopup(
+      this.context, this.height, this.width, this.databaseService,
+      {@required this.id,
+      @required this.isAdmin,
+      @required this.refreshGroupScreen});
 }
 
 class _GroupSettingsPopupState extends State<GroupSettingsPopup> {
@@ -646,8 +715,13 @@ class _GroupSettingsPopupState extends State<GroupSettingsPopup> {
         ),
         CupertinoActionSheetAction(
           onPressed: () {
-            widget.databaseService.leaveGroup(widget.id, DataEngine.globalUser.soshiUsername, isAdmin: widget.isAdmin);
-            widget.refreshGroupScreen(type: "leave", username: DataEngine.globalUser.soshiUsername, isAdmin: widget.isAdmin);
+            widget.databaseService.leaveGroup(
+                widget.id, DataEngine.globalUser.soshiUsername,
+                isAdmin: widget.isAdmin);
+            widget.refreshGroupScreen(
+                type: "leave",
+                username: DataEngine.globalUser.soshiUsername,
+                isAdmin: widget.isAdmin);
             Navigator.pop(context);
             Navigator.pop(context);
           },

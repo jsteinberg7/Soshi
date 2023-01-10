@@ -585,8 +585,6 @@ class _AddFriendButtonState extends State<AddFriendButton> {
               // isFriendAdded =
               //     DataEngine.globalUser.friends.contains(friendSoshiUsername);
 
-        
-
               if (!isFriendAdded) {
                 List<Friend> friends = await DataEngine.getCachedFriendsList();
                 friends.add(widget.friend); // update friends cached list
