@@ -772,3 +772,24 @@ class Defaults {
     return dSnap.get('text');
   }
 }
+
+Future<List<Skill>> getLatestSkillData() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  List allSkillData = [];
+
+  DocumentSnapshot dsnap = await FirebaseFirestore.instance
+      .collection('metadata')
+      .doc('skillData')
+      .get();
+  allSkillData = dsnap.get('all_skills_list');
+  await prefs.setString("available_skills", jsonEncode(allSkillData));
+
+  List<Skill> sList = [];
+  for (int j = 0; j < allSkillData.length; j++) {
+    sList.add(Skill(name: allSkillData[j]));
+  }
+
+  sList.add(Defaults.emptySkill);
+  log("[⚙ Data Engine ⚙] Successfully fetched latest available skills ✅");
+  return sList;
+}

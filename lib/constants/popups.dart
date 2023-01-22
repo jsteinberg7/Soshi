@@ -1597,14 +1597,14 @@ class Popups {
           return AlertDialog(
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(40.0))),
+                borderRadius: BorderRadius.all(Radius.circular(30.0))),
             title: Text(
               "Soshi Bolts",
               style: TextStyle(fontSize: 25),
               textAlign: TextAlign.center,
             ),
             content: Container(
-              height: height / 3,
+              height: height / 2.9,
               width: 500,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,

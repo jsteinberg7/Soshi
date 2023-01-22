@@ -467,18 +467,6 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                                               }),
                                             )),
                                   ),
-                                  // Center(
-                                  //   child: Visibility(
-                                  //       //Remove harcode later
-                                  //       visible: isContactEnabled,
-                                  //       // visible: false,
-                                  //       child: AddToContactsButton(
-                                  //         height: height,
-                                  //         soshiUsername:
-                                  //             friendUserObject.soshiUsername,
-                                  //         width: width,
-                                  //       )),
-                                  // ),
                                 ],
                               ),
                             ),
@@ -584,15 +572,7 @@ class _AddFriendButtonState extends State<AddFriendButton> {
                 isAdding
                     ? CircularProgressIndicator.adaptive()
                     : isFriendAdded
-                        ?
-
-                        // AddToContactsButton(
-                        //     soshiUsername: friendSoshiUsername,
-                        //     width: width,
-                        //     height: height,
-                        //   )
-
-                        Text(
+                        ? Text(
                             "Friend Added",
                             style: TextStyle(
                                 color: Colors.white,

@@ -12,6 +12,7 @@ import 'services/auth.dart';
 import 'package:soshi/screens/wrapper.dart';
 import 'package:flutter/services.dart';
 
+//WE used to love
 class MyApp extends StatefulWidget {
   PendingDynamicLinkData linkData;
 

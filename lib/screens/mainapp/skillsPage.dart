@@ -18,6 +18,12 @@ class SkillsPage extends StatelessWidget {
 
   List<Skill> original = [];
 
+  // Stream<List<Skill>> getLatestSkillsCollection = (() async* {
+  //   List<Skill> totalSkills = await getLatestSkillData() ?? [];
+  //   yield totalSkills;
+  //   // Call database for list of skills
+  // })();
+
   // Need to pull skills data here. If you want latest set "firebaseOverride" to true;
   syncFirebaseSkill() async {
     original = await DataEngine.getAvailableSkills(firebaseOverride: false);
@@ -237,9 +243,15 @@ class RenderSkillsList extends StatelessWidget {
                         child: AutoSizeText(
                           renderSkills[index].name,
                           textAlign: TextAlign.center,
-                          maxLines: 1,
-                          style: TextStyle(fontSize: width / 25),
-                          minFontSize: 1,
+                          maxLines:
+                              renderSkills[index].name.contains(" ") ? 2 : 1,
+                          style: TextStyle(
+                              fontSize: //width / 30
+                                  renderSkills[index].name.length < 10
+                                      ? width / 30
+                                      : width / 35),
+
+                          // minFontSize: 1,
                           //maxFontSize: width / 10,
                         ),
                       )

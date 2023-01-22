@@ -28,9 +28,7 @@ class _SwappedContactsPageState extends State<SwappedContactsPage> {
   DatabaseService databaseService = new DatabaseService();
   void refreshSwappedContactsScreen() {
     //implement loading icon
-    setState(() {
-      // initializeFriendsList();
-    });
+    setState(() {});
     log('refreshed friends screen');
   }
 

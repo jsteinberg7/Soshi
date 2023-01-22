@@ -1,6 +1,12 @@
+//import 'dart:html';
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_review/in_app_review.dart';
+import 'package:nfc_manager/nfc_manager.dart';
+import 'package:nfc_manager/platform_tags.dart';
 import 'package:soshi/screens/login/newIntroFlowSri.dart';
 import 'package:soshi/screens/mainapp/profileSettings.dart';
 import 'package:soshi/screens/mainapp/resetPassword.dart';
@@ -141,19 +147,70 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                       // ),
                       GestureDetector(
                         behavior: HitTestBehavior.opaque,
-                        onTap: () {
+                        onTap: () async {
                           print("NFC writer pops up");
                           Navigator.of(context).pop();
 
-                          showModalBottomSheet(
-                              constraints: BoxConstraints(
-                                  minWidth: width / 1.1, maxWidth: width / 1.1),
-                              backgroundColor: Colors.green,
-                              context: context,
-                              builder: (BuildContext context) {
-                                return NFCWriter(height, width,
-                                    "https://soshi.app/nfc_portal/${DataEngine.globalUser.soshiUsername}");
-                              });
+                          if (Platform.isIOS) {
+                            showModalBottomSheet(
+                                constraints: BoxConstraints(
+                                    minWidth: width / 1.1,
+                                    maxWidth: width / 1.1),
+                                backgroundColor: Colors.green,
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return NFCWriterIOS(
+                                      height, width, "penisenlargenent");
+                                });
+
+                            // bool isAvailable =
+                            //     await NfcManager.instance.isAvailable();
+
+                            // NfcManager.instance.startSession(
+                            //   onDiscovered: (NfcTag tag) async {
+                            //     // Do something with an NfcTag instance.
+                            //   },
+                            // );
+
+                            // print("Hellooo");
+                            // final completer = Completer<void>();
+                            // NfcManager.instance.startSession(
+                            //   onDiscovered: (tag) async {
+                            //     final ndef = Ndef.from(tag);
+                            //     final formattable = NdefFormatable.from(tag);
+                            //     final message = NdefMessage([
+                            //       NdefRecord.createText(
+                            //           "https://soshi.app/nfc_portal/${DataEngine.globalUser.soshiUsername}")
+                            //     ]);
+                            //     if (ndef != null) {
+                            //       await ndef.write(message);
+                            //     } else if (formattable != null) {
+                            //       await formattable.format(message);
+                            //     }
+                            //     await NfcManager.instance.stopSession();
+                            //     completer.complete();
+                            //   },
+                            //   onError: (error) async =>
+                            //       completer.completeError(error),
+                            // );
+                          } else {
+                            return showModalBottomSheet(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                ),
+                                // constraints: BoxConstraints(
+                                //     minWidth: , maxWidth: 500),
+                                backgroundColor: Colors.white,
+                                context: context,
+                                builder: (BuildContext context) {
+                                  // return Container(
+                                  //   color: Colors.green,
+                                  //   child: Text("Hello"),
+                                  // );
+                                  return NFCWriterAndroid(height, width,
+                                      "https://soshi.app/nfc_portal/${DataEngine.globalUser.soshiUsername}");
+                                });
+                          }
                         },
                         child: Padding(
                           padding: EdgeInsets.fromLTRB(

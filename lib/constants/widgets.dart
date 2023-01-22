@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:permission_handler/permission_handler.dart';
 // import 'package:share/share.dart';
 import 'package:soshi/constants/popups.dart';
 import 'package:soshi/constants/utilities.dart';
@@ -423,7 +424,7 @@ class ActivatePortalButton extends StatelessWidget {
                   backgroundColor: Colors.green,
                   context: context,
                   builder: (BuildContext context) {
-                    return NFCWriter(height, width, this.soshiLink);
+                    return NFCWriterIOS(height, width, this.soshiLink);
                   });
             }));
   }
@@ -1359,9 +1360,26 @@ class AddToContactsButton extends StatelessWidget {
               Item(label: "Cell", value: phoneFromUserObject),
             ],
             avatar: profilePicBytes);
-        await askPermissions(context);
+        if (Platform.isAndroid) {
+          print("android true");
+          PermissionStatus permission = await Permission.contacts.status;
+          print(permission.toString());
 
-        await ContactsService.addContact(newContact);
+          if (permission == PermissionStatus.denied) {
+            await Permission.contacts.request();
+            PermissionStatus permissionUpdated =
+                await Permission.contacts.status;
+
+            if (permissionUpdated == PermissionStatus.granted) {
+              await ContactsService.addContact(newContact);
+            }
+          } else {
+            await ContactsService.addContact(newContact);
+          }
+        } else {
+          await askPermissions(context);
+          await ContactsService.addContact(newContact);
+        }
 
         DialogBuilder(context).hideOpenDialog();
 
@@ -1389,6 +1407,8 @@ class AddToContactsButton extends StatelessWidget {
           'Add To Contacts',
           textAlign: TextAlign.center,
           style: TextStyle(
+              color: Colors
+                  .white, //Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
               fontFamily: GoogleFonts.inter().fontFamily,
               letterSpacing: 1.8,
               fontSize: width / 22.5,

@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:soshi/screens/mainapp/skillsPage.dart';
+import 'package:soshi/screens/mainapp/skillsPageTest.dart';
 import 'package:soshi/services/dataEngine.dart';
 
 class SkillTileList extends StatefulWidget {

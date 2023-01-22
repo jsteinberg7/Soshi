@@ -499,7 +499,7 @@ class _SMCardState extends State<SMCard> {
                 color: Colors.red,
               ),
             )),
-        platformName == "Contact"
+        platformName == ""
             ? Positioned(
                 width: width / .8,
                 height: height / 30,

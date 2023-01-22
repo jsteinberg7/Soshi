@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -116,7 +117,7 @@ class _NewQRScreenState extends State<NewQRScreen> {
                                         linkUrl:
                                             "https://soshi.app/share/${DataEngine.globalUser.soshiUsername}");
                                   },
-                                )
+                                ),
                               ],
                             ),
                             PhysicalModel(
@@ -192,7 +193,10 @@ class _NewQRScreenState extends State<NewQRScreen> {
                               ),
                             ),
                             Text("Share with others to instantly connect.",
-                                style: TextStyle(fontSize: width / 27)),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: width / 27,
+                                )),
                           ],
                         )),
                   ),
