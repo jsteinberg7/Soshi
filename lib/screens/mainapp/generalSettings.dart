@@ -159,8 +159,8 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                 backgroundColor: Colors.green,
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return NFCWriterIOS(
-                                      height, width, "penisenlargenent");
+                                  return NFCWriterIOS(height, width,
+                                      "https://soshi.app/nfc_portal/${DataEngine.globalUser.soshiUsername}");
                                 });
 
                             // bool isAvailable =

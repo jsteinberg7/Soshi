@@ -71,5 +71,7 @@
 	<array>
 		<string>https://strippedsoshi.page.link</string>
 	</array>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
 </dict>
 </plist>
